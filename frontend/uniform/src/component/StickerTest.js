@@ -3,7 +3,7 @@ import { Canvas, Rect } from 'fabric';
 
 const StickerTest = () => {
   const canvasRef = useRef(null);
-
+    // 주석 달아봄
   // useEffect 훅을 사용하여 컴포넌트가 마운트된 후에 실행되는 사이드 이펙트를 처리합니다.
   useEffect(() => {
     // useRef를 사용하여 Canvas 요소를 참조합니다.
