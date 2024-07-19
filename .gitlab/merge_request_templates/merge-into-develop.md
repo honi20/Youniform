@@ -1,5 +1,5 @@
 - 제목 : feat(jira 이슈번호): 기능명
-<!--   ex) feat(S11P11A308-197-testtest): 기능명 -->
+<!--   ex) feat(S11P12A308-197-testtest): 기능명 -->
 
 ### Part
 
@@ -36,6 +36,6 @@
 
 ### Jira 링크
 <!-- 
-- [S11P11A308-197-testtest](https://ssafy.atlassian.net/jira/software/c/projects/S11P12A308/boards/7009?assignee=712020%3A7db5c5b2-a28d-4b96-b025-e421c6cf40c4&selectedIssue=S11P11A308-197-testtest)
+- [S11P12A308-197-testtest](https://ssafy.atlassian.net/jira/software/c/projects/S11P12A308/boards/7009?assignee=712020%3A7db5c5b2-a28d-4b96-b025-e421c6cf40c4&selectedIssue=S11P12A308-93)
 -->
 - [Jira-이슈번호](Jira URL)

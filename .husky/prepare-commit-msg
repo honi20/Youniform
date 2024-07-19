@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+# 현재 브랜치 이름 가져오기
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+# master 및 develop 브랜치에서는 작업을 스킵
+if [ "$BRANCH_NAME" = "master" ] || [ "$BRANCH_NAME" = "develop" ]; then
+  exit 0
+fi
+
+# 브랜치 이름을 "/" 기준으로 분할하여 배열로 저장
+IFS='/' read -ra BRANCH_PARTS <<< "$BRANCH_NAME"
+
+echo "BRANCH_PARTS: ${BRANCH_PARTS[@]}"
+
+# "feature/" 다음 부분이 "S11P12A308-숫자" 형식을 따르는지 확인
+if [ "${BRANCH_PARTS[0]}" != "feature" ]; then
+  echo "브랜치명은 'feature/S12P11A308-숫자-기타' 형식을 따라야 합니다."
+  exit 1
+fi
+
+# "S11P12A308-숫자" 형식을 검사
+case "${BRANCH_PARTS[1]}" in
+  S11P12A308-[0-9]*)
+    # 형식이 맞으면 계속 진행
+    ;;
+  *)
+    echo "브랜치명은 'feature/S11P12A308-숫자-기타' 형식을 따라야 합니다."
+    exit 1
+    ;;
+esac
+
+# JIRA 이슈 번호 추출 (예: S11P12A308-194)
+JIRA_ID=$(echo "${BRANCH_PARTS[1]}" | grep -oE 'S11P12A308-[0-9]+')
+
+echo "JIRA_ID: $JIRA_ID"
+
+# 커밋 메시지에 JIRA 이슈 번호가 없는 경우에만 추가
+if ! grep -q "$JIRA_ID" "$1"; then
+  sed -i.bak -e "\$s/$/ $JIRA_ID/" "$1"
+fi
+
+echo "prepare-commit-msg hook completed"
