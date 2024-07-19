@@ -19,21 +19,21 @@ const Nav = styled.nav`
 const NavBar = () => {
   return (
     <Nav>
-        <div>
-            <Link to="/">홈</Link>
-        </div>
-        <div>
-            <Link to="/photo-card">포토카드</Link>
-        </div>
-        <div>
-            <Link to="/diary">다이어리</Link>
-        </div>
-        <div>
-            <Link to="/community">커뮤니티</Link>
-        </div>
-        <div>
-            <Link to="/my-page">마이페이지</Link>
-        </div>
+      <div>
+          <Link to="/">홈</Link>
+      </div>
+      <div>
+          <Link to="/photo-card">포토카드</Link>
+      </div>
+      <div>
+          <Link to="/diary">다이어리</Link>
+      </div>
+      <div>
+          <Link to="/community">커뮤니티</Link>
+      </div>
+      <div>
+          <Link to="/my-page">마이페이지</Link>
+      </div>
     </Nav>
   )
 }
