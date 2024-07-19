@@ -12,16 +12,18 @@ import NavBar from './components/NavBar';
 import Header from './components/Header';
 import styled from 'styled-components';
 
-const Content = styled.div`
-  margin-top: 60px;
+const AppContainer = styled.div`
+  background-color: #F8F8F8;
+  height: 100vh; /* 화면 전체 높이 */
+
+  /* flex-shrink: 0; */
 `
 function App() {
   return (
     <>
       <BrowserRouter>
-        <div className="App">
+        <AppContainer>
             <Header />
-            <Content>
             <Routes>
               <Route path="/" element={ <MainView /> }></Route>
               <Route path="/photo-card" element={ <PhotoCardView /> }></Route>
@@ -29,9 +31,8 @@ function App() {
               <Route path="/community" element={ <CommunityView /> }></Route>
               <Route path="/my-page" element={ <MyPageView /> }></Route>
             </Routes>
-            </Content>
             <NavBar />
-        </div>
+        </AppContainer>
       </BrowserRouter>
     </>
   );
