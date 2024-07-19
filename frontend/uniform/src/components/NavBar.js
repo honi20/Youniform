@@ -3,20 +3,17 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Nav = styled.nav`
-    background-color: #FFFFFF;
+    background: #D9D9D9;
     position: fixed;
     bottom: 0;
-    width: 100%;
-    height: 60px;
-    display: flex;
-    border: solid 0.5px;
 
-    > div {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    width: 100%;
+    height: 50px;
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
 `
 
 const NavBar = () => {

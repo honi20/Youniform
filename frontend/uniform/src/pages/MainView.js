@@ -4,15 +4,17 @@ import styled from 'styled-components';
 import PlayerComp from '../components/Player/PlayerComp'
 
 const Div = styled.div`
+    flex-shrink: 0;
     display: flex;
-    justify-content: center, 
-    align-items: center,
+    justify-content: center;
+    margin-top: 50px;
 `
 const MainView = () => {
   return (
     <Div>
-        <PlayerComp />
+      <PlayerComp />
     </Div>
+
   )
 }
 

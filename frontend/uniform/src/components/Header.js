@@ -6,21 +6,25 @@ const Head = styled.div`
     position: fixed;
     top: 0;
     width: 100%;
-    height: 60px;
+    height: 50px;
     display: flex;
-    border: solid 0.5px;
+    padding: 0px 5px;
+    /* border: solid 0.5px; */
 
-    > div {
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    /* > div {
         width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+    } */
 `
 const Header = () => {
   return (
     <>
-    <Head>test</Head>
+    <Head>Youniform</Head>
     <div>
       Header
     </div>
