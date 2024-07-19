@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Created by https://www.toptal.com/developers/gitignore/api/react,macos,visualstudiocode,reactnative
 # Edit at https://www.toptal.com/developers/gitignore?templates=react,macos,visualstudiocode,reactnative
 
@@ -478,3 +479,7 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node,nextjs
+=======
+*/node_modules
+node_modules
+>>>>>>> master
