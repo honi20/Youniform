@@ -2,13 +2,30 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { format, addMonths, subMonths } from 'date-fns'
 
+const CalendarBox = styled.div`
+  width: 90%;
+  height: 500px;
+  border: 1px solid blue;
+  margin: 0 auto;
+  margin-top: 50px;
+`
+const MonthRow = styled.div`
+  display: flex;
+  width: 100%;
+  height: 10%;
+  border: 1px solid red;
+  justify-content: space-between;
+  align-items: center;
+`
+
 const SelectBox = styled.div`
   display: flex;
 `
 
+
 const RenderMonth = ({ curMonth, prevMonth, nextMonth }) => {
   return (
-    <div className='month-row'>
+    <MonthRow>
       <div>
         {/* 왼쪽 동그라미 아이콘 세개 */}
       </div>
@@ -30,7 +47,7 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth }) => {
           ▶
         </div>
       </SelectBox>
-    </div>
+    </MonthRow>
   )
 }
 
@@ -46,19 +63,25 @@ const Calendar = () => {
   }
 
   return (
-    <div className='calendar'>
-      <RenderMonth
-        curMonth={curMonth}
-        prevMonth={prevMonth}
-        nextMonth={nextMonth}
-      />
-      <div>
-        {/* Days 렌더링 */}
-      </div>
-      <div>
-        {/* Cells 렌더링 */}
-      </div>
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+
+      <CalendarBox>
+        <RenderMonth
+          curMonth={curMonth}
+          prevMonth={prevMonth}
+          nextMonth={nextMonth}
+        />
+        <div>
+          {/* Days 렌더링 */}
+          <h3>Days Section</h3>
+        </div>
+        <div>
+          {/* Cells 렌더링 */}
+          <h3 >Cells Section</h3>
+        </div>
+      </CalendarBox>
+
+    </LocalizationProvider>
   )
 }
 

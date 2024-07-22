@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components'; 
 import { ThemeProvider } from '@mui/material';
-import { ReactComponent as FolderIcon } from '../../assets/folder_top.svg'; 
-import { ReactComponent as StarIcon } from '../../assets/star.svg';
-import { ReactComponent as PlayIcon } from '../../assets/Video_fill.svg';
+import FolderIcon from '../../assets/folder_top.svg?react'; 
+import StarIcon from '../../assets/star.svg?react';
+import PlayIcon from '../../assets/Video_fill.svg?react';
 
 const Card = styled.div`
   /* 크기   */
