@@ -1,5 +1,6 @@
 package com.youniform.api.domain.user.entity;
 
+import com.youniform.api.domain.team.entity.Team;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,9 @@ public class Users {
     @Column(name = "user_id")
     private Long id;
 
-    private Long teamId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team teamId;
 
     private String nickName;
 
