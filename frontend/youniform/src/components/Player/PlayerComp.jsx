@@ -8,7 +8,7 @@ import PlayIcon from '../../assets/Video_fill.svg?react';
 const Card = styled.div`
   /* 크기   */
   box-sizing: border-box;
-  width: 24.875rem;
+  width: 25rem;
   height: 31rem;
   padding: 1rem 0.25rem;
 

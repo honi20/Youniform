@@ -23,12 +23,7 @@ const Head = styled.div`
 `
 const Header = () => {
   return (
-    <>
     <Head>Youniform</Head>
-    <div>
-      Header
-    </div>
-    </>
   )
 }
 

@@ -10,7 +10,10 @@ import styled from 'styled-components';
 import LoginView from './pages/LoginView';
 import FindEmailView from './pages/FindEmailView';
 import FindPasswordView from './pages/FindPasswordView';
-
+import DiaryDetailView from './pages/DiaryDetailView';
+import WriteDiaryView
+ from './pages/WriteDiaryView';
+ 
 const AppContainer = styled.div`
   background-color: #F8F8F8;
   height: 100vh; /* 화면 전체 높이 */
@@ -30,6 +33,8 @@ function App() {
           <Route path="/my-page" element={<MyPageView />} />
           <Route path="/find-email" element={<FindEmailView />} />
           <Route path="/find-password" element={<FindPasswordView />} />
+          <Route path="/diary-detail" element={<DiaryDetailView />} />
+          <Route path="/write-diary" element={<WriteDiaryView />} />
         </Routes>
         <NavBar />
       </AppContainer>
