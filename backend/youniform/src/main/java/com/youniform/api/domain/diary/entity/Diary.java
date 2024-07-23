@@ -26,5 +26,6 @@ public class Diary {
 
     private LocalDate diaryDate;
 
+    @Enumerated(EnumType.STRING)
     private Scope scope;
 }
