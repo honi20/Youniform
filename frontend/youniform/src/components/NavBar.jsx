@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Nav = styled.nav`
-  background: #D9D9D9;
-  position: fixed;
-  bottom: 0;
-
-  width: 100%;
-  height: 50px;
-  display: flex;
+    background: #D9D9D9;
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    height: 50px;
+    display: flex;
 
   justify-content: space-between;
   align-items: center;
