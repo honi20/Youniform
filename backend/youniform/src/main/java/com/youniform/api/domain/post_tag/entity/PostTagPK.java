@@ -12,8 +12,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostTagPK implements Serializable {
-    private Long postTagId;
-
     private Long tagId;
 
     private Long postId;

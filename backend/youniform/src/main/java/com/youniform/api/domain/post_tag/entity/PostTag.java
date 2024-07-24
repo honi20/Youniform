@@ -17,11 +17,6 @@ public class PostTag {
     @EmbeddedId
     private PostTagPK postTagPK;
 
-    @MapsId("postTagId")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_tag_id")
-    private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("postId")
     @JoinColumn(name = "post_id")
