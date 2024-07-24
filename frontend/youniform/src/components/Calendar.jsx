@@ -4,24 +4,25 @@ import { format, addMonths, subMonths, setYear } from 'date-fns';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 import { isSameMonth, isSameDay, addDays } from 'date-fns';
 
+import * as fabric from "fabric"; 
+
 // icon components
 import SvgIcon from "@mui/material/SvgIcon";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const CalendarBox = styled.div`
-  width: 90%;
-  height: 500px;
+  width: 100%;
+  height: 100%;
   border: 1px solid blue;
   margin: 0 auto;
-  margin-top: 50px;
+  background-color: #F8F8F8;
 `;
 
 const MonthRow = styled.div`
   display: flex;
   width: 100%;
   height: 10%;
-  border: 1px solid red;
   justify-content: space-between;
   align-items: center;
 `;
