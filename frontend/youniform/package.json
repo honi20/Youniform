@@ -19,7 +19,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "date-fns": "^3.6.0",
-    "fabric": "^6.0.2",
+    "fabric": "^5.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-lite-month-picker": "^1.2.18",

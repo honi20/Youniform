@@ -2,22 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import ExpandDownIcon from '../../assets/Expand_down.svg?react';
 
-const Canvas = styled.div`
-    width: 90%;
-    height: 85vh;
-    flex-shrink: 0;
-    border: 1px solid black;
-    background-color: white;
-    /* position: relative; */
-`
 const DecorationContainer = styled.div`
-    width: 27rem;
-    height: 20rem;
+    width: 95%;
+    height: 30%;
     position: absolute; 
     box-sizing: border-box;
-
-    bottom: ${props => (props.$expanded ? '0' : '50px')};
-    padding: 5px;
+    bottom: 50px;
+    /* bottom: ${props => (props.$expanded ? '0' : '50px')}; */
+    /* padding: 5px; */
     left: 50%;
     transform: translateX(-50%);
 
@@ -26,13 +18,14 @@ const DecorationContainer = styled.div`
 const DecorationPanel = styled.div`
     display: ${props => (props.$expanded ? 'block' : 'none')};
     width: 100%;
-    margin-top: 1rem;
+    /* margin-top: 1rem; */
 
     display: flex;
-    flex-direction: column;
-    justify-content: ${props => (props.$expanded ? 'flex-start' : 'flex-end')}; /* Align items to top or bottom */
-    transition: flex-direction 0.3s ease-in-out;
+    /* flex-direction: column; */
+    /* justify-content: ${props => (props.$expanded ? 'flex-start' : 'flex-end')}; Align items to top or bottom */
+    /* transition: flex-direction 0.3s ease-in-out; */
 `
+
 const ToggleBtn = styled.button`
     width: 2rem;
     height: 2rem;
@@ -44,10 +37,9 @@ const ToggleBtn = styled.button`
     
     z-index: 3;
     cursor: pointer;
-    right: 0;
-    position: ${props => (props.$expanded ? 'absolute' : 'relative')}; 
-    top: ${props => (props.$expanded ? '0' : 'auto')}; 
-
+    right: 1%;
+    /* bottom: 50px; */
+    bottom: ${props => props.$bottom};
 `
 const StyledExpandDownIcon = styled(ExpandDownIcon)`
     width: 1rem;
@@ -87,15 +79,15 @@ const DecorationBtn = styled.button`
 `
 const DecorationMenu = styled.div`
     width: 100%;
-    height: 70%;
+    height: 80%;
     flex-shrink: 0;
-    
+    box-sizing: border-box;
     border-radius: 0rem 1.25rem 1.25rem 1.25rem;
     border: 2px solid #000;
     background: #ECF3F8;
     position: relative;
-    top: -2.5px; /* 테두리 제거와 위치 맞추기 위한 조정 */
+    top: -3px; /* 테두리 제거와 위치 맞추기 위한 조정 */
     display: ${props => (props.$expanded ? 'block' : 'none')}; /* visibility 토글 */
 `
 
-export { Canvas, DecorationContainer, DecorationPanel, ToggleBtn, DecorationBtn, DecorationMenu, StyledExpandDownIcon, DecorationBtnContainer }
+export { DecorationContainer, DecorationPanel, ToggleBtn, DecorationBtn, DecorationMenu, StyledExpandDownIcon, DecorationBtnContainer }
