@@ -9,17 +9,10 @@ const Head = styled.div`
     height: 50px;
     display: flex;
     padding: 0px 5px;
-    /* border: solid 0.5px; */
 
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
-    /* > div {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    } */
 `
 const Header = () => {
   return (

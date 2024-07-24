@@ -4,8 +4,8 @@ import defaultImg from '../../assets/testImg.jpg'
 const Diary = styled.div`
     // layout
     box-sizing: border-box;
-    width: 25rem;
-    height: 40rem;
+    width: 90%;
+    height: 90%;
     flex-shrink: 0;
     position: relative;
     display: flex;

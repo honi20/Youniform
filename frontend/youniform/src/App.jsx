@@ -16,7 +16,7 @@ import WriteDiaryView
  
 const AppContainer = styled.div`
   background-color: #F8F8F8;
-  height: 100vh; /* 화면 전체 높이 */
+  /* height: 100vh; 화면 전체 높이 */
 `;
 
 function App() {

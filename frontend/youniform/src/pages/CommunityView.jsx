@@ -6,8 +6,11 @@ const Div = styled.div`
     flex-shrink: 0;
     display: flex;
     justify-content: center;
-    margin-top: 40px;
     width: 100%;
+    height: 100vh;
+    padding: 50px;
+    /* background-color: red; */
+    /* position: relative; */
 `
 
 const CommunityView = () => {
