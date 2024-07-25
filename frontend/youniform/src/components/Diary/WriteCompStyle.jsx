@@ -2,44 +2,59 @@ import React from 'react';
 import styled from 'styled-components';
 import ExpandDownIcon from '../../assets/Expand_down.svg?react';
 
-const DecorationContainer = styled.div`
-    width: 95%;
-    height: 30%;
-    position: absolute; 
-    box-sizing: border-box;
-    bottom: 50px;
-    /* bottom: ${props => (props.$expanded ? '0' : '50px')}; */
-    /* padding: 5px; */
-    left: 50%;
-    transform: translateX(-50%);
-
-    z-index: 1; /* Canvas 위에 위치하도록 설정 */
-`
-const DecorationPanel = styled.div`
-    display: ${props => (props.$expanded ? 'block' : 'none')};
-    width: 100%;
-    /* margin-top: 1rem; */
-
+const SaveBtn = styled.div`
+    position: absolute;
+    z-index: 3;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid lightblue;
+    right: 4%;
+    margin-top: 1px;
     display: flex;
-    /* flex-direction: column; */
-    /* justify-content: ${props => (props.$expanded ? 'flex-start' : 'flex-end')}; Align items to top or bottom */
-    /* transition: flex-direction 0.3s ease-in-out; */
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+`
+const BtnContainer = styled.div`
+    display: ${props => (props.$decorated ? 'none' : 'flex')};
+    justify-content: space-between;
+    height: 4rem;
+    border: 1px solid blue;
+`
+const Btn = styled.div`
+    display: ${props => (props.$decorated ? 'none' : 'flex')};
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    border: 1px solid lightblue;
+    cursor: pointer;
 `
 
-const ToggleBtn = styled.button`
+const CloseBtn = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 2rem;
     height: 2rem;
-
-    position: absolute;
+    flex-shrink: 0;
     border-radius: 0.625rem;
     border: 2px solid #000;
     background: #ACC0E2;
-    
-    z-index: 3;
     cursor: pointer;
-    right: 1%;
-    /* bottom: 50px; */
-    bottom: ${props => props.$bottom};
+    box-sizing: border-box;
+`
+const DecorationContainer = styled.div`
+    width: 90%;
+    height: 28%;
+    box-sizing: border-box;
+    border: 1px solid red;
+`
+const DecorationPanel = styled.div`
+    display: ${props => (props.$decorated ? 'block' : 'none')};
+    width: 100%;
+    display: flex;
 `
 const StyledExpandDownIcon = styled(ExpandDownIcon)`
     width: 1rem;
@@ -47,18 +62,17 @@ const StyledExpandDownIcon = styled(ExpandDownIcon)`
     fill: black;
 `
 const DecorationBtnContainer = styled.div`
-    display: ${props => (props.$expanded ? 'block' : 'none')};
+    display: ${props => (props.$decorated ? 'flex' : 'none')};
     width: 100%;
+    justify-content: space-between;
 `
 const DecorationBtn = styled.button`
-    /* border: 1px solid black; */
-    width: 16%;
+    width: 18%;
     height: 2.5rem;
     flex-shrink: 0;
     box-sizing: border-box;
     
     // style
-    /* border: none; */
     border-radius: 0.625rem 0.625rem 0rem 0rem;
     border-top: 2px solid #000;
     border-right: 2px solid #000;
@@ -87,7 +101,42 @@ const DecorationMenu = styled.div`
     background: #ECF3F8;
     position: relative;
     top: -3px; /* 테두리 제거와 위치 맞추기 위한 조정 */
-    display: ${props => (props.$expanded ? 'block' : 'none')}; /* visibility 토글 */
+    display: ${props => (props.$decorated ? 'block' : 'none')}; /* visibility 토글 */
+`
+const InitializationBtn = styled.button`
+    // layout
+    width: 10rem;
+    height: 2.5rem;
+    position: relative;
+    flex-shrink: 0;
+    display: ${props => (props.$decorated ? 'none' : 'block')};
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%);
+
+    // style
+    border-radius: 0.625rem;
+    border: 1.5px solid black;
+    background: #e3e3e3;
+
+    // typo
+    color: #000;
+    font-family: 'DungGeunMo';
+    font-size: clamp(0.5rem, 2vh + 0.1rem, 1.0rem);
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.0625rem;
 `
 
-export { DecorationContainer, DecorationPanel, ToggleBtn, DecorationBtn, DecorationMenu, StyledExpandDownIcon, DecorationBtnContainer }
+const IconFont = styled.div`
+    color: #ACC0E2;
+    font-family: 'DungGeunMo';
+    font-size: 0.9375rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.01031rem;
+    /* margin-top: 0.5rem; */
+`
+export { IconFont, CloseBtn, BtnContainer, InitializationBtn, DecorationContainer, DecorationPanel, DecorationBtn, DecorationMenu, StyledExpandDownIcon, DecorationBtnContainer, Btn, SaveBtn }

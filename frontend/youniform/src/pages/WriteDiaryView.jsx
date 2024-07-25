@@ -1,58 +1,186 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
-import { DecorationContainer, DecorationPanel, ToggleBtn, DecorationBtn, DecorationMenu, DecorationBtnContainer } from '../components/Diary/WriteCompStyle';
+import { SaveBtn, IconFont, Btn, CloseBtn, DecorationContainer, DecorationPanel, DecorationBtn, DecorationMenu, DecorationBtnContainer, BtnContainer } from '../components/Diary/WriteCompStyle';
 import WallPaperComp from '../components/Diary/WallPaperComp';
-import wallpaper1 from '../assets/wallpaper(1).png';
-import wallpaper2 from '../assets/wallpaper(2).png';
-import wallpaper3 from '../assets/wallpaper(3).png';
 import { fabric } from "fabric";
+import StickerComp from '../components/Diary/StickerComp';
+import { wallpapers, stickers, fonts } from '../assets';
+import FontComp from '../components/Diary/FontComp';
+import DecoIcon from '../assets/DecoIcon.svg?react'; 
+import ExampleIcon from '../assets/ExIcon.svg?react'; 
+import DownloadIcon from '../assets/Img_out-box_Fill.svg?react';
+import InitializeIcon from '../assets/Refresh.svg?react';
+import SaveIcon from '../assets/Save_fill.svg?react';
+import ExpandIcon from '../assets/Expand_down.svg?react';
+import ModalComp from '../components/Diary/ModalComp';
 
 const Div = styled.div`
     flex-shrink: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     height: 100vh;
-    padding-top: 50px;
 `
-const CanvasContainer = styled.canvas`
-    margin-top: 5px;
+const CanvasContainer = styled.div`
+    margin-top: 50px;
+    width: 100%;
+    height: 60%;
+    border: 1px solid black;
     flex-shrink: 0;
     display: flex;
     justify-content: center;
-    border: 1px solid black;
-    width: 400px;
-    height: 600px;
+`
+const IconContainer = styled.div`
+    height: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `
 const WriteDiaryView = () => {
-    const [isExpanded, setIsExpanded] = useState(false);
     const [selectedBtn, setSelectedBtn] = useState(0);
     const [selectCanvas, setSelectCanvas] = useState(null);
-    const canvasRef = useRef(0);
+    const [isDecorated, setIsDecorated] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     const handleBtnClick = (index) => {
         setSelectedBtn(index);
     };
 
-    const handleImageClick = async (img) => {
-        console.log(img)
+    const handleImageClick = async (selectedImg) => {
+        console.log(selectedImg)
         if (selectCanvas) {
-            console.log(selectCanvas.backgroundImage);
-            selectCanvas.setBackgroundImage(img, selectCanvas.renderAll.bind(selectCanvas));
+            fabric.Image.fromURL(selectedImg, (img) => {
+                img.scaleToWidth(selectCanvas.getWidth());
+                img.set({
+                    originX: 'center',
+                    originY: 'center',
+                    left: selectCanvas.getWidth() / 2,
+                    top: selectCanvas.getHeight() / 2,
+                });
+                selectCanvas.setBackgroundImage(img, selectCanvas.renderAll.bind(selectCanvas));
+            });
         }
     };
-    const imageUrls = [
-        wallpaper1,
-        wallpaper2,
-        wallpaper3,
-    ];
+    
+    const handleStickerClick = async (selectedSticker) => {
+        console.log(selectedSticker);
+        if (selectCanvas) {
+            fabric.Image.fromURL(selectedSticker, (img) => {
+                img.scaleToHeight(100);
+                img.set({
+                    left: selectCanvas.getWidth() / 2,
+                    top: selectCanvas.getHeight() / 2,
+                    originX: 'center',
+                    originY: 'center',
+                });
+                selectCanvas.add(img);
+                selectCanvas.renderAll();
 
+            });
+        }
+    };
+    
+    const handleFontClick = async (selectedFont) => {
+        const getFontName = (path) => {
+            const parts = path.split('/');
+            const fileName = parts[parts.length - 1];
+            return fileName.split('.')[0];
+        }
+        if (selectCanvas) {
+            console.log(selectedFont)
+            const text = new fabric.Textbox('입력하세요.', {
+                left: selectCanvas.getWidth() / 2,
+                top: selectCanvas.getHeight() / 2,
+                fontSize: 30,
+                originX: 'center',
+                originY: 'center',
+                fontFamily: getFontName(selectedFont), // 선택한 폰트 적용
+                fill: '#000000'
+            });
+    
+            selectCanvas.add(text);
+            selectCanvas.renderAll();
+        }
+    }
+
+    const renderContent = () => {
+        switch (selectedBtn) {
+            case 0:
+                return (
+                    <WallPaperComp 
+                        wallpapers={Object.values(wallpapers).map(mod => mod.default)}
+                        onImageClick={handleImageClick} />
+                )
+            case 1:
+                return (
+                    <StickerComp 
+                        stickers={Object.values(stickers).map(mod => mod.default)}
+                        onImageClick={handleStickerClick}
+                    />
+                )
+            case 2:
+                return (
+                    <FontComp
+                        fonts={Object.values(fonts).map(mod => mod.default)}
+                        onFontClick={handleFontClick}
+                    />
+                )
+            case 3:
+                return <div>테마</div>; // 테마 컴포지션
+            case 4:
+                return <div>사진</div>; // 사진 컴포지션
+            default:
+                return (
+                    <WallPaperComp 
+                        wallpapers={imageUrls}
+                        onImageClick={handleImageClick} />
+                )
+        }
+    }
+
+    const handleResetClick = () => {
+        if (selectCanvas) {
+            selectCanvas.clear();
+            selectCanvas.setBackgroundColor('white', selectCanvas.renderAll.bind(selectCanvas));
+        }
+    };
+
+    const saveCanvas = () => {
+        if (selectCanvas) {
+            const json = selectCanvas.toJSON();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "canvas.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+    }
+    const showExample = () => {
+        console.log('test')
+        // return 
+    }
+    const downloadCanvas = () => {
+        if (selectCanvas) {
+            const dataURL = selectCanvas.toDataURL({ format: 'png' });
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'canvas.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
     useEffect(() => {
-        // 랜더링할때 canvas 유무 확인
         const initCanvas = new fabric.Canvas("canvas", {
-            height: 600,
+            height: 550,
             width: 400,
-            backgroundImage: wallpaper3,
+            backgroundColor: 'white',
         });
         setSelectCanvas(initCanvas);
         return () => {
@@ -62,32 +190,67 @@ const WriteDiaryView = () => {
 
     return (
         <Div>
-            <canvas id="canvas"></canvas>
-            <ToggleBtn onClick={() => setIsExpanded(!isExpanded)}>
-                {isExpanded ? 'Hide' : 'Show'}
-            </ToggleBtn>
+            <SaveBtn onClick={saveCanvas}>
+                <IconContainer>
+                    <SaveIcon/>
+                </IconContainer>
+                <IconFont>저장</IconFont>
+            </SaveBtn>
+            <CanvasContainer>
+                <canvas id="canvas"></canvas>
+            </CanvasContainer>
             <DecorationContainer>
-                <DecorationPanel $expanded={isExpanded}>
-                    <DecorationBtnContainer $expanded={isExpanded}>
-                    {[ '배경', '스티커', '폰트', '테마', '사진' ].map((text, index) => (
-                        <DecorationBtn
-                            key={index}
-                            $selected={selectedBtn === index} // 현재 선택된 버튼인지 여부를 prop으로 전달
-                            onClick={() => handleBtnClick(index)}
-                        >
-                            {text}
-                        </DecorationBtn>
-                    ))}
+                <BtnContainer $decorated={isDecorated}>
+                    <div style={{ display: 'flex' }}>
+                        <Btn $decorated={isDecorated} onClick={() => setIsDecorated(!isDecorated)}>
+                            <IconContainer>
+                                <DecoIcon/>
+                            </IconContainer>
+                            <IconFont>꾸미기</IconFont>
+                        </Btn>
+                        <Btn $decorated={isDecorated} onClick={openModal}>
+                            <IconContainer>                             
+                                <ExampleIcon/>
+                            </IconContainer>
+                            <IconFont>예시</IconFont>
+                        </Btn>
+                        <Btn $decorated={isDecorated} onClick={downloadCanvas}>
+                            <IconContainer>                             
+                                <DownloadIcon/>
+                            </IconContainer>
+                            <IconFont>다운로드</IconFont>
+                        </Btn>
+                    </div>
+                    <Btn  $decorated={isDecorated} onClick={handleResetClick}>
+                        <IconContainer>                             
+                                <InitializeIcon/>
+                        </IconContainer>
+                        <IconFont>초기화</IconFont>
+                    </Btn>
+                </BtnContainer>
+                <DecorationPanel $decorated={isDecorated}>
+                    <DecorationBtnContainer $decorated={isDecorated}>
+                        <div style={{ display: 'flex', width: '100%' }}>
+                        {[ '배경', '스티커', '폰트', '테마', '사진' ].map((text, index) => (
+                            <DecorationBtn
+                                key={index}
+                                $selected={selectedBtn === index} // 현재 선택된 버튼인지 여부를 prop으로 전달
+                                onClick={() => handleBtnClick(index)}
+                            >
+                                {text}
+                            </DecorationBtn>
+                        ))}
+                        </div>
+                        <CloseBtn onClick={() => setIsDecorated(!isDecorated)}>
+                            <ExpandIcon/>
+                        </CloseBtn>
                     </DecorationBtnContainer>
                 </DecorationPanel>
-                <DecorationMenu $expanded={isExpanded}>
-                    {/* // 배경 및 스티커 박스 어떤 걸 선택했는지에 따라서.... */}
-                    <WallPaperComp 
-                        wallpapers={imageUrls}
-                        onImageClick={handleImageClick} />
+                <DecorationMenu $decorated={isDecorated}>
+                    {renderContent()}
                 </DecorationMenu>
             </DecorationContainer>
-            
+            <ModalComp isOpen={isModalOpen} onClose={closeModal}/>
         </Div>
       )
 }
