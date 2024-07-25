@@ -1,6 +1,11 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { Icon, SvgIcon } from '@mui/material';
+
+import { styled as muiStyled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import CommunityIcon from '../assets/NavBar/community.svg?react';
 import DiaryIcon from '../assets/NavBar/diary.svg?react';
@@ -44,7 +49,18 @@ const StyledLink = styled(Link)`
   }
 `;
 
+const CustomBtn = muiStyled(IconButton)(() => ({
+  color: "#FF506F",
+}));
+
 const NavBar = () => {
+  const location = useLocation();
+  const [currentPath, setCurrentPath] = useState(location.pathname);
+
+  useEffect(() => {
+    setCurrentPath(location.pathname);
+  }, [location.pathname]);
+
   return (
     <Nav>
       <LinkDiv>
@@ -60,10 +76,18 @@ const NavBar = () => {
         </StyledLink>
       </LinkDiv>
       <LinkDiv>
+        {currentPath === '/diary' ? (
+          <StyledLink to="/write-diary">
+            <CustomBtn>
+              <AddCircleIcon />
+            </CustomBtn>
+          </StyledLink>
+        ) : (
         <StyledLink to="/diary">
           <DiaryIcon />
           <p>다이어리</p>
         </StyledLink>
+        )}
       </LinkDiv>
       <LinkDiv>
         <StyledLink to="/community">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { format, addMonths, addYears, subYears, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays } from 'date-fns';
 
@@ -32,7 +33,6 @@ const MonthRow = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-
 
 const DaysRow = styled.div`
   display: grid;
@@ -95,7 +95,7 @@ const Cell = styled.div`
   }
 
   &.selected {
-    color: red;
+    color: #FF4D6C;
   }
 
   &.not-valid {
@@ -237,6 +237,7 @@ const RenderDays = () => {
 };
 
 const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
+  const navigate = useNavigate();
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -261,6 +262,15 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
     return null;
   };
 
+  const handleDateClick = (day, stickerSrc) => {
+    const cloneDay = new Date(day);
+    if (!stickerSrc) {
+      navigate('/write-diary');
+    } else {
+      onDateClick(cloneDay);
+    }
+  };
+
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, 'd');
@@ -279,7 +289,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
               : 'valid'
           }`}
           key={day}
-          onClick={() => onDateClick(cloneDay)}
+          onClick={() => handleDateClick(cloneDay, stickerSrc)}
         >
           <p
             className={

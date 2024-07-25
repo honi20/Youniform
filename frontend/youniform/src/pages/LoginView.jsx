@@ -19,7 +19,7 @@ const VerticalBar = styled.div`
 `
 
 const LoginView = () => {
-  const ColorBtn = muiStyled(Button)(({ theme}) => ({
+  const ColorBtn = muiStyled(Button)(() => ({
     backgroundColor: "rgb(124, 124, 124)",
     '&:hover': {
     backgroundColor: "rgb(1, 1, 1)",
