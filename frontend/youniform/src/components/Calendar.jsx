@@ -1,44 +1,141 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { format, addMonths, subMonths, setYear } from 'date-fns';
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
-import { isSameMonth, isSameDay, addDays } from 'date-fns';
-
-import * as fabric from "fabric"; 
+import { format, addMonths, addYears, subYears, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays } from 'date-fns';
 
 // icon components
 import SvgIcon from "@mui/material/SvgIcon";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-const CalendarBox = styled.div`
+// 추후 삭제
+import Sticker1 from '../assets/Test/Sticker/sticker_1.png'
+import Sticker2 from '../assets/Test/Sticker/sticker_2.png'
+import Sticker3 from '../assets/Test/Sticker/sticker_3.png'
+import Sticker4 from '../assets/Test/Sticker/sticker_4.png'
+import Sticker5 from '../assets/Test/Sticker/sticker_5.png'
+import Sticker6 from '../assets/Test/Sticker/sticker_6.png'
+import Sticker7 from '../assets/Test/Sticker/sticker_7.png'
+import Sticker8 from '../assets/Test/Sticker/sticker_8.png'
+import Sticker9 from '../assets/Test/Sticker/sticker_9.png'
+import Sticker10 from '../assets/Test/Sticker/sticker_10.png'
+
+// 더미 데이터
+const userCalInfo = [
+  {
+    id: 1,
+    stickers: [
+      { date: '2024-07-04', stickerSrc: Sticker4 },
+      { date: '2024-07-06', stickerSrc: Sticker1 },
+      { date: '2024-07-13', stickerSrc: Sticker2 },
+      { date: '2024-07-16', stickerSrc: Sticker6 },
+      { date: '2024-07-18', stickerSrc: Sticker8 },
+      { date: '2024-07-27', stickerSrc: Sticker9 },
+      { date: '2024-07-28', stickerSrc: Sticker10 },
+    ],
+  },
+  {
+    id: 2,
+    stickers: [
+      { date: '2024-07-01', stickerSrc: Sticker3 },
+      { date: '2024-07-02', stickerSrc: Sticker4 },
+      { date: '2024-07-06', stickerSrc: Sticker5 },
+      { date: '2024-07-09', stickerSrc: Sticker6 },
+      { date: '2024-07-15', stickerSrc: Sticker7 },
+    ],
+  },
+  {
+    id: 3,
+    stickers: [
+      { date: '2024-07-11', stickerSrc: Sticker2 },
+      { date: '2024-07-20', stickerSrc: Sticker1 },
+    ],
+  },
+  {
+    id: 4,
+    stickers: [
+      { date: '2024-07-02', stickerSrc: Sticker1 },
+      { date: '2024-07-03', stickerSrc: Sticker2 },
+      { date: '2024-07-13', stickerSrc: Sticker3 },
+      { date: '2024-07-17', stickerSrc: Sticker4 },
+      { date: '2024-07-18', stickerSrc: Sticker5 },
+      { date: '2024-07-23', stickerSrc: Sticker6 },
+      { date: '2024-07-28', stickerSrc: Sticker7 },
+    ],
+  },
+  {
+    id: 5,
+    stickers: [
+      { date: '2024-07-06', stickerSrc: Sticker9 },
+      { date: '2024-07-16', stickerSrc: Sticker10 },
+      { date: '2024-07-21', stickerSrc: Sticker2 },
+      { date: '2024-07-29', stickerSrc: Sticker1 },
+    ],
+  },
+  {
+    id: 6,
+    stickers: [
+      { date: '2024-07-18', stickerSrc: Sticker4 },
+      { date: '2024-07-28', stickerSrc: Sticker1 },
+      { date: '2024-07-30', stickerSrc: Sticker3 },
+    ],
+  },
+];
+
+const CalendarContainer = styled.div`
   width: 100%;
   height: 100%;
-  border: 1px solid blue;
   margin: 0 auto;
-  background-color: #F8F8F8;
+  background-color: #F9F9F9;
+  padding: 10px;
+`;
+
+const CalendarBox = styled.div`
+  height: 100%;
+  margin: 0 auto;
+  border: 2px solid #787878;
+  border-radius: 15px;
+  background-color: white;
+  overflow: hidden;
 `;
 
 const MonthRow = styled.div`
   display: flex;
-  width: 100%;
-  height: 10%;
+  width: 90%;
+  height: 8%;
+  margin: 0 auto;
   justify-content: space-between;
   align-items: center;
 `;
 
+
 const DaysRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  width: 90%;
-  margin: 0 auto;
-  justify-content: space-between;
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+width: 100%;
+height: 8%;
+margin: 0 auto;
+justify-content: space-between;
+border-top: 2px solid #787878;
+border-bottom: 2px solid #787878;
+align-items: center;
 `;
 
+const IconArea = styled.div`
+  display: flex;
+  gap: 5px;
+`;
+
+const CircleIcon = styled.div`
+  width: 15px;
+  height: 15px;
+  background-color: #FFEAEE;
+  border: 1.5px solid #787878;
+  border-radius: 50%;
+`;
 const DayColumn = styled.div`
   text-align: center;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 800;
 `;
 
 const SelectBox = styled.div`
@@ -50,14 +147,15 @@ const SelectBox = styled.div`
 const CellsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  width: 90%;
+  width: 100%;
+  height: 84%;
   margin: 0 auto;
   justify-content: space-between;
 `;
 
 const Cell = styled.div`
   border: 1px solid #ddd;
-  height: 60px;
+  height: 100%;
   display: flex;
   padding: 5px;
   font-size: 12px;
@@ -66,6 +164,7 @@ const Cell = styled.div`
   
   &.disabled {
     background-color: #f0f0f0;
+    pointer-events : none;
   }
 
   &.selected {
@@ -108,7 +207,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSelect }) => {
+const RenderMonth = ({ curMonth, prevMonth, nextMonth, prevYear, nextYear, onYearSelect, onMonthSelect }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -116,20 +215,27 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSele
     setShowDropdown(!showDropdown);
   };
 
-  const handleYearSelect = (year) => {
-    onYearSelect(year);
-    setShowDropdown(false);
+  const handleYearChange = (direction) => {
+    if (direction === 'prev') {
+      onYearSelect(subYears(curMonth, 1));
+    } else if (direction === 'next') {
+      onYearSelect(addYears(curMonth, 1));
+    }
   };
 
   const handleMonthSelect = (month) => {
     onMonthSelect(month);
-    setShowDropdown(false);
+    setShowDropdown(false); // MonthGrid 클릭 시 드롭다운 닫기
   };
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setShowDropdown(false);
     }
+  };
+
+  const handleDropdownClick = (event) => {
+    event.stopPropagation(); // Prevent click from closing the dropdown
   };
 
   useEffect(() => {
@@ -151,8 +257,12 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSele
 
   return (
     <MonthRow>
-      <div>●●●</div>
-      <div onClick={prevMonth}>◀</div>
+      <IconArea>
+        <CircleIcon/>
+        <CircleIcon/>
+        <CircleIcon/>
+      </IconArea>
+      <div onClick={() => prevMonth()}>◀</div>
       <SelectBox onClick={toggleDropdown}>
         <span className="text">
           <span className='text year'>
@@ -163,11 +273,11 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSele
           </span>
         </span>
         {showDropdown && (
-          <Dropdown ref={dropdownRef}>
+          <Dropdown ref={dropdownRef} onClick={handleDropdownClick}>
             <div>
-              <SvgIcon component={KeyboardArrowLeftIcon} />
+              <SvgIcon onClick={() => handleYearChange('prev')} component={KeyboardArrowLeftIcon} />
               <span>{format(curMonth, 'yyyy')}</span>
-              <SvgIcon component={KeyboardArrowRightIcon} />
+              <SvgIcon onClick={() => handleYearChange('next')} component={KeyboardArrowRightIcon} />
             </div>
             <MonthGrid>
               {koMonths.map((month, index) => (
@@ -179,7 +289,7 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSele
           </Dropdown>
         )}
       </SelectBox>
-      <div onClick={nextMonth}>▶</div>
+      <div onClick={() => nextMonth()}>▶</div>
     </MonthRow>
   );
 };
@@ -199,7 +309,7 @@ const RenderDays = () => {
   return <DaysRow>{days}</DaysRow>;
 };
 
-const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
+const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -210,9 +320,22 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
   let day = startDate;
   let formattedDate = '';
 
+  const getStickerSrcForDate = (date) => {
+    for (const user of stickers) {
+      const sticker = user.stickers.find(sticker => sticker.date === formattedDate);
+      if (sticker) {
+        console.log(formattedDate);
+        return sticker.stickerSrc;
+      }
+    }
+    return null;
+  };
+
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, 'd');
+      const stickerSrc = getStickerSrcForDate(day);
+
       const cloneDay = new Date(day);
       days.push(
         <Cell
@@ -237,6 +360,21 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
           >
             {formattedDate}
           </span>
+          {stickerSrc && (
+            <img
+              src={stickerSrc}
+              alt="sticker"
+              style={{
+                position: 'absolute',
+                bottom: '5px',
+                right: '5px',
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                zIndex: 10
+              }}
+            />
+          )}
         </Cell>
       );
       day = addDays(day, 1);
@@ -247,9 +385,11 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
   return <CellsContainer>{rows}</CellsContainer>;
 };
 
-const Calendar = () => {
+
+const Calendar = ({ user }) => {
   const [curMonth, setCurMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedUser, setSelectedUser] = useState(0);
 
   const prevMonth = () => {
     setCurMonth(subMonths(curMonth, 1));
@@ -259,41 +399,39 @@ const Calendar = () => {
     setCurMonth(addMonths(curMonth, 1));
   };
 
-  const prevYear = () => {
-    setCurMonth(setYear(curMonth, curMonth.getFullYear() - 1));
-  };
-
-  const nextYear = () => {
-    setCurMonth(setYear(curMonth, curMonth.getFullYear() + 1));
-  };
-
-  const onDateClick = (day) => {
-    setSelectedDate(day);
+  const handleYearSelect = (newDate) => {
+    setCurMonth(new Date(newDate.getFullYear(), curMonth.getMonth()));
   };
 
   const handleMonthSelect = (month) => {
     setCurMonth(new Date(curMonth.getFullYear(), month - 1));
   };
 
+  const onDateClick = (day) => {
+    setSelectedDate(day);
+  };
+
   return (
-    <>
+    <CalendarContainer>
       <CalendarBox>
         <RenderMonth
           curMonth={curMonth}
           prevMonth={prevMonth}
           nextMonth={nextMonth}
+          prevYear={() => handleYearSelect(subYears(curMonth, 1))}
+          nextYear={() => handleYearSelect(addYears(curMonth, 1))}
+          onYearSelect={handleYearSelect}
           onMonthSelect={handleMonthSelect}
         />
         <RenderDays />
-        <div className='test'>
-          <RenderCells
-            currentMonth={curMonth}
-            selectedDate={selectedDate}
-            onDateClick={onDateClick}
-          />
-        </div>
+        <RenderCells
+          currentMonth={curMonth}
+          selectedDate={selectedDate}
+          onDateClick={onDateClick}
+          stickers={userCalInfo}
+        />
       </CalendarBox>
-    </>
+    </CalendarContainer>
   );
 };
 
