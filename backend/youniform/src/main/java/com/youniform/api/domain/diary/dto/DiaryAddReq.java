@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DiaryAddReq {
     @NotNull
-    private DiaryContentDto content;
+    private DiaryContentDto contents;
 
     @NotNull
     private String scope;

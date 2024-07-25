@@ -8,22 +8,21 @@ import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.statuscode.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/diary")
+@RequestMapping("/diaries")
 @RequiredArgsConstructor
 public class DiaryController {
     @PostMapping
-    public ResponseDto<?> diaryAdd(@RequestBody @Valid DiaryAddReq diaryAddReq,
-                                   @RequestPart List<MultipartFile> imageFiles) {
-        DiaryAddRes response = new DiaryAddRes();
-        return ResponseDto.success(SuccessCode.CREATED, response);
+    public ResponseEntity<?> diaryAdd(@RequestBody @Valid DiaryAddReq diaryAddReq) {
+        DiaryAddRes response = new DiaryAddRes(1L);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.success(SuccessCode.CREATED, response));
     }
 
     @GetMapping("/{diaryId}")
