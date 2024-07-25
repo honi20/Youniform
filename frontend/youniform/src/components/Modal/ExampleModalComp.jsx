@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ExampleDiary from '../../assets/CardExample.png';
 import XIcon from '../../assets/x.svg?react';
@@ -41,15 +41,6 @@ const CloseButton = styled.button`
     justify-content: center;
     align-items: center;
 `;
-
-// const OpenButton = styled.button`
-//     background: blue;
-//     color: white;
-//     border: none;
-//     padding: 10px;
-//     border-radius: 5px;
-//     cursor: pointer;
-// `;
 
 const ImageContainer = styled.img`
     height: 60%;

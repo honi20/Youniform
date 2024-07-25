@@ -1,13 +1,30 @@
 import React, { useState } from 'react';
-import { Diary, DiaryHeader, Btn, WriteBtnContainer, EditBtnContainer, BtnGroup,
-    Profile, HeaderText, Header } from './DiaryCompStyle';
+import { Diary, DiaryHeader, Btn, BtnGroup,
+    Profile, HeaderText, TextContainer, 
+    DiaryImageContainer, DiaryImage, DiaryText, DiaryTags, DiaryDate,
+    DiaryContent, DiaryLine, DiaryFooter,  } from './DiaryCompStyle';
+import ChatIcon from '../../assets/Chat.svg?react';
+import FavoriteIcon from '../../assets/FavoriteLight.svg?react';
+import BellIcon from '../../assets/Bell.svg?react';
+import styled from 'styled-components';
 
-// router에 따라서 BTN CONTAINER 변경할 예정
+// data 임의로 만듦
 
-const DiaryComp = ({ profileData, state }) => {
+const Icon = styled.div`
+    margin: 0 10px;
+    border: 1px solid black;
+`
+const DiaryComp = ({ data, state }) => {
     const [mode, setMode] = useState(state || 'write');
-
-    const { imageUrl, nickname, date } = profileData;
+    const [comment, setComment] = useState(0);
+    const {
+        profileUrl,
+        nickname,
+        date,
+        imageUrl,
+        content,
+        tags
+    } = data;
 
     // date form 변경해주는 함수
     function formatDate(dateString) {
@@ -15,43 +32,53 @@ const DiaryComp = ({ profileData, state }) => {
         const date = new Date(dateString);
         
         const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
         
-        return `${year}년 ${month}월 ${day}일`;
+        return `${year}-${month}-${day}`;
     }
     
     const formattedDate = formatDate(date);
-    
+
     return (
         <Diary>
             <DiaryHeader>
-                <Profile $imageUrl={imageUrl} />
-                <Header>
+                <Profile $profileUrl={profileUrl} />
+                <TextContainer>
                     <HeaderText>{nickname}</HeaderText>
-                    <HeaderText>{formattedDate}</HeaderText>
-                </Header>
+                    {/* <HeaderText>{formattedDate}</HeaderText> */}
+                    <BtnGroup>
+                        <Btn>수정</Btn>
+                        <Btn>삭제</Btn>
+                    </BtnGroup>
+                </TextContainer>
             </DiaryHeader>
-            {
-                mode == 'write'
-                ? (
-                    <WriteBtnContainer>
-                        <BtnGroup>
-                            <Btn>초기화</Btn>
-                        </BtnGroup>
-                    </WriteBtnContainer>
-                ) : (
-                    <EditBtnContainer>
-                        <BtnGroup>
-                            <Btn>수정</Btn>
-                            <Btn>삭제</Btn>
-                        </BtnGroup>
-                        <BtnGroup>
-                            <Btn>공유</Btn>
-                        </BtnGroup>
-                    </EditBtnContainer>
-                )
-            }
+            <DiaryContent>
+                <DiaryImageContainer>
+                    {/* { console.log("test") } */}
+                    <DiaryImage src={imageUrl}/>
+                </DiaryImageContainer>
+                <DiaryText/>
+                <DiaryTags/>
+                <DiaryDate>{formattedDate}</DiaryDate>
+            </DiaryContent>
+            <DiaryLine/>
+            <DiaryFooter>
+                <div>
+                    <Icon>
+                        <ChatIcon/>
+                    </Icon>
+                    <div>댓글 {comment}개 보기</div>
+                </div>
+                <div>
+                    <Icon>
+                        <FavoriteIcon/>
+                    </Icon>
+                    <Icon>
+                        <BellIcon/>
+                    </Icon>
+                </div>
+            </DiaryFooter>
         </Diary>
   );
 }
