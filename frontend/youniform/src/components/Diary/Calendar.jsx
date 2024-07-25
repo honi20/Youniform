@@ -7,80 +7,6 @@ import SvgIcon from "@mui/material/SvgIcon";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-// 추후 삭제
-import Sticker1 from '../assets/Test/Sticker/sticker_1.png'
-import Sticker2 from '../assets/Test/Sticker/sticker_2.png'
-import Sticker3 from '../assets/Test/Sticker/sticker_3.png'
-import Sticker4 from '../assets/Test/Sticker/sticker_4.png'
-import Sticker5 from '../assets/Test/Sticker/sticker_5.png'
-import Sticker6 from '../assets/Test/Sticker/sticker_6.png'
-import Sticker7 from '../assets/Test/Sticker/sticker_7.png'
-import Sticker8 from '../assets/Test/Sticker/sticker_8.png'
-import Sticker9 from '../assets/Test/Sticker/sticker_9.png'
-import Sticker10 from '../assets/Test/Sticker/sticker_10.png'
-
-// 더미 데이터
-const userCalInfo = [
-  {
-    id: 1,
-    stickers: [
-      { date: '2024-07-04', stickerSrc: Sticker4 },
-      { date: '2024-07-06', stickerSrc: Sticker1 },
-      { date: '2024-07-13', stickerSrc: Sticker2 },
-      { date: '2024-07-16', stickerSrc: Sticker6 },
-      { date: '2024-07-18', stickerSrc: Sticker8 },
-      { date: '2024-07-27', stickerSrc: Sticker9 },
-      { date: '2024-07-28', stickerSrc: Sticker10 },
-    ],
-  },
-  {
-    id: 2,
-    stickers: [
-      { date: '2024-07-01', stickerSrc: Sticker3 },
-      { date: '2024-07-02', stickerSrc: Sticker4 },
-      { date: '2024-07-06', stickerSrc: Sticker5 },
-      { date: '2024-07-09', stickerSrc: Sticker6 },
-      { date: '2024-07-15', stickerSrc: Sticker7 },
-    ],
-  },
-  {
-    id: 3,
-    stickers: [
-      { date: '2024-07-11', stickerSrc: Sticker2 },
-      { date: '2024-07-20', stickerSrc: Sticker1 },
-    ],
-  },
-  {
-    id: 4,
-    stickers: [
-      { date: '2024-07-02', stickerSrc: Sticker1 },
-      { date: '2024-07-03', stickerSrc: Sticker2 },
-      { date: '2024-07-13', stickerSrc: Sticker3 },
-      { date: '2024-07-17', stickerSrc: Sticker4 },
-      { date: '2024-07-18', stickerSrc: Sticker5 },
-      { date: '2024-07-23', stickerSrc: Sticker6 },
-      { date: '2024-07-28', stickerSrc: Sticker7 },
-    ],
-  },
-  {
-    id: 5,
-    stickers: [
-      { date: '2024-07-06', stickerSrc: Sticker9 },
-      { date: '2024-07-16', stickerSrc: Sticker10 },
-      { date: '2024-07-21', stickerSrc: Sticker2 },
-      { date: '2024-07-29', stickerSrc: Sticker1 },
-    ],
-  },
-  {
-    id: 6,
-    stickers: [
-      { date: '2024-07-18', stickerSrc: Sticker4 },
-      { date: '2024-07-28', stickerSrc: Sticker1 },
-      { date: '2024-07-30', stickerSrc: Sticker3 },
-    ],
-  },
-];
-
 const CalendarContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -109,15 +35,15 @@ const MonthRow = styled.div`
 
 
 const DaysRow = styled.div`
-display: grid;
-grid-template-columns: repeat(7, 1fr);
-width: 100%;
-height: 8%;
-margin: 0 auto;
-justify-content: space-between;
-border-top: 2px solid #787878;
-border-bottom: 2px solid #787878;
-align-items: center;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  height: 8%;
+  margin: 0 auto;
+  justify-content: space-between;
+  border-top: 2px solid #787878;
+  border-bottom: 2px solid #787878;
+  align-items: center;
 `;
 
 const IconArea = styled.div`
@@ -136,6 +62,7 @@ const DayColumn = styled.div`
   text-align: center;
   font-size: 12px;
   font-weight: 800;
+  color: #787878;
 `;
 
 const SelectBox = styled.div`
@@ -154,12 +81,12 @@ const CellsContainer = styled.div`
 `;
 
 const Cell = styled.div`
+  color: #787878;
   border: 1px solid #ddd;
   height: 100%;
-  display: flex;
   padding: 5px;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   
   &.disabled {
@@ -319,12 +246,15 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
   let days = [];
   let day = startDate;
   let formattedDate = '';
+  let stickerDate = '';
 
-  const getStickerSrcForDate = (date) => {
-    for (const user of stickers) {
-      const sticker = user.stickers.find(sticker => sticker.date === formattedDate);
-      if (sticker) {
-        console.log(formattedDate);
+  const getStickerSrcForDate = (day, date) => {
+    // disabled(전월 후월 date)는 스티커 적용 제외)
+    if (day > monthEnd || day < monthStart)
+      return null;
+
+    for (const sticker of stickers) {
+      if  (sticker.date === date) {
         return sticker.stickerSrc;
       }
     }
@@ -334,8 +264,8 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, 'd');
-      const stickerSrc = getStickerSrcForDate(day);
-
+      stickerDate = format(day, 'yyyy-MM-dd');
+      const stickerSrc = getStickerSrcForDate(day, stickerDate);
       const cloneDay = new Date(day);
       days.push(
         <Cell
@@ -351,7 +281,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
           key={day}
           onClick={() => onDateClick(cloneDay)}
         >
-          <span
+          <p
             className={
               format(currentMonth, 'M') !== format(day, 'M')
                 ? 'text not-valid'
@@ -359,19 +289,15 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
             }
           >
             {formattedDate}
-          </span>
+          </p>
           {stickerSrc && (
             <img
               src={stickerSrc}
               alt="sticker"
               style={{
-                position: 'absolute',
-                bottom: '5px',
-                right: '5px',
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                zIndex: 10
+                marginTop: '60%',
+                width: '40px',
+                height: '40px',
               }}
             />
           )}
@@ -385,11 +311,9 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stickers }) => {
   return <CellsContainer>{rows}</CellsContainer>;
 };
 
-
-const Calendar = ({ user }) => {
+const Calendar = ({ user, stickers }) => {
   const [curMonth, setCurMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedUser, setSelectedUser] = useState(0);
 
   const prevMonth = () => {
     setCurMonth(subMonths(curMonth, 1));
@@ -411,6 +335,8 @@ const Calendar = ({ user }) => {
     setSelectedDate(day);
   };
 
+  // const filteredStickers = selected
+
   return (
     <CalendarContainer>
       <CalendarBox>
@@ -428,7 +354,7 @@ const Calendar = ({ user }) => {
           currentMonth={curMonth}
           selectedDate={selectedDate}
           onDateClick={onDateClick}
-          stickers={userCalInfo}
+          stickers={stickers}
         />
       </CalendarBox>
     </CalendarContainer>

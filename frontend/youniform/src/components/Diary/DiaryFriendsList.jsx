@@ -87,7 +87,7 @@ const UpdateStatusCircle = styled.div`
   background-color: #F97D93;
   border: 1.5px solid white;
   border-radius: 50%;
-  display: ${props => props.updateStatus ? 'block' : 'none'};
+  display: ${props => props.$updateStatus ? 'block' : 'none'};
 `;
 
 const DiaryFriendsList = ({ onUserClick }) => {
@@ -112,7 +112,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
             onClick={() => handleUserClick(index)}
           >
             <UserImage src={user.imgSrc} alt={user.nickName} />
-            <UpdateStatusCircle updateStatus={user.updateStatus} />
+            <UpdateStatusCircle $updateStatus={user.updateStatus} />
             <UserName>{user.nickName}</UserName>
           </UserCard>
         ))}
