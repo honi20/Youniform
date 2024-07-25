@@ -15,6 +15,7 @@ import FindEmailView from './pages/FindEmailView';
 import FindPasswordView from './pages/FindPasswordView';
 import DiaryDetailView from './pages/DiaryDetailView';
 import WriteDiaryView from './pages/WriteDiaryView';
+import Test from './pages/test';
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -57,12 +58,14 @@ function App() {
             <Route path="/login" element={<LoginView />} />
             <Route path="/photo-card" element={<PhotoCardView />} />
             <Route path="/diary" element={<DiaryHomeView />} />
+            <Route path="/diary/write-diary" element={<WriteDiaryView />} />
+            <Route path="/diary/detail" element={<DiaryDetailView />} />
             <Route path="/community" element={<CommunityView />} />
+
             <Route path="/my-page" element={<MyPageView />} />
             <Route path="/find-email" element={<FindEmailView />} />
             <Route path="/find-password" element={<FindPasswordView />} />
-            <Route path="/diary-detail" element={<DiaryDetailView />} />
-            <Route path="/write-diary" element={<WriteDiaryView />} />
+            <Route path="/test" element={<Test />} />
           </Routes>
         </ContentContainer>
         <div ref={navBarRef}>

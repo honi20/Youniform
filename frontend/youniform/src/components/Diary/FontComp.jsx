@@ -56,7 +56,9 @@ const fontNameMapping = {
     "Dovemayo_gothic": "둘기마요고딕",
     "Galmuri14": "갈무리14",
     "NanumSquareRoundR": "나눔스퀘어",
-    "RascalMedium":"J개구쟁이"
+    "RascalMedium":"J개구쟁이",
+    "MangoDdobak-R": "또박체",
+    "TheJamsil": "더잠실체",
 };
 
 const getKoreanFontName = (fontName) => {

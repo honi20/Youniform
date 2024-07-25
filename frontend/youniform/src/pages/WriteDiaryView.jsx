@@ -12,7 +12,8 @@ import DownloadIcon from '../assets/Img_out-box_Fill.svg?react';
 import InitializeIcon from '../assets/Refresh.svg?react';
 import SaveIcon from '../assets/Save_fill.svg?react';
 import ExpandIcon from '../assets/Expand_down.svg?react';
-import ModalComp from '../components/Diary/ModalComp';
+import ModalComp from '../components/Modal/ExampleModalComp';
+import SaveModalComp from '../components/Modal/SaveModalComp';
 
 const Div = styled.div`
     flex-shrink: 0;
@@ -24,12 +25,14 @@ const Div = styled.div`
 `
 const CanvasContainer = styled.div`
     margin-top: 50px;
-    width: 100%;
-    height: 60%;
+    width: 302px;
+    height: 502px;
     border: 1px solid black;
     flex-shrink: 0;
     display: flex;
     justify-content: center;
+    margin-bottom: 0%;
+    box-sizing: border-box;
 `
 const IconContainer = styled.div`
     height: 60%;
@@ -42,9 +45,14 @@ const WriteDiaryView = () => {
     const [selectCanvas, setSelectCanvas] = useState(null);
     const [isDecorated, setIsDecorated] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
+    
+    const openSaveModal = () => setIsSaveModalOpen(true);
+    const closeSaveModal = () => setIsSaveModalOpen(false);
+
 
     const handleBtnClick = (index) => {
         setSelectedBtn(index);
@@ -55,6 +63,7 @@ const WriteDiaryView = () => {
         if (selectCanvas) {
             fabric.Image.fromURL(selectedImg, (img) => {
                 img.scaleToWidth(selectCanvas.getWidth());
+                img.scaleToHeight(selectCanvas.getHeight());
                 img.set({
                     originX: 'center',
                     originY: 'center',
@@ -161,10 +170,7 @@ const WriteDiaryView = () => {
             downloadAnchorNode.remove();
         }
     }
-    const showExample = () => {
-        console.log('test')
-        // return 
-    }
+    
     const downloadCanvas = () => {
         if (selectCanvas) {
             const dataURL = selectCanvas.toDataURL({ format: 'png' });
@@ -178,8 +184,8 @@ const WriteDiaryView = () => {
     };
     useEffect(() => {
         const initCanvas = new fabric.Canvas("canvas", {
-            height: 550,
-            width: 400,
+            height: 500,
+            width: 300,
             backgroundColor: 'white',
         });
         setSelectCanvas(initCanvas);
@@ -190,7 +196,7 @@ const WriteDiaryView = () => {
 
     return (
         <Div>
-            <SaveBtn onClick={saveCanvas}>
+            <SaveBtn onClick={openSaveModal}>
                 <IconContainer>
                     <SaveIcon/>
                 </IconContainer>
@@ -251,6 +257,7 @@ const WriteDiaryView = () => {
                 </DecorationMenu>
             </DecorationContainer>
             <ModalComp isOpen={isModalOpen} onClose={closeModal}/>
+            <SaveModalComp state={'save'}isOpen={isSaveModalOpen} onClose={closeSaveModal}/>
         </Div>
       )
 }
