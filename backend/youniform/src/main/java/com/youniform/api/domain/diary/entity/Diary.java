@@ -22,7 +22,11 @@ public class Diary {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users userId;
+    private Users user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stamp_id")
+    private DiaryStamp stamp;
 
     private LocalDate diaryDate;
 
