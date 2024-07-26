@@ -21,12 +21,17 @@ const CommunityView = () => {
     
   return (
     <Div>
-      <button onClick={()=> navigate('/diary/write-diary')}>write diary</button>
-      <button onClick={()=> navigate('/diary/detail')}>diary detail</button>
+      {/* <button onClick={()=> navigate('/diary/write-diary')}>write diary</button> */}
+      {/* <button onClick={()=> navigate('/diary/detail')}>diary detail</button> */}
       <button onClick={openModal}>
         test
       </button>
-      <BasicModal state={'UserNotFound'} isOpen={isModalOpen} onClose={closeModal}/>
+      <BasicModal 
+        state={'ChatImgSaved'} 
+        isOpen={isModalOpen} 
+        onClose={closeModal}
+        nickname={''}
+      />
     </Div>
   )
 }

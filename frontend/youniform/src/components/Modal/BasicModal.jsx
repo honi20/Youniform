@@ -15,7 +15,7 @@ const ModalBackdrop = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 5;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 `
 const Container = styled.div`
     border-radius: 1.25rem;;
@@ -27,6 +27,10 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
 `
+const IconContainer = styled.div`
+    /* height: 5rem; */
+    /* border: 1px solid red; */
+`
 const Title = styled.div`
     color: #000;
     text-align: center;
@@ -35,29 +39,138 @@ const Title = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    border: 1px solid black;
+    margin-top: 1rem;
+    /* border: 1px solid black; */
 `
-const IconContainer = styled.div`
-    height: 5rem;
+const Subtitle = styled.div`
+    margin-top: 0.5rem;
+    color: #9C9C9C;
+    font-family: Pretendard;
+    font-size: 0.8125rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 `
-const BasicModal = ({ state, isOpen, onClose }) => {
+const BtnContainer = styled.div`
+    margin-top: 1rem;
+    display: flex;
+    width: 90%;
+    justify-content: space-around;
+    /* border: 1px solid black; */
+`
+const Btn = styled.div`
+    width: 7rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border-radius: 0.625rem;
+    background-color: ${props => props.$bgcolor || 'black'};
+    color: ${props => props.$color || 'black'};
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Pretendard';
+    font-size: 1rem;
+    /* font-style: normal; */
+    font-weight: 700;
+    line-height: normal;
+`
+const stateMap = {
+    
+    'UserNotFound': {
+        icon: <AlarmIcon/>,
+        title: '해당 유저가 존재하지 않습니다.',
+        subtitle: '회원가입 시 등록한 성명과 생년월일을 입력해주세요.',
+        btn: [0],
+    },
+    'PasswordReset': {
+        icon: <CheckIcon/>,
+        title: '비밀번호가 재설정되었습니다.',
+        btn: [0],
+    },
+    'VerificaionSent': {
+        icon: <AlarmIcon/>,
+        title: '인증 메일이 발송되었습니다.',
+        subtitle: '입력된 메일로 발송된 인증번호를 입력하세요.',
+        btn: [0],
+    },
+    'NicknameAvailable': {
+        icon: <AlarmIcon/>,
+        title: (nickname) => <div>{nickname}는 사용 가능한 닉네임입니다.</div>,
+        btn: [0],
+    
+    },
+    'NicknameUnavailable': {
+        icon: <AlarmIcon/>,
+        title: (nickname) => <div>{nickname}는 사용 불가능한 닉네임입니다.</div>,
+        btn: [0],
+    },
+    'FavoriteChanged': {
+        icon: <AlarmIcon/>,
+        title: '좋아하는 선수를 변경하시겠습니까?',
+        subtitle: '선수 변경 시 관련 소식을 받을 수 없습니다.',
+        btn: [1, 2],
+    },
+    'DiaryDeleted': {
+        icon: <AlarmIcon/>,
+        title: '다이어리를 삭제하시겠습니까?',
+        subtitle: '삭제된 다이어리는 다시 볼 수 없습니다.',
+        btn: [1, 3],
+    },
+    'DiaryReset': {
+        icon: <AlarmIcon/>,
+        title: '작성 중인 다이어리를 초기화 하시겠습니까?',
+        subtitle: '작성 중인 내용은 저장되지 않고 삭제됩니다.',
+        btn: [1, 4],
+    },
+    'DiarySaved': {
+        icon: <CheckIcon/>,
+        title: '다이어리가 저장되었습니다.',
+        btn: [0],
+    },
+    'ChatImgSaved': {
+        icon: <CheckIcon/>,
+        title: '사진이 저장되었습니다.',
+        btn: [0],
+    },
+}
+// btn 종류
+// 0: 확인 1: 취소(색깔 다름) 2: 변경 3: 삭제 4: 초기화
+const buttonMap = {
+    0: { bgcolor: '#262F66', color: 'white', label: '확인' },
+    1: { bgcolor: '#C5C8DA', color: 'black', label: '취소' },
+    2: { bgcolor: '#262F66', color: 'white', label: '변경' },
+    3: { bgcolor: '#262F66', color: 'white', label: '삭제' },
+    4: { bgcolor: '#262F66', color: 'white', label: '초기화' },
+};
+const BasicModal = ({ state, isOpen, onClose, nickname }) => {
     if (!isOpen) return null;
     
-    const stateMap = {
-        'PasswordReset': {
-            icon: <CheckIcon/>,
-            title: 'test',
-        },
-        'DiarySaved': <CheckIcon/>,
-        'ChatImgSaved': <CheckIcon/>,
-    }
+    // const nickname = nickname;
     const renderIcon = (state) => {
-        const selectedState = stateMap[state]?.icon || { icon: <AlarmIcon/> }
-        return selectedState.icon
+        const icon = stateMap[state]?.icon || <AlarmIcon/>
+        return icon
     }
-    const renderTitle = (state) => {
-        const selectedState = stateMap[state]?.title || { title: <></> }
-        return selectedState.title
+    const renderTitle = (state, nickname) => {
+        const title = typeof stateMap[state]?.title === 'function'
+            ? stateMap[state].title(nickname)
+            : stateMap[state].title || <></>;
+        return title
+    }
+    const renderSubtitle = (state) => {
+        const subtitle = stateMap[state]?.subtitle || <></>;
+        return subtitle
+    }
+    const renderBtn = (state) => {
+        const btnArray = stateMap[state]?.btn || [];
+        return btnArray.map((btnType, index) => {
+            const { bgcolor, color, label } = buttonMap[btnType];
+            return (
+                <Btn key={index} $bgcolor={bgcolor} $color={color}>
+                    {label}
+                </Btn>
+            );
+        });
     }
     return (
         <ModalBackdrop>
@@ -66,11 +179,14 @@ const BasicModal = ({ state, isOpen, onClose }) => {
                     {renderIcon(state)}
                 </IconContainer>
                 <Title>
-                    {renderTitle(state)}
+                    {renderTitle(state, nickname)}
                 </Title>
-                {/* <Title/>
-                <SubTitle/>
-                <BtnContainer/> */}
+                <Subtitle>
+                    {renderSubtitle(state)}
+                </Subtitle>
+                <BtnContainer>
+                    {renderBtn(state)}
+                </BtnContainer>
             </Container>
         </ModalBackdrop>
   )

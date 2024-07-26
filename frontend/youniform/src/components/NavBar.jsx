@@ -77,7 +77,7 @@ const NavBar = () => {
       </LinkDiv>
       <LinkDiv>
         {currentPath === '/diary' ? (
-          <StyledLink to="/write-diary">
+          <StyledLink to="/diary/write-diary">
             <CustomBtn>
               <AddCircleIcon />
             </CustomBtn>

@@ -14,6 +14,7 @@ const Head = styled.div`
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
+    z-index: 10;
 `
 
 const InnerHead = styled.div`
