@@ -22,34 +22,34 @@ public class DiaryController {
     @PostMapping
     public ResponseEntity<?> diaryAdd(@RequestBody @Valid DiaryAddReq diaryAddReq) {
         DiaryAddRes response = new DiaryAddRes(1L);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.success(SuccessCode.CREATED, response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.success(SuccessCode.DIARY_CREATED, response));
     }
 
     @GetMapping("/{diaryId}")
     public ResponseDto<?> diaryDetails(@PathVariable Long diaryId) {
         DiaryDetailsRes response = new DiaryDetailsRes();
-        return ResponseDto.success(SuccessCode.SUCCESS, response);
+        return ResponseDto.success(SuccessCode.DIARY_DETAILS_OK, response);
     }
 
     @PutMapping("/{diaryId}")
     public ResponseDto<?> diaryModify(@PathVariable Long diaryId) {
-        return ResponseDto.success(SuccessCode.UPDATED, null);
+        return ResponseDto.success(SuccessCode.DIARY_MODIFIED, null);
     }
 
     @DeleteMapping("/{diaryId}")
     public ResponseDto<?> diaryRemove(@PathVariable Long diaryId) {
-        return ResponseDto.success(SuccessCode.DELETED, null);
+        return ResponseDto.success(SuccessCode.DIARY_DELETED, null);
     }
 
     @GetMapping
     public ResponseDto<?> diaryList() {
         List<DiaryListRes> response = new ArrayList<>();
-        return ResponseDto.success(SuccessCode.SUCCESS, response);
+        return ResponseDto.success(SuccessCode.MY_DIARIES_OK, response);
     }
 
     @GetMapping("/{userId}")
     public ResponseDto<?> diaryListByUserId(@PathVariable Long userId) {
         List<DiaryListRes> response = new ArrayList<>();
-        return ResponseDto.success(SuccessCode.SUCCESS, response);
+        return ResponseDto.success(SuccessCode.OTHER_DIARIES_OK, response);
     }
 }
