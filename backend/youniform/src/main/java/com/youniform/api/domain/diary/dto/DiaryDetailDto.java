@@ -10,9 +10,11 @@ import java.time.LocalDate;
 public class DiaryDetailDto {
     private Long writerId;
 
-    private LocalDate date;
+    private LocalDate diaryDate;
 
     private DiaryContentDto content;
 
     private String scope;
+
+    private String stampImgUrl;
 }

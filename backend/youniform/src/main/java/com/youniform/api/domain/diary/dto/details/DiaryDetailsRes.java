@@ -1,5 +1,6 @@
-package com.youniform.api.domain.diary.dto;
+package com.youniform.api.domain.diary.dto.details;
 
+import com.youniform.api.domain.diary.dto.DiaryContentDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,11 @@ import java.time.LocalDate;
 public class DiaryDetailsRes {
     private Long writerId;
 
-    private LocalDate date;
+    private LocalDate diaryDate;
 
     private DiaryContentDto content;
 
     private String scope;
+
+    private String stampImgUrl;
 }

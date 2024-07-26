@@ -1,5 +1,6 @@
-package com.youniform.api.domain.diary.dto;
+package com.youniform.api.domain.diary.dto.modify;
 
+import com.youniform.api.domain.diary.dto.DiaryContentDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,4 +13,7 @@ public class DiaryModifyReq {
 
     @NotNull
     private String scope;
+
+    @NotNull
+    private Long stampId;
 }

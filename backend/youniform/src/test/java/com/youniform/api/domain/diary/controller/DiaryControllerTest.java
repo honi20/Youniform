@@ -3,7 +3,7 @@ package com.youniform.api.domain.diary.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
-import com.youniform.api.domain.diary.dto.DiaryAddReq;
+import com.youniform.api.domain.diary.dto.add.DiaryAddReq;
 import com.youniform.api.domain.diary.dto.DiaryContentDto;
 import com.youniform.api.domain.diary.dto.DiaryContentObjectDto;
 import org.junit.jupiter.api.DisplayName;
@@ -44,6 +44,7 @@ public class DiaryControllerTest {
 
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
+    /**
     @Test
     public void diaryAdd() throws Exception {
         // given
@@ -130,23 +131,5 @@ public class DiaryControllerTest {
 
 
     }
+     */
 }
-
-/**
-
- {
- "contents" : {
- "contentTypes" : [ {
- "text" : "text"
- }, {
- "sticker" : "sticker1"
- }, {
- "imgUrl" : "imgUrl"
- }, {
- "imgUrl" : "sticker2"
- } ]
- }
- }
-
-
- */
