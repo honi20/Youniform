@@ -11,9 +11,9 @@ import User6 from '../../assets/Test/User/user_6.png';
 
 const UserInfo = [
   { id: 1, imgSrc: User1, nickName: '하츄핑', updateStatus: false },
-  { id: 2, imgSrc: User2, nickName: '낭만고양이', updateStatus: true },
+  { id: 2, imgSrc: User2, nickName: '낭만고양이', updateStatus: false },
   { id: 3, imgSrc: User3, nickName: '스마트정대리', updateStatus: true },
-  { id: 4, imgSrc: User4, nickName: 'krozv', updateStatus: false },
+  { id: 4, imgSrc: User4, nickName: 'krozv', updateStatus: true },
   { id: 5, imgSrc: User5, nickName: '테스트용긴유저네임', updateStatus: false },
   { id: 6, imgSrc: User6, nickName: '망곰베어스', updateStatus: true },
 ];

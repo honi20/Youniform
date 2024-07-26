@@ -14,7 +14,7 @@ const ModalBackdrop = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 5;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 `
 
 const Container = styled.div`
@@ -37,7 +37,7 @@ const SaveText = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 `
 
 const ConfirmBtnItem = styled.div`
@@ -56,21 +56,22 @@ const ConfirmBtnItem = styled.div`
     justify-content: center;
     align-items: center;
 `
-const renderIcon = (state) => {
-    switch (state) {
-        case 'save':
-            return <SaveIcon/>
-    }
+const renderIcon = () => {
+    return <SaveIcon/>
 }
-const SaveModalComp = ({ state, isOpen, onClose }) => {
+const SaveModalComp = ({ isOpen, onClose, onSave }) => {
     if (!isOpen) return null;
+    const handleSave = () => {
+        onClose();
+        onSave();
+    };
     return (
         <ModalBackdrop>
             <Container>
-                {renderIcon(state)}
+                {renderIcon()}
                 <SaveText>다이어리가 저장되었습니다.</SaveText>
                 
-                <ConfirmBtnItem onClick={onClose}>
+                <ConfirmBtnItem onClick={handleSave}>
                     {/* 메인 다이어리로 이동 */}
                     확인
                 </ConfirmBtnItem>

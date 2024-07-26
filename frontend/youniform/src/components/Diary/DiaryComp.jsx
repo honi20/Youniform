@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Diary, DiaryHeader, Btn, BtnGroup,
+import React, { useState, useEffect } from 'react';
+import { Diary, DiaryHeader, Btn, BtnGroup, BtnContainer,
     Profile, HeaderText, TextContainer, 
     DiaryImageContainer, DiaryImage, DiaryText, DiaryTags, DiaryDate,
     DiaryContent, DiaryLine, DiaryFooter,  } from './DiaryCompStyle';
@@ -7,16 +7,13 @@ import ChatIcon from '../../assets/Chat.svg?react';
 import FavoriteIcon from '../../assets/FavoriteLight.svg?react';
 import BellIcon from '../../assets/Bell.svg?react';
 import styled from 'styled-components';
+import { fabric } from "fabric";
+import diaryTestImg from '../../assets/DiaryTestImg.png'
 
-// data 임의로 만듦
-
-const Icon = styled.div`
-    margin: 0 10px;
-    border: 1px solid black;
-`
 const DiaryComp = ({ data, state }) => {
-    const [mode, setMode] = useState(state || 'write');
-    const [comment, setComment] = useState(0);
+    // const [selectCanvas, setSelectCanvas] = useState(null);
+    // const [mode, setMode] = useState(state || 'write');
+    // const [comment, setComment] = useState(0);
     const {
         profileUrl,
         nickname,
@@ -47,37 +44,29 @@ const DiaryComp = ({ data, state }) => {
                 <TextContainer>
                     <HeaderText>{nickname}</HeaderText>
                     {/* <HeaderText>{formattedDate}</HeaderText> */}
-                    <BtnGroup>
-                        <Btn>수정</Btn>
-                        <Btn>삭제</Btn>
-                    </BtnGroup>
+                    
                 </TextContainer>
             </DiaryHeader>
             <DiaryContent>
                 <DiaryImageContainer>
-                    {/* { console.log("test") } */}
-                    <DiaryImage src={imageUrl}/>
+                    <img src={diaryTestImg}/>
                 </DiaryImageContainer>
-                <DiaryText/>
-                <DiaryTags/>
-                <DiaryDate>{formattedDate}</DiaryDate>
+                {/* <DiaryDate>{formattedDate}</DiaryDate> */}
             </DiaryContent>
-            <DiaryLine/>
             <DiaryFooter>
-                <div>
-                    <Icon>
-                        <ChatIcon/>
-                    </Icon>
-                    <div>댓글 {comment}개 보기</div>
-                </div>
-                <div>
-                    <Icon>
-                        <FavoriteIcon/>
-                    </Icon>
-                    <Icon>
-                        <BellIcon/>
-                    </Icon>
-                </div>
+                <BtnContainer>
+                        <BtnGroup>
+                            <Btn onClick={() => console.log('수정')}>수정</Btn>
+                            <Btn onClick={() => console.log('삭제')}>삭제</Btn>
+                        </BtnGroup>
+                        <BtnGroup>
+                            <Btn
+                                onClick={() => console.log('공유')}
+                                bgcolor={'#262F66'}
+                                color={'white'}
+                            >공유</Btn>
+                        </BtnGroup>
+                    </BtnContainer>
             </DiaryFooter>
         </Diary>
   );

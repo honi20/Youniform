@@ -59,6 +59,7 @@ const fontNameMapping = {
     "RascalMedium":"J개구쟁이",
     "MangoDdobak-R": "또박체",
     "TheJamsil": "더잠실체",
+    "NotoSansKR-VariableFont_wght": "Noto Sans",
 };
 
 const getKoreanFontName = (fontName) => {

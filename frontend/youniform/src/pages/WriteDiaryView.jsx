@@ -14,6 +14,7 @@ import SaveIcon from '../assets/Save_fill.svg?react';
 import ExpandIcon from '../assets/Expand_down.svg?react';
 import ModalComp from '../components/Modal/ExampleModalComp';
 import SaveModalComp from '../components/Modal/SaveModalComp';
+import { useNavigate } from 'react-router-dom';
 
 const Div = styled.div`
     flex-shrink: 0;
@@ -27,7 +28,7 @@ const CanvasContainer = styled.div`
     margin-top: 50px;
     width: 302px;
     height: 502px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     flex-shrink: 0;
     display: flex;
     justify-content: center;
@@ -53,6 +54,7 @@ const WriteDiaryView = () => {
     const openSaveModal = () => setIsSaveModalOpen(true);
     const closeSaveModal = () => setIsSaveModalOpen(false);
 
+    const navigate = useNavigate();
 
     const handleBtnClick = (index) => {
         setSelectedBtn(index);
@@ -170,6 +172,13 @@ const WriteDiaryView = () => {
             downloadAnchorNode.remove();
         }
     }
+    const saveCanvasAtLocalStorage = () => {
+        if (selectCanvas) {
+            const json = selectCanvas.toJSON();
+            const jsonString = JSON.stringify(json);
+            localStorage.setItem('canvasData', jsonString);
+        }
+    };
     
     const downloadCanvas = () => {
         if (selectCanvas) {
@@ -182,6 +191,12 @@ const WriteDiaryView = () => {
             document.body.removeChild(link);
         }
     };
+
+    const handleAfterSave = () => {
+        saveCanvas();
+        saveCanvasAtLocalStorage();
+        navigate('/diary/detail')
+    }
     useEffect(() => {
         const initCanvas = new fabric.Canvas("canvas", {
             height: 500,
@@ -257,7 +272,10 @@ const WriteDiaryView = () => {
                 </DecorationMenu>
             </DecorationContainer>
             <ModalComp isOpen={isModalOpen} onClose={closeModal}/>
-            <SaveModalComp state={'save'}isOpen={isSaveModalOpen} onClose={closeSaveModal}/>
+            <SaveModalComp 
+                isOpen={isSaveModalOpen} 
+                onClose={closeSaveModal}
+                onSave={handleAfterSave}/>
         </Div>
       )
 }

@@ -7,7 +7,7 @@ const SaveBtn = styled.div`
     z-index: 3;
     width: 3rem;
     height: 3rem;
-    border: 1px solid lightblue;
+    /* border: 1px solid lightblue; */
     right: 4%;
     margin-top: 1px;
     display: flex;
@@ -19,7 +19,7 @@ const BtnContainer = styled.div`
     display: ${props => (props.$decorated ? 'none' : 'flex')};
     justify-content: space-between;
     height: 4rem;
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
 `
 const Btn = styled.div`
     display: ${props => (props.$decorated ? 'none' : 'flex')};
@@ -28,7 +28,7 @@ const Btn = styled.div`
     align-items: center;
     width: 4rem;
     height: 4rem;
-    border: 1px solid lightblue;
+    /* border: 1px solid lightblue; */
     cursor: pointer;
 `
 
@@ -40,7 +40,7 @@ const CloseBtn = styled.div`
     height: 2rem;
     flex-shrink: 0;
     border-radius: 0.625rem;
-    border: 2px solid #000;
+    /* border: 2px solid #000; */
     background: #ACC0E2;
     cursor: pointer;
     box-sizing: border-box;
@@ -49,7 +49,7 @@ const DecorationContainer = styled.div`
     width: 90%;
     height: 28%;
     box-sizing: border-box;
-    border: 1px solid red;
+    /* border: 1px solid red; */
 `
 const DecorationPanel = styled.div`
     display: ${props => (props.$decorated ? 'block' : 'none')};
@@ -98,7 +98,7 @@ const DecorationMenu = styled.div`
     box-sizing: border-box;
     border-radius: 0rem 1.25rem 1.25rem 1.25rem;
     border: 2px solid #000;
-    background: #ECF3F8;
+    /* background: #ECF3F8; */
     position: relative;
     top: -3px; /* 테두리 제거와 위치 맞추기 위한 조정 */
     display: ${props => (props.$decorated ? 'block' : 'none')}; /* visibility 토글 */
@@ -116,7 +116,7 @@ const InitializationBtn = styled.button`
 
     // style
     border-radius: 0.625rem;
-    border: 1.5px solid black;
+    /* border: 1.5px solid black; */
     background: #e3e3e3;
 
     // typo

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import DiaryComp from '../components/Diary/DiaryComp';
+// import ProfileUrl from '../assets/profile.png?react';
 
 const Div = styled.div`
     flex-shrink: 0;
@@ -9,15 +10,15 @@ const Div = styled.div`
     align-items: center;
     /* justify-content: center; */
     margin-top: 50px;
-    border: 1px solid blue;
-    height: 80%;
+    /* border: 1px solid blue; */
+    height: auto;
 `
 
 // test props
 const data = {
-    profileUrl: '../../assets/testImg2.png',
-    nickname: 'honi',
-    date: 'Tue Jul 02 2024 00:00:00 GMT+0900',
+    profileUrl: '',
+    nickname: '하츄핑',
+    date: 'Tue Jul 26 2024 00:00:00 GMT+0900',
     imageUrl: '../../assets/doyeong.png',
     content: '기아 우승 기념 도영이 다꾸를 해보아따!',
     tags: [
@@ -28,6 +29,9 @@ const data = {
 };
 
 const DiaryDetailView = () => {
+  
+
+  
     return (
     <Div>
       <DiaryComp
