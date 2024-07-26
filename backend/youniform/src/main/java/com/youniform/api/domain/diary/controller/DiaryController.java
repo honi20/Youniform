@@ -1,9 +1,9 @@
 package com.youniform.api.domain.diary.controller;
 
-import com.youniform.api.domain.diary.dto.DiaryAddReq;
-import com.youniform.api.domain.diary.dto.DiaryAddRes;
-import com.youniform.api.domain.diary.dto.DiaryDetailsRes;
-import com.youniform.api.domain.diary.dto.DiaryListRes;
+import com.youniform.api.domain.diary.dto.add.DiaryAddReq;
+import com.youniform.api.domain.diary.dto.add.DiaryAddRes;
+import com.youniform.api.domain.diary.dto.details.DiaryDetailsRes;
+import com.youniform.api.domain.diary.dto.list.DiaryListRes;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.statuscode.SuccessCode;
 import jakarta.validation.Valid;
