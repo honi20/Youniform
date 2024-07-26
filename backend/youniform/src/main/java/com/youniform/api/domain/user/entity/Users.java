@@ -45,4 +45,6 @@ public class Users {
     private Boolean isDeleted;
 
     private LocalDateTime lastWriteDiary;
+
+    private String uuid;
 }
