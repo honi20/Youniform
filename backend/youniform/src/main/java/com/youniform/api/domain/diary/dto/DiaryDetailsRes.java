@@ -1,5 +1,6 @@
 package com.youniform.api.domain.diary.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +8,8 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class DiaryDetailDto {
+@AllArgsConstructor
+public class DiaryDetailsRes {
 	private Long writerId;
 
 	private LocalDate diaryDate;
