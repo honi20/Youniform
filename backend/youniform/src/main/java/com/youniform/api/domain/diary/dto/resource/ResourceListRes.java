@@ -1,4 +1,4 @@
-package com.youniform.api.domain.diary.dto.resource_list;
+package com.youniform.api.domain.diary.dto.resource;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResourceListRes {
-    private List<ResourceDto> resources;
+	private List<ResourceDto> resources;
 
-    private List<StampDto> stamps;
+	private List<StampDto> stamps;
 }
