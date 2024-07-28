@@ -27,7 +27,11 @@ public enum SuccessCode {
     PHOTOCARD_CREATED(HttpStatus.CREATED.value(), "포토카드 생성에 성공했습니다."),
     PHOTOCARD_DETAILS_OK(HttpStatus.OK.value(), "포토카드 상세보기에 성공했습니다."),
     PHOTOCARD_DELETED(HttpStatus.NO_CONTENT.value(), "포토카드 삭제에 성공했습니다."),
-    PHOTOCARD_LIST_OK(HttpStatus.OK.value(), "포토카드 리스트 조회에 성공했습니다.");
+    PHOTOCARD_LIST_OK(HttpStatus.OK.value(), "포토카드 리스트 조회에 성공했습니다."),
+
+    //likes
+    LIKES_CREATED(HttpStatus.CREATED.value(), "좋아요 생성에 성공했습니다."),
+    LIKES_DELETED(HttpStatus.OK.value(), "좋아요 삭제에 성공했습니다.");
 
     private final int httpStatusCode;
 
