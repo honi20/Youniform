@@ -15,6 +15,8 @@ public enum ErrorCode {
     STAMP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 스탬프 ID 입니다."),
     DIARY_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "로그인 유저와 다이어리 작성자가 일치하지 않습니다."),
     WRITER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 유저(다이어리 작성자) ID 입니다."),
+    // photocard error code
+    PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 포토카드 ID 입니다.")
     ;
 
     private final int httpStatusCode;
