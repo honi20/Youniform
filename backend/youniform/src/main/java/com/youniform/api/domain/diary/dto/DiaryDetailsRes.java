@@ -14,7 +14,7 @@ public class DiaryDetailsRes {
 
 	private LocalDate diaryDate;
 
-	private DiaryContentDto content;
+	private DiaryContentDto contents;
 
 	private String scope;
 
