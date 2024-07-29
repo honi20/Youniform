@@ -24,14 +24,18 @@ public class Alert {
 	@JoinColumn(name = "user_id")
 	private Users user;
 
+	@Column(nullable = false)
 	private String content;
 
 	private String link;
 
+	@Column(nullable = false)
 	private Boolean isRead;
 
+	@Column(nullable = false)
 	private LocalDateTime createdAt;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private AlertType type;
 }
