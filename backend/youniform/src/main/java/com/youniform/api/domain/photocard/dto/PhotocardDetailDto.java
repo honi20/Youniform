@@ -1,14 +1,13 @@
 package com.youniform.api.domain.photocard.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
-@Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PhotocardDetailDto {
 	private String name;
 

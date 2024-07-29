@@ -1,10 +1,7 @@
 package com.youniform.api.domain.photocard.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.youniform.api.domain.diary.dto.DiaryContentObjectDto;
-import com.youniform.api.domain.diary.dto.DiaryImageObjectDto;
-import com.youniform.api.domain.diary.dto.DiaryTextboxObjectDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
@@ -13,6 +10,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @RedisHash("PhotocardContent")
 public class PhotocardContentDto {
 	private String version;
@@ -21,5 +20,5 @@ public class PhotocardContentDto {
 
 	private String background;
 
-	private DiaryImageObjectDto backgroundImage;
+	private PhotocardContentObjectDto backgroundImage;
 }
