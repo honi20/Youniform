@@ -28,8 +28,6 @@ const Container = styled.div`
     align-items: center;
 `
 const IconContainer = styled.div`
-    /* height: 5rem; */
-    /* border: 1px solid red; */
 `
 const Title = styled.div`
     color: #000;
@@ -40,6 +38,8 @@ const Title = styled.div`
     font-weight: 700;
     line-height: normal;
     margin-top: 1rem;
+    word-wrap: break-word;
+    word-break: keep-all;
     /* border: 1px solid black; */
 `
 const Subtitle = styled.div`
@@ -148,7 +148,7 @@ const buttonMap = {
     3: { bgcolor: '#262F66', color: 'white', label: '삭제' },
     4: { bgcolor: '#262F66', color: 'white', label: '초기화' },
 };
-const BasicModal = ({ state, isOpen, onClose, nickname }) => {
+const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
     if (!isOpen) return null;
     
     // const nickname = nickname;
@@ -163,15 +163,20 @@ const BasicModal = ({ state, isOpen, onClose, nickname }) => {
         return title
     }
     const renderSubtitle = (state) => {
-        const subtitle = stateMap[state ]?.subtitle || <></>;
+        const subtitle = stateMap[state]?.subtitle || <></>;
         return subtitle
-    }
+    };
+    const handleBtnClick = (buttonType) => {
+        if (onButtonClick) {
+            onButtonClick(buttonType);
+        }
+    };
     const renderBtn = (state) => {
         const btnArray = stateMap[state]?.btn || [];
         return btnArray.map((btnType, index) => {
             const { bgcolor, color, label } = buttonMap[btnType];
             return (
-                <Btn key={index} $bgcolor={bgcolor} $color={color}>
+                <Btn key={index} $bgcolor={bgcolor} $color={color} onClick={() => handleBtnClick(btnType)}>
                     {label}
                 </Btn>
             );

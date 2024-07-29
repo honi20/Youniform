@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from 'react';
 import CheckIcon from '../assets/Done_round_light.svg?react';
+import BasicModal from "../components/Modal/BasicModal";
 
 const Div = styled.div`
   margin-top: 50px;
@@ -196,6 +197,8 @@ const SelectPlayerView = () => {
     { id: 12, number: '16', position: '내야수', name: '정성훈' },
   ]
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalState, setModalState] = useState('');
 
   const handleClick = (id) => {
     setSelectedPlayers(prevSelectedPlayers => {
@@ -216,6 +219,19 @@ const SelectPlayerView = () => {
         }
       }
     });
+  };
+  const handleConfirmClick = () => {
+    console.log(selectedPlayers)
+    if (selectedPlayers.length == 0) {
+      setModalState('PlayerChangeWarning')        ;
+    } else {
+      setModalState('FavoriteChanged');
+    }
+    setIsModalOpen(true);
+  }
+  const handleModalButtonClick = (buttonType) => {
+    console.log('Button clicked:', buttonType);
+    setIsModalOpen(false);
   };
   return (
     <Div>
@@ -238,9 +254,17 @@ const SelectPlayerView = () => {
       </Content>
       <Footer>
         <ConfirmBtnWrapper>
-          <ConfirmBtn onClick={() => console.log('완료')}>선택완료</ConfirmBtn>
+          <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>
         </ConfirmBtnWrapper>
       </Footer>
+      {isModalOpen && (
+        <BasicModal
+          state={modalState}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onButtonClick={handleModalButtonClick}
+        />
+      )}
     </Div>
   )
 }
