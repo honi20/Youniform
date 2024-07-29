@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PhotocardListRes {
-	private List<PhotocardDetailDto> photocards;
+	private List<PhotocardDetailDto> photocardList;
 }
