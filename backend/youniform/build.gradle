@@ -50,6 +50,33 @@ openapi3 {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.1'
+	implementation 'com.google.code.gson:gson:2.8.9'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'commons-codec:commons-codec:1.5'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+
+	implementation 'com.auth0:java-jwt:3.13.0'
+
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.testcontainers:testcontainers:1.19.3"
+	testImplementation "org.testcontainers:junit-jupiter:1.19.3"
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	swaggerUI 'org.webjars:swagger-ui:4.11.1'
+	compileOnly 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'

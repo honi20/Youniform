@@ -1,6 +1,9 @@
 spring:
   application:
     name: api
+  config:
+    import:
+      - classpath:jwt.yml
   profiles:
     active: ${PROFILE}
 
