@@ -1,10 +1,24 @@
-import React from 'react';
-import { ThemeProvider } from '@mui/material';
-import InfoComp from './InfoComp';
-import CharacterComp from './CharacterComp';
+import React from "react";
+import { ThemeProvider } from "@mui/material";
+import InfoComp from "./InfoComp";
+import CharacterComp from "./CharacterComp";
 import {
-  Card, Folder, FolderHeader, FolderTop, Player, DotLine, StarLine, Star, Container, TextContainer, Title, Description, BtnContainer, PlayBtn, OffBtn
-} from './PlayerCompStyle'
+  Card,
+  Folder,
+  FolderHeader,
+  FolderTop,
+  Player,
+  DotLine,
+  StarLine,
+  Star,
+  Container,
+  TextContainer,
+  Title,
+  Description,
+  BtnContainer,
+  PlayBtn,
+  OffBtn,
+} from "./PlayerCompStyle";
 
 export default function PlayerContainer() {
   return (
@@ -12,12 +26,12 @@ export default function PlayerContainer() {
       theme={{
         palette: {
           primary: {
-            main: '#F8F8F8',
-            team: '#EA0029',
+            main: "#F8F8F8",
+            team: "#EA0029",
           },
         },
       }}
-      >
+    >
       <Card>
         <Folder>
           <FolderHeader>
@@ -28,33 +42,32 @@ export default function PlayerContainer() {
             <InfoComp />
           </Player>
         </Folder>
-        
+
         <DotLine />
         <StarLine>
           {Array.from({ length: 8 }).map((_, index) => (
-            <Star key={ index } />
+            <Star key={index} />
           ))}
         </StarLine>
         <Container>
-          <TextContainer >
+          <TextContainer>
             <Title>실시간 방송 알림</Title>
             <Description>방송이 시작될 때 알려드려요!</Description>
           </TextContainer>
           <BtnContainer>
-            <OffBtn onClick={()=> console.log('실시간 방송 알림')}/>
+            <OffBtn onClick={() => console.log("실시간 방송 알림")} />
           </BtnContainer>
         </Container>
         <Container>
-        <TextContainer>
+          <TextContainer>
             <Title>응원가 & 등장곡</Title>
             <Description>최애의 응원가와 등장곡을 들어봅시다!</Description>
           </TextContainer>
           <BtnContainer>
-            <PlayBtn onClick={()=> console.log('응원가 라우터 이동')}/>
+            <PlayBtn onClick={() => console.log("응원가 라우터 이동")} />
           </BtnContainer>
         </Container>
       </Card>
     </ThemeProvider>
-    
   );
 }
