@@ -31,7 +31,10 @@ public enum SuccessCode {
 
     //likes
     LIKES_CREATED(HttpStatus.CREATED.value(), "좋아요 생성에 성공했습니다."),
-    LIKES_DELETED(HttpStatus.OK.value(), "좋아요 삭제에 성공했습니다.");
+    LIKES_DELETED(HttpStatus.OK.value(), "좋아요 삭제에 성공했습니다."),
+
+    // alert
+    ALERT_CONNECTION_OK(HttpStatus.OK.value(), "알림 설정 연결에 성공했습니다.");
 
     private final int httpStatusCode;
 
