@@ -4,7 +4,7 @@ import ExpandDownIcon from '../../assets/Expand_down.svg?react';
 
 const SaveBtn = styled.div`
     position: absolute;
-    z-index: 3;
+    z-index: 11;
     width: 3rem;
     height: 3rem;
     /* border: 1px solid lightblue; */

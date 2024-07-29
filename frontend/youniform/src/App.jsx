@@ -16,12 +16,14 @@ import FindPasswordView from './pages/FindPasswordView';
 import DiaryDetailView from './pages/DiaryDetailView';
 import WriteDiaryView from './pages/WriteDiaryView';
 import Test from './pages/test';
+import SelectPlayerView from "./pages/SelectPlayerView";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
   flex-direction: column;
-  `;
+  background-color: #F8F8F8;
+`;
   
   const ContentContainer = styled.div`
   flex: 1; /* Header와 NavBar를 제외한 남은 공간을 차지 */
@@ -66,6 +68,7 @@ function App() {
             <Route path="/find-email" element={<FindEmailView />} />
             <Route path="/find-password" element={<FindPasswordView />} />
             <Route path="/test" element={<Test />} />
+            <Route path="/select-player" element={<SelectPlayerView />} />
           </Routes>
         </ContentContainer>
         <div ref={navBarRef}>
