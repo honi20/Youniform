@@ -1,10 +1,16 @@
 package com.youniform.api.domain.alert.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AlertRes {
 	private Long eventId;
 
@@ -14,7 +20,7 @@ public class AlertRes {
 
 	private Boolean isRead;
 
-	private String createdAt;
+	private LocalDateTime createdAt;
 
 	private String link;
 }
