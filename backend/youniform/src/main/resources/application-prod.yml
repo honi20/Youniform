@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQL5Dialect
+    defer-datasource-initialization: true #script 파일이 hibernate 초기화 이후 동작하게 하기 위한 설정
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URL}
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
