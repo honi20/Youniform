@@ -1,0 +1,31 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:youniform
+    username: sa
+    password: ssafy
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+  #    defer-datasource-initialization: true #script 파일이 hibernate 초기화 이후 동작하게 하기 위한 설정
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/youniform
+      
+logTracer: true
