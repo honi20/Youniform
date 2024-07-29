@@ -111,6 +111,11 @@ const stateMap = {
         subtitle: '선수 변경 시 관련 소식을 받을 수 없습니다.',
         btn: [1, 2],
     },
+    'PlayerChangeWarning': {
+        icon: <AlarmIcon/>,
+        title: '변경 사항이 없습니다. 저장하시겠습니까?',
+        btn: [1, 2],
+    },
     'DiaryDeleted': {
         icon: <AlarmIcon/>,
         title: '다이어리를 삭제하시겠습니까?',
@@ -158,7 +163,7 @@ const BasicModal = ({ state, isOpen, onClose, nickname }) => {
         return title
     }
     const renderSubtitle = (state) => {
-        const subtitle = stateMap[state]?.subtitle || <></>;
+        const subtitle = stateMap[state ]?.subtitle || <></>;
         return subtitle
     }
     const renderBtn = (state) => {
