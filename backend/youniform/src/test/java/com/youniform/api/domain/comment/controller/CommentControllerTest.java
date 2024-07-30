@@ -5,6 +5,7 @@ import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
 import com.youniform.api.domain.comment.dto.CommentAddReq;
 import com.youniform.api.domain.comment.dto.CommentModifyReq;
+import com.youniform.api.global.jwt.service.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -26,6 +29,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,14 +38,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
 @DisplayName("댓글 API 명세서")
+@WithMockUser
 public class CommentControllerTest {
-    private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private Gson gson;
+    
+    @MockBean
+    private JwtService jwtService;
 
     @Test
     public void 댓글_생성_성공() throws Exception {
@@ -49,15 +57,18 @@ public class CommentControllerTest {
         CommentAddReq commentAddReq = new CommentAddReq();
         commentAddReq.setContents("도영이 귀여워");
 
+        String jwtToken = jwtService.createAccessToken(UUID);
+
         String content = gson.toJson(commentAddReq);
 
         //when
         ResultActions actions = mockMvc.perform(
                 post("/comments/{postId}", 1L)
-                        .header("Authorization", jwtToken)
+                        .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -97,11 +108,12 @@ public class CommentControllerTest {
     @Test
     public void 댓글_전체_조회_성공() throws Exception {
         //given
+        String jwtToken = jwtService.createAccessToken(UUID);
 
         //when
         ResultActions actions = mockMvc.perform(
                 get("/comments/{postId}", 1L)
-                        .header("Authorization", jwtToken)
+                        .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -148,15 +160,18 @@ public class CommentControllerTest {
         CommentModifyReq commentModifyReq = new CommentModifyReq();
         commentModifyReq.setContents("댓글 수정예시 11111");
 
+        String jwtToken = jwtService.createAccessToken(UUID);
+
         String content = gson.toJson(commentModifyReq);
 
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/comments/{commentId}", 1L)
-                        .header("Authorization", jwtToken)
+                        .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -196,12 +211,14 @@ public class CommentControllerTest {
     @Test
     public void 댓글_삭제_성공() throws Exception {
         //given
+        String jwtToken = jwtService.createAccessToken(UUID);
 
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/comments/{commentId}", 1L)
-                        .header("Authorization", jwtToken)
+                        .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         //then

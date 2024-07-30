@@ -15,6 +15,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Profile({"local", "prod"})
 public class JwtBearerAuthenticationFilter extends GenericFilterBean {
     private final JwtService jwtService;
     private final RedisUtils redisUtils;
@@ -40,24 +42,24 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
         //토큰 타입 확인
         String token_type = jwtService.getClaim(token);
 
-        if(token_type.equals("access_token")){
-            if(jwtService.isTokenValid(token)){//인증권한 부여
+        if (token_type.equals("access_token")) {
+            if (jwtService.isTokenValid(token)) {//인증권한 부여
                 Authentication auth = jwtService.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            }else if(jwtService.isTokenExpired(token)){//accessToken 만료
+            } else if (jwtService.isTokenExpired(token)) {//accessToken 만료
                 String uuid = jwtService.getUuid(token);
                 JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(uuid);//redis에 있는 데이터 확인
-                if(jwtRedis != null){
+                if (jwtRedis != null) {
                     String refreshToken = jwtRedis.getRefreshToken();
-                    if(jwtService.isTokenExpired(refreshToken)){//refreshToken 만료 확인
+                    if (jwtService.isTokenExpired(refreshToken)) {//refreshToken 만료 확인
                         redisUtils.deleteData(uuid);
                         sendError(response, ErrorCode.EXPIRED_TOKEN);//refreshToken 만료
-                    }else{
+                    } else {
                         sendAccessToken(response, JWT.decode(token).getSubject());//accessToken 재발급
                     }
                 }
                 sendAccessToken(response, JWT.decode(token).getSubject());//accessToken 재발급
-            }else{//유효하지 않은 토큰
+            } else {//유효하지 않은 토큰
                 sendError(response, ErrorCode.NOT_VALID_TOKEN);
             }
         }
@@ -70,9 +72,7 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
 //                sendError(response, ErrorCode.NOT_VALID_TOKEN);
 //            }
 //        }
-        else{
-            filterChain.doFilter(request, response);
-        }
+        filterChain.doFilter(request, response);
     }
 
     public void sendAccessToken(HttpServletResponse response, String uuid) throws IOException {
