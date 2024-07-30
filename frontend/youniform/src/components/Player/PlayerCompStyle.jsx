@@ -1,22 +1,20 @@
 import styled from "styled-components";
-import FolderIcon from "../../assets/folder_top.svg?react";
+// import FolderIcon from "../../assets/folder_top.svg?react";
 import StarIcon from "../../assets/star.svg?react";
 import PlayIcon from "../../assets/Video_fill.svg?react";
+import { blue } from "@mui/material/colors";
 
 const Card = styled.div`
-  /* 크기   */
   margin-top: 1%;
   box-sizing: border-box;
   width: 90%;
   height: 60vh;
   padding: 3% 3%;
 
-  /* 위치 */
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 
-  /* 디자인 */
   border-radius: 30px;
   background: #fff;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -34,16 +32,36 @@ const Folder = styled.div`
 `;
 const FolderHeader = styled.div`
   display: flex;
+  /* justify-content: center; */
+  align-items: center;
   width: 100%;
   justify-content: start;
+  /* gap: -1rem; */
 `;
-const FolderTop = styled(FolderIcon)`
-  /* width: 7.8125rem; */
-  /* height: 1rem; */
+const FolderIcon = styled.svg`
+  width: 98px; /* 단위 추가 */
+  height: 16px; /* 단위 추가 */
+`;
+const FolderTop = styled.div`
   flex-shrink: 0;
-  /* border: 1px solid black; */
-  /* align-items: end; */
+  &:not(:last-child) {
+    margin-right: -1rem;
+  }
+  &:nth-child(1) {
+    fill: red;
+  }
 `;
+const FolderComponent = (isClick) => {
+  const color = isClick ? "#262F66" : "#F8F8F8";
+  return (
+    <FolderIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 16">
+      <path
+        d="M0.5 10C0.5 4.47715 4.97715 0 10.5 0H78.8838L97.5 16H0.5V10Z"
+        fill={color}
+      />
+    </FolderIcon>
+  );
+};
 // 선수 카드
 const Player = styled.div`
   width: 100%;
@@ -102,7 +120,7 @@ const TextContainer = styled.div`
 `;
 const Title = styled.div`
   color: #000;
-  font-family: Pretendard;
+  font-family: "Pretendard";
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 700;
@@ -112,7 +130,7 @@ const Title = styled.div`
 
 const Description = styled.div`
   color: #000;
-  font-family: Pretendard;
+  font-family: "Pretendard";
   font-size: 0.625rem;
   font-style: normal;
   font-weight: 400;
@@ -157,4 +175,5 @@ export {
   BtnContainer,
   PlayBtn,
   OffBtn,
+  FolderComponent,
 };
