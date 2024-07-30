@@ -15,6 +15,7 @@ import FindEmailView from './pages/FindEmailView';
 import FindPasswordView from './pages/FindPasswordView';
 import DiaryDetailView from './pages/DiaryDetailView';
 import WriteDiaryView from './pages/WriteDiaryView';
+import SignUp from "./pages/SignUp";
 import Test from './pages/test';
 import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "./pages/NewsView";
@@ -30,6 +31,7 @@ const AppContainer = styled.div`
   const ContentContainer = styled.div`
   flex: 1; /* Header와 NavBar를 제외한 남은 공간을 차지 */
   overflow-y: auto;
+  margin-top: 49px;
 `;
 
 function App() {
@@ -62,13 +64,13 @@ function App() {
             <Route path="/login" element={<LoginView />} />
             <Route path="/photo-card" element={<PhotoCardView />} />
             <Route path="/diary" element={<DiaryHomeView />} />
-            <Route path="/diary/write-diary" element={<WriteDiaryView />} />
-            <Route path="/diary/detail" element={<DiaryDetailView />} />
             <Route path="/community" element={<CommunityView />} />
-
             <Route path="/my-page" element={<MyPageView />} />
             <Route path="/find-email" element={<FindEmailView />} />
             <Route path="/find-password" element={<FindPasswordView />} />
+            <Route path="/diary-detail" element={<DiaryDetailView />} />
+            <Route path="/write-diary" element={<WriteDiaryView />} />
+            <Route path="/sign-up" element={<SignUp />} />
             <Route path="/test" element={<Test />} />
             <Route path="/select-player" element={<SelectPlayerView />} />
             <Route path="/news" element={<NewsView />} />

@@ -88,7 +88,6 @@ const DiaryHome = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  margin-top: 49px;
   `;
   
   const FriendsContainer = styled.div`
