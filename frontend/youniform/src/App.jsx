@@ -1,22 +1,22 @@
 import "./App.css";
 import { useEffect, useRef, useState } from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import MainView from './pages/MainView';
-import PhotoCardView from './pages/PhotoCardView';
-import DiaryHomeView from './pages/DiaryHomeView';
-import CommunityView from './pages/CommunityView';
-import MyPageView from './pages/MyPageView';
-import NavBar from './components/NavBar';
-import Header from './components/Header';
-import styled from 'styled-components';
-import LoginView from './pages/LoginView';
-import FindEmailView from './pages/FindEmailView';
-import FindPasswordView from './pages/FindPasswordView';
-import DiaryDetailView from './pages/DiaryDetailView';
-import WriteDiaryView from './pages/WriteDiaryView';
+import MainView from "./pages/MainView";
+import PhotoCardView from "./pages/PhotoCardView";
+import DiaryHomeView from "./pages/DiaryHomeView";
+import CommunityView from "./pages/CommunityView";
+import MyPageView from "./pages/MyPageView";
+import NavBar from "./components/NavBar";
+import Header from "./components/Header";
+import styled from "styled-components";
+import LoginView from "./pages/LoginView";
+import FindEmailView from "./pages/FindEmailView";
+import FindPasswordView from "./pages/FindPasswordView";
+import DiaryDetailView from "./pages/DiaryDetailView";
+import WriteDiaryView from "./pages/WriteDiaryView";
 import SignUp from "./pages/SignUp";
-import Test from './pages/test';
+import Test from "./pages/test";
 import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "./pages/NewsView";
 import TotalSongView from "./pages/PlayerSongView";
@@ -25,10 +25,10 @@ const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
   flex-direction: column;
-  background-color: #F8F8F8;
+  background-color: #f8f8f8;
 `;
-  
-  const ContentContainer = styled.div`
+
+const ContentContainer = styled.div`
   flex: 1; /* Header와 NavBar를 제외한 남은 공간을 차지 */
   overflow-y: auto;
   margin-top: 49px;
@@ -37,19 +37,23 @@ const AppContainer = styled.div`
 function App() {
   const headerRef = useRef(null);
   const navBarRef = useRef(null);
-  const [contentHeight, setContentHeight] = useState('auto');
+  const [contentHeight, setContentHeight] = useState("auto");
 
   useEffect(() => {
     const updateContentHeight = () => {
-      const headerHeight = headerRef.current ? headerRef.current.offsetHeight : 0;
-      const navBarHeight = navBarRef.current ? navBarRef.current.offsetHeight : 0;
+      const headerHeight = headerRef.current
+        ? headerRef.current.offsetHeight
+        : 0;
+      const navBarHeight = navBarRef.current
+        ? navBarRef.current.offsetHeight
+        : 0;
       const totalHeight = window.innerHeight - headerHeight - navBarHeight;
       setContentHeight(`${totalHeight}px`);
     };
 
     updateContentHeight();
-    window.addEventListener('resize', updateContentHeight);
-    return () => window.removeEventListener('resize', updateContentHeight);
+    window.addEventListener("resize", updateContentHeight);
+    return () => window.removeEventListener("resize", updateContentHeight);
   }, []);
 
   return (
@@ -69,7 +73,7 @@ function App() {
             <Route path="/find-email" element={<FindEmailView />} />
             <Route path="/find-password" element={<FindPasswordView />} />
             <Route path="/diary-detail" element={<DiaryDetailView />} />
-            <Route path="/write-diary" element={<WriteDiaryView />} />
+            <Route path="/diary/write-diary" element={<WriteDiaryView />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/test" element={<Test />} />
             <Route path="/select-player" element={<SelectPlayerView />} />

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 // import FolderIcon from "../../assets/folder_top.svg?react";
 import StarIcon from "../../assets/star.svg?react";
 import PlayIcon from "../../assets/Video_fill.svg?react";
@@ -16,7 +16,8 @@ const Card = styled.div`
   flex-wrap: wrap;
 
   border-radius: 30px;
-  background: #fff;
+  /* background: black; */
+  background: ${(props) => props.theme.background};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
   border: 1px solid red;
