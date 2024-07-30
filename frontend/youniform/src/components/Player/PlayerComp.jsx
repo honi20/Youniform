@@ -5,8 +5,8 @@ import CharacterComp from "./CharacterComp";
 import {
   Card,
   Folder,
-  FolderHeader,
-  FolderTop,
+  // FolderTop,
+  FolderComponent,
   Player,
   DotLine,
   StarLine,
@@ -19,8 +19,28 @@ import {
   PlayBtn,
   OffBtn,
 } from "./PlayerCompStyle";
+import { useNavigate } from "react-router-dom";
 
 export default function PlayerContainer() {
+  const navigate = useNavigate();
+  const playerCount = 3;
+  const colors = ["#262F66"];
+  // 연결하기,,,,
+  const FolderTop = () => {
+    const folderComponents = Array.from({ length: playerCount }, (_, index) => {
+      const color = colors[index] || "#F8F8F8";
+      return <FolderComponent key={index} isClick={true} />;
+    });
+    return (
+      <>
+        <div
+          style={{ display: "flex", width: "100%", border: "1px solid black" }}
+        >
+          {folderComponents}
+        </div>
+      </>
+    );
+  };
   return (
     <ThemeProvider
       theme={{
@@ -34,9 +54,7 @@ export default function PlayerContainer() {
     >
       <Card>
         <Folder>
-          <FolderHeader>
-            <FolderTop />
-          </FolderHeader>
+          <FolderTop playerCount={playerCount} />
           <Player>
             <CharacterComp />
             <InfoComp />
@@ -64,7 +82,7 @@ export default function PlayerContainer() {
             <Description>최애의 응원가와 등장곡을 들어봅시다!</Description>
           </TextContainer>
           <BtnContainer>
-            <PlayBtn onClick={() => console.log("응원가 라우터 이동")} />
+            <PlayBtn onClick={() => navigate("/songs")} />
           </BtnContainer>
         </Container>
       </Card>

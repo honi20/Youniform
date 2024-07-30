@@ -6,6 +6,7 @@ import MessageIcon from "../assets/mainview/Message_light.svg?react";
 import ChatIcon from "../assets/mainview/Chat_alt_2_light.svg?react";
 import HeartIcon from "../assets/mainview/Add_ring_light.svg?react";
 import { useNavigate } from "react-router-dom";
+
 const Div = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,8 +17,8 @@ const Div = styled.div`
   background-color: #f8f8f8;
 `;
 const Container = styled.div`
-/* margin-top: 3%; */
-  border: 1px solid black;
+  /* margin-top: 3%; */
+  /* border: 1px solid black; */
   width: 100%;
   display: flex;
   align-items: center;

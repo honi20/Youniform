@@ -18,6 +18,7 @@ import WriteDiaryView from './pages/WriteDiaryView';
 import Test from './pages/test';
 import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "./pages/NewsView";
+import TotalSongView from "./pages/PlayerSongView";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -71,6 +72,7 @@ function App() {
             <Route path="/test" element={<Test />} />
             <Route path="/select-player" element={<SelectPlayerView />} />
             <Route path="/news" element={<NewsView />} />
+            <Route path="/songs" element={<TotalSongView />} />
           </Routes>
         </ContentContainer>
         <div ref={navBarRef}>
