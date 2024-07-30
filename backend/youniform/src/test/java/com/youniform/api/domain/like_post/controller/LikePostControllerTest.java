@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.youniform.api.domain.diary.util.DiaryTestUtil.getCommonResponseFields;
 import static com.youniform.api.global.statuscode.SuccessCode.LIKES_CREATED;
+import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
-@DisplayName("좋아요 API 명세서")
+@DisplayName("커뮤니티 - 좋아요 API 명세서")
 @WithMockUser
 public class LikePostControllerTest {
     private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
