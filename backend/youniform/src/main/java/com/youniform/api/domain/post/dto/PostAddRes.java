@@ -1,0 +1,34 @@
+package com.youniform.api.domain.post.dto;
+
+import com.youniform.api.domain.post.entity.Post;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@Builder
+public class PostAddRes {
+    private Long postId;
+
+    private String contents;
+
+    private List<String> tags;
+
+    private String imageUrl;
+
+    private LocalDate createdDate;
+
+    public static PostAddRes toDto(Post post, List<String> tags) {
+        return PostAddRes.builder()
+                .postId(post.getId())
+                .contents(post.getContents())
+                .imageUrl(post.getImgUrl())
+                .createdDate(post.getDate())
+                .tags(tags)
+                .build();
+    }
+}

@@ -17,6 +17,13 @@ public enum SuccessCode {
     OTHER_DIARIES_OK(HttpStatus.OK.value(), "다른 유저의 다이어리 리스트 조회에 성공했습니다."),
     DIARY_RESOURCES_OK(HttpStatus.OK.value(), "다이어리 리소스 리스트 조회에 성공했습니다."),
 
+    //post
+    POST_CREATED(HttpStatus.CREATED.value(), "게시글 생성에 성공했습니다."),
+    POST_LIST_OK(HttpStatus.OK.value(), "게시글 리스트 조회에 성공했습니다."),
+    POST_DETAILS_OK(HttpStatus.OK.value(), "게시글 상세보기에 성공했습니다."),
+    POST_MODIFIED(HttpStatus.OK.value(), "게시글 수정에 성공했습니다."),
+    POST_DELETED(HttpStatus.NO_CONTENT.value(), "게시글 삭제에 성공했습니다"),
+
     //comment
     COMMENT_CREATED(HttpStatus.CREATED.value(), "댓글 생성에 성공했습니다."),
     COMMENT_LIST_OK(HttpStatus.OK.value(), "댓글 조회에 성공했습니다."),

@@ -22,14 +22,11 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users userId;
+    private Users user;
 
     private String imgUrl;
 
     private String contents;
-
-    @Enumerated(EnumType.STRING)
-    private PostScope scope;
 
     private LocalDate date;
 }
