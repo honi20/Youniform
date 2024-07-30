@@ -1,7 +1,8 @@
-import React from "react";
-import { ThemeProvider } from "@mui/material";
+import React, { useEffect } from "react";
+import { ThemeProvider } from "styled-components";
 import InfoComp from "./InfoComp";
 import CharacterComp from "./CharacterComp";
+import useThemeStore from "../../stores/themeStore";
 import {
   Card,
   Folder,
@@ -41,17 +42,11 @@ export default function PlayerContainer() {
       </>
     );
   };
+  const { theme, setTheme } = useThemeStore();
+  // useEffect(()=>{
+  // })
   return (
-    <ThemeProvider
-      theme={{
-        palette: {
-          primary: {
-            main: "#F8F8F8",
-            team: "#EA0029",
-          },
-        },
-      }}
-    >
+    <ThemeProvider theme={theme}>
       <Card>
         <Folder>
           <FolderTop playerCount={playerCount} />
