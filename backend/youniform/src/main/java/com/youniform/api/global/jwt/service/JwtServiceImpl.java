@@ -7,6 +7,7 @@ import com.youniform.api.domain.user.role.UserRole;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.redis.RedisUtils;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
     //== jwt.yml에 설정된 값 가져오기 ==//
     @Value("${jwt.secret}")
@@ -28,7 +30,7 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.refresh.expiration}")
     private long refreshTokenValidityInSeconds;
 
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
     private static final String ISSUER = "www.samsung.com";
     private static final String ACCESS_TOKEN_CLAIM_NAME = "access_token";
     private static final String REFRESH_TOKEN_CLAIM_NAME = "refresh_token";
@@ -45,8 +47,16 @@ public class JwtServiceImpl implements JwtService {
 
     @PostConstruct
     public void init() {
-        System.out.println("accessToken = " + createAccessToken("1234"));
-        System.out.println("refreshToken = " + createRefreshToken("1234"));
+        String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
+        String accessToken = createAccessToken(UUID);
+        String refreshToken = createRefreshToken(UUID);
+        System.out.println("accessToken = " + accessToken);
+        System.out.println("refreshToken = " + refreshToken);
+        JwtRedis redis = new JwtRedis();
+        redis.setRefreshToken(refreshToken);
+        redis.setUuid(UUID);
+        redis.setUserId(123L);
+        redisUtils.setData(UUID, redis);
     }
 
     @Override
@@ -76,7 +86,9 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public Authentication getAuthentication(String accessToken) {
         String uuid = JWT.decode(accessToken).getSubject();
-        return new UsernamePasswordAuthenticationToken(uuid, accessToken, List.of(UserRole.ROLE_USER));
+        JwtRedis jwtRedis = (JwtRedis)redisUtils.getData(uuid);
+        Long userId = jwtRedis.getUserId();
+        return new UsernamePasswordAuthenticationToken(userId, accessToken, List.of(UserRole.ROLE_USER));
     }
 
     @Override

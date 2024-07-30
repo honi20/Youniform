@@ -42,6 +42,9 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
         //토큰 타입 확인
         String token_type = jwtService.getClaim(token);
 
+        if(token_type == null) {
+            sendError(response, ErrorCode.NOT_VALID_TOKEN);
+        }
         if (token_type.equals("access_token")) {
             if (jwtService.isTokenValid(token)) {//인증권한 부여
                 Authentication auth = jwtService.getAuthentication(token);
