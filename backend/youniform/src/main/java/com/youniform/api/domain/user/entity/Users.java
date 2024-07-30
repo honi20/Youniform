@@ -24,7 +24,7 @@ public class Users {
     @JoinColumn(name = "team_id")
     private Team teamId;
 
-    private String nickName;
+    private String nicname;
 
     private String introduce;
 
@@ -36,7 +36,7 @@ public class Users {
 
     private String profileUrl;
 
-    private Integer theme;
+    private Theme theme;
 
     private Boolean pushAlert;
 
