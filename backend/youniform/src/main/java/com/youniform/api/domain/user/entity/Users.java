@@ -24,7 +24,7 @@ public class Users {
     @JoinColumn(name = "team_id")
     private Team teamId;
 
-    private String nicname;
+    private String nickname;
 
     private String introduce;
 

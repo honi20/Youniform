@@ -23,7 +23,7 @@ public class CommentListDto {
         return CommentListDto.builder()
                 .commentId(comment.getId())
                 .imgUrl(user.getProfileUrl())
-                .nickname(user.getNicname())
+                .nickname(user.getNickname())
                 .contents(comment.getContent())
                 .createAt(calculateTime(comment.getCreatedAt()))
                 .updateAt(calculateTime(comment.getUpdatedAt()))
