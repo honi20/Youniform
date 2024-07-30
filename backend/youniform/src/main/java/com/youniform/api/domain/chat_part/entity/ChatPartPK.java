@@ -1,7 +1,9 @@
 package com.youniform.api.domain.chat_part.entity;
 
 import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatPartPK implements Serializable {
-  private Long userId;
+    private Long userId;
 
-  private Long roomId;
+    private Long roomId;
 }
