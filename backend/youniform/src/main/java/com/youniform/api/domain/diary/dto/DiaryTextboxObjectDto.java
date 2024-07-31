@@ -1,14 +1,10 @@
 package com.youniform.api.domain.diary.dto;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@JsonTypeName("textbox")
 public class DiaryTextboxObjectDto extends DiaryContentObjectDto {
 	private String fontFamily;
 	private String fontWeight;
