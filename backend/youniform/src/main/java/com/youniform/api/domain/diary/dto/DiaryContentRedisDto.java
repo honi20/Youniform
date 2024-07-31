@@ -1,14 +1,16 @@
 package com.youniform.api.domain.diary.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiaryListRes {
-	private List<DiaryDetailDto> diaryList;
+@Builder
+public class DiaryContentRedisDto {
+	private Long userId;
+
+	private DiaryContentDto contents;
 }

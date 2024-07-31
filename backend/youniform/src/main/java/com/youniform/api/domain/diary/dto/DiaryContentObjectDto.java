@@ -1,11 +1,9 @@
 package com.youniform.api.domain.diary.dto;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
-@Getter
 @NoArgsConstructor
 public class DiaryContentObjectDto {
 	private String type;

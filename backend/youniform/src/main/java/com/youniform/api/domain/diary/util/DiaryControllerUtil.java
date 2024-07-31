@@ -14,39 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiaryControllerUtil {
-	public static void validateDiaryAddReq(DiaryAddReq diaryAddReq) {
-		try {
-			LocalDate.parse(diaryAddReq.getDiaryDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		} catch (DateTimeParseException e) {
-			throw new CustomException(ErrorCode.INVALID_DIARY_DATE);
-		}
-
-		DiaryContentDto contents = diaryAddReq.getContents();
-		if (contents.getVersion() == null || contents.getVersion().equals("")) {
-			throw new CustomException(ErrorCode.INVALID_DIARY_CONTENTS);
-		} else if (contents.getBackground() == null || contents.getBackground().equals("")) {
-			throw new CustomException(ErrorCode.INVALID_DIARY_CONTENTS);
-		} else if (contents.getBackgroundImage().getType() == null
-				|| !contents.getBackgroundImage().getType().equals("image")) {
-			throw new CustomException(ErrorCode.INVALID_DIARY_CONTENTS);
-		} else {
-			for (DiaryContentObjectDto dto : contents.getObjects()) {
-				if (dto.getType() == null
-						|| (!dto.getType().equals("image") && !dto.getType().equals("textbox"))) {
-					throw new CustomException(ErrorCode.INVALID_DIARY_CONTENTS);
-				}
-			}
-		}
-
-		if (!diaryAddReq.getScope().equals("ALL") && !diaryAddReq.getScope().equals("FRIENDS") && !diaryAddReq.getScope().equals("PRIVATE")) {
-			throw new CustomException(ErrorCode.INVALID_DIARY_SCOPE);
-		}
-
-		if (diaryAddReq.getStampId() < 0) {
-			throw new CustomException(ErrorCode.STAMP_NOT_FOUND);
-		}
-	}
-
 	public static DiaryDetailsRes getDiaryDetailsExample() throws JsonProcessingException {
 		return new DiaryDetailsRes(1L, LocalDate.parse("2024-07-24"), getDiaryContent(), "ALL", "https://cdn.pixabay.com/photo/2016/04/27/18/31/minion-1357220_960_720.jpg");
 	}
