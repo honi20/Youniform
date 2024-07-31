@@ -34,4 +34,6 @@ public class Team {
     private Float winningRate;
 
     private Integer win;
+
+    private String imageUrl;
 }

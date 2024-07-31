@@ -8,18 +8,24 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class ProfileModifyRes {
-    private String nickname;//닉네임
+public class UserDetailsRes {
+    private String userId;
 
-    private String introduce;//한줄 소개
+    private String nickname;
 
-    private String profileUrl;//프로필 사진 URL
+    private String introduce;
 
-    public ProfileModifyRes toDto(Users user) {
-        return ProfileModifyRes.builder()
+    private String profileUrl;
+
+    private String teamImage;
+
+    public UserDetailsRes toDto(Users user) {
+        return UserDetailsRes.builder()
+                .userId(user.getUuid())
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
                 .profileUrl(user.getProfileUrl())
+                .teamImage(user.getTeam().getImageUrl())
                 .build();
     }
 }

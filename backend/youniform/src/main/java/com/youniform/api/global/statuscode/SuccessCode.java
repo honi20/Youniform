@@ -7,7 +7,19 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum SuccessCode {
-    TEST(400, "ok"),
+    //user
+    USER_NICKNAME_OK(HttpStatus.OK.value(), "사용 가능한 닉네임입니다."),
+    VERIFY_CODE_SEND(HttpStatus.NO_CONTENT.value(), "인증번호 발송에 성공했습니다."),
+    EMAIL_VERIFIED(HttpStatus.NO_CONTENT.value(), "사용 가능한 이메일입니다."),
+    PASSWORD_RESET_EMAIL_SEND(HttpStatus.NO_CONTENT.value(), "비밀번호 재설정 링크를 이메일로 발송했습니다."),
+    PASSWORD_RESET_OK(HttpStatus.OK.value(), "비밀번호 재설정에 성공했습니다."),
+    USER_DETAILS_OK(HttpStatus.OK.value(), "내 정보 조회에 성공했습니다."),
+    PROFILE_MODIFIED(HttpStatus.OK.value(), "프로필 수정에 성공했습니다."),
+    PASSWORD_MODIFIED(HttpStatus.NO_CONTENT.value(), "비밀번호 수정에 성공했습니다."),
+    THEME_MODIFIED(HttpStatus.NO_CONTENT.value(), "테마 변경에 성공했습니다."),
+    ALERT_MODIFIED(HttpStatus.NO_CONTENT.value(), "푸시 알림 변경에 선공했습니다."),
+    USER_RESIGNED(HttpStatus.NO_CONTENT.value(), "회원 탈퇴에 성공했습니다."),
+
     // diary success code
     DIARY_CREATED(HttpStatus.CREATED.value(), "다이어리 저장에 성공했습니다."),
     DIARY_DETAILS_OK(HttpStatus.OK.value(), "다이어리 상세보기에 성공했습니다."),

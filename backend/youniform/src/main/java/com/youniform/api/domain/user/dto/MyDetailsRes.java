@@ -1,5 +1,6 @@
 package com.youniform.api.domain.user.dto;
 
+import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,18 +9,27 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class ProfileModifyRes {
+public class MyDetailsRes {
     private String nickname;//닉네임
 
     private String introduce;//한줄 소개
 
     private String profileUrl;//프로필 사진 URL
 
-    public ProfileModifyRes toDto(Users user) {
-        return ProfileModifyRes.builder()
+    private Theme theme;//테마
+
+    private Boolean pushAlert;//알림 상태
+
+    private String teamImage;
+
+    public MyDetailsRes toDto(Users user) {
+        return MyDetailsRes.builder()
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
                 .profileUrl(user.getProfileUrl())
+                .theme(user.getTheme())
+                .pushAlert(user.getPushAlert())
+                .teamImage(user.getTeam().getImageUrl())
                 .build();
     }
 }

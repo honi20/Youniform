@@ -11,5 +11,5 @@ public enum Theme {
     KIA,
     HANWHA,
     LG,
-    NC,
+    NC
 }

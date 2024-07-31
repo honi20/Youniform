@@ -22,7 +22,7 @@ public class LocalSignupReq {
     private String introduce;
 
     @NotNull
-    private Integer team;
+    private String team;
 
     private List<Integer> players;
 }
