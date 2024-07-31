@@ -3,9 +3,11 @@ package com.youniform.api.domain.diary.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.diary.dto.*;
+import com.youniform.api.domain.diary.entity.Scope;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +119,28 @@ public class DiaryTestUtil {
         return new DiaryAddReq(diaryDate, diaryContentDto, scope, stampId);
     }
 
+    public static DiaryDetailDto getDiaryDetailDto() throws JsonProcessingException {
+        return new DiaryDetailDto("User1", LocalDate.parse("2024-07-31"), getDiaryContent(), Scope.FRIENDS, "http://youniform.com/sticker1.png", "s3 url");
+    }
+
+    public static DiaryContentDto getDiaryContent() throws JsonProcessingException {
+        List<DiaryContentObjectDto> objects = new ArrayList<>();
+
+        ObjectMapper mapper = new ObjectMapper();
+        DiaryContentObjectDto imageObj = mapper.readValue(getImageJson(), DiaryImageObjectDto.class);
+        objects.add(imageObj);
+        DiaryContentObjectDto textboxObj = mapper.readValue(getTextboxJson(), DiaryTextboxObjectDto.class);
+        objects.add(textboxObj);
+
+        DiaryContentDto diaryContentDto = new DiaryContentDto();
+        diaryContentDto.setVersion("6.0.2");
+        diaryContentDto.setObjects(objects);
+        diaryContentDto.setBackground("white");
+        diaryContentDto.setBackgroundImage((DiaryImageObjectDto) imageObj);
+
+        return diaryContentDto;
+    }
+
     public static DiaryModifyReq getDiaryModifyReq(DiaryContentDto diaryContentDto, String scope, Long stampId) {
         return new DiaryModifyReq("2024-07-24", diaryContentDto, scope, stampId);
     }
@@ -151,10 +175,12 @@ public class DiaryTestUtil {
             fields.add(fieldWithPath(prefix + "stampId").type(JsonFieldType.NUMBER)
                     .description("다이어리 스탬프 Id"));
         } else {
-            fields.add(fieldWithPath(prefix + "writerId").type(JsonFieldType.NUMBER)
-                    .description("작성자 Id"));
+            fields.add(fieldWithPath(prefix + "nickname").type(JsonFieldType.STRING)
+                    .description("작성자 닉네임"));
             fields.add(fieldWithPath(prefix + "stampImgUrl").type(JsonFieldType.STRING)
                     .description("다이어리 스탬프 이미지 url"));
+            fields.add(fieldWithPath(prefix + "profileUrl").type(JsonFieldType.STRING)
+                    .description("작성자 프로필 이미지 url"));
         }
         fields.add(fieldWithPath(prefix + "diaryDate").type(JsonFieldType.STRING)
                 .description("일기 날짜"));

@@ -6,11 +6,11 @@ import com.youniform.api.domain.diary.dto.resource.*;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.exception.CustomException;
+import com.youniform.api.global.jwt.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +27,11 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 public class DiaryController {
 	private final DiaryService diaryService;
 
+	private final JwtService jwtService;
+
 	@PostMapping
-	public ResponseEntity<?> diaryAdd(@RequestBody @Valid DiaryAddReq diaryAddReq) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Long userId = (Long) authentication.getPrincipal();
+	public ResponseEntity<?> diaryAdd(@RequestBody @Valid DiaryAddReq diaryAddReq) throws JsonProcessingException {
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryAddRes response = diaryService.addDiary(userId, diaryAddReq);
 
@@ -39,11 +40,10 @@ public class DiaryController {
 
 	@GetMapping("/{diaryId}")
 	public ResponseEntity<?> diaryDetails(@PathVariable Long diaryId) throws JsonProcessingException {
-		if (diaryId == null || diaryId < 0) {
-			throw new CustomException(DIARY_NOT_FOUND);
-		}
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryDetailsRes response = getDiaryDetailsExample();
+		DiaryDetailDto response = diaryService.detailDiary(userId, diaryId);
+
 		return new ResponseEntity<>(ResponseDto.success(DIARY_DETAILS_OK, response), HttpStatus.OK);
 	}
 
@@ -67,8 +67,8 @@ public class DiaryController {
 
 	@GetMapping("/list")
 	public ResponseEntity<?> diaryMyList() throws JsonProcessingException {
-		DiaryListRes response = getDiaryListRes();
-		return new ResponseEntity<>(ResponseDto.success(MY_DIARIES_OK, response), HttpStatus.OK);
+//		DiaryListRes response = getDiaryListRes();
+		return new ResponseEntity<>(ResponseDto.success(MY_DIARIES_OK, null), HttpStatus.OK);
 	}
 
 	@GetMapping("/list/{userUuid}")
@@ -77,8 +77,8 @@ public class DiaryController {
 			throw new CustomException(WRITER_NOT_FOUND);
 		}
 
-		DiaryListRes response = getDiaryListRes();
-		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
+//		DiaryListRes response = getDiaryListRes();
+		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, null), HttpStatus.OK);
 	}
 
 	@GetMapping("/resources")

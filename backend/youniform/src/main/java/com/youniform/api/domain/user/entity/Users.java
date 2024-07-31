@@ -20,9 +20,9 @@ public class Users {
     @Column(name = "user_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    private Team teamId;
+    private Team team;
 
     private String nickname;
 

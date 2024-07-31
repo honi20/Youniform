@@ -1,6 +1,9 @@
 package com.youniform.api.domain.diary.dto;
 
+import com.youniform.api.domain.diary.entity.Diary;
+import com.youniform.api.domain.diary.entity.Scope;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,14 +12,28 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class DiaryDetailDto {
-	private Long writerId;
+	private String nickname;
 
 	private LocalDate diaryDate;
 
 	private DiaryContentDto contents;
 
-	private String scope;
+	private Scope scope;
 
 	private String stampImgUrl;
+
+	private String profileUrl;;
+
+	public static DiaryDetailDto toDto(Diary diary, DiaryContentDto contents) {
+		return DiaryDetailDto.builder()
+				.nickname(diary.getUser().getNickname())
+				.profileUrl(diary.getUser().getProfileUrl())
+				.diaryDate(diary.getDiaryDate())
+				.contents(contents)
+				.scope(diary.getScope())
+				.stampImgUrl(diary.getStamp().getImgUrl())
+				.build();
+	}
 }

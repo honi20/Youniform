@@ -2,14 +2,15 @@ package com.youniform.api.domain.diary.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.youniform.api.domain.diary.dto.DiaryAddReq;
-import com.youniform.api.domain.diary.dto.DiaryAddRes;
-import com.youniform.api.domain.diary.dto.DiaryModifyReq;
+import com.youniform.api.config.RedisTestContainerConfig;
+import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
-import com.youniform.api.global.statuscode.ErrorCode;
+import com.youniform.api.global.redis.RedisUtils;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,10 +49,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(DiaryController.class)
+@SpringBootTest
+@Transactional
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
+@ExtendWith(RedisTestContainerConfig.class)
 @DisplayName("다이어리 API 명세서")
 @WithMockUser
 public class DiaryControllerTest {
@@ -67,10 +72,13 @@ public class DiaryControllerTest {
     @MockBean
     private DiaryService diaryService;
 
+    @MockBean
+    private RedisUtils redisUtils;
+
     private String jwtToken;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws JsonProcessingException {
         jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ";
 
         when(jwtService.createAccessToken(UUID)).thenReturn(jwtToken);
@@ -81,13 +89,15 @@ public class DiaryControllerTest {
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(123L, null, List.of())
         );
+
+        setRedisDiaryContent(123L);
     }
 
     @Test
     public void 다이어리_생성_성공() throws Exception {
         // given
         DiaryAddReq diaryAddReq = getDiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 1L);
-        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenReturn(new DiaryAddRes(1L));
+        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenReturn(new DiaryAddRes(2L));
 
         // when & then
         performPost("/diaries", diaryAddReq)
@@ -221,12 +231,11 @@ public class DiaryControllerTest {
                 );
     }
 
-    /**
     @Test
     public void 다이어리_상세조회_성공() throws Exception {
-        Long diaryId = 1L;
+        when(diaryService.detailDiary(anyLong(), anyLong())).thenReturn(getDiaryDetailDto());
 
-        performGet("/diaries/{diaryId}", diaryId)
+        performGet("/diaries/{diaryId}", 123L)
                 .andExpect(status().isOk())
                 .andDo(document(
                         "Diary 상세조회 성공",
@@ -251,9 +260,9 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_상세조회_실패_존재하지_않는_다이어리() throws Exception {
-        Long diaryId = -1L;
+        when(diaryService.detailDiary(anyLong(), anyLong())).thenThrow(new CustomException(DIARY_NOT_FOUND));
 
-        performGet("/diaries/{diaryId}", diaryId)
+        performGet("/diaries/{diaryId}", 100L)
                 .andExpect(status().isNotFound())
                 .andDo(document(
                         "Diary 상세조회 실패 - 존재하지 않는 다이어리 (Diary ID가 유효하지 않음)",
@@ -274,6 +283,7 @@ public class DiaryControllerTest {
                 );
     }
 
+    /**
     @Test
     public void 다이어리_수정_성공() throws Exception {
         DiaryModifyReq diaryModifyReq = getDiaryModifyReq(getDiaryContentDto(true), "ALL", 1L);
@@ -544,5 +554,15 @@ public class DiaryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
         );
+    }
+
+    private void setRedisDiaryContent(Long id) throws JsonProcessingException {
+        DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
+                .userId(id)
+                .contents(getDiaryContent())
+                .build();
+
+        redisUtils.setData("diaryContents_" + id, mapper.writeValueAsString(redisDto));
+        System.out.println(redisUtils.getData("diaryContents_123"));
     }
 }

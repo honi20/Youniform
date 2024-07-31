@@ -8,27 +8,21 @@ import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.statuscode.ErrorCode;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiaryControllerUtil {
-	public static DiaryDetailsRes getDiaryDetailsExample() throws JsonProcessingException {
-		return new DiaryDetailsRes(1L, LocalDate.parse("2024-07-24"), getDiaryContent(), "ALL", "https://cdn.pixabay.com/photo/2016/04/27/18/31/minion-1357220_960_720.jpg");
-	}
-
-	public static DiaryListRes getDiaryListRes() throws JsonProcessingException {
-		List<DiaryDetailDto> diaryList = new ArrayList<>();
-		diaryList.add(getDiaryListDetailsExample(1L, "2024-07-24", "ALL"));
-		diaryList.add(getDiaryListDetailsExample(1L, "2024-03-15", "PRIVATE"));
-
-		return new DiaryListRes(diaryList);
-	}
-
-	public static DiaryDetailDto getDiaryListDetailsExample(Long writerId, String diaryDate, String scope) throws JsonProcessingException {
-		return new DiaryDetailDto(writerId, LocalDate.parse(diaryDate), getDiaryContent(), scope, "https://cdn.pixabay.com/photo/2016/04/27/18/31/minion-1357220_960_720.jpg");
-	}
+//	public static DiaryListRes getDiaryListRes() throws JsonProcessingException {
+//		List<DiaryDetailDto> diaryList = new ArrayList<>();
+//		diaryList.add(getDiaryListDetailsExample(1L, "2024-07-24", "ALL"));
+//		diaryList.add(getDiaryListDetailsExample(1L, "2024-03-15", "PRIVATE"));
+//
+//		return new DiaryListRes(diaryList);
+//	}
+//
+//	public static DiaryDetailDto getDiaryListDetailsExample(Long writerId, String diaryDate, String scope) throws JsonProcessingException {
+//		return new DiaryDetailDto(writerId, LocalDate.parse(diaryDate), getDiaryContent(), scope, "https://cdn.pixabay.com/photo/2016/04/27/18/31/minion-1357220_960_720.jpg");
+//	}
 
 	public static ResourceListRes getDiaryResourceRes() {
 		ResourceItemDto item1 = new ResourceItemDto("Item1", "http://example.com/item1.png");

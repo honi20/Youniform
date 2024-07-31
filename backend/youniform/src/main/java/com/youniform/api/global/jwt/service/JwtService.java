@@ -1,6 +1,7 @@
 package com.youniform.api.global.jwt.service;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
 public interface JwtService {
     String createAccessToken(String uuid);
@@ -16,4 +17,6 @@ public interface JwtService {
     boolean isTokenValid(String token);
 
     boolean isTokenExpired(String token);
+
+    Long getUserId(SecurityContext securityContext);
 }
