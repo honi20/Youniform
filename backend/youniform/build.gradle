@@ -15,6 +15,10 @@ plugins {
     id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
+ext {
+    serverUrl = project.findProperty('serverUrl')
+}
+
 group = 'com.youniform'
 version = '0.0.1-SNAPSHOT'
 
@@ -28,6 +32,7 @@ repositories {
     mavenCentral()
 }
 
+
 swaggerSources {
     sample {
         setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
@@ -40,7 +45,7 @@ openapi3 {
                 url = "http://localhost:8080"
             },
             {
-                url = "${System.getenv('serverUrl')}"
+                url = "$serverUrl"
             }
     ]
     title = "Youniform API 문서"
@@ -91,12 +96,12 @@ tasks.withType(GenerateSwaggerUI) {
     doFirst {
         def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
 
-        def securitySchemesContent = "  securitySchemes:\n" +                             \
-                                                                 "    APIKey:\n" +                             \
-                                                                 "      type: apiKey\n" +                             \
-                                                                 "      name: Authorization\n" +                             \
-                                                                 "      in: header\n" +                            \
-                                                                 "security:\n" +
+        def securitySchemesContent = "  securitySchemes:\n" +                                  \
+                                                                      "    APIKey:\n" +                                  \
+                                                                      "      type: apiKey\n" +                                  \
+                                                                      "      name: Authorization\n" +                                  \
+                                                                      "      in: header\n" +                                 \
+                                                                      "security:\n" +
                 "  - APIKey: []  # Apply the security scheme here"
 
         swaggerUIFile.append securitySchemesContent
