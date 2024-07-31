@@ -15,7 +15,7 @@ public class PostAddReq {
 
     private List<String> tags;
 
-    public Post toEntity(Users user, String imgUrl) {
+    public Post toEntity(Users user, String imgUrl, String contents) {
         return Post.builder()
                 .contents(contents)
                 .imgUrl(imgUrl)

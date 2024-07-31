@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
@@ -127,6 +128,73 @@ public class PostControllerTest {
     }
 
     @Test
+    public void 게시글_목록_조회_성공() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/posts")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("lastPostId", "")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(POST_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(POST_LIST_OK.getMessage()))
+                .andDo(MockMvcRestDocumentation.document(
+                        "Post 목록 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("Post 목록 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("lastPostId").description("마지막 Post Id (Optional)").optional()
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.postList.content").type(JsonFieldType.ARRAY)
+                                                        .description("게시글 목록"),
+                                                fieldWithPath("body.postList.page").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 번호"),
+                                                fieldWithPath("body.postList.size").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 사이즈"),
+                                                fieldWithPath("body.postList.hasNext").type(JsonFieldType.BOOLEAN)
+                                                        .description("다음 슬라이스 여부"),
+                                                fieldWithPath("body.postList.*[].postId").type(JsonFieldType.NUMBER)
+                                                        .description("게시글 ID"),
+                                                fieldWithPath("body.postList.*[].profileImg").type(JsonFieldType.STRING)
+                                                        .description("작성자 프로필 사진 url"),
+                                                fieldWithPath("body.postList.*[].nickname").type(JsonFieldType.STRING)
+                                                        .description("작성자 닉네임"),
+                                                fieldWithPath("body.postList.*[].imageUrl").type(JsonFieldType.STRING)
+                                                        .description("게시글에 삽입된 이미지 url"),
+                                                fieldWithPath("body.postList.*[].contents").type(JsonFieldType.STRING)
+                                                        .description("게시글 내용"),
+                                                fieldWithPath("body.postList.*[].tags").type(JsonFieldType.ARRAY)
+                                                        .description("태그 목록"),
+                                                fieldWithPath("body.postList.*[].createdAt").type(JsonFieldType.STRING)
+                                                        .description("작성 일자"),
+                                                fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
+                                                        .description("댓글 개수")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Post 목록 조회 Request"))
+                                .responseSchema(Schema.schema("Post 목록 조회 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
     public void 게시글_상세_조회_성공() throws Exception {
         //given
         String jwtToken = jwtService.createAccessToken(UUID);
@@ -158,15 +226,15 @@ public class PostControllerTest {
                                                 fieldWithPath("body.postId").type(JsonFieldType.NUMBER)
                                                         .description("게시글 ID"),
                                                 fieldWithPath("body.profileImg").type(JsonFieldType.STRING)
-                                                        .description("게시글 ID"),
+                                                        .description("작성자 프로필 사진 url"),
                                                 fieldWithPath("body.nickname").type(JsonFieldType.STRING)
-                                                        .description("게시글 ID"),
+                                                        .description("작성자 닉네임"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("본문 내용"),
                                                 fieldWithPath("body.tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 내용들"),
+                                                        .description("태그 목록"),
                                                 fieldWithPath("body.imageUrl").type(JsonFieldType.STRING)
-                                                        .description("게시글 이미지"),
+                                                        .description("게시글에 삽입된 이미지 url"),
                                                 fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
                                                         .description("게시글 작성일"),
                                                 fieldWithPath("body.commentCount").type(JsonFieldType.NUMBER)
