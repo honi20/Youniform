@@ -63,6 +63,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'io.github.cdimascio:dotenv-java:2.2.0'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.3.3'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
@@ -90,12 +91,12 @@ tasks.withType(GenerateSwaggerUI) {
     doFirst {
         def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
 
-        def securitySchemesContent = "  securitySchemes:\n" +                            \
-                                                                "    APIKey:\n" +                            \
-                                                                "      type: apiKey\n" +                            \
-                                                                "      name: Authorization\n" +                            \
-                                                                "      in: header\n" +                           \
-                                                                "security:\n" +
+        def securitySchemesContent = "  securitySchemes:\n" +                             \
+                                                                 "    APIKey:\n" +                             \
+                                                                 "      type: apiKey\n" +                             \
+                                                                 "      name: Authorization\n" +                             \
+                                                                 "      in: header\n" +                            \
+                                                                 "security:\n" +
                 "  - APIKey: []  # Apply the security scheme here"
 
         swaggerUIFile.append securitySchemesContent
