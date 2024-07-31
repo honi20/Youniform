@@ -1,5 +1,7 @@
 package com.youniform.api.domain.diary.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.entity.Diary;
 import com.youniform.api.domain.diary.entity.DiaryStamp;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
+import static com.youniform.api.global.statuscode.ErrorCode.DIARY_NOT_FOUND;
 import static com.youniform.api.global.statuscode.ErrorCode.STAMP_NOT_FOUND;
 
 @Service
@@ -26,9 +29,11 @@ public class DiaryServiceImpl implements DiaryService {
 
 	private final RedisUtils redisUtils;
 
+	private final ObjectMapper objectMapper;
+
 	@Override
 	@Transactional
-	public DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq) {
+	public DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq) throws JsonProcessingException {
 		validateDiaryAddReq(diaryAddReq);
 
 //		Users user = userRepository.findById(userId);
@@ -42,13 +47,27 @@ public class DiaryServiceImpl implements DiaryService {
 		Diary diary = diaryAddReq.toEntity(user, stamp.get());
 		diaryRepository.save(diary);
 
-		redisUtils.setData("diaryContent_"+diary.getId(),
-				DiaryContentRedisDto.builder()
-						.userId(userId)
-						.contents(diaryAddReq.getContents())
-						.build().toString());
+		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
+				.userId(userId)
+				.contents(diaryAddReq.getContents())
+				.build();
+
+		redisUtils.setData("diaryContents_"+diary.getId(), objectMapper.writeValueAsString(redisDto));
 
 		return new DiaryAddRes(diary.getId());
+	}
+
+	@Override
+	public DiaryDetailDto detailDiary(Long userId, Long diaryId) throws JsonProcessingException {
+		Diary diary = diaryRepository.findById(diaryId)
+				.orElseThrow(() -> new CustomException(DIARY_NOT_FOUND));
+
+		// [TODO] 친구 여부에 따른 다이어리 공개 여부에 대한 유효성 검사
+
+		String redisContents = (String) redisUtils.getData("diaryContents_" + diaryId);
+		DiaryContentRedisDto redisDto = objectMapper.readValue(redisContents, DiaryContentRedisDto.class);
+
+		return DiaryDetailDto.toDto(diary, redisDto.getContents());
 	}
 
 	private void validateDiaryAddReq(DiaryAddReq diaryAddReq) {
