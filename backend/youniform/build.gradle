@@ -85,6 +85,10 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     swaggerUI 'org.webjars:swagger-ui:4.11.1'
     compileOnly 'org.projectlombok:lombok'
+
+    // 추가된 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework:spring-messaging'
 }
 
 tasks.named('test') {
@@ -96,12 +100,12 @@ tasks.withType(GenerateSwaggerUI) {
     doFirst {
         def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
 
-        def securitySchemesContent = "  securitySchemes:\n" +                                  \
-                                                                      "    APIKey:\n" +                                  \
-                                                                      "      type: apiKey\n" +                                  \
-                                                                      "      name: Authorization\n" +                                  \
-                                                                      "      in: header\n" +                                 \
-                                                                      "security:\n" +
+        def securitySchemesContent = "  securitySchemes:\n" +
+                "    APIKey:\n" +
+                "      type: apiKey\n" +
+                "      name: Authorization\n" +
+                "      in: header\n" +
+                "security:\n" +
                 "  - APIKey: []  # Apply the security scheme here"
 
         swaggerUIFile.append securitySchemesContent
