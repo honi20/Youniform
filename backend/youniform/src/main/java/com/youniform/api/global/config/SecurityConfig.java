@@ -35,8 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/users/signin/**", "/users/signup/**", "/users/*/check-duplication",
-                                "/users/find/password", "/users/check/email", "/docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
+                                "/users/find/password", "/users/check/email",
+                                "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
