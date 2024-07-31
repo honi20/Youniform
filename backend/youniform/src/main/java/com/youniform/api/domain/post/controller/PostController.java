@@ -2,7 +2,10 @@ package com.youniform.api.domain.post.controller;
 
 import com.youniform.api.domain.post.dto.*;
 import com.youniform.api.global.dto.ResponseDto;
+import com.youniform.api.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,8 +24,9 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 @Validated
 public class PostController {
     @PostMapping
-    public ResponseEntity<?> postAdd(@RequestPart(value = "dto") PostAddReq postAddReq,
-                                     @RequestPart(value = "file") MultipartFile file) {
+    public ResponseEntity<?> postAdd(
+            @RequestPart(value = "dto") PostAddReq postAddReq,
+            @RequestPart(value = "file") MultipartFile file) {
         List<String> tagList = new ArrayList<>();
         tagList.add("김도영");
         tagList.add("잠실");
@@ -40,9 +44,10 @@ public class PostController {
         return new ResponseEntity<>(ResponseDto.success(POST_CREATED, result), HttpStatus.CREATED);
     }
 
-    //todo 무한스크롤로 바꾸기
     @GetMapping
-    public ResponseEntity<?> postList() {
+    public ResponseEntity<?> postList(
+            @ModelAttribute PostListReq postListReq,
+            @PageableDefault(size = 10) Pageable pageable) {
         List<PostDto> postList = new ArrayList<>();
 
         List<String> tagList1 = new ArrayList<>();
@@ -111,8 +116,14 @@ public class PostController {
             }
         }
 
+        SliceDto<PostDto> sliceDto = new SliceDto<>();
+        sliceDto.setContent(postList);
+        sliceDto.setPage(pageable.getPageNumber() + 1);
+        sliceDto.setSize(pageable.getPageSize());
+        sliceDto.setHasNext(postList.size() > pageable.getPageSize());
+
         PostListRes result = PostListRes.builder()
-                .postList(postList)
+                .postList(sliceDto)
                 .build();
 
         return new ResponseEntity<>(ResponseDto.success(POST_LIST_OK, result), HttpStatus.OK);
@@ -141,9 +152,10 @@ public class PostController {
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<?> postModify(@PathVariable Long postId,
-                                        @RequestPart(value = "dto", required = false) PostModifyReq postModifyReq,
-                                        @RequestPart(value = "file", required = false) MultipartFile file) {
+    public ResponseEntity<?> postModify(
+            @PathVariable Long postId,
+            @RequestPart(value = "dto", required = false) PostModifyReq postModifyReq,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         List<String> tagList = new ArrayList<>();
         tagList.add("게시글");
         tagList.add("수정");
