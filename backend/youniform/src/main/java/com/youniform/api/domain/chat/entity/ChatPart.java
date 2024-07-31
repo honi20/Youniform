@@ -1,6 +1,5 @@
-package com.youniform.api.domain.chat_part.entity;
+package com.youniform.api.domain.chat.entity;
 
-import com.youniform.api.domain.chat_room.entity.ChatRoom;
 import com.youniform.api.domain.user.entity.Users;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

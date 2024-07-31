@@ -1,4 +1,4 @@
-package com.youniform.api.domain.chat_part.entity;
+package com.youniform.api.domain.chat.entity;
 
 import jakarta.persistence.Embeddable;
 

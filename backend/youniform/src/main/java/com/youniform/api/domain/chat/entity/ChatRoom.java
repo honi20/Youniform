@@ -1,4 +1,4 @@
-package com.youniform.api.domain.chat_room.entity;
+package com.youniform.api.domain.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,5 +19,5 @@ public class ChatRoom {
 
     private String roomName;
 
-    private boolean roomState;
+    private Boolean roomState;
 }
