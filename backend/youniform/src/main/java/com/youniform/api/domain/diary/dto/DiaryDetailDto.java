@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class DiaryDetailDto {
+	private Long diaryId;
+
 	private String nickname;
 
 	private LocalDate diaryDate;
@@ -28,6 +30,7 @@ public class DiaryDetailDto {
 
 	public static DiaryDetailDto toDto(Diary diary, DiaryContentDto contents) {
 		return DiaryDetailDto.builder()
+				.diaryId(diary.getId())
 				.nickname(diary.getUser().getNickname())
 				.profileUrl(diary.getUser().getProfileUrl())
 				.diaryDate(diary.getDiaryDate())

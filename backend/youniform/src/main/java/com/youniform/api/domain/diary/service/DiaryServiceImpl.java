@@ -5,15 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.entity.Diary;
 import com.youniform.api.domain.diary.entity.DiaryStamp;
+import com.youniform.api.domain.diary.repository.DiaryCustomRepository;
 import com.youniform.api.domain.diary.repository.DiaryRepository;
 import com.youniform.api.domain.diary.repository.StampRepository;
 import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.redis.RedisUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
@@ -24,6 +32,8 @@ import static com.youniform.api.global.statuscode.ErrorCode.STAMP_NOT_FOUND;
 @RequiredArgsConstructor
 public class DiaryServiceImpl implements DiaryService {
 	private final DiaryRepository diaryRepository;
+
+	private final DiaryCustomRepository diaryCustomRepository;
 
 	private final StampRepository stampRepository;
 
@@ -36,7 +46,7 @@ public class DiaryServiceImpl implements DiaryService {
 	public DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq) throws JsonProcessingException {
 		validateDiaryAddReq(diaryAddReq);
 
-//		Users user = userRepository.findById(userId);
+//		[TODO] Users user = userRepository.findById(userId);
 		Users user = Users.builder()
 				.id(userId)
 				.uuid("1604b772-adc0-4212-8a90-81186c57f598")
@@ -64,10 +74,79 @@ public class DiaryServiceImpl implements DiaryService {
 
 		// [TODO] 친구 여부에 따른 다이어리 공개 여부에 대한 유효성 검사
 
+		DiaryContentDto contents = getContentsFromRedis(diaryId);
+
+		return DiaryDetailDto.toDto(diary, contents);
+	}
+
+	@Override
+	public DiaryListRes listMyDiary(Long userId, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
+		LocalDate lastDiaryDate = diaryListReq.getLastDiaryDate();
+		int pageSize = pageable.getPageSize();
+		boolean isAscending = pageable.getSort().stream().anyMatch(Sort.Order::isAscending);
+
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(userId, lastDiaryDate, pageSize, isAscending);
+
+		List<DiaryDetailDto> diaryList = getDiaryListDto(diaries);
+
+		boolean hasNext = diaryList.size() > pageSize;
+		if (hasNext) {
+			diaryList.remove(pageSize);
+		}
+
+		SliceDto<DiaryDetailDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageable, hasNext));
+
+		return DiaryListRes.builder()
+				.diaryList(sliceDto)
+				.build();
+	}
+
+	@Override
+	public DiaryListRes listDiary(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
+//		[TODO] Users user = userRepository.findByUuid(userUuid).get(0);
+//		[TODO] 유저 아이디 유효성 검사
+
+		Users user = Users.builder()
+				.id(123L)
+				.uuid("1604b772-adc0-4212-8a90-81186c57f598")
+				.build();
+
+		LocalDate lastDiaryDate = diaryListReq.getLastDiaryDate();
+		int pageSize = pageable.getPageSize();
+		boolean isAscending = pageable.getSort().stream().anyMatch(Sort.Order::isAscending);
+
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(user.getId(), lastDiaryDate, pageSize, isAscending);
+
+		List<DiaryDetailDto> diaryList = getDiaryListDto(diaries);
+
+		boolean hasNext = diaryList.size() > pageSize;
+		if (hasNext) {
+			diaryList.remove(pageSize);
+		}
+
+		SliceDto<DiaryDetailDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageable, hasNext));
+
+		return DiaryListRes.builder()
+				.diaryList(sliceDto)
+				.build();
+	}
+
+	private List<DiaryDetailDto> getDiaryListDto(List<Diary> diaries) throws JsonProcessingException {
+		List<DiaryDetailDto> diaryList = new ArrayList<>();
+
+		for (Diary diary : diaries) {
+			DiaryContentDto contents = getContentsFromRedis(diary.getId());
+			diaryList.add(DiaryDetailDto.toDto(diary, contents));
+		}
+
+		return diaryList;
+	}
+
+	private DiaryContentDto getContentsFromRedis(Long diaryId) throws JsonProcessingException {
 		String redisContents = (String) redisUtils.getData("diaryContents_" + diaryId);
 		DiaryContentRedisDto redisDto = objectMapper.readValue(redisContents, DiaryContentRedisDto.class);
 
-		return DiaryDetailDto.toDto(diary, redisDto.getContents());
+		return redisDto.getContents();
 	}
 
 	private void validateDiaryAddReq(DiaryAddReq diaryAddReq) {

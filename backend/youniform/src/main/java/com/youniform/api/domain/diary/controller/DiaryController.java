@@ -5,10 +5,13 @@ import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.dto.resource.*;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.dto.ResponseDto;
+import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.youniform.api.domain.diary.util.DiaryControllerUtil.*;
 import static com.youniform.api.global.statuscode.ErrorCode.DIARY_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.WRITER_NOT_FOUND;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
@@ -66,19 +68,19 @@ public class DiaryController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<?> diaryMyList() throws JsonProcessingException {
-//		DiaryListRes response = getDiaryListRes();
-		return new ResponseEntity<>(ResponseDto.success(MY_DIARIES_OK, null), HttpStatus.OK);
+	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable) throws JsonProcessingException {
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		DiaryListRes response = diaryService.listMyDiary(userId, diaryListReq, pageable);
+
+		return new ResponseEntity<>(ResponseDto.success(MY_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("/list/{userUuid}")
-	public ResponseEntity<?> diaryList(@PathVariable String userUuid) throws JsonProcessingException {
-		if (userUuid.equals("noUser")) {
-			throw new CustomException(WRITER_NOT_FOUND);
-		}
+	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable String userUuid) throws JsonProcessingException {
+		DiaryListRes response = diaryService.listDiary(userUuid, diaryListReq, pageable);
 
-//		DiaryListRes response = getDiaryListRes();
-		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, null), HttpStatus.OK);
+		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("/resources")
