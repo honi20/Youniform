@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    // user error code
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "사용자를 찾을 수 없습니다."),
+
     // diary error code
     DIARY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 다이어리 ID 입니다."),
     INVALID_DIARY_DATE(HttpStatus.BAD_REQUEST.value(), "잘못된 다이어리 날짜 형식입니다. 올바른 날짜는 yyyy-mm-dd 형식을 따릅니다."),
@@ -15,6 +18,7 @@ public enum ErrorCode {
     STAMP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 스탬프 ID 입니다."),
     DIARY_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "로그인 유저와 다이어리 작성자가 일치하지 않습니다."),
     WRITER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 유저(다이어리 작성자) ID 입니다."),
+
     // photocard error code
     PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 포토카드 ID 입니다."),
 
@@ -24,6 +28,11 @@ public enum ErrorCode {
 
     //file
     FILE_CONVERT_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 업로드에 실패했습니다."),
+
+    // chat error code
+    CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅방을 찾을 수 없습니다."),
+    MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "메세지를 찾을 수 없습니다."),
+    CHATPART_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅 참여 정보가 존재하지 않습니다."),
     ;
 
     private final int httpStatusCode;

@@ -57,8 +57,8 @@ public enum SuccessCode {
     ALERT_CONNECTION_OK(HttpStatus.OK.value(), "알림 설정 연결에 성공했습니다."),
 
     // chat success code
-    CHAT_ROOMDETAILS_OK(HttpStatus.OK.value(), "채팅방 조회에 성공했습니다."),
-    CHAT_ROOMLIST_OK(HttpStatus.OK.value(), "채팅방 리스트 조회에 성공했습니다."),
+    CHATROOM_DETAILS_OK(HttpStatus.OK.value(), "채팅방 조회에 성공했습니다."),
+    CHATROOM_LIST_OK(HttpStatus.OK.value(), "채팅방 리스트 조회에 성공했습니다."),
     ;
 
     private final int httpStatusCode;

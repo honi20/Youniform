@@ -10,10 +10,7 @@ import jakarta.persistence.MapsId;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -35,4 +32,8 @@ public class ChatPart {
     private ChatRoom room;
 
     private LocalDateTime lastReadTime;
+
+    public void updateLastReadTime(LocalDateTime lastReadTime) {
+        this.lastReadTime = lastReadTime;
+    }
 }
