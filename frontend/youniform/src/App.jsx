@@ -16,7 +16,7 @@ import FindEmailView from "./pages/FindEmailView";
 import FindPasswordView from "./pages/FindPasswordView";
 import DiaryDetailView from "./pages/DiaryDetailView";
 import WriteDiaryView from "./pages/WriteDiaryView";
-import SignUp from "./pages/SignUp";
+import SignUpView from "./pages/SignUpView";
 import Test from "./pages/test";
 import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "./pages/NewsView";
