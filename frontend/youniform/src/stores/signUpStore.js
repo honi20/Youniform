@@ -11,8 +11,6 @@ const useSignUpStore = create((set) => ({
   }),
   // 이메일 형식
   currency: '',
-  // 이메일 형식
-  currency: '',
   setCurrency: (val) => set({ currency: val }),
   curDropdown: '',
   setCurDropdown: (val) => set({curDropdown: val}),

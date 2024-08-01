@@ -1,14 +1,15 @@
 import "./App.css";
 import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { ThemeProvider } from "styled-components";
+import useThemeStore from "./stores/themeStore";
 import MainView from "./pages/MainView";
 import PhotoCardView from "./pages/PhotoCardView";
 import DiaryHomeView from "./pages/DiaryHomeView";
 import CommunityView from "./pages/CommunityView";
 import MyPageView from "./pages/MyPageView";
-import NavBar from "./components/NavBar";
-import Header from "./components/Header";
+import NavBar from "./components/Share/NavBar";
+import Header from "./components/Share/Header";
 import styled from "styled-components";
 import LoginView from "./pages/LoginView";
 import FindEmailView from "./pages/FindEmailView";
@@ -19,7 +20,10 @@ import SignUp from "./pages/SignUp";
 import Test from "./pages/test";
 import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "./pages/NewsView";
-import TotalSongView from "./pages/PlayerSongView";
+import TotalSongView from "./pages/TotalSongView";
+import PlayerSongView from "./pages/PlayerSongView";
+import TeamSongView from "./pages/TeamSongView";
+import ChatView from "./pages/ChatView";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -38,8 +42,9 @@ function App() {
   const headerRef = useRef(null);
   const navBarRef = useRef(null);
   const [contentHeight, setContentHeight] = useState("auto");
-
+  const { theme, setTheme } = useThemeStore();
   useEffect(() => {
+    setTheme("monsters");
     const updateContentHeight = () => {
       const headerHeight = headerRef.current
         ? headerRef.current.offsetHeight
@@ -57,35 +62,42 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <AppContainer>
-        <div ref={headerRef}>
-          <Header />
-        </div>
-        <ContentContainer style={{ height: contentHeight }}>
-          <Routes>
-            <Route path="/" element={<MainView />} />
-            <Route path="/login" element={<LoginView />} />
-            <Route path="/photo-card" element={<PhotoCardView />} />
-            <Route path="/diary" element={<DiaryHomeView />} />
-            <Route path="/community" element={<CommunityView />} />
-            <Route path="/my-page" element={<MyPageView />} />
-            <Route path="/find-email" element={<FindEmailView />} />
-            <Route path="/find-password" element={<FindPasswordView />} />
-            <Route path="/diary-detail" element={<DiaryDetailView />} />
-            <Route path="/diary/write-diary" element={<WriteDiaryView />} />
-            <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/test" element={<Test />} />
-            <Route path="/select-player" element={<SelectPlayerView />} />
-            <Route path="/news" element={<NewsView />} />
-            <Route path="/songs" element={<TotalSongView />} />
-          </Routes>
-        </ContentContainer>
-        <div ref={navBarRef}>
-          <NavBar />
-        </div>
-      </AppContainer>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <AppContainer>
+          <div ref={headerRef}>
+            <Header />
+          </div>
+          <ContentContainer style={{ height: contentHeight }}>
+            <Routes>
+              <Route path="/" element={<MainView />} />
+              <Route path="/login" element={<LoginView />} />
+              <Route path="/photo-card" element={<PhotoCardView />} />
+              <Route path="/diary" element={<DiaryHomeView />} />
+              <Route path="/community" element={<CommunityView />} />
+              <Route path="/my-page" element={<MyPageView />} />
+              <Route path="/find-email" element={<FindEmailView />} />
+              <Route path="/find-password" element={<FindPasswordView />} />
+              <Route path="/diary-detail" element={<DiaryDetailView />} />
+              <Route path="/diary/write-diary" element={<WriteDiaryView />} />
+              <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/test" element={<Test />} />
+              <Route path="/select-player" element={<SelectPlayerView />} />
+              <Route path="/news" element={<NewsView />} />
+              {/* 노래 관련 */}
+              <Route path="/total-song" element={<TotalSongView />} />
+              <Route path="/team-song/:id" element={<TeamSongView />} />
+              <Route path="/player-song/:id" element={<PlayerSongView />} />
+              {/* 채팅 관련 */}
+              <Route path="/chat/:room-id" element={<ChatView />} />
+            </Routes>
+          </ContentContainer>
+          <div ref={navBarRef}>
+            <NavBar />
+          </div>
+        </AppContainer>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

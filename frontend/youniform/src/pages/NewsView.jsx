@@ -7,12 +7,8 @@ import { carouselTest } from "../assets";
 import defaultImg from "../assets/carousel/test_1.jpg";
 
 const Div = styled.div`
-  margin-top: 50px;
   width: 100%;
   height: calc(100vh - 120px);
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* overflow: hidden; */
   overflow-y: auto;
 `;
 const Main = styled.div`
@@ -21,12 +17,9 @@ const Main = styled.div`
   height: 25rem;
   max-height: 50vh;
   width: 100%;
-  /* border: 5px solid red; */
 `;
 const TagSection = styled.div`
-  /* margin-top: 20rem; */
   height: 10vh;
-  /* border: 1px solid blue; */
   position: sticky;
   top: 0;
   overflow: hidden;
@@ -36,8 +29,6 @@ const ArticleSection = styled.div`
   flex: 1;
   border: 1px solid green;
   font-size: 2rem;
-  /* top: 40px; */
-  /* background-color: pink; */
 `;
 const articles = [
   {
@@ -117,7 +108,8 @@ const Tag = styled.div`
   // typo
   border: 1px solid #e3e5e8;
   color: ${(props) => (props.selected ? "white" : "#2E3138")};
-  background-color: ${(props) => (props.selected ? "#262F66" : "white")};
+  background-color: ${(props) =>
+    props.selected ? props.theme.primary : "white"};
   font-family: "Pretendard";
   font-weight: 600;
 `;
@@ -151,8 +143,9 @@ const Title = styled.div`
   height: 50%;
   color: #6d6d6d;
   font-family: "Pretendard";
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 400;
+  line-height: 1.4;
   display: -webkit-box; /* Flexbox for WebKit-based browsers */
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -165,6 +158,8 @@ const Footer = styled.div`
   color: #6d6d6d;
   font-family: "Pretendard";
   font-size: 1rem;
+  display: flex;
+  justify-content: end;
 `;
 const NewsView = () => {
   const settings = {
