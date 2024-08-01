@@ -7,11 +7,11 @@ import { styled as muiStyled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-import CommunityIcon from "../assets/NavBar/community.svg?react";
-import DiaryIcon from "../assets/NavBar/diary.svg?react";
-import HomeIcon from "../assets/NavBar/home.svg?react";
-import MyPageIcon from "../assets/NavBar/my_page.svg?react";
-import PhotoCardIcon2 from "../assets/NavBar/photo_card2.svg?react";
+import CommunityIcon from "../../assets/NavBar/community.svg?react";
+import DiaryIcon from "../../assets/NavBar/diary.svg?react";
+import HomeIcon from "../../assets/NavBar/home.svg?react";
+import MyPageIcon from "../../assets/NavBar/my_page.svg?react";
+import PhotoCardIcon2 from "../../assets/NavBar/photo_card2.svg?react";
 
 const Nav = styled.nav`
   background: #ffffff;

@@ -1,17 +1,17 @@
 // 최애선수 서비스 메인홈
-import React from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
+import styled, { ThemeProvider } from "styled-components";
 import PlayerComp from "../components/Player/PlayerComp";
 import MessageIcon from "../assets/mainview/Message_light.svg?react";
 import ChatIcon from "../assets/mainview/Chat_alt_2_light.svg?react";
 import HeartIcon from "../assets/mainview/Add_ring_light.svg?react";
 import { useNavigate } from "react-router-dom";
-
+import useChatStore from "../stores/chatStore";
 const Div = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 50px;
+  /* margin-top: 50px; */
   width: 100%;
   height: calc(100vh - 120px); // navbar + header
   background-color: #f8f8f8;
@@ -54,10 +54,17 @@ const TextContainer = styled.div`
   line-height: normal;
 `;
 const MainView = () => {
+  const [selectedPlayer, setSelectedPlayer] = useState(0);
   const navigate = useNavigate();
+
+  const handleSelectPlayer = (playerId) => {
+    setSelectedPlayer(playerId);
+    // playerId == chatRoomId, 채팅방 설정함
+    console.log(playerId);
+  };
   return (
     <Div>
-      <PlayerComp />
+      <PlayerComp onSelectPlayer={handleSelectPlayer} />
       <Container>
         <Btn onClick={() => navigate("/news")}>
           <IconWrapper>
@@ -65,7 +72,7 @@ const MainView = () => {
           </IconWrapper>
           <TextContainer>야구 뉴스</TextContainer>
         </Btn>
-        <Btn onClick={() => console.log("chat")}>
+        <Btn onClick={() => navigate(`/chat/${selectedPlayer}`)}>
           <IconWrapper>
             <ChatIcon />
           </IconWrapper>
