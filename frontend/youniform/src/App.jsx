@@ -80,7 +80,7 @@ function App() {
               <Route path="/find-password" element={<FindPasswordView />} />
               <Route path="/diary-detail" element={<DiaryDetailView />} />
               <Route path="/diary/write-diary" element={<WriteDiaryView />} />
-              <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/sign-up" element={<SignUpView />} />
               <Route path="/test" element={<Test />} />
               <Route path="/select-player" element={<SelectPlayerView />} />
               <Route path="/news" element={<NewsView />} />
