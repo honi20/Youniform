@@ -23,13 +23,13 @@ public class RedisTestContainerConfig implements ApplicationContextInitializer<C
         String redisHost = redis.getHost();
         Integer redisPort = redis.getMappedPort(REDIS_PORT);
 
-        System.setProperty("spring.redis.host", redisHost);
-        System.setProperty("spring.redis.port", String.valueOf(redisPort));
+        System.setProperty("spring.data.redis.host", redisHost);
+        System.setProperty("spring.data.redis.port", String.valueOf(redisPort));
     }
 
     @DynamicPropertySource
     static void redisProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.redis.host", redis::getHost);
-        registry.add("spring.redis.port", () -> redis.getMappedPort(REDIS_PORT));
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port", () -> redis.getMappedPort(REDIS_PORT));
     }
 }
