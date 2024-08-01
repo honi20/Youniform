@@ -38,7 +38,7 @@ spring:
     redis:
       repositories:
         enabled: false
-      host: localhost
+      host: ${REDIS_HOST}
       port: 6379
 
 logging:
@@ -61,3 +61,7 @@ jwt:
     expiration: 300 # 5분
   refresh:
     expiration: 1209600 # 2주
+
+testcontainers:
+  ryuk:
+    disabled: true
