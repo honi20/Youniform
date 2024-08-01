@@ -1,35 +1,27 @@
 package com.youniform.api.config;
 
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-public class RedisTestContainerConfig implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+@Testcontainers
+public class RedisTestContainerConfig {
     private static final String REDIS_IMAGE = "redis:7.0.8-alpine";
-    private static final int REDIS_PORT = 8379;
-    private static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse(REDIS_IMAGE))
-            .withExposedPorts(REDIS_PORT)
-            .withCommand("redis-server --port " + REDIS_PORT);
+    private static final int REDIS_PORT = 6379;
+    private static final GenericContainer REDIS_CONTAINER;
 
     static {
-        redis.start();
-    }
-
-    @Override
-    public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-        String redisHost = redis.getHost();
-        Integer redisPort = redis.getMappedPort(REDIS_PORT);
-
-        System.setProperty("spring.data.redis.host", redisHost);
-        System.setProperty("spring.data.redis.port", String.valueOf(redisPort));
+        REDIS_CONTAINER = new GenericContainer(REDIS_IMAGE)
+                .withExposedPorts(REDIS_PORT)
+                .withReuse(true);
+        REDIS_CONTAINER.start();
     }
 
     @DynamicPropertySource
-    static void redisProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.redis.host", redis::getHost);
-        registry.add("spring.data.redis.port", () -> redis.getMappedPort(REDIS_PORT));
+    private static void registerRedisProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(REDIS_PORT)
+                .toString());
     }
 }
