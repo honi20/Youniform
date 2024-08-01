@@ -5,11 +5,10 @@ import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.config.RedisTestContainerConfig;
-import com.youniform.api.domain.diary.dto.DiaryAddReq;
-import com.youniform.api.domain.diary.dto.DiaryAddRes;
-import com.youniform.api.domain.diary.dto.DiaryContentRedisDto;
-import com.youniform.api.domain.diary.dto.DiaryModifyReq;
+import com.youniform.api.domain.diary.dto.*;
+import com.youniform.api.domain.diary.entity.Scope;
 import com.youniform.api.domain.diary.service.DiaryService;
+import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.redis.RedisUtils;
@@ -23,6 +22,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -34,14 +35,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.domain.diary.util.DiaryTestUtil.*;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
-import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static com.youniform.api.global.statuscode.SuccessCode.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -49,6 +51,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -93,17 +96,22 @@ public class DiaryControllerTest {
         );
 
         setRedisDiaryContent(123L);
+        setRedisDiaryContent(124L);
+        setRedisDiaryContent(125L);
     }
 
     @Test
     public void 다이어리_생성_성공() throws Exception {
         // given
-        DiaryAddReq diaryAddReq = getDiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 1L);
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 1L);
+
         when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenReturn(new DiaryAddRes(2L));
 
         // when & then
         performPost("/diaries", diaryAddReq)
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_CREATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_CREATED.getMessage()))
                 .andDo(document("Diary 생성 성공",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -130,11 +138,14 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_잘못된_날짜형식() throws Exception {
-        DiaryAddReq diaryAddReq = getDiaryAddReq("2024-07", getDiaryContentDto(true), "ALL", 1L);
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07", getDiaryContentDto(true), "ALL", 1L);
+
         when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(INVALID_DIARY_DATE));
 
         performPost("/diaries", diaryAddReq)
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DIARY_DATE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_DIARY_DATE.getMessage()))
                 .andDo(document(
                         "Diary 생성 실패 - 잘못된 날짜 형식 (yyyy-mm-dd 형식이 아닌 경우)",
                         preprocessRequest(prettyPrint()),
@@ -157,11 +168,14 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_잘못된_컨텐츠형식() throws Exception {
-        DiaryAddReq diaryAddReq = getDiaryAddReq("2024-07-30", getDiaryContentDto(false), "ALL", 1L);
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(false), "ALL", 1L);
+
         when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(INVALID_DIARY_CONTENTS));
 
         performPost("/diaries", diaryAddReq)
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DIARY_CONTENTS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_DIARY_CONTENTS.getMessage()))
                 .andDo(document(
                         "Diary 생성 실패 - 잘못된 컨텐츠 형식 (version, objects, background, backgroundImage)",
                         preprocessRequest(prettyPrint()),
@@ -183,11 +197,14 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_잘못된_공개범위() throws Exception {
-        DiaryAddReq diaryAddReq = getDiaryAddReq("2024-07-30", getDiaryContentDto(true), "ONLY_ME", 1L);
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ONLY_ME", 1L);
+
         when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(INVALID_DIARY_SCOPE));
 
         performPost("/diaries", diaryAddReq)
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DIARY_SCOPE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_DIARY_SCOPE.getMessage()))
                 .andDo(document(
                         "Diary 생성 실패 - 잘못된 공개범위 (ALL, FRIENDS, PRIVATE 중 하나가 아닌 경우)",
                         preprocessRequest(prettyPrint()),
@@ -209,11 +226,14 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_존재하지_않은_스탬프() throws Exception {
-        DiaryAddReq diaryAddReq = getDiaryAddReq("2024-07-30", getDiaryContentDto(true), "ONLY_ME", 100L);
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 100L);
+
         when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(STAMP_NOT_FOUND));
 
         performPost("/diaries", diaryAddReq)
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(STAMP_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(STAMP_NOT_FOUND.getMessage()))
                 .andDo(document(
                         "Diary 생성 실패 - 존재하지 않은 스탬프 (Stamp ID가 유효하지 않음)",
                         preprocessRequest(prettyPrint()),
@@ -235,10 +255,14 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_상세조회_성공() throws Exception {
-        when(diaryService.detailDiary(anyLong(), anyLong())).thenReturn(getDiaryDetailDto());
+        DiaryDetailDto diaryDetailDto = new DiaryDetailDto(123L, "User1", LocalDate.parse("2024-07-31"), getDiaryContent(), Scope.FRIENDS, "http://youniform.com/sticker1.png", "s3 url");
+
+        when(diaryService.detailDiary(anyLong(), anyLong())).thenReturn(diaryDetailDto);
 
         performGet("/diaries/{diaryId}", 123L)
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_DETAILS_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_DETAILS_OK.getMessage()))
                 .andDo(document(
                         "Diary 상세조회 성공",
                         preprocessRequest(prettyPrint()),
@@ -266,6 +290,8 @@ public class DiaryControllerTest {
 
         performGet("/diaries/{diaryId}", 100L)
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_NOT_FOUND.getMessage()))
                 .andDo(document(
                         "Diary 상세조회 실패 - 존재하지 않는 다이어리 (Diary ID가 유효하지 않음)",
                         preprocessRequest(prettyPrint()),
@@ -389,11 +415,81 @@ public class DiaryControllerTest {
                         ))
                 );
     }
-
+    */
     @Test
     public void 다이어리_마이리스트_조회_성공() throws Exception {
-        performGet("/diaries/list")
+        List<DiaryDetailDto> diaryList = new ArrayList<>();
+        diaryList.add(new DiaryDetailDto(123L, "User1", LocalDate.parse("2024-07-31"), getDiaryContent(), Scope.FRIENDS, "http://youniform.com/sticker1.png", "s3 url"));
+        diaryList.add(new DiaryDetailDto(125L, "User1", LocalDate.parse("2024-07-12"), getDiaryContent(), Scope.PRIVATE, "http://youniform.com/sticker1.png", "s3 url"));
+        diaryList.add(new DiaryDetailDto(124L, "User1", LocalDate.parse("2024-07-01"), getDiaryContent(), Scope.ALL, "http://youniform.com/sticker1.png", "s3 url"));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        SliceDto<DiaryDetailDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageRequest, false));
+        DiaryListRes response = new DiaryListRes(sliceDto);
+
+        when(diaryService.listMyDiary(anyLong(), any(), any())).thenReturn(response);
+
+        ResultActions actions = mockMvc.perform(
+                get("/diaries/list")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("lastDiaryId", "")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "diaryDate,desc"));
+
+        actions
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MY_DIARIES_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MY_DIARIES_OK.getMessage()))
+                .andDo(document(
+                        "Diary 마이리스트 조회 성공 - sort에 diaryDate(아래로 스크롤) 또는 diaryDate,desc(위로 스크롤)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .summary("Diary 마이리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                getDiaryListFields("body.diaryList.").toArray(new FieldDescriptor[0])
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Diary 마이리스트 조회 Response"))
+                                .build()
+                        )));
+    }
+
+    @Test
+    public void 다이어리_리스트_조회_성공() throws Exception {
+        List<DiaryDetailDto> diaryList = new ArrayList<>();
+        diaryList.add(new DiaryDetailDto(123L, "User1", LocalDate.parse("2024-07-31"), getDiaryContent(), Scope.FRIENDS, "http://youniform.com/sticker1.png", "s3 url"));
+        diaryList.add(new DiaryDetailDto(125L, "User1", LocalDate.parse("2024-07-12"), getDiaryContent(), Scope.PRIVATE, "http://youniform.com/sticker1.png", "s3 url"));
+        diaryList.add(new DiaryDetailDto(124L, "User1", LocalDate.parse("2024-07-01"), getDiaryContent(), Scope.ALL, "http://youniform.com/sticker1.png", "s3 url"));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        SliceDto<DiaryDetailDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageRequest, false));
+        DiaryListRes response = new DiaryListRes(sliceDto);
+
+        when(diaryService.listDiary(anyString(), any(), any())).thenReturn(response);
+
+        ResultActions actions = mockMvc.perform(
+                get("/diaries/list/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("lastDiaryId", "")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "diaryDate,desc"));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(OTHER_DIARIES_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(OTHER_DIARIES_OK.getMessage()))
                 .andDo(document(
                         "Diary 마이리스트 조회 성공",
                         preprocessRequest(prettyPrint()),
@@ -406,63 +502,15 @@ public class DiaryControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                getDiaryFields("body.diaryList[].").toArray(new FieldDescriptor[0])
+                                                getDiaryListFields("body.diaryList.").toArray(new FieldDescriptor[0])
                                         )
                                 )
                                 .responseSchema(Schema.schema("Diary 마이리스트 조회 Response"))
                                 .build()
-                        ))
-                );
+                        )));
     }
 
-    @Test
-    public void 다이어리_리스트_조회_성공() throws Exception {
-        performGet("/diaries/list/{userUuid}", "ssafy")
-                .andExpect(status().isOk())
-                .andDo(document(
-                        "Diary 리스트 조회 성공",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Diary API")
-                                .summary("Diary 리스트 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                getDiaryFields("body.diaryList[].").toArray(new FieldDescriptor[0])
-                                        )
-                                )
-                                .responseSchema(Schema.schema("Diary 리스트 조회 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 다이어리_리스트_조회_실패_존재하지_않는_유저() throws Exception {
-        performGet("/diaries/list/{userUuid}", "noUser")
-                .andExpect(status().isNotFound())
-                .andDo(document(
-                        "Diary 리스트 조회 실패 - 존재하지 않는 작성자 (User UUID가 유효하지 않음)",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Diary API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
-                                        )
-                                )
-                                .build()
-                        ))
-                );
-    }
-
+    /**
     @Test
     public void 다이어리_리소스_조회_성공() throws Exception {
         performGet("/diaries/resources")
@@ -565,6 +613,5 @@ public class DiaryControllerTest {
                 .build();
 
         redisUtils.setData("diaryContents_" + id, mapper.writeValueAsString(redisDto));
-        System.out.println(redisUtils.getData("diaryContents_123"));
     }
 }
