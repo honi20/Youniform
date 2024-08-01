@@ -17,5 +17,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'no-unsed-vars': 'off', // 미사용 변수 오류 제거
+    'react/prop-types': 'off'
   },
 }
