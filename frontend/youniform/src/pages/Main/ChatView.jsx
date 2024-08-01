@@ -5,7 +5,7 @@ import { format } from "date-fns";
 const ChatView = () => {
   const [messages, setMessages] = useState([]);
   const [userList, setUserList] = useState([]);
-  const [text, setText] = useState("");
+  const [content, setContent] = useState("");
   const chatBoxRef = useRef(null);
   const wsRef = useRef(null);
   const [user, setUser] = useState("");
@@ -14,7 +14,8 @@ const ChatView = () => {
     setUser("kroz");
   });
   useEffect(() => {
-    wsRef.current = new WebSocket("ws://localhost:3001");
+    // roomId 별로 분리
+    wsRef.current = new WebSocket(`ws://localhost:3001/`);
 
     wsRef.current.onopen = () => {
       console.log("웹소켓을 열었다!!!");
@@ -24,9 +25,9 @@ const ChatView = () => {
     wsRef.current.onmessage = async (event) => {
       let msg;
       if (event.data instanceof Blob) {
-        // Convert Blob to text and then parse JSON
-        const text = await event.data.text();
-        msg = JSON.parse(text);
+        // Convert Blob to content and then parse JSON
+        const content = await event.data.text();
+        msg = JSON.parse(content);
         console.log(msg);
       } else {
         msg = JSON.parse(event.data);
@@ -56,14 +57,19 @@ const ChatView = () => {
             ...prevMessages,
             {
               type: "system",
-              text: `<b>User <em>${msg.name}</em> signed in at ${timeStr}</b>`,
+              content: `<b>User <em>${msg.name}</em> signed in at ${timeStr}</b>`,
             },
           ]);
           break;
         case "message":
           setMessages((prevMessages) => [
             ...prevMessages,
-            { type: "message", name: msg.name, text: msg.text, time: timeStr },
+            {
+              type: "message",
+              name: msg.name,
+              content: msg.content,
+              time: timeStr,
+            },
           ]);
           break;
         case "rejectusername":
@@ -71,7 +77,7 @@ const ChatView = () => {
             ...prevMessages,
             {
               type: "system",
-              text: `<b>Your username has been set to <em>${msg.name}</em> because the name you chose is in use.</b>`,
+              content: `<b>Your username has been set to <em>${msg.name}</em> because the name you chose is in use.</b>`,
             },
           ]);
           break;
@@ -101,13 +107,14 @@ const ChatView = () => {
   const sendText = () => {
     const msg = {
       type: "message",
-      text,
+      content,
+      // imageUrl,
       id: "krozv",
       name: "krozv",
       date: Date.now(),
     };
     wsRef.current.send(JSON.stringify(msg));
-    setText("");
+    setContent("");
   };
 
   useEffect(() => {
@@ -123,7 +130,10 @@ const ChatView = () => {
         {messages.map((msg, index) => {
           if (msg.type === "system") {
             return (
-              <div key={index} dangerouslySetInnerHTML={{ __html: msg.text }} />
+              <div
+                key={index}
+                dangerouslySetInnerHTML={{ __html: msg.content }}
+              />
             );
           }
           return (
@@ -131,7 +141,7 @@ const ChatView = () => {
               {user === msg.name ? (
                 <St.ChatContainer key={index} $isUser={user === msg.name}>
                   <St.ChatWrapper $isUser={user === msg.name}>
-                    <St.ChatBody>{msg.text}</St.ChatBody>
+                    <St.ChatBody>{msg.content}</St.ChatBody>
                     <St.ChatInfo>{msg.time}</St.ChatInfo>
                   </St.ChatWrapper>
                 </St.ChatContainer>
@@ -143,7 +153,7 @@ const ChatView = () => {
                       <St.ChatName>{msg.name}</St.ChatName>
                       <St.ChatDate>{msg.time}</St.ChatDate>
                     </St.ChatInfo>
-                    <St.ChatBody>{msg.text}</St.ChatBody>
+                    <St.ChatBody>{msg.content}</St.ChatBody>
                   </St.ChatWrapper>
                 </St.ChatContainer>
               )}
@@ -152,7 +162,10 @@ const ChatView = () => {
         })}
       </St.ChatSection>
       <St.InputSection>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} />
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
         <button type="button" onClick={sendText}>
           Submit
         </button>

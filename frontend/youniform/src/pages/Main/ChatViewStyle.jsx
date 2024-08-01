@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as Font from "@/typography";
 
 export const Wrapper = styled.div`
   height: calc(100vh - 120px);
@@ -8,8 +9,8 @@ export const Wrapper = styled.div`
   border: 5px solid black;
   flex-direction: column;
 `;
-
 export const ChatToggleSection = styled.div`
+  /* ${Font.Large}; */
   width: 100%;
   height: 50px;
   border: 1px solid red;
