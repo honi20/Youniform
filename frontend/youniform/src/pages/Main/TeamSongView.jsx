@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components";
-import VideoIcon from "../assets/Video_duotone_line.svg?react";
-import HeadsetIcon from "../assets/Headphones_fill.svg?react";
-import DownIcon from "../assets/chevron-down.svg?react";
-import UpIcon from "../assets/chevron-up.svg?react";
-import useSongStore from "../stores/songStore";
-import SelectSvg from "../assets/selectedIcon.svg?react";
+import VideoIcon from "@assets/Video_duotone_line.svg?react";
+import HeadsetIcon from "@assets/Headphones_fill.svg?react";
+import DownIcon from "@assets/chevron-down.svg?react";
+import UpIcon from "@assets/chevron-up.svg?react";
+import useSongStore from "@stores/songStore";
+import SelectSvg from "@assets/selectedIcon.svg?react";
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;

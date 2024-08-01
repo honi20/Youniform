@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import VideoIcon from "../assets/Video_duotone_line.svg?react";
-import HeadsetIcon from "../assets/Headphones_fill.svg?react";
+import VideoIcon from "@assets/Video_duotone_line.svg?react";
+import HeadsetIcon from "@assets/Headphones_fill.svg?react";
 
 const LyricsDisplay = styled.div`
   height: 77%;

@@ -1,12 +1,12 @@
 // 최애선수 서비스 메인홈
 import React, { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import PlayerComp from "../components/Player/PlayerComp";
-import MessageIcon from "../assets/mainview/Message_light.svg?react";
-import ChatIcon from "../assets/mainview/Chat_alt_2_light.svg?react";
-import HeartIcon from "../assets/mainview/Add_ring_light.svg?react";
+import PlayerComp from "@components/Player/PlayerComp";
+import MessageIcon from "@assets/mainview/Message_light.svg?react";
+import ChatIcon from "@assets/mainview/Chat_alt_2_light.svg?react";
+import HeartIcon from "@assets/mainview/Add_ring_light.svg?react";
 import { useNavigate } from "react-router-dom";
-import useChatStore from "../stores/chatStore";
+
 const Div = styled.div`
   display: flex;
   flex-direction: column;

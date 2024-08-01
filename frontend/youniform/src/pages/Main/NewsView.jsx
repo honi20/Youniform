@@ -3,8 +3,8 @@ import styled from "styled-components";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { carouselTest } from "../assets";
-import defaultImg from "../assets/carousel/test_1.jpg";
+import { carouselTest } from "@assets";
+import defaultImg from "@assets/carousel/test_1.jpg";
 
 const Div = styled.div`
   width: 100%;
