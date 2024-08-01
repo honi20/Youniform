@@ -9,7 +9,7 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 public class RedisTestContainerConfig implements BeforeAllCallback {
     private static final String REDIS_IMAGE = "redis:7.0.8-alpine";
-    private static final int REDIS_PORT = 6379;
+    private static final int REDIS_PORT = 8379;
     private GenericContainer redis;
 
     @Override
