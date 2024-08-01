@@ -159,3 +159,7 @@ clean.doLast {
 clean {
     delete file('src/main/generated')
 }
+
+test {
+    environment "TESTCONTAINERS_RYUK_DISABLED", "true"
+}
