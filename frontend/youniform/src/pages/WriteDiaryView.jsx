@@ -12,11 +12,11 @@ import {
   DecorationBtnContainer,
   BtnContainer,
 } from "./WriteDiaryStyle";
-import WallPaperComp from "@components/Diary/WallPaperComp";
+import WallPaperComp from "@components/Diary/Write/WallPaperComp";
 import { fabric } from "fabric";
-import StickerComp from "@components/Diary/StickerComp";
+import StickerComp from "@components/Diary/Write/StickerComp";
 import { wallpapers, stickers, fonts } from "@assets";
-import FontComp from "@components/Diary/FontComp";
+import FontComp from "@components/Diary/Write/FontComp";
 import DecoIcon from "@assets/DecoIcon.svg?react";
 import ExampleIcon from "@assets/ExIcon.svg?react";
 import DownloadIcon from "@assets/Img_out-box_Fill.svg?react";
