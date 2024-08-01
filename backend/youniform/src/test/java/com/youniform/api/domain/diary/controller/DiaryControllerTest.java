@@ -43,6 +43,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.domain.diary.util.DiaryTestUtil.*;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
+import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
