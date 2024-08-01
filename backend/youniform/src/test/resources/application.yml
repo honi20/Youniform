@@ -39,7 +39,7 @@ spring:
       repositories:
         enabled: false
       host: localhost
-      port: 8379
+      port: 6379
 
 logging:
   level:
