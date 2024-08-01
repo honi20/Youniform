@@ -10,14 +10,19 @@ import org.testcontainers.utility.DockerImageName;
 public class RedisTestContainerConfig implements BeforeAllCallback {
     private static final String REDIS_IMAGE = "redis:7.0.8-alpine";
     private static final int REDIS_PORT = 8379;
-    private GenericContainer redis;
+    private GenericContainer<?> redis;
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
-        redis = new GenericContainer(DockerImageName.parse(REDIS_IMAGE))
+        redis = new GenericContainer<>(DockerImageName.parse(REDIS_IMAGE))
+                .withCommand("redis-server --port " + REDIS_PORT)
                 .withExposedPorts(REDIS_PORT);
         redis.start();
-        System.setProperty("spring.data.redis.host", redis.getHost());
-        System.setProperty("spring.data.redis.port", String.valueOf(redis.getMappedPort(REDIS_PORT)));
+
+        String redisHost = redis.getHost();
+        Integer redisPort = redis.getMappedPort(REDIS_PORT);
+
+        System.setProperty("spring.redis.host", redisHost);
+        System.setProperty("spring.redis.port", String.valueOf(redisPort));
     }
 }
