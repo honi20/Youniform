@@ -4,8 +4,10 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.youniform.api.config.RedisTestContainerConfig;
-import com.youniform.api.domain.diary.dto.*;
+import com.youniform.api.domain.diary.dto.DiaryAddReq;
+import com.youniform.api.domain.diary.dto.DiaryAddRes;
+import com.youniform.api.domain.diary.dto.DiaryContentRedisDto;
+import com.youniform.api.domain.diary.dto.DiaryModifyReq;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -37,10 +38,10 @@ import java.util.List;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.domain.diary.util.DiaryTestUtil.*;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
+import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -54,7 +55,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
-@ExtendWith(RedisTestContainerConfig.class)
 @DisplayName("다이어리 API 명세서")
 @WithMockUser
 public class DiaryControllerTest {
