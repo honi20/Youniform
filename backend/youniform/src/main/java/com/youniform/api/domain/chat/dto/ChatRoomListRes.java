@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ChatRoomListRes {
-   private List<ChatRoomDetailsRes> chatRoomList;
+    private List<ChatRoomDetailsRes> chatRoomList;
 }
