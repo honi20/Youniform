@@ -1,11 +1,7 @@
-import styled, { ThemeProvider } from "styled-components";
-// import FolderIcon from "../../assets/folder_top.svg?react";
+import styled, { useTheme } from "styled-components";
 import StarIcon from "../../assets/star.svg?react";
-import PlayIcon from "../../assets/Video_fill.svg?react";
-import { blue } from "@mui/material/colors";
 
 const Card = styled.div`
-  margin-top: 1%;
   box-sizing: border-box;
   width: 90%;
   height: 60vh;
@@ -16,14 +12,10 @@ const Card = styled.div`
   flex-wrap: wrap;
 
   border-radius: 30px;
-  /* background: black; */
   background: ${(props) => props.theme.background};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-
-  border: 1px solid red;
 `;
 const Folder = styled.div`
-  border: 1px solid blue;
   width: 90%;
   height: 70%;
   display: flex;
@@ -33,29 +25,23 @@ const Folder = styled.div`
 `;
 const FolderHeader = styled.div`
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   width: 100%;
   justify-content: start;
-  /* gap: -1rem; */
 `;
 const FolderIcon = styled.svg`
-  width: 98px; /* 단위 추가 */
-  height: 16px; /* 단위 추가 */
+  width: 98px;
+  height: 16px;
 `;
-const FolderTop = styled.div`
-  flex-shrink: 0;
-  &:not(:last-child) {
-    margin-right: -1rem;
-  }
-  &:nth-child(1) {
-    fill: red;
-  }
-`;
-const FolderComponent = (isClick) => {
-  const color = isClick ? "#262F66" : "#F8F8F8";
+const FolderComponent = ({ isClick, onClick }) => {
+  const theme = useTheme();
+  const color = isClick ? theme.primary : theme.secondary;
   return (
-    <FolderIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 16">
+    <FolderIcon
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 98 16"
+      onClick={onClick}
+    >
       <path
         d="M0.5 10C0.5 4.47715 4.97715 0 10.5 0H78.8838L97.5 16H0.5V10Z"
         fill={color}
@@ -108,15 +94,12 @@ const Container = styled.div`
 
   border-radius: 1.5625rem;
   background: #f5f5f5;
-
-  border: 1px solid black;
 `;
 
 const TextContainer = styled.div`
   width: 70%;
   height: 2.25rem;
   flex-shrink: 0;
-  border: 1px solid red;
   margin: 1%;
 `;
 const Title = styled.div`
@@ -126,7 +109,6 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  /* padding: 1%; */
 `;
 
 const Description = styled.div`
@@ -138,33 +120,51 @@ const Description = styled.div`
   line-height: normal;
 `;
 const BtnContainer = styled.div`
-  /* margin-top: 10%; */
   display: flex;
-  border: 1px solid black;
   width: 25%;
   justify-content: center;
+  /* border: 1px solid black; */
 `;
 const OffBtn = styled.div`
   width: 3.375rem;
   height: 1.5rem;
   flex-shrink: 0;
   border-radius: 1.25rem;
-  background: #ddd;
-  /* border: 1px solid black; */
+  border: 1px solid black; // 수정 필
+  background: ${(props) => props.theme.background};
 `;
-
-const PlayBtn = styled(PlayIcon)`
+const PlayIcon = ({ color }) => {
+  return (
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g id="Video_fill">
+        <path
+          id="Subtract"
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28ZM13.7828 10.3238L22.4265 15.1258C23.1123 15.5068 23.1123 16.4932 22.4265 16.8742L13.7828 21.6762C12.9829 22.1206 12 21.5422 12 20.6273V11.3728C12 10.4578 12.9829 9.87941 13.7828 10.3238Z"
+          fill={color}
+        />
+      </g>
+    </svg>
+  );
+};
+const PlayBtn = styled(PlayIcon).attrs((props) => ({
+  color: props.theme.primary,
+}))`
   width: 2rem;
   height: 2rem;
   flex-shrink: 0;
-  border: 1px solid black;
 `;
 
 export {
   Card,
   Folder,
   FolderHeader,
-  FolderTop,
   Player,
   DotLine,
   StarLine,
