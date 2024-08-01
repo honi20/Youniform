@@ -14,6 +14,7 @@ const signUpStore = create((set) => ({
     password: '',
     nickname: '',
     
+    
   }
 }));
 
