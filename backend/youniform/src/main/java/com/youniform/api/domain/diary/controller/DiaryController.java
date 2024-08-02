@@ -5,7 +5,6 @@ import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.dto.resource.*;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.dto.ResponseDto;
-import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import jakarta.validation.Valid;
@@ -49,24 +48,6 @@ public class DiaryController {
 		return new ResponseEntity<>(ResponseDto.success(DIARY_DETAILS_OK, response), HttpStatus.OK);
 	}
 
-	@PutMapping("/{diaryId}")
-	public ResponseEntity<?> diaryModify(@PathVariable Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) {
-		if (diaryId == null || diaryId < 0) {
-			throw new CustomException(DIARY_NOT_FOUND);
-		}
-
-		return new ResponseEntity<>(ResponseDto.success(DIARY_MODIFIED, null), HttpStatus.NO_CONTENT);
-	}
-
-	@DeleteMapping("/{diaryId}")
-	public ResponseEntity<?> diaryRemove(@PathVariable Long diaryId) {
-		if (diaryId == null || diaryId < 0) {
-			throw new CustomException(DIARY_NOT_FOUND);
-		}
-
-		return new ResponseEntity<>(ResponseDto.success(DIARY_DELETED, null), HttpStatus.NO_CONTENT);
-	}
-
 	@GetMapping("/list")
 	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
@@ -81,6 +62,24 @@ public class DiaryController {
 		DiaryListRes response = diaryService.listDiary(userUuid, diaryListReq, pageable);
 
 		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
+	}
+
+	@PutMapping("/{diaryId}")
+	public ResponseEntity<?> diaryModify(@PathVariable Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		diaryService.modifyDiary(userId, diaryId, diaryModifyReq);
+
+		return new ResponseEntity<>(ResponseDto.success(DIARY_MODIFIED, null), HttpStatus.NO_CONTENT);
+	}
+
+	@DeleteMapping("/{diaryId}")
+	public ResponseEntity<?> diaryRemove(@PathVariable Long diaryId) {
+		if (diaryId == null || diaryId < 0) {
+			throw new CustomException(DIARY_NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(ResponseDto.success(DIARY_DELETED, null), HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping("/resources")

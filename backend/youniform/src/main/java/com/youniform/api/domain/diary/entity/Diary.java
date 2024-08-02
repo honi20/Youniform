@@ -32,4 +32,12 @@ public class Diary {
 
     @Enumerated(EnumType.STRING)
     private Scope scope;
+
+    public void updateStamp(DiaryStamp stamp) {
+        this.stamp = stamp;
+    }
+
+    public void updateScope(Scope scope) {
+        this.scope = scope;
+    }
 }

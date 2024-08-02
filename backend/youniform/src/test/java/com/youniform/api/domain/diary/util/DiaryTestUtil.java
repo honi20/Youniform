@@ -133,10 +133,6 @@ public class DiaryTestUtil {
         return diaryContentDto;
     }
 
-    public static DiaryModifyReq getDiaryModifyReq(DiaryContentDto diaryContentDto, String scope, Long stampId) {
-        return new DiaryModifyReq("2024-07-24", diaryContentDto, scope, stampId);
-    }
-
     public static DiaryContentDto getDiaryContentDto(boolean isValid) throws JsonProcessingException {
         List<DiaryContentObjectDto> objects = new ArrayList<>();
 

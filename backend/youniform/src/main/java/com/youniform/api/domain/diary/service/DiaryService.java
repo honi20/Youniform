@@ -2,7 +2,6 @@ package com.youniform.api.domain.diary.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.youniform.api.domain.diary.dto.*;
-import com.youniform.api.global.dto.SliceDto;
 import org.springframework.data.domain.Pageable;
 
 public interface DiaryService {
@@ -13,4 +12,6 @@ public interface DiaryService {
 	DiaryListRes listMyDiary(Long userId, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
 
 	DiaryListRes listDiary(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
+
+	void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq) throws JsonProcessingException;
 }

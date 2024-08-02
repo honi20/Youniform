@@ -1,5 +1,8 @@
 package com.youniform.api.domain.diary.dto;
 
+import com.youniform.api.domain.diary.entity.Diary;
+import com.youniform.api.domain.diary.entity.DiaryStamp;
+import com.youniform.api.domain.diary.entity.Scope;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

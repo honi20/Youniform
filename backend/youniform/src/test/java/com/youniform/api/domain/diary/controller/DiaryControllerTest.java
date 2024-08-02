@@ -45,6 +45,7 @@ import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -312,111 +313,6 @@ public class DiaryControllerTest {
                 );
     }
 
-    /**
-    @Test
-    public void 다이어리_수정_성공() throws Exception {
-        DiaryModifyReq diaryModifyReq = getDiaryModifyReq(getDiaryContentDto(true), "ALL", 1L);
-
-        // when & then
-        performPut("/diaries/{diaryId}", diaryModifyReq, 1L)
-                .andExpect(status().isNoContent())
-                .andDo(document("Diary 수정 성공",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Diary API")
-                                .summary("Diary 수정 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        getDiaryFields("")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("response body").optional().ignored()
-                                        )
-                                )
-                                .requestSchema(Schema.schema("Diary 수정 Request"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 다이어리_수정_실패_존재하지_않는_다이어리() throws Exception {
-        DiaryModifyReq diaryModifyReq = getDiaryModifyReq(getDiaryContentDto(true), "ALL", 1L);
-
-        // when & then
-        performPut("/diaries/{diaryId}", diaryModifyReq, -1L)
-                .andExpect(status().isNotFound())
-                .andDo(document("Diary 수정 실패 - 존재하지 않는 다이어리 (Diary ID가 유효하지 않음)",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Diary API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        getDiaryFields("")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
-                                        )
-                                )
-                                .requestSchema(Schema.schema("Diary 수정 Request"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 다이어리_삭제_성공() throws Exception {
-        performDelete("/diaries/{diaryId}", 1L)
-                .andExpect(status().isNoContent())
-                .andDo(document("Diary 삭제 성공",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Diary API")
-                                .summary("Diary 삭제 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("response body").optional().ignored()
-                                        )
-                                )
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 다이어리_삭제_실패_존재하지_않는_다이어리() throws Exception {
-        performDelete("/diaries/{diaryId}", -1L)
-                .andExpect(status().isNotFound())
-                .andDo(document("Diary 삭제 실패 - 존재하지 않는 다이어리 (Diary ID가 유효하지 않음)",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Diary API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
-                                        )
-                                )
-                                .build()
-                        ))
-                );
-    }
-    */
     @Test
     public void 다이어리_마이리스트_조회_성공() throws Exception {
         List<DiaryDetailDto> diaryList = new ArrayList<>();
@@ -511,43 +407,135 @@ public class DiaryControllerTest {
                         )));
     }
 
-    /**
+
     @Test
-    public void 다이어리_리소스_조회_성공() throws Exception {
-        performGet("/diaries/resources")
-                .andExpect(status().isOk())
-                .andDo(document(
-                        "Resource 리스트 조회 성공",
+    public void 다이어리_수정_성공() throws Exception {
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 1L);
+
+        diaryService.modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+
+        performPut("/diaries/{diaryId}", diaryModifyReq, 123L)
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_MODIFIED.getMessage()))
+                .andDo(document("Diary 수정 성공",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Diary API")
-                                .summary("Resource 리스트 조회 API")
+                                .summary("Diary 수정 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
-                                .responseFields(
-                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
-                                        fieldWithPath("header.message").type(JsonFieldType.STRING).description("응답 메시지"),
-                                        fieldWithPath("body.resources[]").description("Resource 타입별 리스트"),
-                                        fieldWithPath("body.resources[].type").type(JsonFieldType.STRING).description("Resource 타입명 (BACKGROUND, STICKER, THEME)"),
-                                        fieldWithPath("body.resources[].categories[]").description("Resource 카테고리별 리스트"),
-                                        fieldWithPath("body.resources[].categories[].category").type(JsonFieldType.STRING).description("Resource 카테고리명 (NONE, BASEBALL, RETRO, CUTE, LETTER)"),
-                                        fieldWithPath("body.resources[].categories[].items[]").description("Resource Item 정보"),
-                                        fieldWithPath("body.resources[].categories[].items[].label").type(JsonFieldType.STRING).description("Resource Item 라벨명"),
-                                        fieldWithPath("body.resources[].categories[].items[].imgUrl").type(JsonFieldType.STRING).description("Resource Item 이미지 URL"),
-                                        fieldWithPath("body.stamps[]").description("Stamp 리스트"),
-                                        fieldWithPath("body.stamps[].stampId").type(JsonFieldType.NUMBER).description("Stamp ID"),
-                                        fieldWithPath("body.stamps[].label").type(JsonFieldType.STRING).description("Stamp 라벨명"),
-                                        fieldWithPath("body.stamps[].imgUrl").type(JsonFieldType.STRING).description("Stamp 이미지 URL")
+                                .requestFields(
+                                        getDiaryFields("")
                                 )
-                                .responseSchema(Schema.schema("Resource 리스트 조회 Response"))
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("response body").optional().ignored()
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Diary 수정 Request"))
                                 .build()
                         ))
                 );
     }
 
-     */
+    @Test
+    public void 다이어리_수정_실패_존재하지_않는_다이어리() throws Exception {
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 1L);
+
+        doThrow(new CustomException(DIARY_NOT_FOUND)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+
+        performPut("/diaries/{diaryId}", diaryModifyReq, 100L)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_NOT_FOUND.getMessage()))
+                .andDo(document("Diary 수정 실패 - 존재하지 않는 다이어리 (Diary ID가 유효하지 않음)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        getDiaryFields("")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Diary 수정 Request"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 다이어리_수정_실패_존재하지_않는_스탬프() throws Exception {
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 100L);
+
+        doThrow(new CustomException(STAMP_NOT_FOUND)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+
+        performPut("/diaries/{diaryId}", diaryModifyReq, 123L)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(STAMP_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(STAMP_NOT_FOUND.getMessage()))
+                .andDo(document("Diary 수정 실패 - 존재하지 않는 스탬프 (Stamp ID가 유효하지 않음)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        getDiaryFields("")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Diary 수정 Request"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 다이어리_수정_실패_작성일_수정_불가() throws Exception {
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-08-01", getDiaryContentDto(true), "ALL", 1L);
+
+        doThrow(new CustomException(DIARY_UPDATE_FORBIDDEN)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+
+        performPut("/diaries/{diaryId}", diaryModifyReq, 123L)
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_UPDATE_FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_UPDATE_FORBIDDEN.getMessage()))
+                .andDo(document("Diary 수정 실패 - 다이어리 작성일 수정 불가",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        getDiaryFields("")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Diary 수정 Request"))
+                                .build()
+                        ))
+                );
+    }
 
     private ResultActions performPost(String path, DiaryAddReq diaryAddReq) throws Exception {
         String content = mapper.writeValueAsString(diaryAddReq);
