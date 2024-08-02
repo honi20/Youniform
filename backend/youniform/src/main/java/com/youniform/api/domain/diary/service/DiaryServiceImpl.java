@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.entity.Diary;
 import com.youniform.api.domain.diary.entity.DiaryStamp;
+import com.youniform.api.domain.diary.entity.Scope;
 import com.youniform.api.domain.diary.repository.DiaryCustomRepository;
 import com.youniform.api.domain.diary.repository.DiaryRepository;
 import com.youniform.api.domain.diary.repository.StampRepository;
@@ -22,11 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
-import static com.youniform.api.global.statuscode.ErrorCode.DIARY_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.STAMP_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
+import static com.youniform.api.global.statuscode.ErrorCode.DIARY_UPDATE_FORBIDDEN;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +44,7 @@ public class DiaryServiceImpl implements DiaryService {
 	@Override
 	@Transactional
 	public DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq) throws JsonProcessingException {
-		validateDiaryAddReq(diaryAddReq);
+		validateDiaryContent(diaryAddReq.getDiaryDate(), diaryAddReq.getContents(), diaryAddReq.getScope());
 
 //		[TODO] Users user = userRepository.findById(userId);
 		Users user = Users.builder()
@@ -52,9 +52,10 @@ public class DiaryServiceImpl implements DiaryService {
 				.uuid("1604b772-adc0-4212-8a90-81186c57f598")
 				.build();
 
-		Optional<DiaryStamp> stamp = stampRepository.findById(diaryAddReq.getStampId());
+		DiaryStamp stamp = stampRepository.findById(diaryAddReq.getStampId())
+				.orElseThrow(() -> new CustomException(STAMP_NOT_FOUND));
 
-		Diary diary = diaryAddReq.toEntity(user, stamp.get());
+		Diary diary = diaryAddReq.toEntity(user, stamp);
 		diaryRepository.save(diary);
 
 		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
@@ -131,6 +132,35 @@ public class DiaryServiceImpl implements DiaryService {
 				.build();
 	}
 
+	@Override
+	@Transactional
+	public void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
+		validateDiaryContent(diaryModifyReq.getDiaryDate(), diaryModifyReq.getContents(), diaryModifyReq.getScope());
+
+		Diary diary = diaryRepository.findById(diaryId)
+				.orElseThrow(() -> new CustomException(DIARY_NOT_FOUND));
+
+		if (!userId.equals(diary.getUser().getId())) {
+			throw new CustomException(DIARY_UPDATE_FORBIDDEN);
+		} else if (!diaryModifyReq.getDiaryDate().equals(diary.getDiaryDate().toString())) {
+			throw new CustomException(DIARY_UPDATE_FORBIDDEN);
+		}
+
+		DiaryStamp stamp = stampRepository.findById(diaryModifyReq.getStampId())
+				.orElseThrow(() -> new CustomException(STAMP_NOT_FOUND));
+
+		diary.updateStamp(stamp);
+		diary.updateScope(Scope.valueOf(diaryModifyReq.getScope()));
+		diaryRepository.save(diary);
+
+		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
+				.userId(diary.getId())
+				.contents(diaryModifyReq.getContents())
+				.build();
+
+		redisUtils.setData("diaryContents_"+diary.getId(), objectMapper.writeValueAsString(redisDto));
+	}
+
 	private List<DiaryDetailDto> getDiaryListDto(List<Diary> diaries) throws JsonProcessingException {
 		List<DiaryDetailDto> diaryList = new ArrayList<>();
 
@@ -149,13 +179,9 @@ public class DiaryServiceImpl implements DiaryService {
 		return redisDto.getContents();
 	}
 
-	private void validateDiaryAddReq(DiaryAddReq diaryAddReq) {
-		isInvalidDate(diaryAddReq.getDiaryDate());
-		isInvalidContents(diaryAddReq.getContents());
-		isInvalidScope(diaryAddReq.getScope());
-
-		if (!stampRepository.existsById(diaryAddReq.getStampId())) {
-			throw new CustomException(STAMP_NOT_FOUND);
-		}
+	private void validateDiaryContent(String diaryDate, DiaryContentDto contents, String scope) throws JsonProcessingException {
+		isInvalidDate(diaryDate);
+		isInvalidContents(contents);
+		isInvalidScope(scope);
 	}
 }

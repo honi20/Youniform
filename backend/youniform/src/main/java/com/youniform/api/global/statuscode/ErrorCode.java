@@ -16,7 +16,7 @@ public enum ErrorCode {
     INVALID_DIARY_CONTENTS(HttpStatus.BAD_REQUEST.value(), "잘못된 다이어리 컨텐츠 형식입니다."),
     INVALID_DIARY_SCOPE(HttpStatus.BAD_REQUEST.value(), "잘못된 다이어리 공개 범위입니다. 공개 범위는 ALL, FRIENDS, PRIVATE 중에 하나입니다."),
     STAMP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 스탬프 ID 입니다."),
-    DIARY_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "로그인 유저와 다이어리 작성자가 일치하지 않습니다."),
+    DIARY_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "다이어리 업데이트가 불가능합니다. 작성자만 수정이 가능하고, 다이어리 날짜는 수정 불가능합니다."),
     WRITER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 유저(다이어리 작성자) ID 입니다."),
 
     // photocard error code
