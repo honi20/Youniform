@@ -3,8 +3,7 @@ package com.youniform.api.domain.diary.dto;
 import lombok.*;
 
 @Data
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class DiaryTextboxObjectDto extends DiaryContentObjectDto {
 	private String fontFamily;
 	private String fontWeight;
@@ -26,4 +25,8 @@ public class DiaryTextboxObjectDto extends DiaryContentObjectDto {
 	private String pathAlign;
 	private int minWidth;
 	private boolean splitByGrapheme;
+
+	public DiaryTextboxObjectDto() {
+		this.setType("textbox");
+	}
 }
