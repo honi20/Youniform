@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CheckIcon from "../assets/Done_round_light.svg?react";
 import BasicModal from "../components/Modal/BasicModal";
+import useSignUpStore from "../stores/signUpStore";
 
 const Div = styled.div`
   width: 100%;
@@ -11,6 +12,7 @@ const Div = styled.div`
   align-items: center;
   /* border: 5px solid black; */
 `;
+
 const Header = styled.div`
   width: 100%;
   height: auto;
@@ -20,6 +22,7 @@ const Header = styled.div`
   box-sizing: border-box;
   /* border: 5px solid red; */
 `;
+
 const Title = styled.div`
   width: 50%;
   height: auto;
@@ -33,6 +36,7 @@ const Title = styled.div`
   letter-spacing: -0.165px;
   /* border: 1px solid black; */
 `;
+
 const Subtitle = styled.div`
   width: 100%;
   flex: 1;
@@ -46,6 +50,7 @@ const Subtitle = styled.div`
   letter-spacing: -0.165px;
   /* border: 1px solid red; */
 `;
+
 const Content = styled.div`
   width: 100%;
   height: 80%;
@@ -54,6 +59,7 @@ const Content = styled.div`
   padding: 1% 0;
   /* border: 1px solid blue; */
 `;
+
 const BtnWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -61,12 +67,14 @@ const BtnWrapper = styled.div`
   justify-content: center;
   /* border: 1px solid red; */
 `;
+
 const BtnItem = styled.div`
   width: 30%;
   aspect-ratio: 1/1;
   margin: 1%;
   /* border: 1px solid black; */
 `;
+
 const Btn = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
@@ -84,6 +92,7 @@ const Btn = styled.div`
   transition: box-shadow 0.3s ease;
   position: relative;
 `;
+
 const Check = styled.div`
   z-index: 1;
   height: 20%;
@@ -97,6 +106,7 @@ const Check = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
 const Number = styled.div`
   color: #000;
   text-align: center;
@@ -107,6 +117,7 @@ const Number = styled.div`
   line-height: normal;
   letter-spacing: -0.01031rem;
 `;
+
 const Position = styled.div`
   color: #000;
   text-align: center;
@@ -117,6 +128,7 @@ const Position = styled.div`
   line-height: normal;
   letter-spacing: -0.165px;
 `;
+
 const Name = styled.div`
   color: #000;
   text-align: center;
@@ -154,6 +166,7 @@ const Footer = styled.div`
   align-items: start;
   /* border: 1px solid red; */
 `;
+
 const ConfirmBtnWrapper = styled.div`
   width: 100%;
   height: 3rem;
@@ -161,12 +174,12 @@ const ConfirmBtnWrapper = styled.div`
   justify-content: center;
   /* border: 1px solid pink; */
 `;
+
 const ConfirmBtn = styled.div`
   height: 100%;
   width: 40%;
   background-color: #262f66;
   border-radius: 1.5rem;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -174,6 +187,7 @@ const ConfirmBtn = styled.div`
   font-family: "Pretendard";
   font-size: 1.25rem;
 `;
+
 const SelectPlayerView = () => {
   const playersInfo = [
     { id: 0, name: "없음" },
@@ -193,7 +207,14 @@ const SelectPlayerView = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalState, setModalState] = useState("");
 
+  const { step, user, user: { players, setPlayers } } = useSignUpStore();
+
+  useEffect(() => {
+    setPlayers(selectedPlayers);
+  }, [selectedPlayers, setPlayers]);
+
   const handleClick = (id) => {
+    console.log(players);
     setSelectedPlayers((prevSelectedPlayers) => {
       if (id == 0) {
         return prevSelectedPlayers.includes(0) ? [] : [0];
@@ -213,6 +234,7 @@ const SelectPlayerView = () => {
       }
     });
   };
+
   const handleConfirmClick = () => {
     console.log(selectedPlayers);
     if (selectedPlayers.length == 0) {
@@ -222,10 +244,12 @@ const SelectPlayerView = () => {
     }
     setIsModalOpen(true);
   };
+
   const handleModalButtonClick = (buttonType) => {
     console.log("Button clicked:", buttonType);
     setIsModalOpen(false);
   };
+
   return (
     <Div>
       <Header>
@@ -245,11 +269,13 @@ const SelectPlayerView = () => {
           ))}
         </BtnWrapper>
       </Content>
-      <Footer>
-        <ConfirmBtnWrapper>
-          <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>
-        </ConfirmBtnWrapper>
-      </Footer>
+      {step != 3 &&
+        <Footer>
+          <ConfirmBtnWrapper>
+            <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>
+          </ConfirmBtnWrapper>
+        </Footer>
+      }
       {isModalOpen && (
         <BasicModal
           state={modalState}

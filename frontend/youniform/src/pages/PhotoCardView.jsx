@@ -1,9 +1,12 @@
 import React from 'react'
+import Binder from '../components/Diary/Home/Binder'
 
 const PhotoCardView = () => {
   return (
     <div>
-      photo card view
+      <Binder>
+
+      </Binder>
     </div>
   )
 }
