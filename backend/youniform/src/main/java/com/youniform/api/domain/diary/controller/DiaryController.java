@@ -75,9 +75,9 @@ public class DiaryController {
 
 	@DeleteMapping("/{diaryId}")
 	public ResponseEntity<?> diaryRemove(@PathVariable Long diaryId) {
-		if (diaryId == null || diaryId < 0) {
-			throw new CustomException(DIARY_NOT_FOUND);
-		}
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		diaryService.removeDiary(userId, diaryId);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_DELETED, null), HttpStatus.NO_CONTENT);
 	}

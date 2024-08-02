@@ -14,4 +14,6 @@ public interface DiaryService {
 	DiaryListRes listDiary(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
 
 	void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq) throws JsonProcessingException;
+
+	void removeDiary(Long userId, Long diaryId);
 }
