@@ -17,13 +17,9 @@ public class DiaryResource {
     @Column(name = "resource_id")
     private Long id;
 
-    private String label;
-
     private String imgUrl;
 
-    @Enumerated(EnumType.STRING)
     private ResourceType type;
 
-    @Enumerated(EnumType.STRING)
     private ResourceCategory category;
 }

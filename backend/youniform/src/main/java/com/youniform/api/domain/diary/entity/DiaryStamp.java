@@ -17,7 +17,5 @@ public class DiaryStamp {
     @Column(name = "stamp_id")
     private Long id;
 
-    private String label;
-
     private String imgUrl;
 }

@@ -34,6 +34,7 @@ public enum SuccessCode {
     MY_DIARIES_OK(HttpStatus.OK.value(), "로그인 유저의 다이어리 리스트 조회에 성공했습니다."),
     OTHER_DIARIES_OK(HttpStatus.OK.value(), "다른 유저의 다이어리 리스트 조회에 성공했습니다."),
     DIARY_RESOURCES_OK(HttpStatus.OK.value(), "다이어리 리소스 리스트 조회에 성공했습니다."),
+    DIARY_STAMP_OK(HttpStatus.OK.value(), "다이어리 스탬프 리스트 조회에 성공했습니다."),
 
     //post
     POST_CREATED(HttpStatus.CREATED.value(), "게시글 생성에 성공했습니다."),

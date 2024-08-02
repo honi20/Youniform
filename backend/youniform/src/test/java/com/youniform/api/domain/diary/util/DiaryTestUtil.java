@@ -3,6 +3,7 @@ package com.youniform.api.domain.diary.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.diary.dto.*;
+import com.youniform.api.domain.diary.dto.resource.StampDto;
 import com.youniform.api.domain.diary.entity.Scope;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;

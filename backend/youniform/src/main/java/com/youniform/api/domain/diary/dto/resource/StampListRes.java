@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResourceListRes {
-	private List<ResourceDto> resourceList;
+public class StampListRes {
+	private List<StampDto> stampList;
 }
