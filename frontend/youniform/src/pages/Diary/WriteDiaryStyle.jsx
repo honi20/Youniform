@@ -105,7 +105,7 @@ export const DecorationMenu = styled.div`
   flex-shrink: 0;
   box-sizing: border-box;
   border-radius: 0rem 1.25rem 1.25rem 1.25rem;
-  border: 2px solid #000;
+  border: 2px solid black;
   background: #ecf3f8;
   position: relative;
   top: -2px;
