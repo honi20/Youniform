@@ -1,11 +1,22 @@
 package com.youniform.api.domain.diary.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class DiaryContentObjectDto {
+@JsonTypeInfo(
+		use = JsonTypeInfo.Id.NAME,
+		include = JsonTypeInfo.As.PROPERTY,
+		property = "type"
+)
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = DiaryImageObjectDto.class, name = "image"),
+		@JsonSubTypes.Type(value = DiaryTextboxObjectDto.class, name = "textbox")
+})
+public abstract class DiaryContentObjectDto {
 	private String type;
 	private String version;
 	private String originX;
