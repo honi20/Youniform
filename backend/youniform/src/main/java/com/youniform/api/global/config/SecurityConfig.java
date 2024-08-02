@@ -2,7 +2,6 @@ package com.youniform.api.global.config;
 
 import com.youniform.api.global.jwt.filter.JwtBearerAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -34,9 +33,10 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/users/signin/**", "/users/signup/**", "/users/*/check-duplication",
-                                "/users/find/password", "/users/check/email",
-                                "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/users/signin/**", "/users/signup/**", "/users/*/check-duplication",
+//                                "/users/find/password", "/users/check/email",
+//                                "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
