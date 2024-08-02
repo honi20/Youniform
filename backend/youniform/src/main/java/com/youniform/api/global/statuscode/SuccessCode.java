@@ -20,6 +20,12 @@ public enum SuccessCode {
     ALERT_MODIFIED(HttpStatus.NO_CONTENT.value(), "푸시 알림 변경에 선공했습니다."),
     USER_RESIGNED(HttpStatus.NO_CONTENT.value(), "회원 탈퇴에 성공했습니다."),
 
+    //friends
+    FRIEND_REQUEST_OK(HttpStatus.CREATED.value(), "친구 요청에 성공했습니다."),
+    FRIEND_ACCEPT_OK(HttpStatus.CREATED.value(), "친구 요청을 수락했습니다."),
+    FRIEND_LIST_OK(HttpStatus.OK.value(), "친구 리스트 조회에 성공했습니다."),
+    FRIEND_DELETED(HttpStatus.NO_CONTENT.value(), "친구 삭제에 성공했습니다."),
+
     // diary success code
     DIARY_CREATED(HttpStatus.CREATED.value(), "다이어리 저장에 성공했습니다."),
     DIARY_DETAILS_OK(HttpStatus.OK.value(), "다이어리 상세보기에 성공했습니다."),

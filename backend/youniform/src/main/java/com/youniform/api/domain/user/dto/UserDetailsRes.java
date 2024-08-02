@@ -25,7 +25,7 @@ public class UserDetailsRes {
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
                 .profileUrl(user.getProfileUrl())
-                .teamImage(user.getTeam().getImageUrl())
+                .teamImage(user.getTeam().getImgUrl())
                 .build();
     }
 }
