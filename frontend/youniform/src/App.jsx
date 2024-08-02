@@ -7,19 +7,27 @@ import styled from "styled-components";
 import LoginView from "./pages/LoginView";
 import FindEmailView from "./pages/FindEmailView";
 import FindPasswordView from "./pages/FindPasswordView";
-import DiaryDetailView from "./pages/DiaryDetailView";
-import WriteDiaryView from "./pages/WriteDiaryView";
+import DiaryDetailView from "@pages/Diary/DiaryDetailView";
+import WriteDiaryView from "@pages/Diary/WriteDiaryView";
 import SignUpView from "./pages/SignUpView";
 import SelectPlayerView from "./pages/SelectPlayerView";
-import NewsView from "./pages/NewsView";
-import TotalSongView from "./pages/TotalSongView";
-import PlayerSongView from "./pages/PlayerSongView";
-import TeamSongView from "./pages/TeamSongView";
-import ChatView from "./pages/ChatView";
+import NewsView from "@pages/Main/NewsView";
+import TotalSongView from "@pages/Main/TotalSongView";
+import PlayerSongView from "@pages/Main/PlayerSongView";
+import TeamSongView from "@pages/Main/TeamSongView";
+import ChatView from "@pages/Main/ChatView";
 import StepOneForm from "./components/SignUp/Step1/StepOneForm";
 import StepTwoForm from "./components/SignUp/Step2/StepTwoForm";
 import StepThreeForm from "./components/SignUp/Step3/StepThreeForm";
 import SignUpSuccess from "./components/SignUp/SignUpSuccess";
+import useThemeStore from "@/stores/themeStore";
+import Header from "@/components/Share/Header";
+import NavBar from "@/components/Share/NavBar";
+import MainView from "@/pages/MainView";
+import PhotoCardView from "@/pages/PhotoCardView";
+import DiaryHomeView from "@/pages/DiaryHomeView";
+import CommunityView from "@/pages/CommunityView";
+import MyPageView from "@/pages/MyPageView";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -59,7 +67,7 @@ function App() {
 
   return (
     <>
-    <GlobalStyle />
+      <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <AppContainer>
@@ -103,7 +111,7 @@ function App() {
         </BrowserRouter>
       </ThemeProvider>
     </>
- );
+  );
 }
 
 export default App;
