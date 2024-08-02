@@ -15,6 +15,7 @@ import FontComp from "@components/Diary/Write/FontComp";
 import WallPaperComp from "@components/Diary/Write/WallPaperComp";
 import StickerComp from "@components/Diary/Write/StickerComp";
 import CanvasComp from "@components/Diary/Write/CanvasComp";
+import ColorChipComp from "../../components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
 
 const WriteDiaryView = () => {
@@ -109,7 +110,7 @@ const WriteDiaryView = () => {
       case 0:
         return (
           <>
-            {/* <ColorChipComp /> */}
+            <ColorChipComp />
             <WallPaperComp
               wallpapers={Object.values(wallpapers).map((mod) => mod.default)}
               onImageClick={handleImageClick}
