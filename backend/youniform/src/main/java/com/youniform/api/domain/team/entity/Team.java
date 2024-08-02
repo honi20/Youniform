@@ -35,5 +35,5 @@ public class Team {
 
     private Integer win;
 
-    private String imageUrl;
+    private String imgUrl;
 }

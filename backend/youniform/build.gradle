@@ -159,6 +159,7 @@ clean {
 }
 
 test {
+    useJUnitPlatform()
     systemProperty 'testcontainers.ryuk.disabled', 'true'
     systemProperty 'docker.host', 'unix:///var/run/docker.sock'
     environment 'DOCKER_HOST', 'unix:///var/run/docker.sock'

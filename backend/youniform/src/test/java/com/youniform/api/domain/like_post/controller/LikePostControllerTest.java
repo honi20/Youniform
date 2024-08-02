@@ -67,7 +67,7 @@ public class LikePostControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
-                                .tag("LIKES API")
+                                .tag("Likes API")
                                 .summary("좋아요 생성 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")

@@ -29,7 +29,7 @@ public class MyDetailsRes {
                 .profileUrl(user.getProfileUrl())
                 .theme(user.getTheme())
                 .pushAlert(user.getPushAlert())
-                .teamImage(user.getTeam().getImageUrl())
+                .teamImage(user.getTeam().getImgUrl())
                 .build();
     }
 }
