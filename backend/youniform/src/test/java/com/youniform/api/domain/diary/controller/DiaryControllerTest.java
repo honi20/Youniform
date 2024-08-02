@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.config.RedisTestContainerConfig;
 import com.youniform.api.domain.diary.dto.*;
+import com.youniform.api.domain.diary.dto.resource.*;
 import com.youniform.api.domain.diary.entity.Scope;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.dto.SliceDto;
@@ -611,6 +612,105 @@ public class DiaryControllerTest {
                                                 fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
                                         )
                                 )
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 다이어리_리소스_조회_성공() throws Exception {
+        List<ResourceDto> resourceList = new ArrayList<>();
+        resourceList.add(new ResourceDto("BACKGOUND", List.of(
+                new ResourceCategoryDto("NONE", List.of(
+                        new ResourceItemDto(1L, "background_1.png"),
+                        new ResourceItemDto(2L, "background_2.png")
+                )
+        ))));
+        resourceList.add(new ResourceDto("STICKER", List.of(
+                new ResourceCategoryDto("BASEBALL", List.of(
+                        new ResourceItemDto(3L, "sticker_baseball.png")
+                )),
+                new ResourceCategoryDto("RETRO", List.of(
+                        new ResourceItemDto(4L, "sticker_retro.png")
+                )),
+                new ResourceCategoryDto("CUTE", List.of(
+                        new ResourceItemDto(5L, "sticker_cute.png")
+                )),
+                new ResourceCategoryDto("LETTER", List.of(
+                        new ResourceItemDto(6L, "sticker_cute.png")
+                ))
+        )));
+        resourceList.add(new ResourceDto("THEME", List.of(
+                new ResourceCategoryDto("NONE", List.of(
+                        new ResourceItemDto(7L, "theme_1.png"),
+                        new ResourceItemDto(8L, "theme_2.png")
+                )
+                ))));
+
+        when(diaryService.listDiaryResources()).thenReturn(new ResourceListRes(resourceList));
+
+        performGet("/diaries/resources")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_RESOURCES_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_RESOURCES_OK.getMessage()))
+                .andDo(document(
+                        "Resource 리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .summary("Resource 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                        fieldWithPath("body.resourceList[]").description("Resource 타입별 리스트"),
+                                        fieldWithPath("body.resourceList[].type").type(JsonFieldType.STRING).description("Resource 타입명 (BACKGROUND, STICKER, THEME)"),
+                                        fieldWithPath("body.resourceList[].categories[]").description("Resource 카테고리별 리스트"),
+                                        fieldWithPath("body.resourceList[].categories[].category").type(JsonFieldType.STRING).description("Resource 카테고리명 (NONE, BASEBALL, RETRO, CUTE, LETTER)"),
+                                        fieldWithPath("body.resourceList[].categories[].items[]").description("Resource Item 정보"),
+                                        fieldWithPath("body.resourceList[].categories[].items[].resourceId").type(JsonFieldType.NUMBER).description("Resource Item Id"),
+                                        fieldWithPath("body.resourceList[].categories[].items[].imgUrl").type(JsonFieldType.STRING).description("Resource Item 이미지 URL")
+                                )
+                                .responseSchema(Schema.schema("Resource 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 다이어리_스탬프_조회_성공() throws Exception {
+        List<StampDto> stampList = new ArrayList<>();
+        stampList.add(new StampDto(2L, "http://youniform.com/sticker2.png"));
+        stampList.add(new StampDto(3L, "http://youniform.com/sticker3.png"));
+        stampList.add(new StampDto(4L, "http://youniform.com/sticker4.png"));
+
+        when(diaryService.listDiaryStamps()).thenReturn(new StampListRes(stampList));
+
+        performGet("/diaries/stamps")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_STAMP_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_STAMP_OK.getMessage()))
+                .andDo(document(
+                        "Stamp 리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .summary("Stamp 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                        fieldWithPath("body.stampList[]").description("Stamp 리스트"),
+                                        fieldWithPath("body.stampList[].stampId").type(JsonFieldType.NUMBER).description("Stamp ID"),
+                                        fieldWithPath("body.stampList[].imgUrl").type(JsonFieldType.STRING).description("Stamp 이미지 URL")
+                                )
+                                .responseSchema(Schema.schema("Stamp 리스트 조회 Response"))
                                 .build()
                         ))
                 );

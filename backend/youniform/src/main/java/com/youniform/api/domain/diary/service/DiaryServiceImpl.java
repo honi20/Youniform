@@ -3,11 +3,14 @@ package com.youniform.api.domain.diary.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.diary.dto.*;
+import com.youniform.api.domain.diary.dto.resource.*;
 import com.youniform.api.domain.diary.entity.Diary;
+import com.youniform.api.domain.diary.entity.DiaryResource;
 import com.youniform.api.domain.diary.entity.DiaryStamp;
 import com.youniform.api.domain.diary.entity.Scope;
 import com.youniform.api.domain.diary.repository.DiaryCustomRepository;
 import com.youniform.api.domain.diary.repository.DiaryRepository;
+import com.youniform.api.domain.diary.repository.ResourceRepository;
 import com.youniform.api.domain.diary.repository.StampRepository;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.global.dto.SliceDto;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
@@ -36,6 +40,8 @@ public class DiaryServiceImpl implements DiaryService {
 	private final DiaryCustomRepository diaryCustomRepository;
 
 	private final StampRepository stampRepository;
+
+	private final ResourceRepository resourceRepository;
 
 	private final RedisUtils redisUtils;
 
@@ -172,6 +178,37 @@ public class DiaryServiceImpl implements DiaryService {
 		redisUtils.deleteData("diaryContents_" + diary.getId());
 
 		diaryRepository.deleteById(diaryId);
+	}
+
+	@Override
+	public ResourceListRes listDiaryResources() {
+		List<ResourceDto> resourceList = resourceRepository.findAll().stream()
+				.collect(Collectors.groupingBy(DiaryResource::getType))
+				.entrySet().stream()
+				.map(typeEntry -> ResourceDto.toDto(
+						typeEntry.getKey(),
+						typeEntry.getValue().stream()
+								.collect(Collectors.groupingBy(DiaryResource::getCategory))
+								.entrySet().stream()
+								.map(categoryEntry -> ResourceCategoryDto.toDto(
+										categoryEntry.getKey(),
+										categoryEntry.getValue().stream()
+												.map(ResourceItemDto::toDto)
+												.collect(Collectors.toList())))
+								.collect(Collectors.toList())))
+				.collect(Collectors.toList());
+
+		return new ResourceListRes(resourceList);
+	}
+
+	@Override
+	public StampListRes listDiaryStamps() {
+		List<StampDto> stampList = stampRepository.findAll()
+				.stream()
+				.map(StampDto::toDto)
+				.collect(Collectors.toList());
+
+		return new StampListRes(stampList);
 	}
 
 	private List<DiaryDetailDto> getDiaryListDto(List<Diary> diaries) throws JsonProcessingException {

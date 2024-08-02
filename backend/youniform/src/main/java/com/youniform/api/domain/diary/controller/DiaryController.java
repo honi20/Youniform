@@ -5,7 +5,6 @@ import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.dto.resource.*;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.dto.ResponseDto;
-import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static com.youniform.api.domain.diary.util.DiaryControllerUtil.*;
-import static com.youniform.api.global.statuscode.ErrorCode.DIARY_NOT_FOUND;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
@@ -40,7 +37,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/{diaryId}")
-	public ResponseEntity<?> diaryDetails(@PathVariable Long diaryId) throws JsonProcessingException {
+	public ResponseEntity<?> diaryDetails(@PathVariable("diaryId") Long diaryId) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryDetailDto response = diaryService.detailDiary(userId, diaryId);
@@ -58,14 +55,14 @@ public class DiaryController {
 	}
 
 	@GetMapping("/list/{userUuid}")
-	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable String userUuid) throws JsonProcessingException {
+	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userUuid") String userUuid) throws JsonProcessingException {
 		DiaryListRes response = diaryService.listDiary(userUuid, diaryListReq, pageable);
 
 		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@PutMapping("/{diaryId}")
-	public ResponseEntity<?> diaryModify(@PathVariable Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
+	public ResponseEntity<?> diaryModify(@PathVariable("diaryId") Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		diaryService.modifyDiary(userId, diaryId, diaryModifyReq);
@@ -74,7 +71,7 @@ public class DiaryController {
 	}
 
 	@DeleteMapping("/{diaryId}")
-	public ResponseEntity<?> diaryRemove(@PathVariable Long diaryId) {
+	public ResponseEntity<?> diaryRemove(@PathVariable("diaryId") Long diaryId) {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		diaryService.removeDiary(userId, diaryId);
@@ -83,8 +80,16 @@ public class DiaryController {
 	}
 
 	@GetMapping("/resources")
-	public ResponseEntity<?> diaryResourcesList() {
-		ResourceListRes response = getDiaryResourceRes();
+	public ResponseEntity<?> diaryResourceList() {
+		ResourceListRes response = diaryService.listDiaryResources();
+
 		return new ResponseEntity<>(ResponseDto.success(DIARY_RESOURCES_OK, response), HttpStatus.OK);
+	}
+
+	@GetMapping("/stamps")
+	public ResponseEntity<?> diaryStampList() {
+		StampListRes response = diaryService.listDiaryStamps();
+
+		return new ResponseEntity<>(ResponseDto.success(DIARY_STAMP_OK, response), HttpStatus.OK);
 	}
 }
