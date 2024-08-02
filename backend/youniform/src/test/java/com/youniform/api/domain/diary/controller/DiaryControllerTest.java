@@ -537,6 +537,85 @@ public class DiaryControllerTest {
                 );
     }
 
+    @Test
+    public void 다이어리_삭제_성공() throws Exception {
+        diaryService.removeDiary(anyLong(), anyLong());
+
+        performDelete("/diaries/{diaryId}", 123L)
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_DELETED.getMessage()))
+                .andDo(document("Diary 삭제 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .summary("Diary 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("response body").optional().ignored()
+                                        )
+                                )
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 다이어리_삭제_실패_존재하지_않는_다이어리() throws Exception {
+        doThrow(new CustomException(DIARY_NOT_FOUND)).when(diaryService).removeDiary(anyLong(), anyLong());
+
+        performDelete("/diaries/{diaryId}", 100L)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_NOT_FOUND.getMessage()))
+                .andDo(document("Diary 삭제 실패 - 존재하지 않는 다이어리 (Diary ID가 유효하지 않음)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
+                                        )
+                                )
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 다이어리_삭제_실패_로그인유저_작성자_불일치() throws Exception {
+        doThrow(new CustomException(DIARY_UPDATE_FORBIDDEN)).when(diaryService).removeDiary(anyLong(), anyLong());
+
+        performDelete("/diaries/{diaryId}", 126L)
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_UPDATE_FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(DIARY_UPDATE_FORBIDDEN.getMessage()))
+                .andDo(document("Diary 삭제 실패 - 현재 로그인한 유저가 작성한 게시글만 삭제 가능",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
+                                        )
+                                )
+                                .build()
+                        ))
+                );
+    }
+
     private ResultActions performPost(String path, DiaryAddReq diaryAddReq) throws Exception {
         String content = mapper.writeValueAsString(diaryAddReq);
 

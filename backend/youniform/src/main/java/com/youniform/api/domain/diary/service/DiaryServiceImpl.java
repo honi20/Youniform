@@ -161,6 +161,19 @@ public class DiaryServiceImpl implements DiaryService {
 		redisUtils.setData("diaryContents_"+diary.getId(), objectMapper.writeValueAsString(redisDto));
 	}
 
+	@Override
+	public void removeDiary(Long userId, Long diaryId) {
+		Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new CustomException(DIARY_NOT_FOUND));
+
+		if (!userId.equals(diary.getUser().getId())) {
+			throw new CustomException(DIARY_UPDATE_FORBIDDEN);
+		}
+
+		redisUtils.deleteData("diaryContents_" + diary.getId());
+
+		diaryRepository.deleteById(diaryId);
+	}
+
 	private List<DiaryDetailDto> getDiaryListDto(List<Diary> diaries) throws JsonProcessingException {
 		List<DiaryDetailDto> diaryList = new ArrayList<>();
 
