@@ -7,7 +7,6 @@ export const Diary = styled.div`
   width: 90%;
   height: auto;
   flex-shrink: 0;
-  /* position: relative; */
   display: flex;
   flex-direction: column;
   // style

@@ -14,6 +14,11 @@ export default defineConfig({
       "@styles": path.resolve(__dirname, "src/styles"),
       "@stores": path.resolve(__dirname, "src/stores"),
       "@": path.resolve(__dirname, "src"),
+      util: "util",
     },
+  },
+  define: {
+    global: "window",
+    "process.env": {},
   },
 });
