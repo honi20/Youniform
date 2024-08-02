@@ -162,9 +162,11 @@ const LoginView = () => {
             <TextField sx={{ width: "100%" }} label="Email" />
           </div>
           <div>
+            <form>  {/* 콘솔 에러 제거용 form 태그 */}
             <FormControl sx={{ width: "100%" }} variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
               <OutlinedInput
+                autoComplete="off" // 콘솔 에러 제거
                 id="outlined-adornment-password"
                 type={values.showPassword ? 'text' : 'password'}
                 value={values.password}
@@ -184,6 +186,7 @@ const LoginView = () => {
                 label="Password"
               />
             </FormControl>
+            </form>
           </div>
           {/* login button */}
           <ColorBtn sx={{ width: "100%" }} variant="contained">로그인</ColorBtn>

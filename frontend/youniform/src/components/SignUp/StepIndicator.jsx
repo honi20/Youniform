@@ -6,7 +6,7 @@ const StepIndicatorBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 20%;
+  margin-top: ${(props) => (props.$step === 1 || props.$step === 4 ? '15%' : '3%')};
 `;
 
 const StepCircle = styled.div`
@@ -35,7 +35,7 @@ const StepIndicator = () => {
   const { step } = useSignUpStore();
 
   return (
-    <StepIndicatorBox>
+    <StepIndicatorBox $step={step}>
           {[1, 2, 3, 4].map((num, index) => (
             <React.Fragment key={index}>
               <StepCircle $active={num === step}>{num}</StepCircle>

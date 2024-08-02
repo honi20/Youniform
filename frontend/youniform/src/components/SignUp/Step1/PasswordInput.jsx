@@ -1,29 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, FormControl, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import styled from 'styled-components';
-import useSignUpStore from '../../stores/signUpStore';
-import StatusMessageForm from './StatusMessageForm';
+import useSignUpStore from '../../../stores/signUpStore';
+import StatusMessageForm from '../StatusMessageForm';
 
 const PasswordInput = () => {
-  const [ isPasswordMatch, setIsPasswordMatch ] = useState(false);
-  const [ password, setPassword ] = useState('');
-  const [ confirmPw, setConfirmPw ] = useState('');
-  const [ showPassword, setShowPassword ] = useState(false);
-  const [ showConfirmPw, setShowConfirmPw ] = useState(false);
- 
+  const { user, setPassword, setConfirmPw, setIsPwVerified } = useSignUpStore((state) => ({
+    user: state.user,
+    setPassword: state.user.setPassword,
+    setConfirmPw: state.user.setConfirmPw,
+    setIsPwVerified: state.user.setIsPwVerified
+  }));
+
+  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
+
   useEffect(() => {
-    setIsPasswordMatch(password === confirmPw);
-  }, [password, confirmPw]);
+    setIsPasswordMatch(user.password === user.confirmPw);
+  }, [user.password, user.confirmPw]);
 
   const handlePwChange = (prop) => (event) => {
     switch (prop) {
       case 'password':
         setPassword(event.target.value);
         break;
-      case 'confirmPw' : 
+      case 'confirmPw':
         setConfirmPw(event.target.value);
         break;
+    }
+
+    if (user.password === user.confirmPw) {
+      // 기타 조건 만족할 때
+      setIsPwVerified(true);
     }
   };
 
@@ -32,8 +41,8 @@ const PasswordInput = () => {
       case 'showPassword':
         setShowPassword(!showPassword);
         break;
-      case 'showConfirmPw' : 
-      setShowConfirmPw(!showConfirmPw);
+      case 'showConfirmPw':
+        setShowConfirmPw(!showConfirmPw);
         break;
     }
   };
@@ -44,12 +53,14 @@ const PasswordInput = () => {
 
   return (
     <>
+      <form>
       <FormControl sx={{ width: "100%" }} variant="outlined">
         <TextField
+          autoComplete='off'
           label="비밀번호 입력"
           variant="outlined"
           type={showPassword ? 'text' : 'password'}
-          value={password}
+          value={user.password}
           onChange={handlePwChange('password')}
           InputProps={{
             endAdornment: (
@@ -69,13 +80,13 @@ const PasswordInput = () => {
           fullWidth
         />
       </FormControl>
-      
       <FormControl sx={{ width: "100%" }} variant="outlined">
         <TextField
+          autoComplete='off'
           label="비밀번호 확인"
           variant="outlined"
           type={showConfirmPw ? 'text' : 'password'}
-          value={confirmPw}
+          value={user.confirmPw}
           onChange={handlePwChange('confirmPw')}
           InputProps={{
             endAdornment: (
@@ -95,15 +106,16 @@ const PasswordInput = () => {
           fullWidth
         />
       </FormControl>
-      {(password.length <= 0 || confirmPw.length <= 0) ? (
+      {(user.password.length <= 0 || user.confirmPw.length <= 0) ? (
         <StatusMessageForm statusMsg='비밀번호 정보를 입력하세요.' />
       ) : (
         !isPasswordMatch && (
           <StatusMessageForm statusMsg='비밀번호 정보가 일치하지 않습니다.' />
         )
       )}
+      </form>
     </>
   );
-}
+};
 
 export default PasswordInput;
