@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import DiaryComp from "@components/Diary/Write/DiaryComp";
-// import ProfileUrl from '../assets/profile.png?react';
 
 const Div = styled.div`
   flex-shrink: 0;
   display: flex;
   flex-direction: column; /* 수직 정렬 */
   align-items: center;
-  /* justify-content: center; */
-  margin-top: 50px;
-  /* border: 1px solid blue; */
   height: auto;
 `;
 

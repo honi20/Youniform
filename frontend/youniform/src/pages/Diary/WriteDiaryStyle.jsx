@@ -1,10 +1,29 @@
-import React from "react";
 import styled from "styled-components";
-import ExpandDownIcon from "@assets/Expand_down.svg?react";
 
-const SaveBtn = styled.div`
+export const Div = styled.div`
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  z-index: ${(props) => (props.$decorated ? "99" : "")};
+  background-color: ${(props) =>
+    props.$decorated ? "rgb(146, 146, 146)" : ""};
+  top: 0;
+  height: ${(props) => (props.$decorated ? "100vh" : "calc(100vh - 120px);")};
+  position: ${(props) => (props.$decorated ? "absolute" : "")};
+  /* border: 5px solid black; */
+`;
+
+export const IconContainer = styled.div`
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+export const SaveBtn = styled.div`
   position: absolute;
-  z-index: 11;
+  z-index: 10;
   width: 3rem;
   height: 3rem;
   right: 4%;
@@ -15,13 +34,13 @@ const SaveBtn = styled.div`
   flex-direction: column;
   align-items: center;
 `;
-const BtnContainer = styled.div`
+export const BtnContainer = styled.div`
   display: ${(props) => (props.$decorated ? "none" : "flex")};
   justify-content: space-between;
   height: 4rem;
   /* border: 1px solid blue; */
 `;
-const Btn = styled.div`
+export const Btn = styled.div`
   display: ${(props) => (props.$decorated ? "none" : "flex")};
   justify-content: center;
   flex-direction: column;
@@ -32,45 +51,32 @@ const Btn = styled.div`
   /* border: 1px solid lightblue; */
 `;
 
-const CloseBtn = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 2rem;
-  height: 2rem;
-  flex-shrink: 0;
-  border-radius: 0.625rem;
-  background: #acc0e2;
-  cursor: pointer;
-  box-sizing: border-box;
-  /* border: 2px solid #000; */
-`;
-const DecorationContainer = styled.div`
+export const DecorationContainer = styled.div`
   width: 90%;
-  height: 30%;
+  height: ${(props) => (props.$decorated ? "calc(100vh - 530px)" : "70px")};
+  top: ${(props) => (props.$decorated ? "520px" : "570px")};
+  bottom: ${(props) => (props.$decorated ? "calc(50vh - 330px)" : "")};
   box-sizing: border-box;
-  border: 5px solid blue;
+  position: absolute;
+  z-index: ${(props) => (props.$decorated ? "100" : "")};
+  /* border: 5px solid blue; */
 `;
-const DecorationPanel = styled.div`
+export const DecorationPanel = styled.div`
   display: ${(props) => (props.$decorated ? "block" : "none")};
   width: 100%;
   display: flex;
-  border: 3px solid black;
+  /* border: 3px solid black; */
 `;
-const StyledExpandDownIcon = styled(ExpandDownIcon)`
-  width: 1rem;
-  height: 1rem;
-  fill: black;
-`;
-const DecorationBtnContainer = styled.div`
+
+export const DecorationBtnContainer = styled.div`
   display: ${(props) => (props.$decorated ? "flex" : "none")};
   width: 100%;
   justify-content: space-between;
   /* border: 1px solid red; */
 `;
-const DecorationBtn = styled.button`
+export const DecorationBtn = styled.button`
   width: 18%;
-  height: 2.5rem;
+  height: 35px;
   flex-shrink: 0;
   box-sizing: border-box;
 
@@ -85,7 +91,7 @@ const DecorationBtn = styled.button`
   // typo
   color: #000;
   font-family: "DungGeunMo";
-  font-size: clamp(0.5rem, 2vh + 0.1rem, 1rem);
+  font-size: clamp(0.5rem, 2vh + 0.01rem, 1rem);
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -93,20 +99,39 @@ const DecorationBtn = styled.button`
   position: relative;
   z-index: 2;
 `;
-const DecorationMenu = styled.div`
+export const DecorationMenu = styled.div`
   width: 100%;
-  height: 90%;
+  height: calc(100% - 70px);
   flex-shrink: 0;
   box-sizing: border-box;
   border-radius: 0rem 1.25rem 1.25rem 1.25rem;
   border: 2px solid #000;
-  /* background: #ECF3F8; */
+  background: #ecf3f8;
   position: relative;
-  top: -3px; /* 테두리 제거와 위치 맞추기 위한 조정 */
-  display: ${(props) =>
-    props.$decorated ? "block" : "none"}; /* visibility 토글 */
+  top: -2px;
+  display: ${(props) => (props.$decorated ? "block" : "none")};
 `;
-const InitializationBtn = styled.button`
+export const CloseBtn = styled.div`
+  display: ${(props) => (props.$decorated ? "flex" : "none")};
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  width: 50%;
+  left: 25%;
+  flex-shrink: 0;
+  border-radius: 0.625rem;
+  border: 2px solid black;
+  background: #acc0e2;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  font-family: "DungGeunMo";
+  font-size: clamp(0.5rem, 2vh + 0.1rem, 1rem);
+  font-style: normal;
+  font-weight: 400;
+`;
+export const InitializationBtn = styled.button`
   // layout
   width: 10rem;
   height: 2.5rem;
@@ -119,7 +144,6 @@ const InitializationBtn = styled.button`
 
   // style
   border-radius: 0.625rem;
-  /* border: 1.5px solid black; */
   background: #e3e3e3;
 
   // typo
@@ -132,7 +156,7 @@ const InitializationBtn = styled.button`
   letter-spacing: 0.0625rem;
 `;
 
-const IconFont = styled.div`
+export const IconFont = styled.div`
   color: #acc0e2;
   font-family: "DungGeunMo";
   font-size: 0.9375rem;
@@ -140,19 +164,5 @@ const IconFont = styled.div`
   font-weight: 400;
   line-height: normal;
   letter-spacing: -0.01031rem;
-  /* margin-top: 0.5rem; */
 `;
-export {
-  IconFont,
-  CloseBtn,
-  BtnContainer,
-  InitializationBtn,
-  DecorationContainer,
-  DecorationPanel,
-  DecorationBtn,
-  DecorationMenu,
-  StyledExpandDownIcon,
-  DecorationBtnContainer,
-  Btn,
-  SaveBtn,
-};
+export * from "./WriteDiaryStyle";

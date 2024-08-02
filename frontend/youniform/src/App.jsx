@@ -3,23 +3,23 @@ import GlobalStyle from "./globalStyles";
 import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import useThemeStore from "./stores/themeStore";
-import MainView from "@pages/Main/MainView";
-import PhotoCardView from "./pages/PhotoCardView";
-import DiaryHomeView from "./pages/DiaryHomeView";
-import CommunityView from "./pages/CommunityView";
-import MyPageView from "./pages/MyPageView";
-import NavBar from "./components/Share/NavBar";
-import Header from "./components/Share/Header";
 import styled from "styled-components";
-import LoginView from "./pages/LoginView";
-import FindEmailView from "./pages/FindEmailView";
-import FindPasswordView from "./pages/FindPasswordView";
-import DiaryDetailView from "./pages/DiaryDetailView";
-import WriteDiaryView from "./pages/WriteDiaryView";
-import SignUpView from "./pages/SignUpView";
-import Test from "./pages/test";
-import SelectPlayerView from "./pages/SelectPlayerView";
+import useThemeStore from "@stores/themeStore";
+import MainView from "@pages/MainView";
+import PhotoCardView from "@pages/PhotoCardView";
+import DiaryHomeView from "@pages/DiaryHomeView";
+import CommunityView from "@pages/CommunityView";
+import MyPageView from "@pages/MyPageView";
+import NavBar from "@components/Share/NavBar";
+import Header from "@components/Share/Header";
+import LoginView from "@pages/LoginView";
+import FindEmailView from "@pages/FindEmailView";
+import FindPasswordView from "@pages/FindPasswordView";
+import DiaryDetailView from "@pages/Diary/DiaryDetailView";
+import WriteDiaryView from "@pages/Diary/WriteDiaryView";
+import SignUpView from "@pages/SignUpView";
+import Test from "@pages/test";
+import SelectPlayerView from "@pages/SelectPlayerView";
 import NewsView from "@pages/Main/NewsView";
 import TotalSongView from "@pages/Main/TotalSongView";
 import PlayerSongView from "@pages/Main/PlayerSongView";
@@ -81,8 +81,8 @@ function App() {
                 <Route path="/my-page" element={<MyPageView />} />
                 <Route path="/find-email" element={<FindEmailView />} />
                 <Route path="/find-password" element={<FindPasswordView />} />
-                <Route path="/diary-detail" element={<DiaryDetailView />} />
-                <Route path="/diary/write-diary" element={<WriteDiaryView />} />
+                <Route path="/diary/detail" element={<DiaryDetailView />} />
+                <Route path="/diary/write" element={<WriteDiaryView />} />
                 <Route path="/sign-up" element={<SignUpView />} />
                 <Route path="/test" element={<Test />} />
                 <Route path="/select-player" element={<SelectPlayerView />} />
