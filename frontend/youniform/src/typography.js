@@ -19,7 +19,7 @@ export const Medium = css`
 
 export const Large = css`
   font-size: 1.5rem;
-  font-style: normal;
+  font-style: ngitormal;
   font-weight: 700;
 `;
 

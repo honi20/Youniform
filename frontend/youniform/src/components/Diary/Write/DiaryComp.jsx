@@ -3,9 +3,6 @@ import * as St from "./DiaryCompStyle";
 import diaryTestImg from "@assets/DiaryTestImg.png";
 
 const DiaryComp = ({ data, state }) => {
-  // const [selectCanvas, setSelectCanvas] = useState(null);
-  // const [mode, setMode] = useState(state || 'write');
-  // const [comment, setComment] = useState(0);
   const { profileUrl, nickname, date, imageUrl, content, tags } = data;
 
   // date form 변경해주는 함수
@@ -27,15 +24,13 @@ const DiaryComp = ({ data, state }) => {
       <St.DiaryHeader>
         <St.Profile $profileUrl={profileUrl} />
         <St.TextContainer>
-          <HeaderText>{nickname}</HeaderText>
-          {/* <HeaderText>{formattedDate}</HeaderText> */}
+          <St.HeaderText>{nickname}</St.HeaderText>
         </St.TextContainer>
       </St.DiaryHeader>
       <St.DiaryContent>
         <St.DiaryImageContainer>
           <img src={diaryTestImg} />
         </St.DiaryImageContainer>
-        {/* <DiaryDate>{formattedDate}</DiaryDate> */}
       </St.DiaryContent>
       <St.DiaryFooter>
         <St.BtnContainer>
@@ -46,7 +41,7 @@ const DiaryComp = ({ data, state }) => {
           <St.BtnGroup>
             <St.Btn
               onClick={() => console.log("공유")}
-              bgcolor={"#262F66"}
+              backgroundColor={"#262F66"}
               color={"white"}
             >
               공유
