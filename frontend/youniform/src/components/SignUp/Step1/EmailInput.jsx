@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { TextField, MenuItem, Button } from '@mui/material';
 import styled from 'styled-components';
 import CheckIcon from '@mui/icons-material/Check';
-import ColorBtn from '../Common/ColorBtn';
-import StatusMessageForm from './StatusMessageForm';
+import ColorBtn from '../../Common/ColorBtn';
+import StatusMessageForm from '../StatusMessageForm';
+import signUpStore from '../../../stores/signUpStore';
 
 const InputEmail = styled.div`
   display: flex;
@@ -26,13 +27,18 @@ const TimerDisplay = styled.span`
 `;
 
 const EmailInput = () => {
-  const [email, setEmail] = useState('');
+  const { user, setEmail, setIsVerified } = signUpStore((state) => ({
+    user: state.user,
+    setEmail: state.user.setEmail,
+    setIsVerified: state.user.setIsVerified,
+  }));
+
+  const [emailInput, setEmailInput] = useState('');
   const [currency, setCurrency] = useState('');
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [statusMsg, setStatusMsg] = useState('아이디(이메일)를 입력하세요.');
   const [authenticCode, setAuthenticCode] = useState('');
-  const [isVerified, setIsVerified] = useState(false);
   const [expiryTime, setExpiryTime] = useState(null);
   const [remainingTime, setRemainingTime] = useState(null);
 
@@ -45,7 +51,7 @@ const EmailInput = () => {
   }, [isCustomDomain]);
 
   useEffect(() => {
-    if (email.length > 0) {
+    if (emailInput.length > 0) {
       if (isCustomDomain && currency.length > 0) {
         setStatusMsg('사용할 수 있는 아이디입니다.');
       } else if (!isCustomDomain && currency.length > 0) {
@@ -56,7 +62,7 @@ const EmailInput = () => {
     } else {
       setStatusMsg('아이디(이메일)를 입력하세요.');
     }
-  }, [email, currency, isCustomDomain]);
+  }, [emailInput, currency, isCustomDomain]);
 
   useEffect(() => {
     if (expiryTime) {
@@ -81,7 +87,7 @@ const EmailInput = () => {
   }, [expiryTime]);
 
   const handleEmailChange = (event) => {
-    setEmail(event.target.value);
+    setEmailInput(event.target.value);
   };
 
   const handleCurrencyChange = (event) => {
@@ -104,6 +110,8 @@ const EmailInput = () => {
   };
 
   const sendEmail = () => {
+    const fullEmail = isCustomDomain ? `${emailInput}@${currency}` : `${emailInput}@${currency}`;
+    setEmail(fullEmail);
     alert('인증 메일이 발송되었습니다!');
     setIsEmailSent(true);
     setIsVerified(false);
@@ -140,7 +148,7 @@ const EmailInput = () => {
         <TextField
           sx={{ width: "30%" }}
           label="이메일"
-          value={email}
+          value={emailInput}
           onChange={handleEmailChange}
         />
         <span>@</span>
@@ -189,7 +197,7 @@ const EmailInput = () => {
         label="인증번호 입력"
         value={authenticCode}
         onChange={handleCodeChange}
-        disabled={isVerified || !isEmailSent || remainingTime == '시간 만료'} // 인증 완료 시, 인증 메일 발송 전 비활성화
+        disabled={user.isVerified || !isEmailSent || remainingTime === '시간 만료'} // 인증 완료 시, 인증 메일 발송 전 비활성화
         InputProps={{
           endAdornment: (
             <>
@@ -197,10 +205,10 @@ const EmailInput = () => {
               <Button
                 variant="contained"
                 onClick={confirmCode}
-                disabled={isVerified || !isEmailSent || remainingTime == '시간 만료'}
+                disabled={user.isVerified || !isEmailSent || remainingTime === '시간 만료'}
                 sx={{ height: "30px" }}
               >
-                {isVerified ? <CheckIcon /> : '확인'}
+                {user.isVerified ? <CheckIcon /> : '확인'}
               </Button>
             </>
           ),

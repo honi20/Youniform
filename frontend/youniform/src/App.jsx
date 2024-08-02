@@ -4,27 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
-import useThemeStore from "@stores/themeStore";
-import MainView from "@pages/MainView";
-import PhotoCardView from "@pages/PhotoCardView";
-import DiaryHomeView from "@pages/DiaryHomeView";
-import CommunityView from "@pages/CommunityView";
-import MyPageView from "@pages/MyPageView";
-import NavBar from "@components/Share/NavBar";
-import Header from "@components/Share/Header";
-import LoginView from "@pages/LoginView";
-import FindEmailView from "@pages/FindEmailView";
-import FindPasswordView from "@pages/FindPasswordView";
-import DiaryDetailView from "@pages/Diary/DiaryDetailView";
-import WriteDiaryView from "@pages/Diary/WriteDiaryView";
-import SignUpView from "@pages/SignUpView";
-import Test from "@pages/test";
-import SelectPlayerView from "@pages/SelectPlayerView";
-import NewsView from "@pages/Main/NewsView";
-import TotalSongView from "@pages/Main/TotalSongView";
-import PlayerSongView from "@pages/Main/PlayerSongView";
-import TeamSongView from "@pages/Main/TeamSongView";
-import ChatView from "@pages/Main/ChatView";
+import LoginView from "./pages/LoginView";
+import FindEmailView from "./pages/FindEmailView";
+import FindPasswordView from "./pages/FindPasswordView";
+import DiaryDetailView from "./pages/DiaryDetailView";
+import WriteDiaryView from "./pages/WriteDiaryView";
+import SignUpView from "./pages/SignUpView";
+import SelectPlayerView from "./pages/SelectPlayerView";
+import NewsView from "./pages/NewsView";
+import TotalSongView from "./pages/TotalSongView";
+import PlayerSongView from "./pages/PlayerSongView";
+import TeamSongView from "./pages/TeamSongView";
+import ChatView from "./pages/ChatView";
+import StepOneForm from "./components/SignUp/Step1/StepOneForm";
+import StepTwoForm from "./components/SignUp/Step2/StepTwoForm";
+import StepThreeForm from "./components/SignUp/Step3/StepThreeForm";
+import SignUpSuccess from "./components/SignUp/SignUpSuccess";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -64,7 +59,7 @@ function App() {
 
   return (
     <>
-      <GlobalStyle />
+    <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <AppContainer>
@@ -83,8 +78,14 @@ function App() {
                 <Route path="/find-password" element={<FindPasswordView />} />
                 <Route path="/diary/detail" element={<DiaryDetailView />} />
                 <Route path="/diary/write" element={<WriteDiaryView />} />
-                <Route path="/sign-up" element={<SignUpView />} />
-                <Route path="/test" element={<Test />} />
+                {/* SignUp */}
+                <Route path="/sign-up/*" element={<SignUpView />}>
+                  <Route index element={<StepOneForm />} />
+                  <Route path="step-1" element={<StepOneForm />} />
+                  <Route path="step-2" element={<StepTwoForm />} />
+                  <Route path="step-3" element={<StepThreeForm />} />
+                  <Route path="step-4" element={<SignUpSuccess />} />
+                </Route>
                 <Route path="/select-player" element={<SelectPlayerView />} />
                 <Route path="/news" element={<NewsView />} />
                 {/* 노래 관련 */}
@@ -102,7 +103,7 @@ function App() {
         </BrowserRouter>
       </ThemeProvider>
     </>
-  );
+ );
 }
 
 export default App;

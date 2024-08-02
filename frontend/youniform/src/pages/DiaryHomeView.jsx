@@ -3,83 +3,89 @@ import Calendar from '../components/Diary/Calendar';
 import styled from 'styled-components';
 import DiaryFriendsList from '../components/Diary/DiaryFriendsList';
 
-// 추후 삭제
-import Sticker1 from '../assets/Test/Sticker/sticker_1.png'
-import Sticker2 from '../assets/Test/Sticker/sticker_2.png'
-import Sticker3 from '../assets/Test/Sticker/sticker_3.png'
-import Sticker4 from '../assets/Test/Sticker/sticker_4.png'
-import Sticker5 from '../assets/Test/Sticker/sticker_5.png'
-import Sticker6 from '../assets/Test/Sticker/sticker_6.png'
-import Sticker7 from '../assets/Test/Sticker/sticker_7.png'
-import Sticker8 from '../assets/Test/Sticker/sticker_8.png'
-import Sticker9 from '../assets/Test/Sticker/sticker_9.png'
-import Sticker10 from '../assets/Test/Sticker/sticker_10.png'
+// 더미 데이터
+import Stamp1 from '../assets/stickers/stamps/stamp_1.png'
+import Stamp2 from '../assets/stickers/stamps/stamp_2.png'
+import Stamp3 from '../assets/stickers/stamps/stamp_3.png'
+import Stamp4 from '../assets/stickers/stamps/stamp_4.png'
+import Stamp5 from '../assets/stickers/stamps/stamp_5.png'
+import Stamp6 from '../assets/stickers/stamps/stamp_6.png'
+import Stamp7 from '../assets/stickers/stamps/stamp_7.png'
+import Stamp8 from '../assets/stickers/stamps/stamp_8.png'
+import Stamp9 from '../assets/stickers/stamps/stamp_9.png'
+import Stamp10 from '../assets/stickers/stamps/stamp_10.png'
 
 // 더미 데이터
-const stickerSrc = [
-  "src/assets/Test/Sticker/sticker_1.png", "src/assets/Test/Sticker/sticker_2.png",
-  "src/assets/Test/Sticker/sticker_3.png", "src/assets/Test/Sticker/sticker_4.png",
-  "src/assets/Test/Sticker/sticker_5.png", "src/assets/Test/Sticker/sticker_6.png",
-  "src/assets/Test/Sticker/sticker_7.png", "src/assets/Test/Sticker/sticker_8.png",
-  "src/assets/Test/Sticker/sticker_9.png", "src/assets/Test/Sticker/sticker_10.png",
-]
+const stampSrc = [
+  "src/assets/stickers/stamps/stamp_1.png",
+  "src/assets/stickers/stamps/stamp_2.png",
+  "src/assets/stickers/stamps/stamp_3.png",
+  "src/assets/stickers/stamps/stamp_4.png",
+  "src/assets/stickers/stamps/stamp_5.png", 
+  "src/assets/stickers/stamps/stamp_6.png",
+  "src/assets/stickers/stamps/stamp_7.png",
+  "src/assets/stickers/stamps/stamp_8.png",
+  "src/assets/stickers/stamps/stamp_9.png",
+  "src/assets/stickers/stamps/stamp_10.png",
+];
+
 const userCalInfo = [
   {
     id: 1,
-    stickers: [
-      { date: '2024-07-04', stickerSrc: stickerSrc[4] },
-      { date: '2024-07-06', stickerSrc: stickerSrc[0] },
-      { date: '2024-07-13', stickerSrc: stickerSrc[1] },
-      { date: '2024-07-16', stickerSrc: stickerSrc[5] },
-      { date: '2024-07-18', stickerSrc: stickerSrc[7] },
-      { date: '2024-07-27', stickerSrc: stickerSrc[8] },
-      { date: '2024-07-28', stickerSrc: stickerSrc[9] },
+    stamps: [
+      { date: '2024-07-04', stampSrc: stampSrc[4] },
+      { date: '2024-07-06', stampSrc: stampSrc[0] },
+      { date: '2024-07-13', stampSrc: stampSrc[1] },
+      { date: '2024-07-16', stampSrc: stampSrc[5] },
+      { date: '2024-07-18', stampSrc: stampSrc[7] },
+      { date: '2024-07-27', stampSrc: stampSrc[8] },
+      { date: '2024-07-28', stampSrc: stampSrc[9] },
     ],
   },
   {
     id: 2,
-    stickers: [
-      { date: '2024-07-01', stickerSrc: Sticker3 },
-      { date: '2024-07-02', stickerSrc: Sticker4 },
-      { date: '2024-07-06', stickerSrc: Sticker5 },
-      { date: '2024-07-09', stickerSrc: Sticker6 },
-      { date: '2024-07-15', stickerSrc: Sticker7 },
+    stamps: [
+      { date: '2024-07-01', stampSrc: stampSrc[3] },
+      { date: '2024-07-02', stampSrc: stampSrc[4] },
+      { date: '2024-07-06', stampSrc: stampSrc[5] },
+      { date: '2024-07-09', stampSrc: stampSrc[6] },
+      { date: '2024-07-15', stampSrc: stampSrc[7] },
     ],
   },
   {
     id: 3,
-    stickers: [
-      { date: '2024-07-11', stickerSrc: Sticker2 },
-      { date: '2024-07-20', stickerSrc: Sticker1 },
+    stamps: [
+      { date: '2024-07-11', stampSrc: Stamp2 },
+      { date: '2024-07-20', stampSrc: Stamp1 },
     ],
   },
   {
     id: 4,
-    stickers: [
-      { date: '2024-07-02', stickerSrc: Sticker1 },
-      { date: '2024-07-03', stickerSrc: Sticker2 },
-      { date: '2024-07-13', stickerSrc: Sticker3 },
-      { date: '2024-07-17', stickerSrc: Sticker4 },
-      { date: '2024-07-18', stickerSrc: Sticker5 },
-      { date: '2024-07-23', stickerSrc: Sticker6 },
-      { date: '2024-07-28', stickerSrc: Sticker7 },
+    stamps: [
+      { date: '2024-07-02', stampSrc: Stamp1 },
+      { date: '2024-07-03', stampSrc: Stamp2 },
+      { date: '2024-07-13', stampSrc: Stamp3 },
+      { date: '2024-07-17', stampSrc: Stamp4 },
+      { date: '2024-07-18', stampSrc: Stamp5 },
+      { date: '2024-07-23', stampSrc: Stamp6 },
+      { date: '2024-07-28', stampSrc: Stamp7 },
     ],
   },
   {
     id: 5,
-    stickers: [
-      { date: '2024-07-06', stickerSrc: Sticker9 },
-      { date: '2024-07-16', stickerSrc: Sticker10 },
-      { date: '2024-07-21', stickerSrc: Sticker2 },
-      { date: '2024-07-29', stickerSrc: Sticker1 },
+    stamps: [
+      { date: '2024-07-06', stampSrc: Stamp9 },
+      { date: '2024-07-16', stampSrc: Stamp10 },
+      { date: '2024-07-21', stampSrc: Stamp2 },
+      { date: '2024-07-29', stampSrc: Stamp1 },
     ],
   },
   {
     id: 6,
-    stickers: [
-      { date: '2024-07-18', stickerSrc: Sticker4 },
-      { date: '2024-07-28', stickerSrc: Sticker1 },
-      { date: '2024-07-30', stickerSrc: Sticker3 },
+    stamps: [
+      { date: '2024-07-18', stampSrc: Stamp4 },
+      { date: '2024-07-28', stampSrc: Stamp1 },
+      { date: '2024-07-30', stampSrc: Stamp3 },
     ],
   },
 ];
@@ -101,7 +107,7 @@ const DiaryHome = styled.div`
 
 const DiaryHomeView = () => {
   const [calendarHeight, setCalendarHeight] = useState('auto');
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(0);
   const diaryHomeRef = useRef(null);
 
   useEffect(() => {
@@ -124,9 +130,9 @@ const DiaryHomeView = () => {
     setSelectedUser(user);
   };
 
-  const filteredStickers = selectedUser
-    ? userCalInfo.find(userItem => userItem.id === selectedUser.id)?.stickers || []
-    : userCalInfo[0]?.stickers || []; 
+  const filteredStamps = selectedUser
+    ? userCalInfo.find(userItem => userItem.id === selectedUser.id)?.stamps || []
+    : userCalInfo[0]?.stamps || []; 
 
   return (
     <DiaryHome ref={diaryHomeRef}>
@@ -134,7 +140,7 @@ const DiaryHomeView = () => {
         <DiaryFriendsList onUserClick={handleUserClick}/>
       </FriendsContainer>
       <CalendarContainer style={{ height: calendarHeight }}>
-        <Calendar user={selectedUser} stickers={filteredStickers}/>
+        <Calendar user={selectedUser} stamps={filteredStamps}/>
       </CalendarContainer>
     </DiaryHome>
   );
