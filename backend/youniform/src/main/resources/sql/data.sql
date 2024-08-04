@@ -25,11 +25,11 @@ VALUES (123, 123, 1, '2024-07-31', 'FRIENDS'),
 
 -- diary resource
 INSERT INTO DIARY_RESOURCE (resource_id, img_url, type, category)
-VALUES (1, 'background_1.png', 0, 0),
-       (2, 'background_2.png', 0, 0),
-       (3, 'sticker_baseball.png', 1, 1),
-       (4, 'sticker_retro.png', 1, 2),
-       (5, 'sticker_cute.png', 1, 3),
-       (6, 'sticker_letter.png', 1, 4),
-       (7, 'theme_1.png', 2, 0),
-       (8, 'theme_2.png', 2, 0);
+VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
+       (2, 'background_2.png', 'BACKGROUND', 'BLUE'),
+       (3, 'sticker_baseball.png', 'STICKER', 'BASEBALL'),
+       (4, 'sticker_retro.png', 'STICKER', 'RETRO'),
+       (5, 'sticker_cute.png', 'STICKER', 'CUTE'),
+       (6, 'sticker_letter.png', 'STICKER', 'LETTER'),
+       (7, 'theme_1.png', 'THEME', 'NONE'),
+       (8, 'theme_2.png', 'THEME', 'NONE');

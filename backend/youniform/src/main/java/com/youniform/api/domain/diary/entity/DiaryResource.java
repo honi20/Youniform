@@ -19,7 +19,9 @@ public class DiaryResource {
 
     private String imgUrl;
 
+    @Enumerated(EnumType.STRING)
     private ResourceType type;
 
+    @Enumerated(EnumType.STRING)
     private ResourceCategory category;
 }
