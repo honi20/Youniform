@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ChatMessageDto {
     private Long roomId;
 
-    private Long userId;
+    private String userId;
 
     private String nickname;
 

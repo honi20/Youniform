@@ -1,9 +1,9 @@
 package com.youniform.api.domain.chat.controller;
 
 import com.youniform.api.domain.chat.dto.ChatMessageDto;
-import com.youniform.api.domain.chat.dto.res.ChatMessageRes;
-import com.youniform.api.domain.chat.dto.res.ChatRoomDetailsRes;
-import com.youniform.api.domain.chat.dto.res.ChatRoomListRes;
+import com.youniform.api.domain.chat.dto.ChatMessageRes;
+import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
+import com.youniform.api.domain.chat.dto.ChatRoomListRes;
 import com.youniform.api.domain.chat.service.ChatService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.dto.SliceDto;
