@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, String> {
-    Slice<ChatMessage> findByRoomIdAndMessageTimeBeforeOrderByMessageTimeDesc(Long roomId, LocalDateTime messageTime, Pageable pageable);
-
     Slice<ChatMessage> findByRoomIdAndMessageIdBeforeOrderByMessageTimeDesc(Long roomId, Long messageId, Pageable pageable);
 
     Slice<ChatMessage> findByRoomIdAndMessageIdAfterOrderByMessageTimeAsc(Long roomId, Long messageId, Pageable pageable);

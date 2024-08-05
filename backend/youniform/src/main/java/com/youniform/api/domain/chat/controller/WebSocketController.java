@@ -1,43 +1,27 @@
 package com.youniform.api.domain.chat.controller;
 
-import com.youniform.api.domain.chat.dto.ChatMessageDto;
-import com.youniform.api.domain.chat.dto.ChatMessageReq;
+import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.service.ChatService;
-import com.youniform.api.global.dto.ResponseDto;
-import com.youniform.api.global.dto.SliceDto;
-import com.youniform.api.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
-import static com.youniform.api.global.statuscode.SuccessCode.CHATROOM_LIST_OK;
-
+@Slf4j
 @Controller
 @RequiredArgsConstructor
+@Transactional
 public class WebSocketController {
     private final ChatService chatService;
 
-    private final JwtService jwtService;
-
-    // 특정 채팅방에 메시지 전송
+    // 채팅방에 메시지 전송 및 저장
     @MessageMapping("/{roomId}")
     @SendTo("/sub/{roomId}")
-    public ChatMessageDto addChatMessage(@DestinationVariable Long roomId, ChatMessageDto chatMessageDto) {
-        chatService.addChatMessage(chatMessageDto.getUserId(), chatMessageDto.getRoomId(), chatMessageDto.getContent(), chatMessageDto.getNickname(), chatMessageDto.getImageUrl(), chatMessageDto.getMessageTime());
-        return chatMessageDto;
-    }
-
-    // 메시지 조회
-    @GetMapping("/chats/messages/{roomId}")
-    public ResponseEntity<?> getChatMessages(@PathVariable("roomId") Long roomId, @ModelAttribute ChatMessageReq request, @RequestParam(defaultValue = "20") int size) {
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-        SliceDto<ChatMessageDto> response = chatService.getChatMessages(roomId, userId, request, size);
-        return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, response), HttpStatus.OK);
+    public ChatMessage processChatMessage(@DestinationVariable Long roomId, @Payload ChatMessage chatMessage) {
+        return chatService.processChatMessage(roomId, chatMessage);
     }
 }
