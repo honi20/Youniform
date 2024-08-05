@@ -1,6 +1,8 @@
 package com.youniform.api.domain.user.controller;
 
 import com.youniform.api.domain.user.dto.*;
+import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 @RequiredArgsConstructor
 @Validated
 public class UserController {
+    private final UserService userService;
+
     @GetMapping("/verify")
     public ResponseEntity<?> nicknameCheck(@RequestParam("nickname") String nickname) {
         return new ResponseEntity<>(ResponseDto.success(USER_NICKNAME_OK, null), HttpStatus.OK);
@@ -100,5 +104,19 @@ public class UserController {
     @PatchMapping("/resign")
     public ResponseEntity<?> userResign() {
         return new ResponseEntity<>(ResponseDto.success(USER_RESIGNED, null), HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/signup/{provider}")
+    public ResponseEntity<?> userSignup(@PathVariable("provider") String provider, @RequestBody SignupReq user) {
+        String accessToken = userService.signup(user);
+        SignupRes result = SignupRes.builder().accessToken(accessToken).build();
+        return new ResponseEntity<>(ResponseDto.success(USER_SIGNUP_SUCCESS, result), HttpStatus.OK);
+    }
+
+    @PostMapping("/signin/local")
+    public ResponseEntity<?> signin(@RequestBody LocalSigninReq user){
+        String accessToken = userService.signin(user);
+        SigninRes result = SigninRes.builder().accessToken(accessToken).build();
+        return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
     }
 }

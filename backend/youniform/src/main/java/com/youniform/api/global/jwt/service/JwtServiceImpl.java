@@ -53,10 +53,11 @@ public class JwtServiceImpl implements JwtService {
         String refreshToken = createRefreshToken(UUID);
         System.out.println("accessToken = " + accessToken);
         System.out.println("refreshToken = " + refreshToken);
-        JwtRedis redis = new JwtRedis();
-        redis.setRefreshToken(refreshToken);
-        redis.setUuid(UUID);
-        redis.setUserId(123L);
+        JwtRedis redis = JwtRedis.builder()
+                .refreshToken(refreshToken)
+                .uuid(UUID)
+                .userId(123L)
+                .build();
         redisUtils.setData(UUID, redis);
     }
 

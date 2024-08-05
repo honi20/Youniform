@@ -39,63 +39,62 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
             filterChain.doFilter(request, response);
             return;
         }
-        //토큰 타입 확인
         String token_type = jwtService.getClaim(token);
 
         if(token_type == null) {
             sendError(response, ErrorCode.NOT_VALID_TOKEN);
+            return;
         }
-        if (token_type.equals("access_token")) {
-            if (jwtService.isTokenValid(token)) {//인증권한 부여
+        else if (token_type.equals("access_token")) {
+            if (jwtService.isTokenValid(token)) {
                 Authentication auth = jwtService.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            } else if (jwtService.isTokenExpired(token)) {//accessToken 만료
+            } else if (jwtService.isTokenExpired(token)) {
                 String uuid = jwtService.getUuid(token);
-                JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(uuid);//redis에 있는 데이터 확인
+                JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(uuid);
                 if (jwtRedis != null) {
                     String refreshToken = jwtRedis.getRefreshToken();
-                    if (jwtService.isTokenExpired(refreshToken)) {//refreshToken 만료 확인
+                    if (jwtService.isTokenExpired(refreshToken)) {
                         redisUtils.deleteData(uuid);
-                        sendError(response, ErrorCode.EXPIRED_TOKEN);//refreshToken 만료
+                        sendError(response, ErrorCode.EXPIRED_TOKEN);
+                        return;
                     } else {
-                        sendAccessToken(response, JWT.decode(token).getSubject());//accessToken 재발급
+                        sendAccessToken(response, JWT.decode(token).getSubject());
+                        return;
                     }
                 }
-                sendAccessToken(response, JWT.decode(token).getSubject());//accessToken 재발급
-            } else {//유효하지 않은 토큰
+                sendAccessToken(response, JWT.decode(token).getSubject());
+                return;
+            } else {
                 sendError(response, ErrorCode.NOT_VALID_TOKEN);
+                return;
             }
         }
-//        else if(token_type.equals("refresh_token")) {
-//            if (jwtService.isTokenValid(token)) {//accessToken 재발급
-//                sendAccessToken(response, JWT.decode(token).getSubject());
-//            }else if(jwtService.isTokenExpired(token)){//refreshToken 만료
-//                sendError(response, ErrorCode.EXPIRED_TOKEN);
-//            }else {// 유효하지 않은 토큰
-//                sendError(response, ErrorCode.NOT_VALID_TOKEN);
-//            }
-//        }
         filterChain.doFilter(request, response);
     }
 
     public void sendAccessToken(HttpServletResponse response, String uuid) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
+        if (!response.isCommitted()) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_OK);
 
-        ResponseDto<Object> res = ResponseDto.success(SuccessCode.REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
-        ObjectMapper mapper = new ObjectMapper();
-        response.getWriter().write(mapper.writeValueAsString(res));
+            ResponseDto<Object> res = ResponseDto.success(SuccessCode.REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
+            ObjectMapper mapper = new ObjectMapper();
+            response.getWriter().write(mapper.writeValueAsString(res));
+        }
     }
 
     public void sendError(HttpServletResponse response, ErrorCode errorCode) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(errorCode.getHttpStatusCode());
+        if (!response.isCommitted()) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(errorCode.getHttpStatusCode());
 
-        ResponseDto<Object> res = ResponseDto.fail(errorCode);
-        ObjectMapper mapper = new ObjectMapper();
-        response.getWriter().write(mapper.writeValueAsString(res));
+            ResponseDto<Object> res = ResponseDto.fail(errorCode);
+            ObjectMapper mapper = new ObjectMapper();
+            response.getWriter().write(mapper.writeValueAsString(res));
+        }
     }
 
     public String extractBearerToken(HttpServletRequest request) {

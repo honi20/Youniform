@@ -19,6 +19,10 @@ public enum SuccessCode {
     THEME_MODIFIED(HttpStatus.NO_CONTENT.value(), "테마 변경에 성공했습니다."),
     ALERT_MODIFIED(HttpStatus.NO_CONTENT.value(), "푸시 알림 변경에 선공했습니다."),
     USER_RESIGNED(HttpStatus.NO_CONTENT.value(), "회원 탈퇴에 성공했습니다."),
+    USER_SIGNUP_USER(HttpStatus.OK.value(), "소셜 회원가입을 진행합니다."),
+    USER_SIGNUP_EXIST(HttpStatus.NO_CONTENT.value(), "기존에 존재하는 회원정보가 있습니다."),
+    USER_SIGNUP_SUCCESS(HttpStatus.OK.value(), "회원가입에 성공하였습니다."),
+    USER_SIGNIN_SUCCESS(HttpStatus.OK.value(), "로그인에 성공하였습니다."),
 
     //friends
     FRIEND_REQUEST_OK(HttpStatus.CREATED.value(), "친구 요청에 성공했습니다."),
