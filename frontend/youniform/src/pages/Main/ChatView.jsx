@@ -13,15 +13,18 @@ const ChatView = () => {
   const [user, setUser] = useState("");
   const sockRef = useRef(null);
 
-  useEffect(() => {
-    setUser("krozv");
-  });
+  // useEffect(() => {
+  //   setUser("krozv");
+  // });
   const client = useRef(null);
   const connect = () => {
     client.current = new Stomp.Client({
-      brokerURL: "ws://localhost:3001/",
+      brokerURL: "ws://localhost:8080/",
       onConnect: () => {
         console.log("연결 성공");
+      },
+      onStompError: (frame) => {
+        console.error("STOMP 오류", frame);
       },
     });
     client.current.activate();
@@ -31,9 +34,13 @@ const ChatView = () => {
     client.current.deactivate();
   };
   useEffect(() => {
-    connect();
     console.log("테스트중");
-    return () => disconnect();
+    connect();
+    return () => {
+      if (client.current) {
+        client.current.deactivate();
+      }
+    };
   }, []);
   // useEffect(() => {
   //   // roomId 별로 분리
@@ -143,11 +150,11 @@ const ChatView = () => {
     setContent("");
   };
 
-  useEffect(() => {
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-    }
-  }, [messages]);
+  // useEffect(() => {
+  //   if (chatBoxRef.current) {
+  //     chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+  //   }
+  // }, [messages]);
 
   return (
     <St.Wrapper>
