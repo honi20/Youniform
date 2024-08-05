@@ -1,15 +1,23 @@
 package com.youniform.api.domain.chat.service;
 
+import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.dto.ChatMessageDto;
+import com.youniform.api.domain.chat.dto.res.ChatRoomDetailsRes;
+import com.youniform.api.domain.chat.dto.res.ChatRoomListRes;
 import com.youniform.api.global.dto.SliceDto;
-import com.youniform.api.domain.chat.dto.ChatMessageReq;
-
-import java.time.LocalDateTime;
 
 public interface ChatService {
-    void addChatMessage(Long userId, Long roomId, String nickname, String content, String imageUrl, LocalDateTime messageTime);
+    ChatRoomListRes getChatRoomList(Long userId);
 
-    SliceDto<ChatMessageDto> getChatMessages(Long roomId, Long userId, ChatMessageReq request, int size);
+    ChatRoomDetailsRes getChatRoomDetails(Long roomId);
 
-    void updateLastReadTime(Long userId, Long roomId, LocalDateTime lastReadTime);
+    SliceDto<ChatMessageDto> getChatMessages(Long roomId, int size);
+
+    SliceDto<ChatMessageDto> getPreviousMessages(Long roomId, Long messageId, int size);
+
+    SliceDto<ChatMessageDto> getNextMessages(Long roomId, Long messageId, int size);
+
+    ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage);
+
+    ChatMessage saveChatMessage(ChatMessage chatMessage);
 }

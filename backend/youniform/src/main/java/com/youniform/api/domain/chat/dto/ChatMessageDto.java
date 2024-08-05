@@ -35,15 +35,4 @@ public class ChatMessageDto {
                 .messageTime(chatMessage.getMessageTime())
                 .build();
     }
-
-    public static ChatMessage toDocument(ChatMessageDto chatMessageDto) {
-        return ChatMessage.builder()
-                .roomId(chatMessageDto.getRoomId())
-                .userId(chatMessageDto.getUserId())
-                .nickname(chatMessageDto.getNickname())
-                .content(chatMessageDto.getContent())
-                .imageUrl(chatMessageDto.getImageUrl())
-                .messageTime(chatMessageDto.getMessageTime())
-                .build();
-    }
 }

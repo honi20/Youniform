@@ -1,15 +1,16 @@
 package com.youniform.api.domain.chat.document;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Document(collection = "chat_messages")
+@Document(collection = "chat_message")
 public class ChatMessage {
     @Id
     private Long messageId;
@@ -25,4 +26,8 @@ public class ChatMessage {
     private String imageUrl;
 
     private LocalDateTime messageTime;
+
+    public void setMessageTime(LocalDateTime messageTime) {
+        this.messageTime = messageTime;
+    }
 }
