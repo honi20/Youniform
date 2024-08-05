@@ -1,36 +1,47 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import BasicModal from "../components/Modal/BasicModal";
+import SearchBar from "../components/Community/SearchBar";
+import PostView from "./Community/PostView";
 
-const Div = styled.div`
-  flex-shrink: 0;
+const Container = styled.div`
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  width: 100%;
-  height: 100vh;
-  padding: 50px;
+  height: calc(100vh - 120px);
+`;
+
+const SearchBarContainer = styled.div`
+  flex: 0 0 auto;
+  border-bottom: ${(props) => (props.$isScrolled ? "1px solid #ccc" : "none")};
+  transition: border-bottom 0.3s;
+  /* border: 1px solid black; */
+  padding-bottom: 3%;
+`;
+
+const ScrollablePostView = styled.div`
+  flex: 1 1 auto;
+  overflow-y: auto;
 `;
 
 const CommunityView = () => {
-  const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
+  const [isScrolled, setIsScrolled] = useState(false);
+  const handleScroll = (event) => {
+    if (event.target.scrollTop > 0) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
   return (
-    <Div>
-      {/* <button onClick={()=> navigate('/diary/write-diary')}>write diary</button> */}
-      {/* <button onClick={()=> navigate('/diary/detail')}>diary detail</button> */}
-      <button onClick={openModal}>test</button>
-      <BasicModal
-        state={"ChatImgSaved"}
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        nickname={""}
-      />
-    </Div>
+    <>
+      <Container>
+        <SearchBarContainer $isScrolled={isScrolled}>
+          <SearchBar />
+        </SearchBarContainer>
+        <ScrollablePostView onScroll={handleScroll}>
+          <PostView />
+        </ScrollablePostView>
+      </Container>
+    </>
   );
 };
 

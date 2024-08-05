@@ -4,7 +4,7 @@ import SelectSvg from "@assets/selectedIcon.svg?react";
 import DownIcon from "@assets/chevron-down.svg?react";
 import UpIcon from "@assets/chevron-up.svg?react";
 import PlayerSongView from "./PlayerSongView";
-import TeamSongComp from "@components/Player/TeamSongComp";
+import TeamSongComp from "@components/Main/Player/TeamSongComp";
 import useSongStore from "../../stores/songStore";
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
