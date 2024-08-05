@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import * as St from "./DiaryCompStyle";
 import diaryTestImg from "@assets/DiaryTestImg.png";
+import CanvasComp from "./CanvasComp";
 
 const DiaryComp = ({ data, state }) => {
   const { profileUrl, nickname, date, imageUrl, content, tags } = data;
-
+  const [selectCanvas, setSelectCanvas] = useState(null);
+  const [isDecorated, setIsDecorated] = useState(false);
   // date form 변경해주는 함수
   function formatDate(dateString) {
     // 날짜 문자열을 Date 객체로 변환
@@ -18,7 +20,6 @@ const DiaryComp = ({ data, state }) => {
   }
 
   const formattedDate = formatDate(date);
-
   return (
     <St.Diary>
       <St.DiaryHeader>
@@ -29,7 +30,10 @@ const DiaryComp = ({ data, state }) => {
       </St.DiaryHeader>
       <St.DiaryContent>
         <St.DiaryImageContainer>
-          <img src={diaryTestImg} />
+        {/* <St.CanvasContainer/> */}
+        {/* // selectCanvas={selectCanvas}
+        // setSelectCanvas={setSelectCanvas}
+        // decorated={isDecorated}/> */}
         </St.DiaryImageContainer>
       </St.DiaryContent>
       <St.DiaryFooter>
@@ -41,8 +45,7 @@ const DiaryComp = ({ data, state }) => {
           <St.BtnGroup>
             <St.Btn
               onClick={() => console.log("공유")}
-              backgroundColor={"#262F66"}
-              color={"white"}
+              $isShare={true}
             >
               공유
             </St.Btn>

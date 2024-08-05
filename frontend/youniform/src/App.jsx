@@ -34,6 +34,18 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #f8f8f8;
+  /* min-width: 400px; */
+  /* min-height: 100vh; */
+  @media (max-width: 400px) {
+    padding: 0 10px;
+    width: 100%;
+    max-width: 400px;
+    min-height: 100vh;
+    margin: 0 auto;
+    position: relative;
+    overflow-y: auto;
+  }
+
 `;
 
 const ContentContainer = styled.div`
@@ -102,6 +114,9 @@ function App() {
                 <Route path="/player-song/:id" element={<PlayerSongView />} />
                 {/* 채팅 관련 */}
                 <Route path="/chat/:room-id" element={<ChatView />} />
+                <Route path="/setting/*" element={<MyPageView />} >
+                <Route index element={<MyPageView />} />
+                </Route>
               </Routes>
             </ContentContainer>
             <div ref={navBarRef}>

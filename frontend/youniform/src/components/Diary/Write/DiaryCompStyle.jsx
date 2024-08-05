@@ -68,8 +68,8 @@ export const TextContainer = styled.div`
 `;
 
 export const Btn = styled.div`
-  background-color: ${(props) => props.bgcolor || "#E3E3E3"};
-  color: ${(props) => props.color || "#393939"};
+  background-color: ${(props) => (props.$isShare ? props.theme.primary : "#E3E3E3")};
+  color: ${(props) => (props.$isShare ? "#FFFFFF" : "#000000")};
   /* border-bottom: 1px solid #E3E3E3; */
   /* border: 1px solid black; */
   border-radius: 2rem;
@@ -111,7 +111,7 @@ export const DiaryContent = styled.div`
 `;
 export const DiaryImageContainer = styled.div`
   display: flex;
-  /* border: 5px solid blue; */
+  border: 5px solid blue;
   height: 95%;
   justify-content: center;
   /* align-items: center; */
@@ -122,15 +122,7 @@ export const DiaryImageContainer = styled.div`
     /* border: 1px solid black; */
   }
 `;
-// 필요없음 나중에 삭제할 것
-export const DiaryImage = styled.div`
-  /* width: 100%; */
-  /* height: 100%; */
-  /* object-fit: cover; */
-  /* background-color:black; */
-  /* background-imagecd: url(${(props) =>
-    props.imageUrl || "/defaultImg.png"}); */
-`;
+
 export const DiaryText = styled.div`
   display: flex;
   border: 1px solid yellow;
@@ -178,5 +170,15 @@ export const DiaryFooter = styled.div`
         /* border: 1px solid black;
     } */
 `;
-
+const CanvasContainer = styled.div`
+  height: 502px;
+  width: 302px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  top: ${(props) => (props.$decorated ? "10px" : "60px")};
+  z-index: ${(props) => (props.$decorated ? "100" : "")};
+  position: absolute;
+`;
 export * from "./DiaryCompStyle";
