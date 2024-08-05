@@ -1,13 +1,9 @@
-import React from 'react'
-import Binder from '../components/Diary/Home/Binder'
+// import Binder from '../components/Diary/Home/Binder'
+import { Outlet } from 'react-router-dom';
 
 const PhotoCardView = () => {
   return (
-    <div>
-      <Binder>
-
-      </Binder>
-    </div>
+    <Outlet />
   )
 }
 
