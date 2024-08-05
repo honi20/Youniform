@@ -33,11 +33,17 @@ public class Diary {
     @Enumerated(EnumType.STRING)
     private Scope scope;
 
+    private String imgUrl;
+
     public void updateStamp(DiaryStamp stamp) {
         this.stamp = stamp;
     }
 
     public void updateScope(Scope scope) {
         this.scope = scope;
+    }
+
+    public void updateImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

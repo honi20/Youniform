@@ -17,11 +17,11 @@ VALUES (1, 'http://youniform.com/sticker1.png'),
        (3, 'http://youniform.com/stamp3.png');
 
 -- diary
-INSERT INTO DIARY (diary_id, user_id, stamp_id, diary_date, scope)
-VALUES (123, 123, 1, '2024-07-31', 'FRIENDS'),
-       (124, 123, 1, '2024-07-01', 'ALL'),
-       (125, 123, 1, '2024-07-12', 'PRIVATE'),
-       (126, 124, 1, '2024-08-01', 'ALL');
+INSERT INTO DIARY (diary_id, user_id, stamp_id, diary_date, scope, img_url)
+VALUES (123, 123, 1, '2024-07-31', 'FRIENDS', 'diary1'),
+       (124, 123, 1, '2024-07-01', 'ALL', 'diary2'),
+       (125, 123, 1, '2024-07-12', 'PRIVATE', 'diary3'),
+       (126, 124, 1, '2024-08-01', 'ALL', 'diary4');
 
 -- friend
 INSERT INTO FRIEND (user_id, friend_id, status, last_visited) VALUES (123, 124, 'FRIEND', CURRENT_DATE);

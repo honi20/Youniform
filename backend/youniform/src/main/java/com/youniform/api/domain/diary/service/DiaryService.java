@@ -11,15 +11,15 @@ public interface DiaryService {
 
 	DiaryDetailDto detailDiary(Long userId, Long diaryId) throws JsonProcessingException;
 
-	DiaryListRes listMyDiary(Long userId, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
+	DiaryListRes findMyDiaries(Long userId, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
 
-	DiaryListRes listDiary(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
+	DiaryListRes findDiaries(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
 
 	void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq) throws JsonProcessingException;
 
 	void removeDiary(Long userId, Long diaryId);
 
-	ResourceListRes listDiaryResources();
+	ResourceListRes findDiaryResources();
 
-	StampListRes listDiaryStamps();
+	StampListRes findDiaryStamps();
 }

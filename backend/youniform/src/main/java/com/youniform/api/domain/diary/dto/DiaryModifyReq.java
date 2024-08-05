@@ -23,4 +23,7 @@ public class DiaryModifyReq {
 
 	@NotNull
 	private Long stampId;
+
+	@NotNull
+	private String diaryImgUrl;
 }

@@ -29,66 +29,66 @@ public class DiaryController {
 
 	@PostMapping
 	public ResponseEntity<?> diaryAdd(@RequestBody @Valid DiaryAddReq diaryAddReq) throws JsonProcessingException {
-		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryAddRes response = diaryService.addDiary(userId, diaryAddReq);
+		DiaryAddRes response = diaryService.addDiary(123L, diaryAddReq);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_CREATED, response), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{diaryId}")
 	public ResponseEntity<?> diaryDetails(@PathVariable("diaryId") Long diaryId) throws JsonProcessingException {
-		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryDetailDto response = diaryService.detailDiary(userId, diaryId);
+		DiaryDetailDto response = diaryService.detailDiary(123L, diaryId);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_DETAILS_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("/list")
 	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable) throws JsonProcessingException {
-		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryListRes response = diaryService.listMyDiary(userId, diaryListReq, pageable);
+		DiaryListRes response = diaryService.findMyDiaries(123L, diaryListReq, pageable);
 
 		return new ResponseEntity<>(ResponseDto.success(MY_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("/list/{userUuid}")
 	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userUuid") String userUuid) throws JsonProcessingException {
-		DiaryListRes response = diaryService.listDiary(userUuid, diaryListReq, pageable);
+		DiaryListRes response = diaryService.findDiaries(userUuid, diaryListReq, pageable);
 
 		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@PutMapping("/{diaryId}")
 	public ResponseEntity<?> diaryModify(@PathVariable("diaryId") Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
-		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		diaryService.modifyDiary(userId, diaryId, diaryModifyReq);
+		diaryService.modifyDiary(123L, diaryId, diaryModifyReq);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_MODIFIED, null), HttpStatus.NO_CONTENT);
 	}
 
 	@DeleteMapping("/{diaryId}")
 	public ResponseEntity<?> diaryRemove(@PathVariable("diaryId") Long diaryId) {
-		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		diaryService.removeDiary(userId, diaryId);
+		diaryService.removeDiary(123L, diaryId);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_DELETED, null), HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping("/resources")
 	public ResponseEntity<?> diaryResourceList() {
-		ResourceListRes response = diaryService.listDiaryResources();
+		ResourceListRes response = diaryService.findDiaryResources();
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_RESOURCES_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("/stamps")
 	public ResponseEntity<?> diaryStampList() {
-		StampListRes response = diaryService.listDiaryStamps();
+		StampListRes response = diaryService.findDiaryStamps();
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_STAMP_OK, response), HttpStatus.OK);
 	}
