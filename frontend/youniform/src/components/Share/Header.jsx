@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled, { useTheme } from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
-
+import SettingIcon from '@assets/Header/setting.svg?react';
+import AlarmIcon from '@assets/Header/alarm.svg?react';
 const Head = styled.div`
   background-color: #f8f8f8;
   position: fixed;
@@ -24,11 +25,10 @@ const InnerHead = styled.div`
   width: 92%;
   margin: 0 auto;
   gap: 5px;
-  /* border: 1px solid red; */
+  border: 1px solid red;
 `;
 
-const backSvg = () => {
-  const theme = useTheme();
+const backSvg = (theme) => {
   return (
     <svg
       width="24"
@@ -43,34 +43,63 @@ const backSvg = () => {
     </svg>
   );
 };
+
+const IconContainer = styled.div`
+  display: flex;
+  position: absolute;
+  right: 0;
+  border: 1px solid blue;
+  align-items: center;
+  gap: 5px;
+`
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentPath, setCurrentPath] = useState(location.pathname);
-
+  const theme = useTheme();
   const handleBack = () => {
     navigate(-1);
   };
 
-  const navRouters = ["/", "/photo-card", "/diary", "/community", "/my-page"];
   useEffect(() => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
 
-  return (
-    <Head>
-      {navRouters.includes(currentPath) ? (
-        <InnerHead>
-          <SportsBaseballIcon />
-          <strong>Youniform</strong>
-        </InnerHead>
-      ) : (
-        <InnerHead>
-          <div onClick={handleBack}>{backSvg()}</div>
-        </InnerHead>
-      )}
-    </Head>
-  );
+  const renderContent = () => {
+    switch (currentPath) {
+      case "/":
+      case "/photo-card":
+      case "/diary":
+      case "/community":
+        return (
+          <InnerHead>
+            <SportsBaseballIcon />
+            <strong>Youniform</strong>
+          </InnerHead>
+        );
+      case "/my-page":
+        return (
+          <InnerHead>
+            <SportsBaseballIcon />
+            <strong>Youniform</strong>
+            <IconContainer>
+              <AlarmIcon />
+              <SettingIcon onClick={() => navigate('/setting')}/>
+            </IconContainer>
+          </InnerHead>
+        );
+      default:
+        return (
+          <InnerHead>
+          <div onClick={handleBack}>
+            {backSvg(theme)}
+          </div>
+          </InnerHead>
+        );
+    }
+  };
+
+  return <Head>{renderContent()}</Head>;
 };
 
 export default Header;

@@ -1,13 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Profile from '@components/MyPage/Profile';
+import styled from 'styled-components';
+
+const Div = styled.div`
+    border: 1px solid black;
+    height: calc(100vh - 120px);
+`
 
 const MyPageView = () => {
-  const isLogin = false;
+  const isLogin = true;
   return (
     <>
-      <div>
-        My Page View
-      </div>
+      <Div>
+        <Profile/>
+      </Div>
       {isLogin ? (
         <button>LOGOUT</button>
       ) : (
