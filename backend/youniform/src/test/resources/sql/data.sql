@@ -33,3 +33,12 @@ VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
        (6, 'sticker_letter.png', 'STICKER', 'LETTER'),
        (7, 'theme_1.png', 'THEME', 'NONE'),
        (8, 'theme_2.png', 'THEME', 'NONE');
+
+-- chat_room
+INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1, '1번 방', TRUE);
+INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (2, '2번 방', TRUE);
+
+-- chat_part
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1, CURRENT_TIMESTAMP);
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (124, 1, CURRENT_TIMESTAMP);
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 2, CURRENT_TIMESTAMP);

@@ -27,15 +27,6 @@ VALUES (123, 123, 1, '2024-07-31', 'FRIENDS', 'diary1'),
 INSERT INTO FRIEND (user_id, friend_id, status, last_visited) VALUES (123, 124, 'FRIEND', CURRENT_DATE);
 INSERT INTO FRIEND (user_id, friend_id, status, last_visited) VALUES (124, 123, 'FRIEND', CURRENT_DATE);
 
--- chat_room
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1, 'Room 1', TRUE);
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (2, 'Room 2', TRUE);
-
--- chat_part
-INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1, CURRENT_TIMESTAMP);
-INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (124, 1, CURRENT_TIMESTAMP);
-INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 2, CURRENT_TIMESTAMP);
-
 -- diary resource
 INSERT INTO DIARY_RESOURCE (resource_id, img_url, type, category)
 VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
@@ -46,3 +37,12 @@ VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
        (6, 'sticker_letter.png', 'STICKER', 'LETTER'),
        (7, 'theme_1.png', 'THEME', 'NONE'),
        (8, 'theme_2.png', 'THEME', 'NONE');
+
+-- chat_room
+INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1, '1번 방', TRUE);
+INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (2, '2번 방', TRUE);
+
+-- chat_part
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1, CURRENT_TIMESTAMP);
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (124, 1, CURRENT_TIMESTAMP);
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 2, CURRENT_TIMESTAMP);
