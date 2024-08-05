@@ -4,7 +4,6 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.youniform.api.config.RedisTestContainerConfig;
 import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.dto.resource.*;
 import com.youniform.api.domain.diary.entity.Scope;
@@ -62,7 +61,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
-@ExtendWith(RedisTestContainerConfig.class)
 @DisplayName("다이어리 API 명세서")
 @WithMockUser
 public class DiaryControllerTest {
