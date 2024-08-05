@@ -44,4 +44,9 @@ public class UserServiceImpl implements UserService {
 
         return jwtService.createAccessToken(uuid);
     }
+
+    @Override
+    public Long findById(Long id) {
+        return userRepository.findById(id).get().getId();
+    }
 }

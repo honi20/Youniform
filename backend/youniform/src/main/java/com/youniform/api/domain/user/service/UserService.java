@@ -10,4 +10,6 @@ public interface UserService {
     String signin(LocalSigninReq user);
 
     String signup(SignupReq user);
+
+    Long findById(Long id);
 }

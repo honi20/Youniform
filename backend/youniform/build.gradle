@@ -36,7 +36,7 @@ repositories {
 sonar {
     properties {
         property "sonar.projectKey", "S11P12A308"
-        property "sonar.organization", "https://sonarqube.ssafy.com/dashboard?id=S11P12A308"
+        property "sonar.organization", "https://sonarqube.ssafy.com"
         property "sonar.login", "sqp_cd81ff834126a12d7fb2648a4e6f4e3747c9bc62"
     }
 }

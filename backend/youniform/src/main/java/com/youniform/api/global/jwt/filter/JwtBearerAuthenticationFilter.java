@@ -2,6 +2,7 @@ package com.youniform.api.global.jwt.filter;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
@@ -29,6 +30,7 @@ import java.io.IOException;
 public class JwtBearerAuthenticationFilter extends GenericFilterBean {
     private final JwtService jwtService;
     private final RedisUtils redisUtils;
+    private final UserService userService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -47,19 +49,31 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
         }
         else if (token_type.equals("access_token")) {
             if (jwtService.isTokenValid(token)) {
-                Authentication auth = jwtService.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                String uuid = jwtService.getUuid(token);
+                JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(uuid);
+                if(userService.findById(jwtRedis.getUserId()) != null) {
+                    Authentication auth = jwtService.getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }else{
+                    sendError(response, ErrorCode.NOT_VALID_TOKEN);
+                    return;
+                }
             } else if (jwtService.isTokenExpired(token)) {
                 String uuid = jwtService.getUuid(token);
                 JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(uuid);
                 if (jwtRedis != null) {
-                    String refreshToken = jwtRedis.getRefreshToken();
-                    if (jwtService.isTokenExpired(refreshToken)) {
-                        redisUtils.deleteData(uuid);
-                        sendError(response, ErrorCode.EXPIRED_TOKEN);
-                        return;
-                    } else {
-                        sendAccessToken(response, JWT.decode(token).getSubject());
+                    if(userService.findById(jwtRedis.getUserId()) != null) {
+                        String refreshToken = jwtRedis.getRefreshToken();
+                        if (jwtService.isTokenExpired(refreshToken)) {
+                            redisUtils.deleteData(uuid);
+                            sendError(response, ErrorCode.EXPIRED_TOKEN);
+                            return;
+                        } else {
+                            sendAccessToken(response, JWT.decode(token).getSubject());
+                            return;
+                        }
+                    }else {
+                        sendError(response, ErrorCode.NOT_VALID_TOKEN);
                         return;
                     }
                 }
