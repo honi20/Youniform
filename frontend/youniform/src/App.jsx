@@ -5,8 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
 import LoginView from "./pages/LoginView";
-import FindEmailView from "./pages/FindEmailView";
-import FindPasswordView from "./pages/FindPasswordView";
+import FindEmailView from "./pages/Setting/FindEmailView";
+import FindPasswordView from "./pages/Setting/FindPasswordView";
 import DiaryDetailView from "@pages/Diary/DiaryDetailView";
 import WriteDiaryView from "@pages/Diary/WriteDiaryView";
 import SignUpView from "./pages/SignUpView";
@@ -30,7 +30,15 @@ import Binder from "@/components/Photocard/Home/Binder";
 import DiaryHomeView from "@/pages/DiaryHomeView";
 import CommunityView from "@/pages/CommunityView";
 import MyPageView from "@/pages/MyPageView";
-
+import SettingView from "@pages/Setting/SettingView";
+import ChangePasswordView from "./pages/Setting/ChangePasswordView";
+import ChangeTheme from "./pages/Setting/ChangeTheme";
+import PushAlarm from "./pages/Setting/PushAlarm";
+import Permissions from "./pages/Setting/Permissions";
+import Contact from "./pages/Setting/Contact";
+import Terms from "@pages/Setting/Terms";
+import Privacy from "./pages/Setting/Privacy";
+import Version from "@pages/Setting/Version";
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -47,7 +55,6 @@ const AppContainer = styled.div`
     position: relative;
     overflow-y: auto;
   }
-
 `;
 
 const ContentContainer = styled.div`
@@ -101,8 +108,7 @@ function App() {
                 <Route path="/diary" element={<DiaryHomeView />} />
                 <Route path="/community" element={<CommunityView />} />
                 <Route path="/my-page" element={<MyPageView />} />
-                <Route path="/find-email" element={<FindEmailView />} />
-                <Route path="/find-password" element={<FindPasswordView />} />
+
                 <Route path="/diary/detail" element={<DiaryDetailView />} />
                 <Route path="/diary/write" element={<WriteDiaryView />} />
                 {/* SignUp */}
@@ -121,8 +127,21 @@ function App() {
                 <Route path="/player-song/:id" element={<PlayerSongView />} />
                 {/* 채팅 관련 */}
                 <Route path="/chat/:room-id" element={<ChatView />} />
-                <Route path="/setting/*" element={<MyPageView />} >
-                <Route index element={<MyPageView />} />
+                <Route path="/setting/*">
+                  <Route index element={<SettingView />} />
+                  <Route
+                    path="change-password"
+                    element={<ChangePasswordView />}
+                  />
+                  <Route path="theme" element={<ChangeTheme />} />
+                  <Route path="notifications" element={<PushAlarm />} />
+                  <Route path="permissions" element={<Permissions />} />
+                  <Route path="contact" element={<Contact />} />
+                  <Route path="terms" element={<Terms />} />
+                  <Route path="privacy" element={<Privacy />} />
+                  <Route path="version" element={<Version />} />
+                  <Route path="find-email" element={<FindEmailView />} />
+                  <Route path="find-password" element={<FindPasswordView />} />
                 </Route>
               </Routes>
             </ContentContainer>
