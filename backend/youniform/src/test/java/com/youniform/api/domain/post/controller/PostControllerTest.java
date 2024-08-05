@@ -112,8 +112,10 @@ public class PostControllerTest {
                                                         .description("게시글 ID"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("본문 내용"),
-                                                fieldWithPath("body.tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 내용들"),
+                                                fieldWithPath("body.tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
                                                 fieldWithPath("body.imageUrl").type(JsonFieldType.STRING)
                                                         .description("게시글 이미지"),
                                                 fieldWithPath("body.createdDate").type(JsonFieldType.STRING)
@@ -178,8 +180,10 @@ public class PostControllerTest {
                                                         .description("게시글에 삽입된 이미지 url"),
                                                 fieldWithPath("body.postList.*[].contents").type(JsonFieldType.STRING)
                                                         .description("게시글 내용"),
-                                                fieldWithPath("body.postList.*[].tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 목록"),
+                                                fieldWithPath("body.postList.*[].tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.postList.*[].tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
                                                 fieldWithPath("body.postList.*[].createdAt").type(JsonFieldType.STRING)
                                                         .description("작성 일자"),
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
@@ -245,8 +249,10 @@ public class PostControllerTest {
                                                         .description("게시글에 삽입된 이미지 url"),
                                                 fieldWithPath("body.postList.*[].contents").type(JsonFieldType.STRING)
                                                         .description("게시글 내용"),
-                                                fieldWithPath("body.postList.*[].tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 목록"),
+                                                fieldWithPath("body.postList.*[].tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.postList.*[].tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
                                                 fieldWithPath("body.postList.*[].createdAt").type(JsonFieldType.STRING)
                                                         .description("작성 일자"),
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
@@ -313,8 +319,10 @@ public class PostControllerTest {
                                                         .description("게시글에 삽입된 이미지 url"),
                                                 fieldWithPath("body.postList.*[].contents").type(JsonFieldType.STRING)
                                                         .description("게시글 내용"),
-                                                fieldWithPath("body.postList.*[].tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 목록"),
+                                                fieldWithPath("body.postList.*[].tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.postList.*[].tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
                                                 fieldWithPath("body.postList.*[].createdAt").type(JsonFieldType.STRING)
                                                         .description("작성 일자"),
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
@@ -380,8 +388,10 @@ public class PostControllerTest {
                                                         .description("게시글에 삽입된 이미지 url"),
                                                 fieldWithPath("body.postList.*[].contents").type(JsonFieldType.STRING)
                                                         .description("게시글 내용"),
-                                                fieldWithPath("body.postList.*[].tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 목록"),
+                                                fieldWithPath("body.postList.*[].tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.postList.*[].tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
                                                 fieldWithPath("body.postList.*[].createdAt").type(JsonFieldType.STRING)
                                                         .description("작성 일자"),
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
@@ -433,8 +443,10 @@ public class PostControllerTest {
                                                         .description("작성자 닉네임"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("본문 내용"),
-                                                fieldWithPath("body.tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 목록"),
+                                                fieldWithPath("body.tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
                                                 fieldWithPath("body.imageUrl").type(JsonFieldType.STRING)
                                                         .description("게시글에 삽입된 이미지 url"),
                                                 fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
@@ -505,8 +517,10 @@ public class PostControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("본문 내용"),
-                                                fieldWithPath("body.tags").type(JsonFieldType.ARRAY)
-                                                        .description("태그 내용들"),
+                                                fieldWithPath("body.tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
                                                 fieldWithPath("body.imageUrl").type(JsonFieldType.STRING)
                                                         .description("게시글 이미지")
                                         )

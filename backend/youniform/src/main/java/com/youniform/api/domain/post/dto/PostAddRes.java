@@ -1,6 +1,7 @@
 package com.youniform.api.domain.post.dto;
 
 import com.youniform.api.domain.post.entity.Post;
+import com.youniform.api.domain.tag.dto.TagDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,13 +17,13 @@ public class PostAddRes {
 
     private String contents;
 
-    private List<String> tags;
+    private List<TagDto> tags;
 
     private String imageUrl;
 
     private LocalDate createdDate;
 
-    public static PostAddRes toDto(Post post, List<String> tags) {
+    public static PostAddRes toDto(Post post, List<TagDto> tags) {
         return PostAddRes.builder()
                 .postId(post.getId())
                 .contents(post.getContents())
