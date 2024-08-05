@@ -2,8 +2,8 @@ package com.youniform.api.domain.chat.service;
 
 import com.youniform.api.domain.chat.dto.ChatMessageDto;
 import com.youniform.api.domain.chat.document.ChatMessage;
-import com.youniform.api.domain.chat.dto.res.ChatRoomDetailsRes;
-import com.youniform.api.domain.chat.dto.res.ChatRoomListRes;
+import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
+import com.youniform.api.domain.chat.dto.ChatRoomListRes;
 import com.youniform.api.domain.chat.repository.ChatMessageRepository;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
 import com.youniform.api.domain.chat.repository.ChatRoomRepository;
@@ -103,8 +103,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage) {
-        Users user = usersRepository.findById(chatMessage.getUserId())
+    public ChatMessage processChatMessage(Long roomId, Long userId, ChatMessage chatMessage) {
+        Users user = usersRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         ChatRoom room = chatRoomRepository.findById(roomId)
