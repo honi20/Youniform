@@ -1,6 +1,8 @@
 package com.youniform.api.global.config;
 
 import com.youniform.api.global.jwt.filter.JwtBearerAuthenticationFilter;
+import com.youniform.api.global.oauth.PrincipalOauth2UserService;
+import com.youniform.api.global.oauth.handler.Oauth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,20 +27,31 @@ import java.util.List;
 @Profile({"local", "prod"})
 public class SecurityConfig {
     private final JwtBearerAuthenticationFilter jwtBearerAuthenticationFilter;
+    private final PrincipalOauth2UserService oAuth2UserService;
+    private final Oauth2SuccessHandler oauth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/users/*/check-duplication",
+                                "/users/signup/**",
+                                "/users/find/password", "/users/check/email",
+                                "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .requestMatchers("/**").permitAll()
-//                        .requestMatchers("/users/signin/**", "/users/signup/**", "/users/*/check-duplication",
-//                                "/users/find/password", "/users/check/email",
-//                                "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                .oauth2Login(oauth2Configurer -> oauth2Configurer
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2UserService))
+                        .successHandler(oauth2SuccessHandler)
+                        .authorizationEndpoint(authEndPoint -> authEndPoint
+                                .baseUri("/users/signin/social")))
+        ;
 
         http.addFilterBefore(jwtBearerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
