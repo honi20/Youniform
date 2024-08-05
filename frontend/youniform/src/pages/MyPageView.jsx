@@ -1,27 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Profile from '@components/MyPage/Profile';
-import styled from 'styled-components';
+import React from "react";
+import { Link } from "react-router-dom";
+import Profile from "@components/MyPage/Profile";
+import styled from "styled-components";
 
 const Div = styled.div`
-    border: 1px solid black;
-    height: calc(100vh - 120px);
-`
+  height: calc(100vh - 120px);
+  /* border: 1px solid black; */
+`;
 
 const MyPageView = () => {
   const isLogin = true;
   return (
     <>
       <Div>
-        <Profile/>
+        <Profile />
       </Div>
-      {isLogin ? (
-        <button>LOGOUT</button>
-      ) : (
-        <Link to="/login">LOGIN</Link>
-      )}
+      {isLogin ? <button>LOGOUT</button> : <Link to="/login">LOGIN</Link>}
     </>
   );
-}
+};
 
 export default MyPageView;
