@@ -1,6 +1,7 @@
 package com.youniform.api.domain.post.dto;
 
 import com.youniform.api.domain.post.entity.Post;
+import com.youniform.api.domain.tag.dto.TagDto;
 import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,13 +24,13 @@ public class PostDetailsRes {
 
     private String contents;
 
-    private List<String> tags;
+    private List<TagDto> tags;
 
     private LocalDate createdAt;
 
     private Integer commentCount;
 
-    public static PostDetailsRes toDto(Post post, Users user, List<String> tags, Integer commentCount) {
+    public static PostDetailsRes toDto(Post post, Users user, List<TagDto> tags, Integer commentCount) {
         return PostDetailsRes.builder()
                 .postId(post.getId())
                 .profileImg(user.getProfileUrl())

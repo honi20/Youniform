@@ -1,6 +1,7 @@
 package com.youniform.api.domain.post.controller;
 
 import com.youniform.api.domain.post.dto.*;
+import com.youniform.api.domain.tag.dto.TagDto;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,23 @@ public class PostController {
     public ResponseEntity<?> postAdd(
             @RequestPart(value = "dto") PostAddReq postAddReq,
             @RequestPart(value = "file") MultipartFile file) {
-        List<String> tagList = new ArrayList<>();
-        tagList.add("김도영");
-        tagList.add("잠실");
-        tagList.add("기아");
-        tagList.add("도영이");
+        List<TagDto> tagList = new ArrayList<>();
+        tagList.add(TagDto.builder()
+                    .tagId(1L)
+                    .contents("김도영")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(2L)
+                .contents("잠실")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(3L)
+                .contents("기아")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(4L)
+                .contents("도영이")
+                .build());
 
         PostAddRes result = PostAddRes.builder()
                 .postId(1L)
@@ -50,24 +63,109 @@ public class PostController {
             @PageableDefault(size = 10) Pageable pageable) {
         List<PostDto> postList = new ArrayList<>();
 
-        List<String> tagList1 = new ArrayList<>();
-        tagList1.add("김도영");
-        tagList1.add("잠실");
-        tagList1.add("기아");
-        tagList1.add("도영이");
+        List<TagDto> tagList1 = new ArrayList<>();
+        tagList1.add(TagDto.builder()
+                .tagId(1L)
+                .contents("김도영")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(2L)
+                .contents("잠실")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(3L)
+                .contents("기아")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(4L)
+                .contents("도영이최고")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(5L)
+                .contents("도영이귀여워")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(6L)
+                .contents("도영이홈런")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(7L)
+                .contents("도영이안타")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(8L)
+                .contents("도영이기아")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(9L)
+                .contents("도영이잘한다")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(10L)
+                .contents("도영이갓기")
+                .build());
+        
 
-        List<String> tagList2 = new ArrayList<>();
-        tagList2.add("최강야구");
-        tagList2.add("몬스터즈");
-        tagList2.add("이대호");
-        tagList2.add("굿");
+        List<TagDto> tagList2 = new ArrayList<>();
+        tagList2.add(TagDto.builder()
+                .tagId(11L)
+                .contents("최강야구는언제하나요")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(12L)
+                .contents("몬스터즈는누가제일인기가많나요")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(13L)
+                .contents("이대호는도대체누구일까요")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(14L)
+                .contents("굿굿굿입니다")
+                .build());
 
-        List<String> tagList3 = new ArrayList<>();
-        tagList3.add("SSG");
-        tagList3.add("랜더스");
-        tagList3.add("기아");
-        tagList3.add("WIN");
-
+        List<TagDto> tagList3 = new ArrayList<>();
+        tagList3.add(TagDto.builder()
+                .tagId(15L)
+                .contents("SSG는신세계인데요")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(16L)
+                .contents("랜더스는무슨뜻일까요")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(17L)
+                .contents("기아는현재일등입니다")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(18L)
+                .contents("아무나이겼으면좋겠다이기는팀우리팀")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(19L)
+                .contents("집에가고싶어요집을보내주세요")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(20L)
+                .contents("지금은팔월오일오후한시사십삼분집에가고싶어요")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(21L)
+                .contents("지금은팔월오일한시사십사분임ㅋ")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(22L)
+                .contents("오늘은야구가쉬는날입니다유감")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(23L)
+                .contents("지금밖에비가살짝와요")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(24L)
+                .contents("저창문열고왔는데어떡하죠내빨래으악")
+                .build());
+        
         for (int i = 0; i < 9; i++) {
             if (i % 3 == 0) {
                 postList.add(
@@ -135,23 +233,59 @@ public class PostController {
             @PageableDefault(size = 10) Pageable pageable) {
         List<PostDto> postList = new ArrayList<>();
 
-        List<String> tagList1 = new ArrayList<>();
-        tagList1.add("김도영");
-        tagList1.add("잠실");
-        tagList1.add("기아");
-        tagList1.add("도영이");
+        List<TagDto> tagList1 = new ArrayList<>();
+        tagList1.add(TagDto.builder()
+                .tagId(1L)
+                .contents("김도영")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(2L)
+                .contents("잠실")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(3L)
+                .contents("기아")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(4L)
+                .contents("도영이")
+                .build());
 
-        List<String> tagList2 = new ArrayList<>();
-        tagList2.add("최강야구");
-        tagList2.add("몬스터즈");
-        tagList2.add("이대호");
-        tagList2.add("굿");
+        List<TagDto> tagList2 = new ArrayList<>();
+        tagList2.add(TagDto.builder()
+                .tagId(5L)
+                .contents("최강야구")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(6L)
+                .contents("몬스터즈")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(7L)
+                .contents("이대호")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(8L)
+                .contents("굿")
+                .build());
 
-        List<String> tagList3 = new ArrayList<>();
-        tagList3.add("SSG");
-        tagList3.add("랜더스");
-        tagList3.add("기아");
-        tagList3.add("WIN");
+        List<TagDto> tagList3 = new ArrayList<>();
+        tagList3.add(TagDto.builder()
+                .tagId(9L)
+                .contents("SSG")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(10L)
+                .contents("랜더스")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(11L)
+                .contents("기아")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(12L)
+                .contents("WIN")
+                .build());
 
         for (int i = 0; i < 9; i++) {
             if (i % 3 == 0) {
@@ -221,23 +355,59 @@ public class PostController {
             @PageableDefault(size = 10) Pageable pageable) {
         List<PostDto> postList = new ArrayList<>();
 
-        List<String> tagList1 = new ArrayList<>();
-        tagList1.add("김도영");
-        tagList1.add("잠실");
-        tagList1.add("기아");
-        tagList1.add("도영이");
+        List<TagDto> tagList1 = new ArrayList<>();
+        tagList1.add(TagDto.builder()
+                        .tagId(1L)
+                        .contents("김도영")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(2L)
+                .contents("잠실")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(3L)
+                .contents("기아")
+                .build());
+        tagList1.add(TagDto.builder()
+                    .tagId(4L)
+                    .contents("도영이")
+                .build());
 
-        List<String> tagList2 = new ArrayList<>();
-        tagList2.add("최강야구");
-        tagList2.add("몬스터즈");
-        tagList2.add("이대호");
-        tagList2.add("굿");
+        List<TagDto> tagList2 = new ArrayList<>();
+        tagList2.add(TagDto.builder()
+                .tagId(5L)
+                .contents("최강야구")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(6L)
+                .contents("몬스터즈")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(7L)
+                .contents("이대호")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(8L)
+                .contents("굿")
+                .build());
 
-        List<String> tagList3 = new ArrayList<>();
-        tagList3.add("SSG");
-        tagList3.add("랜더스");
-        tagList3.add("기아");
-        tagList3.add("WIN");
+        List<TagDto> tagList3 = new ArrayList<>();
+        tagList3.add(TagDto.builder()
+                .tagId(9L)
+                .contents("SSG")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(10L)
+                .contents("랜더스")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(11L)
+                .contents("기아")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(12L)
+                .contents("WIN")
+                .build());
 
         for (int i = 0; i < 9; i++) {
             if (i % 3 == 0) {
@@ -306,23 +476,59 @@ public class PostController {
             @PageableDefault(size = 10) Pageable pageable) {
         List<PostDto> postList = new ArrayList<>();
 
-        List<String> tagList1 = new ArrayList<>();
-        tagList1.add("김도영");
-        tagList1.add("잠실");
-        tagList1.add("기아");
-        tagList1.add("도영이");
+        List<TagDto> tagList1 = new ArrayList<>();
+        tagList1.add(TagDto.builder()
+                .tagId(1L)
+                .contents("김도영")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(2L)
+                .contents("잠실")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(3L)
+                .contents("기아")
+                .build());
+        tagList1.add(TagDto.builder()
+                .tagId(4L)
+                .contents("도영이")
+                .build());
 
-        List<String> tagList2 = new ArrayList<>();
-        tagList2.add("최강야구");
-        tagList2.add("몬스터즈");
-        tagList2.add("이대호");
-        tagList2.add("굿");
+        List<TagDto> tagList2 = new ArrayList<>();
+        tagList2.add(TagDto.builder()
+                .tagId(5L)
+                .contents("최강야구")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(6L)
+                .contents("몬스터즈")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(7L)
+                .contents("이대호")
+                .build());
+        tagList2.add(TagDto.builder()
+                .tagId(8L)
+                .contents("굿")
+                .build());
 
-        List<String> tagList3 = new ArrayList<>();
-        tagList3.add("SSG");
-        tagList3.add("랜더스");
-        tagList3.add("기아");
-        tagList3.add("WIN");
+        List<TagDto> tagList3 = new ArrayList<>();
+        tagList3.add(TagDto.builder()
+                .tagId(9L)
+                .contents("SSG")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(10L)
+                .contents("랜더스")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(11L)
+                .contents("기아")
+                .build());
+        tagList3.add(TagDto.builder()
+                .tagId(12L)
+                .contents("WIN")
+                .build());
 
         for (int i = 0; i < 9; i++) {
             if (i % 3 == 0) {
@@ -387,11 +593,23 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<?> postDetails(@PathVariable Long postId) {
-        List<String> tagList = new ArrayList<>();
-        tagList.add("기아");
-        tagList.add("우승");
-        tagList.add("기원");
-        tagList.add("다꾸");
+        List<TagDto> tagList = new ArrayList<>();
+        tagList.add(TagDto.builder()
+                .tagId(1L)
+                .contents("기아")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(2L)
+                .contents("우승")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(3L)
+                .contents("기원")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(4L)
+                .contents("다꾸")
+                .build());
 
         PostDetailsRes result = PostDetailsRes.builder()
                 .postId(1L)
@@ -412,11 +630,23 @@ public class PostController {
             @PathVariable Long postId,
             @RequestPart(value = "dto", required = false) PostModifyReq postModifyReq,
             @RequestPart(value = "file", required = false) MultipartFile file) {
-        List<String> tagList = new ArrayList<>();
-        tagList.add("게시글");
-        tagList.add("수정");
-        tagList.add("태그");
-        tagList.add("다꾸");
+        List<TagDto> tagList = new ArrayList<>();
+        tagList.add(TagDto.builder()
+                .tagId(1L)
+                .contents("게시글")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(2L)
+                .contents("수정")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(3L)
+                .contents("태그")
+                .build());
+        tagList.add(TagDto.builder()
+                .tagId(4L)
+                .contents("다꾸")
+                .build());
 
         PostModifyRes result = PostModifyRes.builder()
                 .contents("게시글 수정")
