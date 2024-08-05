@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import * as St from "@/pages/Diary/WriteDiaryStyle";
+import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
 import { wallpapers, stickers, fonts } from "@assets";
 
@@ -24,7 +24,7 @@ const WriteDiaryView = () => {
   const [isDecorated, setIsDecorated] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-
+  const [diary, setDiary] = useState(null);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -88,7 +88,7 @@ const WriteDiaryView = () => {
         fontSize: 30,
         originX: "center",
         originY: "center",
-        fontFamily: getFontName(selectedFont), // 선택한 폰트 적용
+        fontFamily: getFontName(selectedFont),
         fill: "#000000",
       });
 
@@ -138,15 +138,39 @@ const WriteDiaryView = () => {
       default:
         return (
           <WallPaperComp
-            wallpapers={imageUrls}
-            onImageClick={handleImageClick}
           />
         );
     }
   };
+  // axios 요청 시 날짜
+  const getCurrentDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
   const handleAfterSave = () => {
-    saveCanvas();
-    saveCanvasAtLocalStorage();
+    // saveCanvas();
+    saveCanvasAtLocalStorage()
+    // .then(() => {
+    //   return axios({
+    //     method: "post",
+    //     url: "http://i11a308.p.ssafy.io:8080/diaries",
+    //     data: {
+    //       diaryDate: getCurrentDate(),
+    //       contents: diary,
+    //     },
+    //   });
+    // })
+    // .then((res) => {
+    //   console.log(res.body.diaryId);
+    //   navigate("/diary/detail/${diaryId}")
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // })
     navigate("/diary/detail");
   };
   const saveCanvas = () => {
@@ -164,11 +188,20 @@ const WriteDiaryView = () => {
     }
   };
   const saveCanvasAtLocalStorage = () => {
-    if (selectCanvas) {
-      const json = selectCanvas.toJSON();
-      const jsonString = JSON.stringify(json);
-      localStorage.setItem("canvasData", jsonString);
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        if (selectCanvas) {
+          const json = selectCanvas.toJSON();
+          const jsonString = JSON.stringify(json);
+          localStorage.setItem("canvasData", jsonString);
+          setDiary(jsonString);
+          resolve();
+        }
+      }
+      catch (error) {
+        reject(error);
+      }
+    })
   };
   const downloadCanvas = () => {
     if (selectCanvas) {
@@ -197,7 +230,15 @@ const WriteDiaryView = () => {
       console.error(error);
     }
   };
-
+  const handleCloseBtn = () => {
+    const objects = selectCanvas.getObjects();
+    for (const obj of objects) {
+      console.log('선택 해제')
+      obj.selectable = false;
+    }
+    selectCanvas.renderAll();
+    setIsDecorated(!isDecorated)
+  }
   return (
     <>
       <St.SaveBtn onClick={openSaveModal}>
@@ -266,7 +307,7 @@ const WriteDiaryView = () => {
           </St.DecorationMenu>
           <St.CloseBtn
             $decorated={isDecorated}
-            onClick={() => setIsDecorated(!isDecorated)}
+            onClick={handleCloseBtn}
           >
             저장
           </St.CloseBtn>

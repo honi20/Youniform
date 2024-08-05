@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-
+import { fabric } from "fabric";
 const CanvasContainer = styled.div`
   height: 502px;
   width: 302px;
@@ -21,6 +21,8 @@ const CanvasComp = ({ selectCanvas, setSelectCanvas, decorated }) => {
       height: 500,
       width: 300,
       backgroundColor: "white",
+      selection: decorated,
+      // interactive: decorated,
     });
     setSelectCanvas(initCanvas);
 
@@ -31,22 +33,30 @@ const CanvasComp = ({ selectCanvas, setSelectCanvas, decorated }) => {
         initCanvas.renderAll();
       }
     };
-    // Event listener for when an object is selected
-    initCanvas.on("object:selected", bringToFront); // Changed: Added bringToFront function
-
-    // Optional: bring newly added objects to front
-    initCanvas.on("object:added", bringToFront); // Changed: Added bringToFront function
-
-    // Optional: bring modified objects to front
-    initCanvas.on("object:modified", bringToFront); // Changed: Added bringToFront function
+    initCanvas.on("object:selected", bringToFront); 
+    initCanvas.on("object:added", bringToFront); 
+    initCanvas.on("object:modified", bringToFront); 
 
     return () => {
-      initCanvas.off("object:selected", bringToFront); // Clean up event listener
-      initCanvas.off("object:added", bringToFront); // Clean up event listener
-      initCanvas.off("object:modified", bringToFront); // Clean up event listener
+      initCanvas.off("object:selected", bringToFront); 
+      initCanvas.off("object:added", bringToFront);
+      initCanvas.off("object:modified", bringToFront); 
       initCanvas.dispose();
     };
   }, []);
+
+  useEffect(() => {
+    console.log(decorated);
+    console.log('test')
+    if (selectCanvas) {
+      const objects = selectCanvas.getObjects();
+      for (const obj of objects) {
+        console.log('epzh')
+        obj.selectable = decorated;
+      }
+      selectCanvas.renderAll();
+    }
+  }, [selectCanvas, decorated])
   return (
     <CanvasContainer $decorated={decorated}>
       <canvas id="canvas"></canvas>
