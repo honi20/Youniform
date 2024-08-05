@@ -1,8 +1,6 @@
 package com.youniform.api.global.jwt.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -10,6 +8,8 @@ import org.springframework.data.redis.core.RedisHash;
 @Setter
 @RedisHash(value = "jwt_redis")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtRedis {
     @Id
     private String uuid;//key : (uuid:실제 uuid값)
