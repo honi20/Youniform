@@ -36,9 +36,7 @@ spring:
 
   data:
     redis:
-      repositories:
-        enabled: false
-      host: ${REDIS_HOST}
+      host: localhost
       port: 6379
 
 logging:

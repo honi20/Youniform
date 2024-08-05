@@ -18,11 +18,14 @@ public class PostModifyRes {
 
     private String imageUrl;
 
-    public static PostModifyRes toDto(Post post, List<TagDto> tags) {
+    private String userId;
+
+    public static PostModifyRes toDto(Post post, List<TagDto> tags, String userId) {
         return PostModifyRes.builder()
                 .contents(post.getContents())
                 .imageUrl(post.getImgUrl())
                 .tags(tags)
+                .userId(userId)
                 .build();
     }
 }

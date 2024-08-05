@@ -30,6 +30,8 @@ public class PostDto {
 
     private Integer commentCount;
 
+    private String userId;
+
     public static PostDto toDto(Post post, Users user, List<TagDto> tags, Integer commentCount) {
         return PostDto.builder()
                 .postId(post.getId())
@@ -40,6 +42,7 @@ public class PostDto {
                 .tags(tags)
                 .createdAt(post.getDate())
                 .commentCount(commentCount)
+                .userId(user.getUuid())
                 .build();
     }
 }

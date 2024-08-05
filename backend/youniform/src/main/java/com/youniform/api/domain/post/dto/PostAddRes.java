@@ -23,13 +23,16 @@ public class PostAddRes {
 
     private LocalDate createdDate;
 
-    public static PostAddRes toDto(Post post, List<TagDto> tags) {
+    private String userId;
+
+    public static PostAddRes toDto(Post post, List<TagDto> tags, String userId) {
         return PostAddRes.builder()
                 .postId(post.getId())
                 .contents(post.getContents())
                 .imageUrl(post.getImgUrl())
                 .createdDate(post.getDate())
                 .tags(tags)
+                .userId(userId)
                 .build();
     }
 }

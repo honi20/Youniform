@@ -110,6 +110,8 @@ public class PostControllerTest {
                                         getCommonResponseFields(
                                                 fieldWithPath("body.postId").type(JsonFieldType.NUMBER)
                                                         .description("게시글 ID"),
+                                                fieldWithPath("body.userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("본문 내용"),
                                                 fieldWithPath("body.tags[].tagId").type(JsonFieldType.NUMBER)
@@ -172,6 +174,8 @@ public class PostControllerTest {
                                                         .description("다음 슬라이스 여부"),
                                                 fieldWithPath("body.postList.*[].postId").type(JsonFieldType.NUMBER)
                                                         .description("게시글 ID"),
+                                                fieldWithPath("body.postList.*[].userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
                                                 fieldWithPath("body.postList.*[].profileImg").type(JsonFieldType.STRING)
                                                         .description("작성자 프로필 사진 url"),
                                                 fieldWithPath("body.postList.*[].nickname").type(JsonFieldType.STRING)
@@ -241,6 +245,8 @@ public class PostControllerTest {
                                                         .description("다음 슬라이스 여부"),
                                                 fieldWithPath("body.postList.*[].postId").type(JsonFieldType.NUMBER)
                                                         .description("게시글 ID"),
+                                                fieldWithPath("body.postList.*[].userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
                                                 fieldWithPath("body.postList.*[].profileImg").type(JsonFieldType.STRING)
                                                         .description("작성자 프로필 사진 url"),
                                                 fieldWithPath("body.postList.*[].nickname").type(JsonFieldType.STRING)
@@ -311,6 +317,8 @@ public class PostControllerTest {
                                                         .description("다음 슬라이스 여부"),
                                                 fieldWithPath("body.postList.*[].postId").type(JsonFieldType.NUMBER)
                                                         .description("게시글 ID"),
+                                                fieldWithPath("body.postList.*[].userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
                                                 fieldWithPath("body.postList.*[].profileImg").type(JsonFieldType.STRING)
                                                         .description("작성자 프로필 사진 url"),
                                                 fieldWithPath("body.postList.*[].nickname").type(JsonFieldType.STRING)
@@ -380,6 +388,81 @@ public class PostControllerTest {
                                                         .description("다음 슬라이스 여부"),
                                                 fieldWithPath("body.postList.*[].postId").type(JsonFieldType.NUMBER)
                                                         .description("게시글 ID"),
+                                                fieldWithPath("body.postList.*[].userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
+                                                fieldWithPath("body.postList.*[].profileImg").type(JsonFieldType.STRING)
+                                                        .description("작성자 프로필 사진 url"),
+                                                fieldWithPath("body.postList.*[].nickname").type(JsonFieldType.STRING)
+                                                        .description("작성자 닉네임"),
+                                                fieldWithPath("body.postList.*[].imageUrl").type(JsonFieldType.STRING)
+                                                        .description("게시글에 삽입된 이미지 url"),
+                                                fieldWithPath("body.postList.*[].contents").type(JsonFieldType.STRING)
+                                                        .description("게시글 내용"),
+                                                fieldWithPath("body.postList.*[].tags[].tagId").type(JsonFieldType.NUMBER)
+                                                        .description("태그 Id"),
+                                                fieldWithPath("body.postList.*[].tags[].contents").type(JsonFieldType.STRING)
+                                                        .description("태그 이름"),
+                                                fieldWithPath("body.postList.*[].createdAt").type(JsonFieldType.STRING)
+                                                        .description("작성 일자"),
+                                                fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
+                                                        .description("댓글 개수")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("좋아요한 Post 목록 조회 Request"))
+                                .responseSchema(Schema.schema("좋아요한 Post 목록 조회 Response"))
+                                .build()
+                        ))
+                );
+
+    }
+
+    @Test
+    public void 태그가_포함된_게시글_목록_조회_성공() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/posts/tags")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("lastPostId", "")
+                        .param("name", "김도영")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TAG_POST_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TAG_POST_LIST_OK.getMessage()))
+                .andDo(MockMvcRestDocumentation.document(
+                        "태그가 포함된 Post 목록 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("태그가 포함된 Post 목록 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("lastPostId").description("마지막 Post Id (Optional)").optional(),
+                                        parameterWithName("name").description("태그 이름")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.postList.content").type(JsonFieldType.ARRAY)
+                                                        .description("게시글 목록"),
+                                                fieldWithPath("body.postList.page").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 번호"),
+                                                fieldWithPath("body.postList.size").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 사이즈"),
+                                                fieldWithPath("body.postList.hasNext").type(JsonFieldType.BOOLEAN)
+                                                        .description("다음 슬라이스 여부"),
+                                                fieldWithPath("body.postList.*[].userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
+                                                fieldWithPath("body.postList.*[].postId").type(JsonFieldType.NUMBER)
+                                                        .description("게시글 ID"),
                                                 fieldWithPath("body.postList.*[].profileImg").type(JsonFieldType.STRING)
                                                         .description("작성자 프로필 사진 url"),
                                                 fieldWithPath("body.postList.*[].nickname").type(JsonFieldType.STRING)
@@ -441,6 +524,8 @@ public class PostControllerTest {
                                                         .description("작성자 프로필 사진 url"),
                                                 fieldWithPath("body.nickname").type(JsonFieldType.STRING)
                                                         .description("작성자 닉네임"),
+                                                fieldWithPath("body.userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("본문 내용"),
                                                 fieldWithPath("body.tags[].tagId").type(JsonFieldType.NUMBER)
@@ -521,6 +606,8 @@ public class PostControllerTest {
                                                         .description("태그 Id"),
                                                 fieldWithPath("body.tags[].contents").type(JsonFieldType.STRING)
                                                         .description("태그 이름"),
+                                                fieldWithPath("body.userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
                                                 fieldWithPath("body.imageUrl").type(JsonFieldType.STRING)
                                                         .description("게시글 이미지")
                                         )
