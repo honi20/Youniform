@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DiaryDetailDto {
+public class DiaryListDto {
 	private Long diaryId;
 
 	private String nickname;
@@ -22,21 +22,18 @@ public class DiaryDetailDto {
 
 	private LocalDate diaryDate;
 
-	private DiaryContentDto contents;
-
 	private Scope scope;
 
 	private String stampImgUrl;
 
 	private String diaryImgUrl;
 
-	public static DiaryDetailDto toDto(Diary diary, DiaryContentDto contents) {
-		return DiaryDetailDto.builder()
+	public static DiaryListDto toDto(Diary diary) {
+		return DiaryListDto.builder()
 				.diaryId(diary.getId())
 				.nickname(diary.getUser().getNickname())
 				.profileUrl(diary.getUser().getProfileUrl())
 				.diaryDate(diary.getDiaryDate())
-				.contents(contents)
 				.scope(diary.getScope())
 				.stampImgUrl(diary.getStamp().getImgUrl())
 				.diaryImgUrl(diary.getImgUrl())

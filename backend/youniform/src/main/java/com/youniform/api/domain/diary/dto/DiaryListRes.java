@@ -9,5 +9,5 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class DiaryListRes {
-	private SliceDto<DiaryDetailDto> diaryList;
+	private SliceDto<DiaryListDto> diaryList;
 }

@@ -11,13 +11,17 @@ VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@google.com', '
         's3 url', 'local', '1604b772-adc0-4212-8a90-81186c57f100');
 
 -- stamp
-INSERT INTO DIARY_STAMP (stamp_id, img_url) VALUES (1, 'http://youniform.com/sticker1.png');
+INSERT INTO DIARY_STAMP (stamp_id, img_url)
+VALUES (1, 'http://youniform.com/sticker1.png'),
+       (2, 'http://youniform.com/stamp2.png'),
+       (3, 'http://youniform.com/stamp3.png');
 
 -- diary
-INSERT INTO DIARY (diary_id, user_id, stamp_id, diary_date, scope)
-VALUES (123, 123, 1, '2024-07-31', 'FRIENDS'),
-       (124, 123, 1, '2024-07-01', 'ALL'),
-       (125, 123, 1, '2024-07-12', 'PRIVATE');
+INSERT INTO DIARY (diary_id, user_id, stamp_id, diary_date, scope, img_url)
+VALUES (123, 123, 1, '2024-07-31', 'FRIENDS', 'diary1'),
+       (124, 123, 1, '2024-07-01', 'ALL', 'diary2'),
+       (125, 123, 1, '2024-07-12', 'PRIVATE', 'diary3'),
+       (126, 124, 1, '2024-08-01', 'ALL', 'diary4');
 
 -- diary resource
 INSERT INTO DIARY_RESOURCE (resource_id, img_url, type, category)

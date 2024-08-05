@@ -87,21 +87,23 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
-	public DiaryListRes listMyDiary(Long userId, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
+	public DiaryListRes findMyDiaries(Long userId, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
 		LocalDate lastDiaryDate = diaryListReq.getLastDiaryDate();
 		int pageSize = pageable.getPageSize();
 		boolean isAscending = pageable.getSort().stream().anyMatch(Sort.Order::isAscending);
 
 		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(userId, lastDiaryDate, pageSize, isAscending);
 
-		List<DiaryDetailDto> diaryList = getDiaryListDto(diaries);
+		List<DiaryListDto> diaryList = diaries.stream()
+				.map(DiaryListDto::toDto)
+				.toList();
 
 		boolean hasNext = diaryList.size() > pageSize;
 		if (hasNext) {
 			diaryList.remove(pageSize);
 		}
 
-		SliceDto<DiaryDetailDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageable, hasNext));
+		SliceDto<DiaryListDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageable, hasNext));
 
 		return DiaryListRes.builder()
 				.diaryList(sliceDto)
@@ -109,7 +111,7 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
-	public DiaryListRes listDiary(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
+	public DiaryListRes findDiaries(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
 //		[TODO] Users user = userRepository.findByUuid(userUuid).get(0);
 //		[TODO] 유저 아이디 유효성 검사
 
@@ -124,14 +126,16 @@ public class DiaryServiceImpl implements DiaryService {
 
 		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(user.getId(), lastDiaryDate, pageSize, isAscending);
 
-		List<DiaryDetailDto> diaryList = getDiaryListDto(diaries);
+		List<DiaryListDto> diaryList = diaries.stream()
+				.map(DiaryListDto::toDto)
+				.toList();
 
 		boolean hasNext = diaryList.size() > pageSize;
 		if (hasNext) {
 			diaryList.remove(pageSize);
 		}
 
-		SliceDto<DiaryDetailDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageable, hasNext));
+		SliceDto<DiaryListDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageable, hasNext));
 
 		return DiaryListRes.builder()
 				.diaryList(sliceDto)
@@ -157,6 +161,7 @@ public class DiaryServiceImpl implements DiaryService {
 
 		diary.updateStamp(stamp);
 		diary.updateScope(Scope.valueOf(diaryModifyReq.getScope()));
+		diary.updateImgUrl(diaryModifyReq.getDiaryImgUrl());
 		diaryRepository.save(diary);
 
 		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
@@ -181,7 +186,7 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
-	public ResourceListRes listDiaryResources() {
+	public ResourceListRes findDiaryResources() {
 		List<ResourceDto> resourceList = resourceRepository.findAll().stream()
 				.collect(Collectors.groupingBy(DiaryResource::getType))
 				.entrySet().stream()
@@ -202,24 +207,13 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
-	public StampListRes listDiaryStamps() {
+	public StampListRes findDiaryStamps() {
 		List<StampDto> stampList = stampRepository.findAll()
 				.stream()
 				.map(StampDto::toDto)
 				.collect(Collectors.toList());
 
 		return new StampListRes(stampList);
-	}
-
-	private List<DiaryDetailDto> getDiaryListDto(List<Diary> diaries) throws JsonProcessingException {
-		List<DiaryDetailDto> diaryList = new ArrayList<>();
-
-		for (Diary diary : diaries) {
-			DiaryContentDto contents = getContentsFromRedis(diary.getId());
-			diaryList.add(DiaryDetailDto.toDto(diary, contents));
-		}
-
-		return diaryList;
 	}
 
 	private DiaryContentDto getContentsFromRedis(Long diaryId) throws JsonProcessingException {

@@ -168,14 +168,9 @@ public class DiaryTestUtil {
         fields.add(fieldWithPath("body.diaryList.*[].nickname").type(JsonFieldType.STRING).description("작성자 닉네임"));
         fields.add(fieldWithPath("body.diaryList.*[].diaryDate").type(JsonFieldType.STRING).description("일기 날짜"));
         fields.add(fieldWithPath("body.diaryList.*[].scope").type(JsonFieldType.STRING).description("다이어리 공개 범위"));
-        fields.add(fieldWithPath("body.diaryList.*[].contents").type(JsonFieldType.OBJECT).description("다이어리 내용"));
         fields.add(fieldWithPath("body.diaryList.*[].stampImgUrl").type(JsonFieldType.STRING).description("다이어리 스탬프 이미지 URL"));
-        fields.add(fieldWithPath("body.diaryList.*[].profileUrl").type(JsonFieldType.STRING).description("작성자 프로필 이미지 URL"));
-        fields.add(fieldWithPath("body.diaryList.*[].contents.version").type(JsonFieldType.STRING).description("버전"));
-        fields.add(fieldWithPath("body.diaryList.*[].contents.background").type(JsonFieldType.STRING).description("배경"));
-
-        fields.addAll(getObjectFields("body.diaryList.*[].contents.objects[]"));
-        fields.addAll(getObjectFields("body.diaryList.*[].contents.backgroundImage"));
+        fields.add(fieldWithPath("body.diaryList.*[].profileUrl").type(JsonFieldType.STRING).description("작성자 프로필 URL"));
+        fields.add(fieldWithPath("body.diaryList.*[].diaryImgUrl").type(JsonFieldType.STRING).description("다이어리 이미지 URL"));
 
         return fields;
     }
@@ -208,6 +203,8 @@ public class DiaryTestUtil {
                 .description("배경 객체"));
         fields.add(fieldWithPath(prefix + "scope").type(JsonFieldType.STRING)
                 .description("공개 범위"));
+        fields.add(fieldWithPath(prefix + "diaryImgUrl").type(JsonFieldType.STRING)
+                .description("다이어리 이미지 Url"));
 
         fields.addAll(getObjectFields(prefix + "contents.objects[]"));
         fields.addAll(getObjectFields(prefix + "contents.backgroundImage"));
