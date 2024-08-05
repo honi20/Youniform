@@ -45,8 +45,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<?> postList(
-            @ModelAttribute PostListReq postListReq,
+    public ResponseEntity<?> publicPostList(
+            @ModelAttribute PublicPostListReq publicPostListReq,
             @PageableDefault(size = 10) Pageable pageable) {
         List<PostDto> postList = new ArrayList<>();
 
@@ -126,7 +126,263 @@ public class PostController {
                 .postList(sliceDto)
                 .build();
 
-        return new ResponseEntity<>(ResponseDto.success(POST_LIST_OK, result), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.success(PUBLIC_POST_LIST_OK, result), HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> myPostList(
+            @ModelAttribute MyPostListReq myPostListReq,
+            @PageableDefault(size = 10) Pageable pageable) {
+        List<PostDto> postList = new ArrayList<>();
+
+        List<String> tagList1 = new ArrayList<>();
+        tagList1.add("김도영");
+        tagList1.add("잠실");
+        tagList1.add("기아");
+        tagList1.add("도영이");
+
+        List<String> tagList2 = new ArrayList<>();
+        tagList2.add("최강야구");
+        tagList2.add("몬스터즈");
+        tagList2.add("이대호");
+        tagList2.add("굿");
+
+        List<String> tagList3 = new ArrayList<>();
+        tagList3.add("SSG");
+        tagList3.add("랜더스");
+        tagList3.add("기아");
+        tagList3.add("WIN");
+
+        for (int i = 0; i < 9; i++) {
+            if (i % 3 == 0) {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("테스트 게시글 아아아아아앙")
+                                .tags(tagList1)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            } else if (i % 3 == 1) {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("기아는 왜 맨날 마트한테 지는걸까;;<br>" +
+                                        "어제도 지고 오늘도 지네<br>" +
+                                        "이마트랑 롯데한테 지는 거 열받아ㅠ")
+                                .tags(tagList2)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            } else {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("오늘 잠실 야구장 다녀옴.<br>" +
+                                        "비 맞으면서 야구 봤다ㅎ,,<br>" +
+                                        "하지만 졌다\uD83D\uDE02\uD83D\uDE02<br>" +
+                                        "그래도 도영이는 오늘도 잘 달림!!")
+                                .tags(tagList3)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            }
+        }
+
+        SliceDto<PostDto> sliceDto = new SliceDto<>();
+        sliceDto.setContent(postList);
+        sliceDto.setPage(pageable.getPageNumber() + 1);
+        sliceDto.setSize(pageable.getPageSize());
+        sliceDto.setHasNext(postList.size() > pageable.getPageSize());
+
+        PostListRes result = PostListRes.builder()
+                .postList(sliceDto)
+                .build();
+
+        return new ResponseEntity<>(ResponseDto.success(MY_POST_LIST_OK, result), HttpStatus.OK);
+    }
+
+    @GetMapping("/friends/{userId}")
+    public ResponseEntity<?> friendPostList(
+            @ModelAttribute FriendPostListReq friendPostReq,
+            @PathVariable String userId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        List<PostDto> postList = new ArrayList<>();
+
+        List<String> tagList1 = new ArrayList<>();
+        tagList1.add("김도영");
+        tagList1.add("잠실");
+        tagList1.add("기아");
+        tagList1.add("도영이");
+
+        List<String> tagList2 = new ArrayList<>();
+        tagList2.add("최강야구");
+        tagList2.add("몬스터즈");
+        tagList2.add("이대호");
+        tagList2.add("굿");
+
+        List<String> tagList3 = new ArrayList<>();
+        tagList3.add("SSG");
+        tagList3.add("랜더스");
+        tagList3.add("기아");
+        tagList3.add("WIN");
+
+        for (int i = 0; i < 9; i++) {
+            if (i % 3 == 0) {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("테스트 게시글 아아아아아앙")
+                                .tags(tagList1)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            } else if (i % 3 == 1) {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("기아는 왜 맨날 마트한테 지는걸까;;<br>" +
+                                        "어제도 지고 오늘도 지네<br>" +
+                                        "이마트랑 롯데한테 지는 거 열받아ㅠ")
+                                .tags(tagList2)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            } else {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("오늘 잠실 야구장 다녀옴.<br>" +
+                                        "비 맞으면서 야구 봤다ㅎ,,<br>" +
+                                        "하지만 졌다\uD83D\uDE02\uD83D\uDE02<br>" +
+                                        "그래도 도영이는 오늘도 잘 달림!!")
+                                .tags(tagList3)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            }
+        }
+
+        SliceDto<PostDto> sliceDto = new SliceDto<>();
+        sliceDto.setContent(postList);
+        sliceDto.setPage(pageable.getPageNumber() + 1);
+        sliceDto.setSize(pageable.getPageSize());
+        sliceDto.setHasNext(postList.size() > pageable.getPageSize());
+
+        PostListRes result = PostListRes.builder()
+                .postList(sliceDto)
+                .build();
+
+        return new ResponseEntity<>(ResponseDto.success(FRIEND_POST_LIST_OK, result), HttpStatus.OK);
+    }
+
+    @GetMapping("/likes")
+    public ResponseEntity<?> likedPostList(
+            @ModelAttribute LikedPostListReq likedPostListReq,
+            @PageableDefault(size = 10) Pageable pageable) {
+        List<PostDto> postList = new ArrayList<>();
+
+        List<String> tagList1 = new ArrayList<>();
+        tagList1.add("김도영");
+        tagList1.add("잠실");
+        tagList1.add("기아");
+        tagList1.add("도영이");
+
+        List<String> tagList2 = new ArrayList<>();
+        tagList2.add("최강야구");
+        tagList2.add("몬스터즈");
+        tagList2.add("이대호");
+        tagList2.add("굿");
+
+        List<String> tagList3 = new ArrayList<>();
+        tagList3.add("SSG");
+        tagList3.add("랜더스");
+        tagList3.add("기아");
+        tagList3.add("WIN");
+
+        for (int i = 0; i < 9; i++) {
+            if (i % 3 == 0) {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("테스트 게시글 아아아아아앙")
+                                .tags(tagList1)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            } else if (i % 3 == 1) {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("기아는 왜 맨날 마트한테 지는걸까;;<br>" +
+                                        "어제도 지고 오늘도 지네<br>" +
+                                        "이마트랑 롯데한테 지는 거 열받아ㅠ")
+                                .tags(tagList2)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            } else {
+                postList.add(
+                        PostDto.builder()
+                                .postId(i + 1L)
+                                .profileImg("profile image url")
+                                .nickname("테스트 유저 " + i)
+                                .imageUrl("게시글 image url")
+                                .contents("오늘 잠실 야구장 다녀옴.<br> " +
+                                        "비 맞으면서 야구 봤다ㅎ,,<br> " +
+                                        "하지만 졌다\uD83D\uDE02\uD83D\uDE02<br> " +
+                                        "그래도 도영이는 오늘도 잘 달림!!")
+                                .tags(tagList3)
+                                .createdAt(LocalDate.now().minusDays(i))
+                                .commentCount(i)
+                                .build()
+                );
+            }
+        }
+
+        SliceDto<PostDto> sliceDto = new SliceDto<>();
+        sliceDto.setContent(postList);
+        sliceDto.setPage(pageable.getPageNumber() + 1);
+        sliceDto.setSize(pageable.getPageSize());
+        sliceDto.setHasNext(postList.size() > pageable.getPageSize());
+
+        PostListRes result = PostListRes.builder()
+                .postList(sliceDto)
+                .build();
+
+        return new ResponseEntity<>(ResponseDto.success(LIKED_POST_LIST_OK, result), HttpStatus.OK);
     }
 
     @GetMapping("/{postId}")

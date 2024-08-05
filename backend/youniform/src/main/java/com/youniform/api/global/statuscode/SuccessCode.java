@@ -38,7 +38,10 @@ public enum SuccessCode {
 
     //post
     POST_CREATED(HttpStatus.CREATED.value(), "게시글 생성에 성공했습니다."),
-    POST_LIST_OK(HttpStatus.OK.value(), "게시글 리스트 조회에 성공했습니다."),
+    PUBLIC_POST_LIST_OK(HttpStatus.OK.value(), "게시글 리스트 조회에 성공했습니다."),
+    MY_POST_LIST_OK(HttpStatus.OK.value(), "게시글 리스트 조회에 성공했습니다."),
+    FRIEND_POST_LIST_OK(HttpStatus.OK.value(), "게시글 리스트 조회에 성공했습니다."),
+    LIKED_POST_LIST_OK(HttpStatus.OK.value(), "게시글 리스트 조회에 성공했습니다."),
     POST_DETAILS_OK(HttpStatus.OK.value(), "게시글 상세보기에 성공했습니다."),
     POST_MODIFIED(HttpStatus.OK.value(), "게시글 수정에 성공했습니다."),
     POST_DELETED(HttpStatus.NO_CONTENT.value(), "게시글 삭제에 성공했습니다"),
