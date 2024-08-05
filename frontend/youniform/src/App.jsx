@@ -25,6 +25,8 @@ import Header from "@/components/Share/Header";
 import NavBar from "@/components/Share/NavBar";
 import MainView from "@/pages/MainView";
 import PhotoCardView from "@/pages/PhotoCardView";
+import BinderCover from "@/components/Photocard/Home/BinderCover";
+import Binder from "@/components/Photocard/Home/Binder";
 import DiaryHomeView from "@/pages/DiaryHomeView";
 import CommunityView from "@/pages/CommunityView";
 import MyPageView from "@/pages/MyPageView";
@@ -90,7 +92,12 @@ function App() {
               <Routes>
                 <Route path="/" element={<MainView />} />
                 <Route path="/login" element={<LoginView />} />
-                <Route path="/photo-card" element={<PhotoCardView />} />
+                {/* Photocard */}
+                <Route path="/photo-card" element={<PhotoCardView />}>
+                  <Route index element={<BinderCover />} />
+                  <Route path="cover" element={<BinderCover />} />
+                  <Route path="binder" element={<Binder />} />
+                </Route>
                 <Route path="/diary" element={<DiaryHomeView />} />
                 <Route path="/community" element={<CommunityView />} />
                 <Route path="/my-page" element={<MyPageView />} />
