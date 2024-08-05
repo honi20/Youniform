@@ -7,11 +7,6 @@ spring:
   profiles:
     active: ${PROFILE}
 
-  data:
-    redis:
-      port: 6379
-      host: localhost
-
 cloud:
   aws:
     s3:

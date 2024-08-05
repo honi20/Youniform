@@ -23,3 +23,7 @@ spring:
       uri: ${MONGODB_URL}
       username: ${MONGODB_USERNAME}
       password: ${MONGODB_PASSWORD}
+
+    redis:
+      port: 6379
+      host: ${REDIS_HOST}

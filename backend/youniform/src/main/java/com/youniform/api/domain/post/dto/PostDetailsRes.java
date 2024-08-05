@@ -16,6 +16,8 @@ import java.util.List;
 public class PostDetailsRes {
     private Long postId;
 
+    private String userId;
+
     private String profileImg;
 
     private String nickname;
@@ -40,6 +42,7 @@ public class PostDetailsRes {
                 .tags(tags)
                 .createdAt(post.getDate())
                 .commentCount(commentCount)
+                .userId(user.getUuid())
                 .build();
     }
 }
