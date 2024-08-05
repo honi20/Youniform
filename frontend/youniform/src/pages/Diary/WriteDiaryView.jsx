@@ -136,24 +136,21 @@ const WriteDiaryView = () => {
       case 4:
         return <div>사진</div>; // 사진 컴포지션
       default:
-        return (
-          <WallPaperComp
-          />
-        );
+        return <WallPaperComp />;
     }
   };
   // axios 요청 시 날짜
   const getCurrentDate = () => {
     const date = new Date();
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  
+
   const handleAfterSave = () => {
-    // saveCanvas();
-    saveCanvasAtLocalStorage()
+    saveCanvas();
+    saveCanvasAtLocalStorage();
     // .then(() => {
     //   return axios({
     //     method: "post",
@@ -162,16 +159,17 @@ const WriteDiaryView = () => {
     //       diaryDate: getCurrentDate(),
     //       contents: diary,
     //     },
+    //     scope: "ALL",
+    //     stampId: 1,
     //   });
     // })
     // .then((res) => {
     //   console.log(res.body.diaryId);
-    //   navigate("/diary/detail/${diaryId}")
+    //   navigate("/diary/detail/${diaryId}");
     // })
     // .catch((err) => {
     //   console.log(err);
-    // })
-    navigate("/diary/detail");
+    // });
   };
   const saveCanvas = () => {
     if (selectCanvas) {
@@ -197,11 +195,10 @@ const WriteDiaryView = () => {
           setDiary(jsonString);
           resolve();
         }
-      }
-      catch (error) {
+      } catch (error) {
         reject(error);
       }
-    })
+    });
   };
   const downloadCanvas = () => {
     if (selectCanvas) {
@@ -233,12 +230,12 @@ const WriteDiaryView = () => {
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
-      console.log('선택 해제')
+      console.log("선택 해제");
       obj.selectable = false;
     }
     selectCanvas.renderAll();
-    setIsDecorated(!isDecorated)
-  }
+    setIsDecorated(!isDecorated);
+  };
   return (
     <>
       <St.SaveBtn onClick={openSaveModal}>
@@ -305,10 +302,7 @@ const WriteDiaryView = () => {
           <St.DecorationMenu $decorated={isDecorated}>
             {renderContent()}
           </St.DecorationMenu>
-          <St.CloseBtn
-            $decorated={isDecorated}
-            onClick={handleCloseBtn}
-          >
+          <St.CloseBtn $decorated={isDecorated} onClick={handleCloseBtn}>
             저장
           </St.CloseBtn>
         </St.DecorationContainer>
