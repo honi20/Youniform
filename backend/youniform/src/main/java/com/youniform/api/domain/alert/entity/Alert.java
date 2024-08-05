@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -21,8 +22,16 @@ public class Alert {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private Users user;
+	@JoinColumn(name = "receiver_id")
+	private Users receiver;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sender_id")
+	private Users sender;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private AlertType type;
 
 	@Column(nullable = false)
 	private String content;
@@ -30,12 +39,13 @@ public class Alert {
 	private String link;
 
 	@Column(nullable = false)
+	@ColumnDefault("false")
 	private Boolean isRead;
 
 	@Column(nullable = false)
-	private LocalDateTime createdAt;
+	@ColumnDefault("false")
+	private Boolean isDeleted;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private AlertType type;
+	private LocalDateTime createdAt;
 }
