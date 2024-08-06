@@ -37,7 +37,12 @@ public enum ErrorCode {
     CHATPART_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅 참여 정보가 존재하지 않습니다."),
 
     // alert error code
-    ALERT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 알림을 찾을 수 없습니다.")
+    ALERT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 알림을 찾을 수 없습니다."),
+
+    //post error
+    INVALID_TAG_SIZE(HttpStatus.BAD_REQUEST.value(), "태그는 최대 10개까지 설정가능합니다."),
+    INVALID_TAG_CONTENTS(HttpStatus.BAD_REQUEST.value(), "태그 내용은 최대 10자까지 설정가능합니다."),
+    INVALID_TAG_FORM(HttpStatus.BAD_REQUEST.value(), "태그에는 띄어쓰기를 하실 수 없습니다."),
     ;
 
     private final int httpStatusCode;

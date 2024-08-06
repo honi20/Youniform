@@ -1,10 +1,12 @@
 package com.youniform.api.domain.post.controller;
 
 import com.youniform.api.domain.post.dto.*;
+import com.youniform.api.domain.post.service.PostService;
 import com.youniform.api.domain.tag.dto.TagDto;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,42 +26,24 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 @RequestMapping("/posts")
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class PostController {
     private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
+
+    private final PostService postService;
 
     @PostMapping
     public ResponseEntity<?> postAdd(
             @RequestPart(value = "dto") PostAddReq postAddReq,
-            @RequestPart(value = "file") MultipartFile file) {
-        List<TagDto> tagList = new ArrayList<>();
-        tagList.add(TagDto.builder()
-                    .tagId(1L)
-                    .contents("김도영")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(2L)
-                .contents("잠실")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(3L)
-                .contents("기아")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(4L)
-                .contents("도영이")
-                .build());
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
-        PostAddRes result = PostAddRes.builder()
-                .postId(1L)
-                .contents("테스트111")
-                .imageUrl("s3 url")
-                .tags(tagList)
-                .createdDate(LocalDate.now())
-                .userId(UUID)
-                .build();
+        Long userId = 123L;
+
+        PostAddRes result = postService.addPost(postAddReq, file, userId);
 
         return new ResponseEntity<>(ResponseDto.success(POST_CREATED, result), HttpStatus.CREATED);
     }
+
 
     @GetMapping
     public ResponseEntity<?> publicPostList(

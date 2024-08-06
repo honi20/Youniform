@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private final JPAQueryFactory queryFactory;
     private final PasswordEncoder passwordEncoder;
-    private final JPAQueryFactory queryFactory;
 
     @Transactional
     @Override
