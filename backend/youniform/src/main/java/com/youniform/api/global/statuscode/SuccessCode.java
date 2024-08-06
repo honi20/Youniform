@@ -68,7 +68,7 @@ public enum SuccessCode {
     // likes success code
     LIKES_CREATED(HttpStatus.CREATED.value(), "좋아요 생성에 성공했습니다."),
     LIKES_DELETED(HttpStatus.OK.value(), "좋아요 삭제에 성공했습니다."),
-    REISSUED_ACCESSTOKEN(HttpStatus.OK.value(), "accessToken이 재발급 되었습니다."),
+    REISSUED_ACCESSTOKEN(HttpStatus.FORBIDDEN.value(), "accessToken이 재발급 되었습니다."),
 
     // alert success code
     ALERT_CONNECTION_OK(HttpStatus.OK.value(), "알림 설정 연결에 성공했습니다."),

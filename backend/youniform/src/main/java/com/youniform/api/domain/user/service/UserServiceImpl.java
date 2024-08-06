@@ -8,6 +8,7 @@ import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.redis.RedisUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -18,35 +19,30 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisUtils redisUtils;
     private final JwtService jwtService;
-
-    @Override
-    public Users findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public String signin(LocalSigninReq user) {
-        //사용자가 있으면 accessToken 없으면 null
-        Users users = findByEmail(user.getEmail());
-        if (users == null) {
-            return null;
+        Users users = userRepository.findByEmail(user.getEmail());
+        if(users != null && passwordEncoder.matches(user.getPassword(), users.getPassword())) {
+            return jwtService.createAccessToken(users.getUuid());
         }
-        return jwtService.createAccessToken(users.getUuid());
+        return null;
     }
 
     @Override
     public String signup(SignupReq user) {
         String uuid = UUID.randomUUID().toString();
+        if(user.getProviderType().equals("local")) {
+            String password = passwordEncoder.encode(user.getPassword());
+            user.setPassword(password);
+        }
+
         Users users = userRepository.save(user.toEntity(uuid));
 
         JwtRedis jwtRedis = user.toRedis(uuid, users.getId(), jwtService.createRefreshToken(uuid));
         redisUtils.setData(uuid, jwtRedis);
 
         return jwtService.createAccessToken(uuid);
-    }
-
-    @Override
-    public Long findById(Long id) {
-        return userRepository.findById(id).get().getId();
     }
 }

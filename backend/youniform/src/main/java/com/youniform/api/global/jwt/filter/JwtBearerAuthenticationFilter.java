@@ -2,7 +2,6 @@ package com.youniform.api.global.jwt.filter;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
@@ -24,13 +23,14 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
+import static com.youniform.api.global.statuscode.SuccessCode.REISSUED_ACCESSTOKEN;
+
 @Component
 @RequiredArgsConstructor
 @Profile({"local", "prod"})
 public class JwtBearerAuthenticationFilter extends GenericFilterBean {
     private final JwtService jwtService;
     private final RedisUtils redisUtils;
-    private final UserService userService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -49,31 +49,19 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
         }
         else if (token_type.equals("access_token")) {
             if (jwtService.isTokenValid(token)) {
-                String uuid = jwtService.getUuid(token);
-                JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(uuid);
-                if(userService.findById(jwtRedis.getUserId()) != null) {
-                    Authentication auth = jwtService.getAuthentication(token);
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }else{
-                    sendError(response, ErrorCode.NOT_VALID_TOKEN);
-                    return;
-                }
+                Authentication auth = jwtService.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(auth);
             } else if (jwtService.isTokenExpired(token)) {
                 String uuid = jwtService.getUuid(token);
                 JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(uuid);
                 if (jwtRedis != null) {
-                    if(userService.findById(jwtRedis.getUserId()) != null) {
-                        String refreshToken = jwtRedis.getRefreshToken();
-                        if (jwtService.isTokenExpired(refreshToken)) {
-                            redisUtils.deleteData(uuid);
-                            sendError(response, ErrorCode.EXPIRED_TOKEN);
-                            return;
-                        } else {
-                            sendAccessToken(response, JWT.decode(token).getSubject());
-                            return;
-                        }
-                    }else {
-                        sendError(response, ErrorCode.NOT_VALID_TOKEN);
+                    String refreshToken = jwtRedis.getRefreshToken();
+                    if (jwtService.isTokenExpired(refreshToken)) {
+                        redisUtils.deleteData(uuid);
+                        sendError(response, ErrorCode.EXPIRED_TOKEN);
+                        return;
+                    } else {
+                        sendAccessToken(response, JWT.decode(token).getSubject());
                         return;
                     }
                 }
@@ -93,7 +81,7 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
 
-            ResponseDto<Object> res = ResponseDto.success(SuccessCode.REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
+            ResponseDto<Object> res = ResponseDto.success(REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
             ObjectMapper mapper = new ObjectMapper();
             response.getWriter().write(mapper.writeValueAsString(res));
         }

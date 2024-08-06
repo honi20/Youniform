@@ -3,6 +3,7 @@ package com.youniform.api.global.oauth.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.user.dto.SignupReq;
 import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.entity.JwtRedis;
@@ -26,12 +27,12 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtService jwtService;
     private final RedisUtils redisUtils;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        Users user = userService.findByEmail((String) oAuth2User.getAttributes().get("email"));
+        Users user = userRepository.findByEmail((String) oAuth2User.getAttributes().get("email"));
         if(user == null) {
             user = ((PrincipalDetails)oAuth2User).getUser();
             sendSignUpUserInfo(response, user);
