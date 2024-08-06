@@ -89,23 +89,23 @@ const CommentInfo = styled.div`
   display: flex;
   align-items: center;
 `;
-import Chatsvg from "@assets/Community/chat.svg?react";
+import Chatsvg from "@assets/Post/chat.svg?react";
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
   height: 24px;
 `;
-import HeartSvg from "@assets/Community/heart.svg?react";
+import HeartSvg from "@assets/Post/heart.svg?react";
 const HeartIcon = styled(HeartSvg)`
   width: 24px;
   height: 24px;
 `;
-import BellSvg from "@assets/Community/bell.svg?react";
+import BellSvg from "@assets/Post/bell.svg?react";
 const BellIcon = styled(BellSvg)`
   width: 24px;
   height: 24px;
 `;
 import useUserStore from "@stores/userStore";
-import usePostStore from "../../stores/postStore";
+import usePostStore from "@stores/postStore";
 import { useParams, useNavigate } from "react-router-dom";
 
 const PostDetailView = () => {

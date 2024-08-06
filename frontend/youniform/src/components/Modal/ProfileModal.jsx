@@ -121,7 +121,7 @@ const DotLine = styled.div`
 `;
 import OrderIcon from "@assets/MyPage/order.svg?react";
 import NotebookIcon from "@assets/MyPage/notebook.svg?react";
-import GroupIcon from "@assets/Community/Group_light.svg?react";
+import GroupIcon from "@assets/Post/Group_light.svg?react";
 
 const ProfileModal = ({ user, isOpen, onClose }) => {
   const theme = useTheme();

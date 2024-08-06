@@ -4,12 +4,13 @@ import axios from "axios";
 const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useDiaryStore = create((set) => ({
   diaries: [],
+  diary: [],
   fetchDiaries: async () => {
     await axios({
       method: "get",
       url: `${API_URL}/diaries`,
       data: {
-        diaryDate: getCurrentDate(),
+        // diaryDate: getCurrentDate(),
         contents: diary,
         scope: "ALL",
         stampId: 1,
@@ -32,7 +33,10 @@ const useDiaryStore = create((set) => ({
   },
   updateDiary: async (id, updatedDiary) => {
     try {
-      const response = await axios.put(`${API_URL}/diaries/${id}`, updatedDiary);
+      const response = await axios.put(
+        `${API_URL}/diaries/${id}`,
+        updatedDiary
+      );
       set((state) => ({
         diaries: state.diaries.map((diary) =>
           diary.id === id ? response.data : diary
