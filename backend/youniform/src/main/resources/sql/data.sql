@@ -46,3 +46,11 @@ INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (2, '2번 방', TR
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1, CURRENT_TIMESTAMP);
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (124, 1, CURRENT_TIMESTAMP);
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 2, CURRENT_TIMESTAMP);
+
+-- alert
+INSERT INTO ALERT(alert_id, receiver_id, sender_id, type, content, link, is_read, is_deleted, created_at)
+VALUES (123, 123, 124, 'FRIEND_REQUEST', '', 'friend link', false, false, '2024-07-31T16:47:20.394415'),
+       (124, 123, 124, 'POST_COMMENT', '최강 몬스터즈 우승', 'post link', false, false, '2024-07-31T21:50:20.394415'),
+       (125, 123, 124, 'FRIEND_REQUEST', '', 'friend link', true, false, '2024-08-01T11:23:20.394415'),
+       (126, 123, 124, 'POST_COMMENT', '대호 이번주 홈런 침', 'post link', false, true, '2024-08-03T20:47:20.394415'),
+       (127, 124, 123, 'POST_COMMENT', '하이하이', 'post link', true, false, '2024-08-05T11:23:20.394415');

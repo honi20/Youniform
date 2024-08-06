@@ -9,6 +9,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import static com.youniform.api.global.dateformat.DateFormatter.calculateTime;
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -31,7 +33,7 @@ public class AlertDto {
 
 	private Boolean isDeleted;
 
-	private LocalDateTime createdAt;
+	private String createdAt;
 
 	public static AlertDto toDto(Alert alert) {
 		return AlertDto.builder()
@@ -44,7 +46,7 @@ public class AlertDto {
 				.link(alert.getLink())
 				.isRead(alert.getIsRead())
 				.isDeleted(alert.getIsDeleted())
-				.createdAt(alert.getCreatedAt())
+				.createdAt(calculateTime(alert.getCreatedAt()))
 				.build();
 	}
 }

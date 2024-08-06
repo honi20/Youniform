@@ -1,6 +1,7 @@
 package com.youniform.api.domain.alert.service;
 
 import com.youniform.api.domain.alert.dto.AlertDto;
+import com.youniform.api.domain.alert.dto.AlertListRes;
 import com.youniform.api.domain.alert.dto.AlertReq;
 import com.youniform.api.domain.alert.entity.Alert;
 import com.youniform.api.domain.alert.entity.AlertType;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -53,6 +55,17 @@ public class AlertServiceImpl implements AlertService {
 		}
 
 		return emitter;
+	}
+
+	@Override
+	public AlertListRes findAlerts(Long userId) {
+		List<Alert> alerts = alertRepository.findByReceiverIdAndIsDeletedFalse(userId);
+
+		List<AlertDto> alertList = alerts.stream()
+				.map(AlertDto::toDto)
+				.toList();
+
+		return new AlertListRes(alertList);
 	}
 
 	@Override

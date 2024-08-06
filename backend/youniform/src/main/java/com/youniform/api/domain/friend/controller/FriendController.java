@@ -33,7 +33,7 @@ public class FriendController {
     public ResponseEntity<?> friendList() {
         List<FriendDto> friendList = new ArrayList<>();
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 30; i++) {
             friendList.add(FriendDto.builder()
                     .friendId("ewgrg0fgfdg0dfgfdg-sg43543gdf-bdfsdbgsdsd" + i)
                     .imgUrl("친구 프사 s3 url")
