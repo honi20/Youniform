@@ -27,8 +27,8 @@ const Header = styled.div`
 const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  border: 1px solid pink;
   cursor: pointer;
+  /* border: 1px solid pink; */
 `;
 const DateWrapper = styled(HeaderWrapper)`
   ${Font.Small}
@@ -40,7 +40,7 @@ const ProfileImg = styled.img`
   width: 30px;
   border-radius: 50%;
   margin-right: 5px;
-  border: 1px solid blue;
+  border: 0.5px solid #dadada;
 `;
 const Content = styled.div`
   ${Font.Medium};
@@ -87,17 +87,17 @@ const CommentInfo = styled.div`
   display: flex;
   align-items: center;
 `;
-import Chatsvg from "@assets/Community/chat.svg?react";
+import Chatsvg from "@assets/Post/chat.svg?react";
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
   height: 24px;
 `;
-import HeartSvg from "@assets/Community/heart.svg?react";
+import HeartSvg from "@assets/Post/heart.svg?react";
 const HeartIcon = styled(HeartSvg)`
   width: 24px;
   height: 24px;
 `;
-import BellSvg from "@assets/Community/bell.svg?react";
+import BellSvg from "@assets/Post/bell.svg?react";
 const BellIcon = styled(BellSvg)`
   width: 24px;
   height: 24px;

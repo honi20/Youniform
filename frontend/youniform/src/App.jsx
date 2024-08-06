@@ -45,8 +45,7 @@ import LikePostView from "@pages/MyPage/LikePostView";
 import FriendView from "@pages/MyPage/FriendView";
 import PostDetailView from "@pages/Post/PostDetailView";
 import SearchView from "./pages/Post/SearchView";
-import TagSearchView from "./pages/Post/Search/TagSearchView";
-import UserSearchView from "./pages/Post/Search/UserSearchView";
+import WritePostView from "./pages/Post/WritePostView";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -122,8 +121,9 @@ function App() {
                 <Route path="/post/*">
                   <Route index element={<CommunityView />} />
                   <Route path=":postId" element={<PostDetailView />} />
+                  <Route path="write" element={<WritePostView />} />
                 </Route>
-                  <Route path="/search" element={<SearchView />} />
+                <Route path="/search" element={<SearchView />} />
                 <Route path="/my-page/*">
                   <Route index element={<MyPageView />} />
                   <Route path="friend-list" element={<FriendView />} />
