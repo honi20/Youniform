@@ -17,7 +17,7 @@ public enum SuccessCode {
     PROFILE_MODIFIED(HttpStatus.OK.value(), "프로필 수정에 성공했습니다."),
     PASSWORD_MODIFIED(HttpStatus.OK.value(), "비밀번호 수정에 성공했습니다."),
     THEME_MODIFIED(HttpStatus.OK.value(), "테마 변경에 성공했습니다."),
-    ALERT_MODIFIED(HttpStatus.OK.value(), "푸시 알림 변경에 선공했습니다."),
+    ALERT_MODIFIED(HttpStatus.OK.value(), "푸시 알림 변경에 성공했습니다."),
     USER_RESIGNED(HttpStatus.OK.value(), "회원 탈퇴에 성공했습니다."),
     USER_SIGNUP_USER(HttpStatus.OK.value(), "소셜 회원가입을 진행합니다."),
     USER_SIGNUP_EXIST(HttpStatus.OK.value(), "기존에 존재하는 회원정보가 있습니다."),

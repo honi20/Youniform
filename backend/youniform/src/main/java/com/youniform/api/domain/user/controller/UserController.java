@@ -7,6 +7,7 @@ import com.youniform.api.global.statuscode.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -98,12 +99,14 @@ public class UserController {
     }
 
     @PatchMapping("/profile/alert")
-    public ResponseEntity<?> alertModify(@RequestBody AlertModifyReq alertModifyReq) {
+    public ResponseEntity<?> alertModify(@RequestBody AlertModifyReq alertModifyReq, Authentication authentication) {
+        userService.modifyAlert(alertModifyReq, (Long) authentication.getPrincipal());
         return new ResponseEntity<>(ResponseDto.success(ALERT_MODIFIED, null), HttpStatus.OK);
     }
 
     @PatchMapping("/resign")
-    public ResponseEntity<?> userResign() {
+    public ResponseEntity<?> userResign(Authentication authentication) {
+        userService.resignUser((Long) authentication.getPrincipal());
         return new ResponseEntity<>(ResponseDto.success(USER_RESIGNED, null), HttpStatus.OK);
     }
 
