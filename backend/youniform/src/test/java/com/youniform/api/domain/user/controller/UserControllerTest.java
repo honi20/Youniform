@@ -698,7 +698,6 @@ public class UserControllerTest {
 
         //then
         actions
-//                .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(USER_SIGNIN_SUCCESS.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(USER_SIGNIN_SUCCESS.getMessage()))
                 .andDo(document(
@@ -714,12 +713,12 @@ public class UserControllerTest {
                                         fieldWithPath("password").type(JsonFieldType.STRING)
                                                 .description("비밀번호")
                                 )
-//                                .responseFields(
-//                                        getCommonResponseFields(
-//                                                fieldWithPath("accessToken").type(JsonFieldType.STRING)
-//                                                        .description("엑세스 토큰")
-//                                        )
-//                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("accessToken").type(JsonFieldType.STRING)
+                                                        .description("엑세스 토큰")
+                                        )
+                                )
                                 .requestSchema(Schema.schema("로컬 로그인 Request"))
                                 .responseSchema(Schema.schema("로컬 로그인 Response"))
                                 .build()

@@ -108,16 +108,15 @@ public class UserController {
 
     @PostMapping("/signup/{provider}")
     public ResponseEntity<?> userSignup(@PathVariable("provider") String provider, @RequestBody SignupReq user) {
-//        String accessToken = userService.signup(user);
-        SignupRes result = SignupRes.builder().accessToken("accessToken").build();
+        String accessToken = userService.signup(user);
+        SignupRes result = SignupRes.builder().accessToken(accessToken).build();
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNUP_SUCCESS, result), HttpStatus.OK);
     }
 
     @PostMapping("/signin/local")
     public ResponseEntity<?> signin(@RequestBody LocalSigninReq user){
-//        String accessToken = userService.signin(user);
-//        SigninRes result = SigninRes.builder().accessToken(accessToken).build();
-        SigninRes result = SigninRes.builder().accessToken("accessToken").build();
+        String accessToken = userService.signin(user);
+        SigninRes result = SigninRes.builder().accessToken(accessToken).build();
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
     }
 }
