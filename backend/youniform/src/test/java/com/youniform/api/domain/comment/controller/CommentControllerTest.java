@@ -223,7 +223,7 @@ public class CommentControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(COMMENT_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(COMMENT_DELETED.getMessage()))
                 .andDo(document(

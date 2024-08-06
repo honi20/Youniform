@@ -43,7 +43,7 @@ public class PhotocardController {
 			throw new CustomException(ErrorCode.PHOTOCARD_NOT_FOUND);
 		}
 
-		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_DELETED, null), HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_DELETED, null), HttpStatus.OK);
 	}
 
 	@GetMapping
