@@ -61,6 +61,23 @@ public class DiaryController {
 		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
 	}
 
+	@GetMapping("monthly")
+	public ResponseEntity<?> diaryMyMonthlyList(@ModelAttribute DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		DiaryMonthlyListRes response = diaryService.findMyMonthlyDiaries(123L, diaryMonthlyListReq);
+
+		return new ResponseEntity<>(ResponseDto.success(MY_MONTHLY_DIARIES_OK, response), HttpStatus.OK);
+	}
+
+	@GetMapping("monthly/{userId}")
+	public ResponseEntity<?> diaryMonthlyList(@ModelAttribute DiaryMonthlyListReq diaryMonthlyListReq, @PathVariable("userId") String userUuid) throws JsonProcessingException {
+		DiaryMonthlyListRes response = diaryService.findMonthlyDiaries(userUuid, diaryMonthlyListReq);
+
+		return new ResponseEntity<>(ResponseDto.success(OTHER_MONTHLY_DIARIES_OK, response), HttpStatus.OK);
+	}
+
+
 	@PutMapping("/{diaryId}")
 	public ResponseEntity<?> diaryModify(@PathVariable("diaryId") Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
 //		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());

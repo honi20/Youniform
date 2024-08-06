@@ -20,6 +20,7 @@ import static com.youniform.api.domain.user.entity.QUsers.users;
 public class DiaryCustomRepositoryImpl implements DiaryCustomRepository {
 
 	private static final Logger log = LoggerFactory.getLogger(DiaryCustomRepositoryImpl.class);
+
 	private final JPAQueryFactory queryFactory;
 
 	@Override
@@ -47,4 +48,20 @@ public class DiaryCustomRepositoryImpl implements DiaryCustomRepository {
 
 		return diaries;
 	}
+
+	@Override
+	public List<Diary> findByUserIdAndDate(Long userId, LocalDate calendarDate) {
+		JPAQuery<Diary> query = queryFactory.selectFrom(diary)
+				.leftJoin(diary.user, users).fetchJoin()
+				.leftJoin(diary.stamp, diaryStamp).fetchJoin()
+				.where(diary.user.id.eq(userId)
+						.and(diary.diaryDate.year().eq(calendarDate.getYear()))
+						.and(diary.diaryDate.month().eq(calendarDate.getMonthValue())))
+				.orderBy(diary.diaryDate.asc());
+
+		log.info(query.toString());
+
+		return query.fetch();
+	}
+
 }
