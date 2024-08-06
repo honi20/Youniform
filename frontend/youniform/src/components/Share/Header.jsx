@@ -4,6 +4,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import SettingIcon from "@assets/Header/setting.svg?react";
 import * as Font from "@/typography";
+import ColorBtn from "../Common/ColorBtn";
+
 const Head = styled.div`
   background-color: #f8f8f8;
   position: fixed;
@@ -24,9 +26,14 @@ const InnerHead = styled.div`
   position: relative;
   width: 92%;
   margin: 0 auto;
-  gap: 5px;
-  /* border: 1px solid red; */
+  justify-content: space-between;
 `;
+
+const Logo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`
 
 const backSvg = (theme) => {
   return (
@@ -82,15 +89,21 @@ const IconContainer = styled.div`
   align-items: center;
   gap: 5px;
 `;
+
 const Header = () => {
+  const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [currentPath, setCurrentPath] = useState(location.pathname);
-  const theme = useTheme();
   const [isAlarm, setIsAlarm] = useState(null); // 알람 유무에 따라 색 변경
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login");
   };
 
   useEffect(() => {
@@ -105,15 +118,20 @@ const Header = () => {
       case "/community":
         return (
           <InnerHead>
-            <SportsBaseballIcon />
-            <strong>Youniform</strong>
+            <Logo>
+              <SportsBaseballIcon />
+              <strong>Youniform</strong>
+            </Logo>
+            <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
           </InnerHead>
         );
       case "/my-page":
         return (
           <InnerHead>
-            <SportsBaseballIcon />
-            <strong>Youniform</strong>
+            <Logo>
+              <SportsBaseballIcon />
+              <strong>Youniform</strong>
+            </Logo>
             <IconContainer>
               {alarmSvg(isAlarm)}
               <SettingIcon onClick={() => navigate("/setting")} />

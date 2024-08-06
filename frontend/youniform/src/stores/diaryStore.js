@@ -5,16 +5,27 @@ const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useDiaryStore = create((set) => ({
   diaries: [],
   fetchDiaries: async () => {
+    console.log(1);
     try {
-      const response = await axios.get(`${API_URL}/diaries`);
+      console.log(2);
+      const response = await axios({
+        method: "get",
+        url: `${API_URL}/diaries/list`,
+        params: {
+          lastDiaryDate: "2024-07-01",
+          sort: "diaryDate",
+          Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ"
+        }
+      });
+      console.log(response.data);
       set({ diaries: response.data.body });
     } catch (error) {
-      console.error("Failed to fetch diaries", error);
-    }
+      console.error("Failed to fetch diaries", error.response?.status, error.message);
+    } 
   },
   addDiary: async (diary) => {
     try {
-      const response = await axios.post("/api/diaries", diary);
+      const response = await axios.post(`${API_URL}/diaries`, diary);
       set((state) => ({ diaries: [...state.diaries, response.data] }));
     } catch (error) {
       console.error("Failed to add diary", error);
@@ -22,7 +33,7 @@ const useDiaryStore = create((set) => ({
   },
   updateDiary: async (id, updatedDiary) => {
     try {
-      const response = await axios.put(`/api/diaries/${id}`, updatedDiary);
+      const response = await axios.put(`${API_URL}/diaries/${id}`, updatedDiary);
       set((state) => ({
         diaries: state.diaries.map((diary) =>
           diary.id === id ? response.data : diary
@@ -34,7 +45,7 @@ const useDiaryStore = create((set) => ({
   },
   deleteDiary: async (id) => {
     try {
-      await axios.delete(`/api/diaries/${id}`);
+      await axios.delete(`${API_URL}/diaries/${id}`);
       set((state) => ({
         diaries: state.diaries.filter((diary) => diary.id !== id),
       }));
