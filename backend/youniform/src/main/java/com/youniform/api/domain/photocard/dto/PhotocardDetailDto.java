@@ -9,11 +9,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PhotocardDetailDto {
-	private String name;
+	private Long photocardId;
 
-	private String description;
-
-	private PhotocardContentDto contents;
+	private String imgUrl;
 
 	private LocalDateTime createdAt;
 }
