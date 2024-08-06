@@ -9,14 +9,19 @@ spring:
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
 
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:sql/data.sql
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: false
         dialect: org.hibernate.dialect.MariaDBDialect
-    defer-datasource-initialization: true #script 파일이 hibernate 초기화 이후 동작하게 하기 위한 설정
+    defer-datasource-initialization: true
 
   data:
     mongodb:

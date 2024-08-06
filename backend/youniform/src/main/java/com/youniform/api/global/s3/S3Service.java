@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -73,7 +74,7 @@ public class S3Service {
     public Optional<File> convert(MultipartFile multipartFile) throws IOException {
         // 기존 파일 이름으로 새로운 File 객체 생성
         // 해당 객체는 프로그램이 실행되는 로컬 디렉토리(루트 디렉토리)에 위치하게 됨
-        File convertFile = new File(multipartFile.getOriginalFilename());
+        File convertFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
         if (convertFile.createNewFile()) { // 해당 경로에 파일이 없을 경우, 새 파일 생성
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {

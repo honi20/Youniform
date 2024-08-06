@@ -90,7 +90,7 @@ public class ChatControllerTest {
     public void 채팅방_상세조회_성공() throws Exception {
         ChatRoomDetailsRes chatRoomDetails = new ChatRoomDetailsRes(1L, "1번 방", true);
         List<ChatMessageDto> messageList = List.of(
-                new ChatMessageDto(1L, UUID, "유저 1", "1번방 테스트1", "image.png", LocalDateTime.now())
+                new ChatMessageDto(1L, "유저 1", "1번방 테스트1", "image.png", LocalDateTime.now())
         );
         SliceImpl<ChatMessageDto> slice = new SliceImpl<>(messageList, PageRequest.of(0, 10), false);
         SliceDto<ChatMessageDto> messages = new SliceDto<>(slice);
@@ -129,8 +129,6 @@ public class ChatControllerTest {
                                                     .description("채팅방 상태"),
                                             fieldWithPath("body.messages.content[].roomId").type(JsonFieldType.NUMBER)
                                                     .description("채팅방 ID"),
-                                            fieldWithPath("body.messages.content[].userId").type(JsonFieldType.STRING)
-                                                    .description("사용자 ID"),
                                             fieldWithPath("body.messages.content[].nickname").type(JsonFieldType.STRING)
                                                     .description("닉네임"),
                                             fieldWithPath("body.messages.content[].content").type(JsonFieldType.STRING)
@@ -237,7 +235,7 @@ public class ChatControllerTest {
     @Test
     public void 채팅_메시지_이전_조회_성공() throws Exception {
         List<ChatMessageDto> messageList = List.of(
-                new ChatMessageDto(1L, UUID, "유저 1", "1번 방 이전 테스트 1", "image.png", LocalDateTime.now())
+                new ChatMessageDto(1L, "유저 1", "1번 방 이전 테스트 1", "image.png", LocalDateTime.now())
         );
         SliceImpl<ChatMessageDto> slice = new SliceImpl<>(messageList, PageRequest.of(0, 10), false);
         SliceDto<ChatMessageDto> response = new SliceDto<>(slice);
@@ -273,8 +271,6 @@ public class ChatControllerTest {
                                     getCommonResponseFields(
                                             fieldWithPath("body.content[].roomId").type(JsonFieldType.NUMBER)
                                                     .description("채팅방 ID"),
-                                            fieldWithPath("body.content[].userId").type(JsonFieldType.STRING)
-                                                    .description("사용자 ID"),
                                             fieldWithPath("body.content[].nickname").type(JsonFieldType.STRING)
                                                     .description("닉네임"),
                                             fieldWithPath("body.content[].content").type(JsonFieldType.STRING)
@@ -299,7 +295,7 @@ public class ChatControllerTest {
     @Test
     public void 채팅_메시지_이후_조회_성공() throws Exception {
         List<ChatMessageDto> messageList = List.of(
-                new ChatMessageDto(1L, UUID, "유저 1", "1번 방 이후 테스트 1", "image.png", LocalDateTime.now())
+                new ChatMessageDto(1L, "유저 1", "1번 방 이후 테스트 1", "image.png", LocalDateTime.now())
         );
         SliceImpl<ChatMessageDto> slice = new SliceImpl<>(messageList, PageRequest.of(0, 10), false);
         SliceDto<ChatMessageDto> response = new SliceDto<>(slice);
@@ -335,8 +331,6 @@ public class ChatControllerTest {
                                     getCommonResponseFields(
                                             fieldWithPath("body.content[].roomId").type(JsonFieldType.NUMBER)
                                                     .description("채팅방 ID"),
-                                            fieldWithPath("body.content[].userId").type(JsonFieldType.STRING)
-                                                    .description("사용자 ID"),
                                             fieldWithPath("body.content[].nickname").type(JsonFieldType.STRING)
                                                     .description("닉네임"),
                                             fieldWithPath("body.content[].content").type(JsonFieldType.STRING)

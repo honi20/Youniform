@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,5 +23,17 @@ public class PostAddReq {
                 .user(user)
                 .date(LocalDate.now())
                 .build();
+    }
+
+    public Post toEntity(Users user, String contents) {
+        return Post.builder()
+                .contents(contents)
+                .user(user)
+                .date(LocalDate.now())
+                .build();
+    }
+
+    public void updateEmptyTag() {
+        this.tags = new ArrayList<>();
     }
 }
