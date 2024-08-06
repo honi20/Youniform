@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 public class ChatMessageDto {
     private Long roomId;
 
-    private String userId;
-
     private String nickname;
 
     private String content;
@@ -28,7 +26,6 @@ public class ChatMessageDto {
     public static ChatMessageDto toDto(ChatMessage chatMessage) {
         return ChatMessageDto.builder()
                 .roomId(chatMessage.getRoomId())
-                .userId(chatMessage.getUserId())
                 .nickname(chatMessage.getNickname())
                 .content(chatMessage.getContent())
                 .imageUrl(chatMessage.getImageUrl())

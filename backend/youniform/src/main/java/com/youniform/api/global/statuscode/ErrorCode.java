@@ -29,6 +29,7 @@ public enum ErrorCode {
 
     //file
     FILE_CONVERT_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 업로드에 실패했습니다."),
+    FILE_DOWNLOAD_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 다운로드에 실패했습니다."),
 
     // chat error code
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅방을 찾을 수 없습니다."),

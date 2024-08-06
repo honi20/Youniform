@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 @Repository
-public interface ChatMessageRepository extends MongoRepository<ChatMessage, String> {
+public interface ChatMessageRepository extends MongoRepository<ChatMessage, Long> {
     Slice<ChatMessage> findByRoomIdAndMessageIdBeforeOrderByMessageTimeDesc(Long roomId, Long messageId, Pageable pageable);
 
     Slice<ChatMessage> findByRoomIdAndMessageIdAfterOrderByMessageTimeAsc(Long roomId, Long messageId, Pageable pageable);
