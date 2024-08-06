@@ -50,6 +50,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             SignupReq result = SignupReq.builder()
                     .email(user.getEmail())
                     .nickname(user.getNickname())
+                    .providerType(user.getProviderType())
                     .profileUrl(user.getProfileUrl())
                     .build();
 
