@@ -26,15 +26,9 @@ const Label = styled.div`
   color: black;
 `;
 
-<<<<<<< Updated upstream
-const DetailControlButton = ({ icon: Icon, label, openModal }) => {
-  return (
-    <Circle onClick={openModal}>
-=======
 const DetailControlButton = ({ icon: Icon, label }) => {
   return (
     <Circle>
->>>>>>> Stashed changes
       <IconWrapper>
         <Icon />
       </IconWrapper>

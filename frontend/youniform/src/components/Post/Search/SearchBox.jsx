@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import * as Font from "@/typography";
-import axios from "axios";
-import TagSearch from "./TagSearch";
+import TagSearch from "@components/Post/Search/TagSearch";
+import UserSearch from "@components/Post/Search/UserSearch";
 // 검색창 필요할때 이거 나타나야함
 const Container = styled.div`
   border: 0.5px solid #dadada;
@@ -16,7 +16,7 @@ const Container = styled.div`
 const Header = styled.div`
   height: 40px;
   display: flex;
-  margin: 10px;
+  margin: 10px 10px 0 10px;
   padding: 0 10px;
   gap: 20px;
 `;
@@ -38,7 +38,7 @@ const SearchResult = styled.div`
 const Content = styled.div`
   min-height: 100px;
 `;
-const SearchBox = ({ query, type, setType }) => {
+const SearchBox = ({ query, type, setType, search, setSearch }) => {
   const handleTagClick = () => {
     console.log("tag 검색");
     setType("tag");
@@ -55,9 +55,13 @@ const SearchBox = ({ query, type, setType }) => {
   const renderContent = () => {
     switch (type) {
       case "tag":
-        return <TagSearch query={query} />;
+        return (
+          <TagSearch query={query} search={search} setSearch={setSearch} />
+        );
       case "user":
-        return <div>user</div>;
+        return (
+          <UserSearch query={query} search={search} setSearch={setSearch} />
+        );
       default:
         return <div>tag</div>;
     }

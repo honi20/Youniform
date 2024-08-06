@@ -26,6 +26,7 @@ const SearchView = () => {
 
   const [results, setResults] = useState([]);
   const [type, setType] = useState("tag");
+  const [search, setSearch] = useState(false);
   const API_URL = "http://i11a308.p.ssafy.io:8080";
   useEffect(() => {
     const fetchResult = async () => {
@@ -62,11 +63,23 @@ const SearchView = () => {
       return queryParams.current.q === searchQuery ? (
         <Posts posts={results} />
       ) : (
-        <SearchBox query={searchQuery} type={type} setType={setType} />
+        <SearchBox
+          query={searchQuery}
+          type={type}
+          setType={setType}
+          search={search}
+          setSearch={setSearch}
+        />
       );
     } else {
       return searchQuery ? (
-        <SearchBox query={searchQuery} type={type} setType={setType} />
+        <SearchBox
+          query={searchQuery}
+          type={type}
+          setType={setType}
+          search={search}
+          setSearch={setSearch}
+        />
       ) : (
         <div>친구추천뷰</div>
       );
@@ -78,6 +91,7 @@ const SearchView = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         type={type}
+        setSearch={setSearch}
       />
       <div>{renderContent()}</div>
     </Container>

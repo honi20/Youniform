@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import SearchIcon from "@assets/Community/search.svg?react";
+import SearchIcon from "@assets/Post/search.svg?react";
 
 const Container = styled.div`
   border: 0.5px solid #dadada;
@@ -35,9 +35,9 @@ const Input = styled.input`
         `}
 `;
 
-const SearchBar = ({ searchQuery, setSearchQuery, type }) => {
+const SearchBar = ({ searchQuery, setSearchQuery, type, setSearch }) => {
   const [placeholder, setPlaceholder] = useState("검색어를 입력하세요");
-  console.log("search Bar - type: ", type);
+  // console.log("search Bar - type: ", type);
   useEffect(() => {
     if (searchQuery) {
       setPlaceholder("");
@@ -46,7 +46,6 @@ const SearchBar = ({ searchQuery, setSearchQuery, type }) => {
     }
   }, [searchQuery]);
 
-  console.log("searchQuery:", searchQuery);
   const handleChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -58,14 +57,14 @@ const SearchBar = ({ searchQuery, setSearchQuery, type }) => {
   };
 
   const performSearch = (query) => {
-    console.log("Searching for:", query);
-    // setSearchQuery(e.target.value);
+    // console.log("Searching for:", query);
+    setSearch(true);
     setPlaceholder("");
   };
   const handleClick = () => {
     if (searchQuery) {
       setPlaceholder("");
-      setSearchQuery("");
+      // setSearchQuery("");
       // Navigate()
       console.log("test");
     }
