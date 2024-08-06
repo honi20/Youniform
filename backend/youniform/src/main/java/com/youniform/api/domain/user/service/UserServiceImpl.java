@@ -8,6 +8,7 @@ import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.redis.RedisUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -18,25 +19,25 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisUtils redisUtils;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Users findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public String signin(LocalSigninReq user) {
-        //사용자가 있으면 accessToken 없으면 null
-        Users users = findByEmail(user.getEmail());
-        if (users == null) {
-            return null;
+    public String signin(LocalSigninReq user) throws Exception{
+        Users users = userRepository.findByEmail(user.getEmail());
+        if(users != null && passwordEncoder.matches(user.getPassword(), users.getPassword())) {
+            return jwtService.createAccessToken(users.getUuid());
         }
-        return jwtService.createAccessToken(users.getUuid());
+        throw new Exception("잘못된 로그인 요청");
     }
 
     @Override
-    public String signup(SignupReq user) {
+    public String signup(SignupReq user) throws Exception{
         String uuid = UUID.randomUUID().toString();
+        if(user.getProviderType().equals("local")) {
+            String password = passwordEncoder.encode(user.getPassword());
+            user.setPassword(password);
+        }
+        user.setTeam("MONSTERS");
         Users users = userRepository.save(user.toEntity(uuid));
 
         JwtRedis jwtRedis = user.toRedis(uuid, users.getId(), jwtService.createRefreshToken(uuid));

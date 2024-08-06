@@ -3,6 +3,7 @@ package com.youniform.api.domain.user.controller;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
+import com.youniform.api.global.statuscode.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.youniform.api.domain.user.entity.Theme.MONSTERS;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
@@ -107,15 +109,23 @@ public class UserController {
 
     @PostMapping("/signup/{provider}")
     public ResponseEntity<?> userSignup(@PathVariable("provider") String provider, @RequestBody SignupReq user) {
-        String accessToken = userService.signup(user);
-        SignupRes result = SignupRes.builder().accessToken(accessToken).build();
-        return new ResponseEntity<>(ResponseDto.success(USER_SIGNUP_SUCCESS, result), HttpStatus.OK);
+        try {
+            String accessToken = userService.signup(user);
+            SignupRes result = SignupRes.builder().accessToken(accessToken).build();
+            return new ResponseEntity<>(ResponseDto.success(USER_SIGNUP_SUCCESS, result), HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(ResponseDto.fail(INVALID_SIGNUP), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/signin/local")
     public ResponseEntity<?> signin(@RequestBody LocalSigninReq user){
-        String accessToken = userService.signin(user);
-        SigninRes result = SigninRes.builder().accessToken(accessToken).build();
-        return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
+        try {
+            String accessToken = userService.signin(user);
+            SigninRes result = SigninRes.builder().accessToken(accessToken).build();
+            return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(ResponseDto.fail(USER_NOT_FOUND), HttpStatus.NOT_FOUND);
+        }
     }
 }

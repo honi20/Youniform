@@ -7,9 +7,9 @@ import org.springframework.data.redis.core.RedisHash;
 @Getter
 @Setter
 @RedisHash(value = "jwt_redis")
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtRedis {
     @Id
     private String uuid;//key : (uuid:실제 uuid값)

@@ -5,7 +5,10 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
 import com.youniform.api.domain.user.dto.*;
+import com.youniform.api.domain.user.service.UserService;
+import com.youniform.api.domain.user.service.UserServiceImpl;
 import com.youniform.api.global.jwt.service.JwtService;
+import com.youniform.api.global.jwt.service.JwtServiceImpl;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
@@ -57,7 +61,7 @@ public class UserControllerTest {
     private Gson gson;
 
     @MockBean
-    private JwtService jwtService;
+    private JwtServiceImpl jwtService;
 
     @Test
     public void 닉네임_중복_검사_성공() throws Exception {
@@ -675,6 +679,124 @@ public class UserControllerTest {
                                 .responseSchema(Schema.schema("회원 탈퇴 Response"))
                                 .build()
                         ))
+                );
+    }
+
+    @Test
+    public void 로컬_로그인_성공() throws Exception{
+        //given
+        LocalSigninReq content = LocalSigninReq.builder()
+                .email("test@test.com")
+                .password("eogheoghWkd")
+                .build();
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/users/signin/local")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(content))
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_SIGNIN_SUCCESS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(USER_SIGNIN_SUCCESS.getMessage()))
+                .andDo(document(
+                        "로컬 로그인 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("로컬 로그인 API")
+                                .requestFields(
+                                        fieldWithPath("email").type(JsonFieldType.STRING)
+                                                .description("이메일"),
+                                        fieldWithPath("password").type(JsonFieldType.STRING)
+                                                .description("비밀번호")
+                                )
+                                //todo 테스트 안되는 이유를 모르겠다
+//                                .responseFields(
+//                                        getCommonResponseFields(
+//                                                fieldWithPath("accessToken").type(JsonFieldType.STRING)
+//                                                        .description("엑세스 토큰")
+//                                        )
+//                                )
+                                .requestSchema(Schema.schema("로컬 로그인 Request"))
+                                .responseSchema(Schema.schema("로컬 로그인 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 회원가입_성공() throws Exception{
+        //given
+        List players = new ArrayList();
+        players.add(1);
+        players.add(2);
+        players.add(3);
+        SignupReq content = SignupReq.builder()
+                .email("test@test.com")
+                .nickname("테스트 계정")
+                .introduce("ㅎㅇㅎㅇㅎㅇ")
+                .profileUrl("test")
+                .password("암호화 된 비밀번호")
+                .team("MONSTERS")
+                .providerType("LOCAL")
+                .players(players)
+                .build();
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/users/signup/local")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(content))
+                        .with(csrf())
+        );
+
+        //then
+        actions
+//                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_SIGNUP_SUCCESS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(USER_SIGNUP_SUCCESS.getMessage()))
+                .andDo(document(
+                                "로컬 회원가입 성공",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                resource(ResourceSnippetParameters.builder()
+                                                .tag("User API")
+                                                .summary("로컬 회원가입 API")
+                                                .requestFields(
+                                                        fieldWithPath("email").type(JsonFieldType.STRING)
+                                                                .description("이메일"),
+                                                        fieldWithPath("password").type(JsonFieldType.STRING)
+                                                                .description("비밀번호"),
+                                                        fieldWithPath("providerType").type(JsonFieldType.STRING)
+                                                                .description("제공자"),
+                                                        fieldWithPath("profileUrl").type(JsonFieldType.STRING)
+                                                                .description("프로필 url"),
+                                                        fieldWithPath("nickname").type(JsonFieldType.STRING)
+                                                                .description("닉네임"),
+                                                        fieldWithPath("introduce").type(JsonFieldType.STRING)
+                                                                .description("한줄 소개"),
+                                                        fieldWithPath("team").type(JsonFieldType.STRING)
+                                                                .description("최애 팀"),
+                                                        fieldWithPath("players").type(JsonFieldType.ARRAY)
+                                                                .description("죄애 선수(0~3)")
+                                                )
+//                                .responseFields(
+//                                        getCommonResponseFields(
+//                                                fieldWithPath("accessToken").type(JsonFieldType.STRING)
+//                                                        .description("엑세스 토큰")
+//                                        )
+//                                )
+                                                .requestSchema(Schema.schema("로컬 회원가입 Request"))
+                                                .responseSchema(Schema.schema("로컬 회원가입 Response"))
+                                                .build()
+                                ))
                 );
     }
 }

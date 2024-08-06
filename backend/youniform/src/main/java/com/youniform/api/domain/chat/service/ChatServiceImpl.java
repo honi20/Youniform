@@ -1,15 +1,15 @@
 package com.youniform.api.domain.chat.service;
 
-import com.youniform.api.domain.chat.dto.ChatMessageDto;
 import com.youniform.api.domain.chat.document.ChatMessage;
+import com.youniform.api.domain.chat.dto.ChatMessageDto;
 import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
 import com.youniform.api.domain.chat.dto.ChatRoomListRes;
+import com.youniform.api.domain.chat.entity.ChatRoom;
 import com.youniform.api.domain.chat.repository.ChatMessageRepository;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
 import com.youniform.api.domain.chat.repository.ChatRoomRepository;
-import com.youniform.api.domain.user.repository.UsersRepository;
 import com.youniform.api.domain.user.entity.Users;
-import com.youniform.api.domain.chat.entity.ChatRoom;
+import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +23,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.youniform.api.global.statuscode.ErrorCode.*;
+import static com.youniform.api.global.statuscode.ErrorCode.CHATROOM_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
     private final ChatMessageRepository chatMessageRepository;
 
-    private final UsersRepository usersRepository;
+    private final UserRepository usersRepository;
 
     private final ChatRoomRepository chatRoomRepository;
 
