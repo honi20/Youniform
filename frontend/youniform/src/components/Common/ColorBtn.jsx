@@ -2,14 +2,14 @@ import { Button } from '@mui/material';
 import { styled as muiStyled } from '@mui/material/styles';
 
 const ColorBtn = muiStyled(Button)(() => ({
+  height: "38px",
   backgroundColor: "#D9D9D9",
-  fontSize: "14px",
+  fontSize: "13px",
   fontWeight: "bold",
   boxShadow: "none",
   color: "#3A3A3A",
-  height: "28px",
   '&:hover': {
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#d0d0d0",
     boxShadow: "none"
   },
   '&:active': {

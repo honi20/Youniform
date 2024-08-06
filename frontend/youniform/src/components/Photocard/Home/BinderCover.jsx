@@ -8,8 +8,8 @@ const BinderContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  height: 60vh; /* 화면 높이의 60% */
-  width: 85%;
+  height: 64vh;
+  width: 88%;
   background-color: #f5f5f5;
   position: absolute;
   top: 50%;

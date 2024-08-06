@@ -26,7 +26,8 @@ import NavBar from "@/components/Share/NavBar";
 import MainView from "@/pages/MainView";
 import PhotoCardView from "@/pages/PhotoCardView";
 import BinderCover from "@/components/Photocard/Home/BinderCover";
-import Binder from "@/components/Photocard/Home/Binder";
+import Binder from "@/components/Photocard/Slot/Binder";
+import PhotoCardCreator from "@/pages/PhotoCardCreator";
 import DiaryHomeView from "@/pages/DiaryHomeView";
 import CommunityView from "@/pages/CommunityView";
 import MyPageView from "@/pages/MyPageView";
@@ -39,6 +40,8 @@ import Contact from "./pages/Setting/Contact";
 import Terms from "@pages/Setting/Terms";
 import Privacy from "./pages/Setting/Privacy";
 import Version from "@pages/Setting/Version";
+import PhotoCardDetail from "./components/Photocard/Slot/PhotoCardDetail";
+
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -99,11 +102,15 @@ function App() {
               <Routes>
                 <Route path="/" element={<MainView />} />
                 <Route path="/login" element={<LoginView />} />
+                <Route path="/find-email" element={<FindEmailView />} />
+                <Route path="/find-password" element={<FindPasswordView />} />
                 {/* Photocard */}
                 <Route path="/photo-card" element={<PhotoCardView />}>
                   <Route index element={<BinderCover />} />
                   <Route path="cover" element={<BinderCover />} />
                   <Route path="binder" element={<Binder />} />
+                  <Route path="detail" element={<PhotoCardDetail />} />
+                  <Route path="create" element={<PhotoCardCreator />} />
                 </Route>
                 <Route path="/diary" element={<DiaryHomeView />} />
                 <Route path="/community" element={<CommunityView />} />

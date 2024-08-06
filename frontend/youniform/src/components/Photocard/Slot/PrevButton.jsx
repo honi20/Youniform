@@ -1,44 +1,25 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const sdbAnimation = keyframes`
-  0% {
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  40% {
-    box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.4);
-    opacity: 1;
-  }
-  80% {
-    opacity: 1; /* 버튼이 최대 크기로 보이는 상태 */
-  }
-  100% {
-    opacity: 0;
-  }
-`;
 
 const A = styled.a`
   padding-left: 60px;
   position: absolute;
   display: inline-block;
-  right: 1%;
+  left: 5%; 
+  width: 100%;
 `;
 
 const Span = styled.span`
   position: absolute;
   left: 0;
   top: 50%;
-  width: 46px;
-  height: 46px;
-  margin-top: -23px;
+  transform: translate(-50%, -100%);
+  width: 40px;
+  height: 40px;
   border: 1px solid #fff;
   background-color: #d1c8c8;
   border-radius: 100%;
   box-sizing: border-box;
-  animation: ${sdbAnimation} 3.5s infinite ease-in-out;
 
   &::after {
     position: absolute;
@@ -47,10 +28,10 @@ const Span = styled.span`
     content: '';
     width: 16px;
     height: 16px;
-    margin: -8px 0 0 -12px;
+    margin: -8px 0 0 -6px;
     border-top: 1px solid #fff;
     border-right: 1px solid #fff;
-    transform: rotate(45deg);
+    transform: rotate(225deg);
     box-sizing: border-box;
   }
 
@@ -69,9 +50,10 @@ const Span = styled.span`
   }
 `;
 
-const ArrowRight = () => {
+const PrevButton = () => {
+
   const navigate = useNavigate();
-  
+
   const showBinder = () => {
     navigate(`/photo-card/binder`);
   };
@@ -83,4 +65,4 @@ const ArrowRight = () => {
   );
 };
 
-export default ArrowRight;
+export default PrevButton;
