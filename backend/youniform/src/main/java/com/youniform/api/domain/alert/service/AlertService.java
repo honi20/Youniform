@@ -14,5 +14,9 @@ public interface AlertService {
 
 	void modifyAlertAllRead(Long userId);
 
+	void removeAlert(Long userId, Long alertId);
+
+	void removeAllAlert(Long userId);
+
 	void testAlert();
 }

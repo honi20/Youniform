@@ -31,15 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.youniform.api.global.statuscode.SuccessCode.ALERT_LIST_OK;
-import static com.youniform.api.global.statuscode.SuccessCode.ALERT_READ_MODIFIED;
+import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -85,11 +83,11 @@ class AlertControllerTest {
     void 알림_리스트_조회_성공() throws Exception {
         List<AlertDto> alertList = new ArrayList<>();
         AlertDto dto1 = new AlertDto(123L, "'1604b772-adc0-4212-8a90-81186c57f100", "User2", "s3 url",
-                "FRIEND_REQUEST", "", "friend link", false, false, "2024-07-31");
+                "FRIEND_REQUEST", "", "friend link", false, "2024-07-31");
         AlertDto dto2 = new AlertDto(124L, "'1604b772-adc0-4212-8a90-81186c57f100", "User2", "s3 url",
-                "POST_COMMENT", "최강 몬스터즈 우승", "friend link", false, false, "2024-07-31");
+                "POST_COMMENT", "최강 몬스터즈 우승", "friend link", false, "2024-07-31");
         AlertDto dto3 = new AlertDto(125L, "'1604b772-adc0-4212-8a90-81186c57f100", "User2", "s3 url",
-                "FRIEND_REQUEST", "", "friend link", false, false, "1시간 전");
+                "FRIEND_REQUEST", "", "friend link", false, "1시간 전");
         alertList.add(dto1);
         alertList.add(dto2);
         alertList.add(dto3);
@@ -127,7 +125,6 @@ class AlertControllerTest {
                                                 fieldWithPath("body.alertList[].content").type(JsonFieldType.STRING).description("알림 내용 (댓글 내용)"),
                                                 fieldWithPath("body.alertList[].link").type(JsonFieldType.STRING).description("알림 연결 링크"),
                                                 fieldWithPath("body.alertList[].isRead").type(JsonFieldType.BOOLEAN).description("일림 읽음 여부"),
-                                                fieldWithPath("body.alertList[].isDeleted").type(JsonFieldType.BOOLEAN).description("알림 삭제 여부"),
                                                 fieldWithPath("body.alertList[].createdAt").type(JsonFieldType.STRING).description("알림 생성일")
                                         )
                                 )
@@ -139,7 +136,7 @@ class AlertControllerTest {
     @Test
     void 알림_읽음_처리_성공() throws Exception {
         ResultActions actions = mockMvc.perform(
-                patch("/alerts/read/{alertId}", 123L)
+                patch("/alerts/{alertId}", 123L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -171,7 +168,7 @@ class AlertControllerTest {
     @Test
     void 알림_모두_읽음_처리_성공() throws Exception {
         ResultActions actions = mockMvc.perform(
-                patch("/alerts/read")
+                patch("/alerts")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -188,6 +185,70 @@ class AlertControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Alert API")
                                 .summary("Alert 모두 읽음 처리 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    void 알림_삭제_성공() throws Exception {
+        ResultActions actions = mockMvc.perform(
+                delete("/alerts/{alertId}", 123L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ALERT_DELETED.getMessage()))
+                .andDo(document(
+                        "알림 삭제 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Alert API")
+                                .summary("Alert 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    void 알림_모두_삭제_성공() throws Exception {
+        ResultActions actions = mockMvc.perform(
+                delete("/alerts")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ALERT_DELETED.getMessage()))
+                .andDo(document(
+                        "알림 모두 삭제 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Alert API")
+                                .summary("Alert 모두 삭제 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )

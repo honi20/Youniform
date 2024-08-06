@@ -43,10 +43,6 @@ public class Alert {
 	private Boolean isRead;
 
 	@Column(nullable = false)
-	@ColumnDefault("false")
-	private Boolean isDeleted;
-
-	@Column(nullable = false)
 	private LocalDateTime createdAt;
 
 	public void updateIsRead() {
