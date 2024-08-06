@@ -67,7 +67,7 @@ public class DiaryController {
 
 		diaryService.modifyDiary(123L, diaryId, diaryModifyReq);
 
-		return new ResponseEntity<>(ResponseDto.success(DIARY_MODIFIED, null), HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(ResponseDto.success(DIARY_MODIFIED, null), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{diaryId}")
@@ -76,7 +76,7 @@ public class DiaryController {
 
 		diaryService.removeDiary(123L, diaryId);
 
-		return new ResponseEntity<>(ResponseDto.success(DIARY_DELETED, null), HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(ResponseDto.success(DIARY_DELETED, null), HttpStatus.OK);
 	}
 
 	@GetMapping("/resources")

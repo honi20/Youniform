@@ -1,7 +1,6 @@
 package com.youniform.api.domain.user.controller;
 
 import com.youniform.api.domain.user.dto.*;
-import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -28,27 +27,27 @@ public class UserController {
 
     @PostMapping("/email/send")
     public ResponseEntity<?> emailSend(@RequestBody EmailSendReq emailSendReq) {
-        return new ResponseEntity<>(ResponseDto.success(VERIFY_CODE_SEND, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(VERIFY_CODE_SEND, null), HttpStatus.OK);
     }
 
     @GetMapping("/email/verify")
     public ResponseEntity<?> emailVerify(@ModelAttribute EmailVerifyReq emailVerifyReq) {
-        return new ResponseEntity<>(ResponseDto.success(EMAIL_VERIFIED, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(EMAIL_VERIFIED, null), HttpStatus.OK);
     }
 
     @PostMapping("/password/send")
     public ResponseEntity<?> passwordResetSend(@RequestBody PasswordResetSendReq passwordResetSendReq) {
-        return new ResponseEntity<>(ResponseDto.success(PASSWORD_RESET_EMAIL_SEND, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_RESET_EMAIL_SEND, null), HttpStatus.OK);
     }
 
     @PatchMapping("/password/reset")
     public ResponseEntity<?> passwordReset(@RequestBody PasswordResetReq passwordResetReq) {
-        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.OK);
     }
 
     @PatchMapping("/password")
     public ResponseEntity<?> passwordModify(@RequestBody PasswordModifyReq passwordModifyReq) {
-        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.OK);
     }
 
     @GetMapping
@@ -93,17 +92,17 @@ public class UserController {
 
     @PatchMapping("/profile/theme")
     public ResponseEntity<?> themeModify(@RequestBody ThemeModifyReq themeModifyReq) {
-        return new ResponseEntity<>(ResponseDto.success(THEME_MODIFIED, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(THEME_MODIFIED, null), HttpStatus.OK);
     }
 
     @PatchMapping("/profile/alert")
     public ResponseEntity<?> alertModify(@RequestBody AlertModifyReq alertModifyReq) {
-        return new ResponseEntity<>(ResponseDto.success(ALERT_MODIFIED, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(ALERT_MODIFIED, null), HttpStatus.OK);
     }
 
     @PatchMapping("/resign")
     public ResponseEntity<?> userResign() {
-        return new ResponseEntity<>(ResponseDto.success(USER_RESIGNED, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(USER_RESIGNED, null), HttpStatus.OK);
     }
 
     @PostMapping("/signup/{provider}")
