@@ -4,15 +4,17 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.youniform.api.domain.user.dto.AlertModifyReq;
 import com.youniform.api.domain.user.dto.LocalSigninReq;
 import com.youniform.api.domain.user.dto.SignupReq;
+import com.youniform.api.domain.user.dto.ThemeModifyReq;
+import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.redis.RedisUtils;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisUtils redisUtils;
     private final JwtService jwtService;
+    private final JPAQueryFactory queryFactory;
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory queryFactory;
 
@@ -46,8 +49,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String signup(SignupReq user){
+    public String signup(SignupReq user) {
         String uuid = UUID.randomUUID().toString();
+        if(user.getProviderType().equals("local")) {
+            String password = passwordEncoder.encode(user.getPassword());
+            user.setPassword(password);
+        }
+
         if(user.getProviderType().equals("local")) {
             String password = passwordEncoder.encode(user.getPassword());
             user.setPassword(password);
@@ -71,6 +79,15 @@ public class UserServiceImpl implements UserService {
     public void modifyAlert(AlertModifyReq req, Long userId) {
         queryFactory.update(users)
                 .set(users.pushAlert, req.isPushAlert())
+                .where(users.id.eq(userId))
+                .execute();
+    }
+
+    @Transactional
+    @Override
+    public void modifyTheme(ThemeModifyReq req, Long userId) {
+        queryFactory.update(users)
+                .set(users.theme, Theme.valueOf(req.getTheme().toUpperCase()))
                 .where(users.id.eq(userId))
                 .execute();
     }

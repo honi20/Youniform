@@ -3,7 +3,7 @@ package com.youniform.api.domain.user.service;
 import com.youniform.api.domain.user.dto.AlertModifyReq;
 import com.youniform.api.domain.user.dto.LocalSigninReq;
 import com.youniform.api.domain.user.dto.SignupReq;
-import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.dto.ThemeModifyReq;
 
 public interface UserService {
     void resignUser(Long userId);
@@ -13,4 +13,6 @@ public interface UserService {
     String signup(SignupReq user);
 
     void modifyAlert(AlertModifyReq req, Long userId);
+
+    void modifyTheme(ThemeModifyReq req, Long userId);
 }
