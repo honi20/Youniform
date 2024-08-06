@@ -29,7 +29,7 @@ import BinderCover from "@/components/Photocard/Home/BinderCover";
 import Binder from "@/components/Photocard/Slot/Binder";
 import PhotoCardCreator from "@/pages/PhotoCardCreator";
 import DiaryHomeView from "@/pages/DiaryHomeView";
-import CommunityView from "@/pages/CommunityView";
+import CommunityView from "@/pages/PostView";
 import MyPageView from "@/pages/MyPageView";
 import SettingView from "@pages/Setting/SettingView";
 import ChangePasswordView from "./pages/Setting/ChangePasswordView";
@@ -41,6 +41,12 @@ import Terms from "@pages/Setting/Terms";
 import Privacy from "./pages/Setting/Privacy";
 import Version from "@pages/Setting/Version";
 import PhotoCardDetail from "./components/Photocard/Slot/PhotoCardDetail";
+import LikePostView from "@pages/MyPage/LikePostView";
+import FriendView from "@pages/MyPage/FriendView";
+import PostDetailView from "@pages/Post/PostDetailView";
+import SearchView from "./pages/Post/SearchView";
+import TagSearchView from "./pages/Post/Search/TagSearchView";
+import UserSearchView from "./pages/Post/Search/UserSearchView";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -113,9 +119,16 @@ function App() {
                   <Route path="create" element={<PhotoCardCreator />} />
                 </Route>
                 <Route path="/diary" element={<DiaryHomeView />} />
-                <Route path="/community" element={<CommunityView />} />
-                <Route path="/my-page" element={<MyPageView />} />
-
+                <Route path="/post/*">
+                  <Route index element={<CommunityView />} />
+                  <Route path=":postId" element={<PostDetailView />} />
+                </Route>
+                  <Route path="/search" element={<SearchView />} />
+                <Route path="/my-page/*">
+                  <Route index element={<MyPageView />} />
+                  <Route path="friend-list" element={<FriendView />} />
+                  <Route path="like-post" element={<LikePostView />} />
+                </Route>
                 <Route path="/diary/detail" element={<DiaryDetailView />} />
                 <Route path="/diary/write" element={<WriteDiaryView />} />
                 {/* SignUp */}

@@ -90,9 +90,9 @@ const NavBar = () => {
         )}
       </LinkDiv>
       <LinkDiv>
-        <StyledLink to="/community">
+        <StyledLink to="/post">
           <CommunityIcon />
-          <p>커뮤니티</p>
+          <p>포스트</p>
         </StyledLink>
       </LinkDiv>
       <LinkDiv>
