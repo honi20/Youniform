@@ -5,23 +5,22 @@ const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useDiaryStore = create((set) => ({
   diaries: [],
   fetchDiaries: async () => {
-    console.log(1);
-    try {
-      console.log(2);
-      const response = await axios({
-        method: "get",
-        url: `${API_URL}/diaries/list`,
-        params: {
-          lastDiaryDate: "2024-07-01",
-          sort: "diaryDate",
-          Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ"
-        }
+    await axios({
+      method: "get",
+      url: `${API_URL}/diaries`,
+      data: {
+        diaryDate: getCurrentDate(),
+        contents: diary,
+        scope: "ALL",
+        stampId: 1,
+      },
+    })
+      .then((res) => {
+        set({ diaries: res.data.body });
+      })
+      .catch((err) => {
+        console("Failed to fetch diaries", err);
       });
-      console.log(response.data);
-      set({ diaries: response.data.body });
-    } catch (error) {
-      console.error("Failed to fetch diaries", error.response?.status, error.message);
-    } 
   },
   addDiary: async (diary) => {
     try {

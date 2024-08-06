@@ -115,7 +115,7 @@ const Header = () => {
       case "/":
       case "/photo-card":
       case "/diary":
-      case "/community":
+      case "/post":
         return (
           <InnerHead>
             <Logo>

@@ -64,7 +64,7 @@ const Profile = styled.div`
   /* border: 1px solid red; */
 `;
 const ProfileImg = styled.img`
-  height: 90%;
+  height: 80px;
   aspect-ratio: 1;
   background-color: aliceblue;
   border-radius: 50%;
@@ -110,7 +110,7 @@ const ItemWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #c0c0c0;
+  border: 0.5px solid #ececec;
   padding: 5% 0;
 `;
 const DotLine = styled.div`
@@ -125,7 +125,7 @@ import GroupIcon from "@assets/Community/Group_light.svg?react";
 
 const ProfileModal = ({ user, isOpen, onClose }) => {
   const theme = useTheme();
-  console.log(user);
+  // console.log(user);
   if (!isOpen) return null;
 
   return (

@@ -80,7 +80,7 @@ const ProfileComp = () => {
   }, [fetchUser, clearUser]);
 
   if (loading) {
-    return <div>Loading...</div>; // You can replace this with a spinner or skeleton loader
+    return <div>Loading...</div>;
   }
 
   if (error) {
@@ -194,11 +194,25 @@ const SocialContent = styled.div`
 `;
 import GroupIcon from "@assets/MyPage/group.svg?react";
 import ArchiveIcon from "@assets/MyPage/archive.svg?react";
+import { useNavigate } from "react-router-dom";
+import usePostStore from "@stores/postStore";
+
 const SocialComp = () => {
+  const navigate = useNavigate();
+  const { likePosts, fetchLikePosts } = usePostStore();
+
+  useEffect(() => {
+    fetchLikePosts();
+  }, [fetchLikePosts]);
+
+  const handleLikePost = () => {
+    console.log("좋아요한 포스트로 이동");
+    navigate("./like-post");
+  };
   return (
     <>
       <SocialSection>
-        <SocialItem onClick={() => console.log("친구 관리")}>
+        <SocialItem onClick={() => navigate("./friend-list")}>
           <SocialHeader>친구 관리</SocialHeader>
           <SocialContent>33</SocialContent>
           <div
@@ -210,7 +224,7 @@ const SocialComp = () => {
             <GroupIcon />
           </div>
         </SocialItem>
-        <SocialItem onClick={() => console.log("좋아요한 포스트")}>
+        <SocialItem onClick={handleLikePost}>
           <SocialHeader>좋아요한 포스트</SocialHeader>
           <SocialContent>10</SocialContent>
           <div
