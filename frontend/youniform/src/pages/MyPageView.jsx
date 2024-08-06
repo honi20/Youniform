@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Profile from "@components/MyPage/Profile";
 import styled from "styled-components";
 
@@ -16,6 +16,7 @@ const MyPageView = () => {
         <Profile />
       </Div>
       {isLogin ? <button>LOGOUT</button> : <Link to="/login">LOGIN</Link>}
+      <Outlet />
     </>
   );
 };

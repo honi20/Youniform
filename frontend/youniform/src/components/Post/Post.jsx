@@ -8,9 +8,12 @@ const Container = styled.div`
   border-radius: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
-  margin: 5% 8%;
+  margin: 0 8%;
   overflow-y: auto;
   cursor: pointer;
+  &:not(:first-child) {
+    margin: 4% 8%;
+  }
 `;
 const Header = styled.div`
   ${Font.Medium};
@@ -73,6 +76,17 @@ const Footer = styled.div`
   padding: 1%;
   border-top: 1px solid #9c9c9c;
 `;
+const CommentContainer = styled.div`
+  gap: 1%;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  /* border: 1px solid black; */
+`;
+const CommentInfo = styled.div`
+  display: flex;
+  align-items: center;
+`;
 import Chatsvg from "@assets/Community/chat.svg?react";
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
@@ -89,16 +103,19 @@ const BellIcon = styled(BellSvg)`
   height: 24px;
 `;
 import useUserStore from "@stores/userStore";
+import { useNavigate } from "react-router-dom";
 const Post = ({ post }) => {
-  const [selectedTag, setSelectedTag] = useState(null);
+  // const [selectedTag, setSelectedTag] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
+  const navigate = useNavigate();
   const { friend, loading, error, fetchFriend, clearFriend } = useUserStore();
 
   const handleTagClick = (tag) => {
-    console.log(tag.tagId);
-    setSelectedTag(tag);
+    console.log(tag);
+    // setSelectedTag(tag.tagId);
+    const encodedQuery = encodeURIComponent(tag.contents);
+    navigate(`/search?type=tag&q=${encodedQuery}`);
   };
   const convertBrToNewLine = (htmlString) => {
     return htmlString.split("<br>").join("\n");
@@ -111,7 +128,6 @@ const Post = ({ post }) => {
     await fetchFriend(post.userId);
     setModalOpen(true);
   };
-
   useEffect(() => {
     if (selectedUser) {
       return () => clearFriend();
@@ -128,7 +144,7 @@ const Post = ({ post }) => {
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
         <Content>
-          <div onClick={() => console.log("디테일 페이지", post.postId)}>
+          <div onClick={() => navigate(`/post/${post.postId}`)}>
             {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
                 {line}
@@ -139,7 +155,7 @@ const Post = ({ post }) => {
           <TagContainer>
             {post.tags.map((tag) => {
               return (
-                <Tag key={tag.tagId} onClick={handleTagClick}>
+                <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
                   # {tag.contents}
                 </Tag>
               );
@@ -147,24 +163,24 @@ const Post = ({ post }) => {
           </TagContainer>
         </Content>
         <Footer>
+          <CommentContainer onClick={() => console.log("댓글창")}>
+            <ChatIcon />
+            {post.commentCount ? (
+              <CommentInfo>댓글 {post.commentCount}개 보기</CommentInfo>
+            ) : (
+              <></>
+            )}
+          </CommentContainer>
           <div
             style={{
               display: "flex",
               gap: "10%",
               justifyContent: "center",
-            }}
-          >
-            <ChatIcon onClick={() => console.log("댓글창")} />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: "10%",
-              justifyContent: "center",
+              // border: "1px solid black",
             }}
           >
             <HeartIcon onClick={() => console.log("좋아요")} />
-            <BellIcon onClick={() => console.log("신고")} />
+            {/* <BellIcon onClick={() => console.log("신고")} /> */}
           </div>
         </Footer>
       </Container>
