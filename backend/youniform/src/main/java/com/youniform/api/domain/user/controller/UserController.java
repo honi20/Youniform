@@ -4,9 +4,11 @@ import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.statuscode.ErrorCode;
+import com.youniform.api.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 @Validated
 public class UserController {
     private final UserService userService;
+    private final JwtService jwtService;
 
     @GetMapping("/verify")
     public ResponseEntity<?> nicknameCheck(@RequestParam("nickname") String nickname) {
@@ -95,6 +98,8 @@ public class UserController {
 
     @PatchMapping("/profile/theme")
     public ResponseEntity<?> themeModify(@RequestBody ThemeModifyReq themeModifyReq) {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        userService.modifyTheme(themeModifyReq, userId);
         return new ResponseEntity<>(ResponseDto.success(THEME_MODIFIED, null), HttpStatus.OK);
     }
 

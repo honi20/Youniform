@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.domain.user.service.UserServiceImpl;
-import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.jwt.service.JwtServiceImpl;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +32,8 @@ import java.util.List;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -40,6 +41,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,6 +64,9 @@ public class UserControllerTest {
 
     @MockBean
     private JwtServiceImpl jwtService;
+
+    @MockBean
+    private UserServiceImpl userService;
 
     @Test
     public void 닉네임_중복_검사_성공() throws Exception {
@@ -644,9 +649,19 @@ public class UserControllerTest {
     @Test
     public void 회원_탈퇴_성공() throws Exception {
         //given
-        String jwtToken = jwtService.createAccessToken(UUID);
+        String jwtToken = userService.signup(
+                SignupReq.builder()
+                        .email("test@naver.com")
+                        .nickname("asdf")
+                        .players(new ArrayList<>())
+                        .team("MONSTERS")
+                        .profileUrl("asdf")
+                        .providerType("naver")
+                        .build()
+        );
 
         //when
+//        when().thenReturn(null);
         ResultActions actions = mockMvc.perform(
                 patch("/users/resign")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -698,6 +713,8 @@ public class UserControllerTest {
                         .content(gson.toJson(content))
                         .with(csrf())
         );
+        String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ";
+        when(userService.signin(any())).thenReturn(jwtToken);
 
         //then
         actions
