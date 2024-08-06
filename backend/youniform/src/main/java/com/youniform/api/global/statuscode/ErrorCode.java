@@ -30,6 +30,7 @@ public enum ErrorCode {
     //file
     FILE_CONVERT_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 업로드에 실패했습니다."),
     FILE_DOWNLOAD_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 다운로드에 실패했습니다."),
+    FILE_DELETE_FAIL(HttpStatus.BAD_REQUEST.value(), "파일 삭제에 실패했습니다"),
 
     // chat error code
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅방을 찾을 수 없습니다."),
@@ -43,6 +44,7 @@ public enum ErrorCode {
     INVALID_TAG_SIZE(HttpStatus.BAD_REQUEST.value(), "태그는 최대 10개까지 설정가능합니다."),
     INVALID_TAG_CONTENTS(HttpStatus.BAD_REQUEST.value(), "태그 내용은 최대 10자까지 설정가능합니다."),
     INVALID_TAG_FORM(HttpStatus.BAD_REQUEST.value(), "태그에는 띄어쓰기를 하실 수 없습니다."),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 게시글 ID 입니다.")
     ;
 
     private final int httpStatusCode;

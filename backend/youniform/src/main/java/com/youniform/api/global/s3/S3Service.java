@@ -1,6 +1,8 @@
 package com.youniform.api.global.s3;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -16,8 +18,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.Optional;
+
+import static com.youniform.api.global.dateformat.DateFormatter.convertToDateFormat;
+import static com.youniform.api.global.statuscode.ErrorCode.FILE_DELETE_FAIL;
 
 @Slf4j
 @Service
@@ -52,7 +56,6 @@ public class S3Service {
     }
 
     private String putS3(File uploadFile, String fileName) {
-
         amazonS3Client.putObject(
                 new PutObjectRequest(bucket, fileName, uploadFile) // PublicRead 권한으로 upload
         );
@@ -72,20 +75,45 @@ public class S3Service {
     }
 
     public Optional<File> convert(MultipartFile multipartFile) throws IOException {
-        // 기존 파일 이름으로 새로운 File 객체 생성
-        // 해당 객체는 프로그램이 실행되는 로컬 디렉토리(루트 디렉토리)에 위치하게 됨
-        File convertFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        // 새로운 파일 이름 생성
+        String newFileName = "upload_" + convertToDateFormat();
 
-        if (convertFile.createNewFile()) { // 해당 경로에 파일이 없을 경우, 새 파일 생성
+        // 기존 파일 이름에서 확장자 추출
+        String originalFilename = multipartFile.getOriginalFilename();
+        String fileExtension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        // 최종 파일 이름 설정
+        newFileName += fileExtension;
+
+        // 저장 경로 설정 (프로젝트 루트 디렉토리)
+        File convertFile = new File(newFileName);
+
+        // 파일이 없을 경우 새 파일 생성
+        if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-
-                // multipartFile의 내용을 byte로 가져와서 write
+                // multipartFile의 내용을 바이트로 가져와서 저장
                 fos.write(multipartFile.getBytes());
             }
             return Optional.of(convertFile);
         }
 
-        // 새파일이 성공적으로 생성되지 않았다면, 비어있는 Optional 객체를 반환
+        // 새 파일 생성 실패 시 빈 Optional 반환
         return Optional.empty();
+    }
+
+    public void fileDelete(String fileUrl) throws CustomException {
+        try{
+            try {
+                String fileKey = fileUrl.replace("https://youniforms3.s3.ap-northeast-2.amazonaws.com/", "");
+                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileKey));
+            } catch (AmazonServiceException e) {
+                System.err.println(e.getErrorMessage());
+            }
+        } catch (Exception exception) {
+            throw new CustomException(FILE_DELETE_FAIL);
+        }
     }
 }

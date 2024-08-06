@@ -29,4 +29,12 @@ public class Post {
     private String contents;
 
     private LocalDate date;
+
+    public void updateImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public void updateContents(String contents) {
+        this.contents = contents;
+    }
 }

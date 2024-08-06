@@ -41,3 +41,22 @@ VALUES (123, 123, 124, 'FRIEND_REQUEST', '', 'friend link', false, '2024-07-31T1
        (125, 123, 124, 'FRIEND_REQUEST', '', 'friend link', true, DATEADD('HOUR', -1, CURRENT_TIMESTAMP)),
        (126, 123, 124, 'POST_COMMENT', '대호 이번주 홈런 침', 'post link', false, '2024-08-03T20:47:20.394415'),
        (127, 124, 123, 'POST_COMMENT', '하이하이', 'post link', true, '2024-08-05T11:23:20.394415');
+
+-- tag
+INSERT INTO TAG(contents)
+VALUES ('최강'),
+       ('몬스터즈'),
+       ('최고'),
+       ('홈런');
+
+-- post
+INSERT INTO POST(user_id, img_url, contents, date)
+VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/post/upload_2024-08-06_22_42_06.png',
+        '최강 몬스터즈 진짜 최고!!', current_date);
+
+-- post_tag
+INSERT INTO POST_TAG(post_id, tag_id)
+VALUES (1, 1),
+       (1, 2),
+       (1, 3),
+       (1, 4);
