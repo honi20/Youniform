@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 const usePhotoCardStore = create((set) => ({
+  photoCards: [],
   isFlipped: false,
   flipPage: () => set((state) => ({ isFlipped: !state.isFlipped })),
   page: 0,

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Calendar from '../components/Diary/Calendar';
 import styled from 'styled-components';
 import DiaryFriendsList from '../components/Diary/DiaryFriendsList';
+import useDiaryStore from '../stores/diaryStore';
 
 // 더미 데이터
 import Stamp1 from '../assets/stickers/stamps/stamp_1.png'
@@ -33,59 +34,59 @@ const userCalInfo = [
   {
     id: 1,
     stamps: [
-      { date: '2024-07-04', stampSrc: stampSrc[4] },
-      { date: '2024-07-06', stampSrc: stampSrc[0] },
-      { date: '2024-07-13', stampSrc: stampSrc[1] },
-      { date: '2024-07-16', stampSrc: stampSrc[5] },
-      { date: '2024-07-18', stampSrc: stampSrc[7] },
-      { date: '2024-07-27', stampSrc: stampSrc[8] },
-      { date: '2024-07-28', stampSrc: stampSrc[9] },
+      { date: '2024-08-04', stampSrc: stampSrc[4] },
+      { date: '2024-08-06', stampSrc: stampSrc[0] },
+      { date: '2024-08-13', stampSrc: stampSrc[1] },
+      { date: '2024-08-16', stampSrc: stampSrc[5] },
+      { date: '2024-08-18', stampSrc: stampSrc[7] },
+      { date: '2024-08-27', stampSrc: stampSrc[8] },
+      { date: '2024-08-28', stampSrc: stampSrc[9] },
     ],
   },
   {
     id: 2,
     stamps: [
-      { date: '2024-07-01', stampSrc: stampSrc[3] },
-      { date: '2024-07-02', stampSrc: stampSrc[4] },
-      { date: '2024-07-06', stampSrc: stampSrc[5] },
-      { date: '2024-07-09', stampSrc: stampSrc[6] },
-      { date: '2024-07-15', stampSrc: stampSrc[7] },
+      { date: '2024-08-01', stampSrc: stampSrc[3] },
+      { date: '2024-08-02', stampSrc: stampSrc[4] },
+      { date: '2024-08-06', stampSrc: stampSrc[5] },
+      { date: '2024-08-09', stampSrc: stampSrc[6] },
+      { date: '2024-08-15', stampSrc: stampSrc[7] },
     ],
   },
   {
     id: 3,
     stamps: [
-      { date: '2024-07-11', stampSrc: Stamp2 },
-      { date: '2024-07-20', stampSrc: Stamp1 },
+      { date: '2024-08-11', stampSrc: Stamp2 },
+      { date: '2024-08-20', stampSrc: Stamp1 },
     ],
   },
   {
     id: 4,
     stamps: [
-      { date: '2024-07-02', stampSrc: Stamp1 },
-      { date: '2024-07-03', stampSrc: Stamp2 },
-      { date: '2024-07-13', stampSrc: Stamp3 },
-      { date: '2024-07-17', stampSrc: Stamp4 },
-      { date: '2024-07-18', stampSrc: Stamp5 },
-      { date: '2024-07-23', stampSrc: Stamp6 },
-      { date: '2024-07-28', stampSrc: Stamp7 },
+      { date: '2024-08-02', stampSrc: Stamp1 },
+      { date: '2024-08-03', stampSrc: Stamp2 },
+      { date: '2024-08-13', stampSrc: Stamp3 },
+      { date: '2024-08-17', stampSrc: Stamp4 },
+      { date: '2024-08-18', stampSrc: Stamp5 },
+      { date: '2024-08-23', stampSrc: Stamp6 },
+      { date: '2024-08-28', stampSrc: Stamp7 },
     ],
   },
   {
     id: 5,
     stamps: [
-      { date: '2024-07-06', stampSrc: Stamp9 },
-      { date: '2024-07-16', stampSrc: Stamp10 },
-      { date: '2024-07-21', stampSrc: Stamp2 },
-      { date: '2024-07-29', stampSrc: Stamp1 },
+      { date: '2024-08-06', stampSrc: Stamp9 },
+      { date: '2024-08-16', stampSrc: Stamp10 },
+      { date: '2024-08-21', stampSrc: Stamp2 },
+      { date: '2024-08-29', stampSrc: Stamp1 },
     ],
   },
   {
     id: 6,
     stamps: [
-      { date: '2024-07-18', stampSrc: Stamp4 },
-      { date: '2024-07-28', stampSrc: Stamp1 },
-      { date: '2024-07-30', stampSrc: Stamp3 },
+      { date: '2024-08-18', stampSrc: Stamp4 },
+      { date: '2024-08-28', stampSrc: Stamp1 },
+      { date: '2024-08-30', stampSrc: Stamp3 },
     ],
   },
 ];
@@ -94,23 +95,30 @@ const DiaryHome = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  `;
-  
-  const FriendsContainer = styled.div`
-    height: 100px;
-  `;
-  
-  const CalendarContainer = styled.div`
-    height: 100%;
-    // background-color : red;
+`;
+
+const FriendsContainer = styled.div`
+  height: 100px;
+`;
+
+const CalendarContainer = styled.div`
+  height: 100%;
 `;
 
 const DiaryHomeView = () => {
   const [calendarHeight, setCalendarHeight] = useState('auto');
   const [selectedUser, setSelectedUser] = useState(0);
   const diaryHomeRef = useRef(null);
+  const { diaries, fetchDiaries } = useDiaryStore();
 
   useEffect(() => {
+    
+    const fetchData = async () => {
+      await fetchDiaries();
+    };
+
+    fetchData();
+
     const updateCalendarHeight = () => {
       if (diaryHomeRef.current) {
         const diaryHomeHeight = diaryHomeRef.current.offsetHeight;

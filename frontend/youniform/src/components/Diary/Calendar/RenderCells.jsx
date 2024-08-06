@@ -62,7 +62,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
   const handleDateClick = (day, stampSrc) => {
     const cloneDay = new Date(day);
     if (!stampSrc) {
-      navigate('/write-diary');
+      navigate('/diary/write');
     } else {
       onDateClick(cloneDay);
     }
@@ -107,6 +107,15 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
                 height: '40px',
               }}
             />
+          )}
+          {!stampSrc && (
+            <div
+              style={{
+                marginTop: '60%',
+                width: '40px',
+                height: '40px',
+              }}
+            ></div>          
           )}
         </Cell>
       );
