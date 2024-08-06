@@ -37,6 +37,7 @@
     "styled-components": "^6.1.12",
     "util": "^0.12.5",
     "web-vitals": "^2.1.4",
+    "youniform": "file:",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
