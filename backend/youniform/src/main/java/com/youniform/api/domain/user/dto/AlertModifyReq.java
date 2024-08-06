@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class AlertModifyReq {
-    private boolean alert;
+    private boolean pushAlert;
     
 }

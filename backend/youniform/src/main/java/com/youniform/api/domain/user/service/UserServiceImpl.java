@@ -1,5 +1,7 @@
 package com.youniform.api.domain.user.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.youniform.api.domain.user.dto.AlertModifyReq;
 import com.youniform.api.domain.user.dto.LocalSigninReq;
 import com.youniform.api.domain.user.dto.SignupReq;
 import com.youniform.api.domain.user.entity.Users;
@@ -7,11 +9,14 @@ import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.redis.RedisUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
+import static com.youniform.api.domain.user.entity.QUsers.users;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +25,34 @@ public class UserServiceImpl implements UserService {
     private final RedisUtils redisUtils;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final JPAQueryFactory queryFactory;
+
+    @Transactional
+    @Override
+    public void resignUser(Long userId) {
+        queryFactory.update(users)
+                .set(users.isDeleted, true)
+                .where(users.id.eq(userId))
+                .execute();
+    }
 
     @Override
-    public String signin(LocalSigninReq user) throws Exception{
+    public String signin(LocalSigninReq user) {
         Users users = userRepository.findByEmail(user.getEmail());
         if(users != null && passwordEncoder.matches(user.getPassword(), users.getPassword())) {
             return jwtService.createAccessToken(users.getUuid());
         }
-        throw new Exception("잘못된 로그인 요청");
+        return null;
     }
 
     @Override
-    public String signup(SignupReq user) throws Exception{
+    public String signup(SignupReq user){
         String uuid = UUID.randomUUID().toString();
+        if(user.getProviderType().equals("local")) {
+            String password = passwordEncoder.encode(user.getPassword());
+            user.setPassword(password);
+        }
+
         if(user.getProviderType().equals("local")) {
             String password = passwordEncoder.encode(user.getPassword());
             user.setPassword(password);
@@ -44,5 +64,14 @@ public class UserServiceImpl implements UserService {
         redisUtils.setData(uuid, jwtRedis);
 
         return jwtService.createAccessToken(uuid);
+    }
+
+    @Transactional
+    @Override
+    public void modifyAlert(AlertModifyReq req, Long userId) {
+        queryFactory.update(users)
+                .set(users.pushAlert, req.isPushAlert())
+                .where(users.id.eq(userId))
+                .execute();
     }
 }
