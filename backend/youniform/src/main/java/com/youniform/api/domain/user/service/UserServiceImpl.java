@@ -1,5 +1,6 @@
 package com.youniform.api.domain.user.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.youniform.api.domain.user.dto.LocalSigninReq;
 import com.youniform.api.domain.user.dto.SignupReq;
 import com.youniform.api.domain.user.entity.Users;
@@ -7,11 +8,14 @@ import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.redis.RedisUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
+import static com.youniform.api.domain.user.entity.QUsers.users;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,16 @@ public class UserServiceImpl implements UserService {
     private final RedisUtils redisUtils;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final JPAQueryFactory queryFactory;
+
+    @Transactional
+    @Override
+    public void resign(Long userId) {
+        queryFactory.update(users)
+                .set(users.isDeleted, true)
+                .where(users.id.eq(userId))
+                .execute();
+    }
 
     @Override
     public String signin(LocalSigninReq user) {

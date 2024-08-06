@@ -7,9 +7,9 @@ import com.youniform.api.domain.chat.dto.ChatRoomListRes;
 import com.youniform.api.domain.chat.repository.ChatMessageRepository;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
 import com.youniform.api.domain.chat.repository.ChatRoomRepository;
-import com.youniform.api.domain.user.repository.UsersRepository;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.chat.entity.ChatRoom;
+import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import static com.youniform.api.global.statuscode.ErrorCode.*;
 public class ChatServiceImpl implements ChatService {
     private final ChatMessageRepository chatMessageRepository;
 
-    private final UsersRepository usersRepository;
+    private final UserRepository usersRepository;
 
     private final ChatRoomRepository chatRoomRepository;
 
