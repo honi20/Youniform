@@ -135,6 +135,17 @@ const stateMap = {
     title: "사진이 저장되었습니다.",
     btn: [0],
   },
+  PhotoCardDeleteWarning: {
+    icon: <AlarmIcon />,
+    title: "포토카드를 삭제하시겠습니까?",
+    subtitle: "삭제된 포토카드는 복구 불가능합니다.",
+    btn: [1, 3],
+  },
+  PhotoCardDeleted: {
+    icon: <CheckIcon />,
+    title: "포토카드가 삭제되었습니다.",
+    btn: [0],
+  }
 };
 // btn 종류
 // 0: 확인 1: 취소(색깔 다름) 2: 변경 3: 삭제 4: 초기화

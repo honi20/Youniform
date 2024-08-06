@@ -27,10 +27,12 @@ const TimerDisplay = styled.span`
 `;
 
 const EmailInput = () => {
-  const { user, setEmail, setIsVerified } = signUpStore((state) => ({
+  const { user, setEmail, setIsVerified, sendEmail, verifyEmailCode } = signUpStore((state) => ({
     user: state.user,
     setEmail: state.user.setEmail,
     setIsVerified: state.user.setIsVerified,
+    sendEmail: state.sendEmail,
+    verifyEmailCode: state.verifyEmailCode,
   }));
 
   const [emailInput, setEmailInput] = useState('');
@@ -41,6 +43,7 @@ const EmailInput = () => {
   const [authenticCode, setAuthenticCode] = useState('');
   const [expiryTime, setExpiryTime] = useState(null);
   const [remainingTime, setRemainingTime] = useState(null);
+  let fullEmail = "";
 
   const customDomainRef = useRef(null);
 
@@ -108,28 +111,40 @@ const EmailInput = () => {
   const handleCustomDomainChange = (event) => {
     setCurrency(event.target.value);
   };
-
-  const sendEmail = () => {
-    const fullEmail = isCustomDomain ? `${emailInput}@${currency}` : `${emailInput}@${currency}`;
-    setEmail(fullEmail);
-    alert('인증 메일이 발송되었습니다!');
-    setIsEmailSent(true);
-    setIsVerified(false);
-    const now = new Date().getTime();
-    setExpiryTime(now + 180000); // 현재 시간 + 3분
-  };
-
+  
   const handleCodeChange = (event) => {
     setAuthenticCode(event.target.value);
   };
-
-  const confirmCode = () => {
+  
+  const confirmCode = async (authenticCode) => {
+    const result = await verifyEmailCode(fullEmail, authenticCode);
+    
     // 코드 수정 필요 (임시)
-    if (authenticCode === 'ABCD') {
-      setIsVerified(true);
-      setExpiryTime(null); // 인증이 완료되면 타이머 중지
+    // if (authenticCode === 'ABCD') {
+    //   setIsVerified(true);
+    //   setExpiryTime(null); // 인증이 완료되면 타이머 중지
+    // } else {
+    //   alert('잘못된 인증 코드입니다.');
+    // }
+  };
+  
+
+  const processEmailAndFetch = async () => {
+    fullEmail = isCustomDomain ? `${emailInput}@${currency}` : `${emailInput}@${currency}`;
+    const result = await sendEmail(fullEmail);
+
+    if (result === "$OK") {
+      alert('인증 메일이 발송되었습니다!');
+      setIsEmailSent(true);
+      setIsVerified(false);
+      const now = new Date().getTime();
+      setExpiryTime(now + 180000); // 현재 시간 + 3분
+    } else if (result === "$FAIL") {
+      setStatusMsg('중복된 아이디입니다. 다른 아이디로 시도해주세요.');
+      alert('인증 메일 발송에 실패했습니다. 다시 시도해주세요.');
     } else {
-      alert('잘못된 인증 코드입니다.');
+      // 예기치 않은 결과 처리
+      console.error('예기치 않은 결과:', result);
     }
   };
 
@@ -185,7 +200,7 @@ const EmailInput = () => {
         <StatusMessageForm statusMsg={statusMsg} />
         <ColorBtn
           variant="contained"
-          onClick={sendEmail}
+          onClick={processEmailAndFetch}
           disabled={statusMsg !== '사용할 수 있는 아이디입니다.'}
           style={{ width: "55%" }}
         >
