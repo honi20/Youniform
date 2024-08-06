@@ -27,21 +27,23 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.ALERT_LIST_OK;
+import static com.youniform.api.global.statuscode.SuccessCode.ALERT_READ_MODIFIED;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -117,7 +119,7 @@ class AlertControllerTest {
                                 .responseFields(
                                         getCommonResponseFields(
                                                 fieldWithPath("body.alertList[]").description("Alert 리스트"),
-                                                fieldWithPath("body.alertList[].eventId").type(JsonFieldType.NUMBER).description("알림 이벤트 ID"),
+                                                fieldWithPath("body.alertList[].alertId").type(JsonFieldType.NUMBER).description("알림 이벤트 ID"),
                                                 fieldWithPath("body.alertList[].senderUuid").type(JsonFieldType.STRING).description("알림 전송자 Id(UUID)"),
                                                 fieldWithPath("body.alertList[].senderNickname").type(JsonFieldType.STRING).description("알림 전송자 닉네임"),
                                                 fieldWithPath("body.alertList[].senderProfileUrl").type(JsonFieldType.STRING).description("알림 전송자 프로필 url"),
@@ -129,7 +131,71 @@ class AlertControllerTest {
                                                 fieldWithPath("body.alertList[].createdAt").type(JsonFieldType.STRING).description("알림 생성일")
                                         )
                                 )
-                                .responseSchema(Schema.schema("Diary 마이리스트 조회 Response"))
+                                .responseSchema(Schema.schema("Alert 리스트 조회 Response"))
+                                .build()
+                        )));
+    }
+
+    @Test
+    void 알림_읽음_처리_성공() throws Exception {
+        ResultActions actions = mockMvc.perform(
+                patch("/alerts/read/{alertId}", 123L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_READ_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ALERT_READ_MODIFIED.getMessage()))
+                .andDo(document(
+                        "알림 읽음 처리 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Alert API")
+                                .summary("Alert 읽음 처리 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    void 알림_모두_읽음_처리_성공() throws Exception {
+        ResultActions actions = mockMvc.perform(
+                patch("/alerts/read")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_READ_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ALERT_READ_MODIFIED.getMessage()))
+                .andDo(document(
+                        "알림 모두 읽음 처리 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Alert API")
+                                .summary("Alert 모두 읽음 처리 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
                                 .build()
                         )));
     }

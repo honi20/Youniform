@@ -48,4 +48,8 @@ public class Alert {
 
 	@Column(nullable = false)
 	private LocalDateTime createdAt;
+
+	public void updateIsRead() {
+		this.isRead = true;
+	}
 }

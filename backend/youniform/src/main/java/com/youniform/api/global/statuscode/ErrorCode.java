@@ -33,6 +33,9 @@ public enum ErrorCode {
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅방을 찾을 수 없습니다."),
     MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "메세지를 찾을 수 없습니다."),
     CHATPART_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅 참여 정보가 존재하지 않습니다."),
+
+    // alert error code
+    ALERT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 알림을 찾을 수 없습니다.")
     ;
 
     private final int httpStatusCode;

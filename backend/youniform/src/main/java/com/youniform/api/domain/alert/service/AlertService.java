@@ -10,5 +10,9 @@ public interface AlertService {
 
 	AlertListRes findAlerts(Long userId);
 
+	void modifyAlertRead(Long userId, Long alertId);
+
+	void modifyAlertAllRead(Long userId);
+
 	void testAlert();
 }

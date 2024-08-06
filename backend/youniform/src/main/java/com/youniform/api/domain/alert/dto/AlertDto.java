@@ -15,7 +15,7 @@ import static com.youniform.api.global.dateformat.DateFormatter.calculateTime;
 @AllArgsConstructor
 @Builder
 public class AlertDto {
-	private Long eventId;
+	private Long alertId;
 
 	private String senderUuid;
 
@@ -37,7 +37,7 @@ public class AlertDto {
 
 	public static AlertDto toDto(Alert alert) {
 		return AlertDto.builder()
-				.eventId(alert.getId())
+				.alertId(alert.getId())
 				.senderUuid(alert.getSender().getUuid())
 				.senderNickname(alert.getSender().getNickname())
 				.senderProfileUrl(alert.getSender().getProfileUrl())
