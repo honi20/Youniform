@@ -13,6 +13,7 @@ import com.youniform.api.domain.diary.repository.DiaryRepository;
 import com.youniform.api.domain.diary.repository.ResourceRepository;
 import com.youniform.api.domain.diary.repository.StampRepository;
 import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.redis.RedisUtils;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,16 +47,15 @@ public class DiaryServiceImpl implements DiaryService {
 
 	private final ObjectMapper objectMapper;
 
+	private final UserRepository userRepository;
+
 	@Override
 	@Transactional
 	public DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq) throws JsonProcessingException {
 		validateDiaryContent(diaryAddReq.getDiaryDate(), diaryAddReq.getContents(), diaryAddReq.getScope());
 
-//		[TODO] Users user = userRepository.findById(userId);
-		Users user = Users.builder()
-				.id(userId)
-				.uuid("1604b772-adc0-4212-8a90-81186c57f598")
-				.build();
+		Users user = userRepository.findById(userId)
+				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
 		DiaryStamp stamp = stampRepository.findById(diaryAddReq.getStampId())
 				.orElseThrow(() -> new CustomException(STAMP_NOT_FOUND));
@@ -112,13 +111,9 @@ public class DiaryServiceImpl implements DiaryService {
 
 	@Override
 	public DiaryListRes findDiaries(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
-//		[TODO] Users user = userRepository.findByUuid(userUuid).get(0);
-//		[TODO] 유저 아이디 유효성 검사
+		Users user = userRepository.findByUuid(userUuid);
 
-		Users user = Users.builder()
-				.id(123L)
-				.uuid("1604b772-adc0-4212-8a90-81186c57f598")
-				.build();
+		// [TODO] 친구 여부에 따른 다이어리 리스트 필터링 (공개 범위)
 
 		LocalDate lastDiaryDate = diaryListReq.getLastDiaryDate();
 		int pageSize = pageable.getPageSize();
@@ -140,6 +135,32 @@ public class DiaryServiceImpl implements DiaryService {
 		return DiaryListRes.builder()
 				.diaryList(sliceDto)
 				.build();
+	}
+
+	@Override
+	public DiaryMonthlyListRes findMyMonthlyDiaries(Long userId, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(userId, diaryMonthlyListReq.getCalendarDate());
+
+		List<DiaryMonthlyDto> diaryList = diaries.stream()
+				.map(DiaryMonthlyDto::toDto)
+				.toList();
+
+		return new DiaryMonthlyListRes(diaryList);
+	}
+
+	@Override
+	public DiaryMonthlyListRes findMonthlyDiaries(String userUuid, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
+		Users user = userRepository.findByUuid(userUuid);
+
+		// [TODO] 친구 여부에 따른 다이어리 리스트 필터링 (공개 범위)
+
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(user.getId(), diaryMonthlyListReq.getCalendarDate());
+
+		List<DiaryMonthlyDto> diaryList = diaries.stream()
+				.map(DiaryMonthlyDto::toDto)
+				.toList();
+
+		return new DiaryMonthlyListRes(diaryList);
 	}
 
 	@Override

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface DiaryCustomRepository  {
 	List<Diary> findByUserIdAndCursor(Long userId, LocalDate lastDiaryDate, int pageSize, boolean isAscending);
+
+	List<Diary> findByUserIdAndDate(Long userId, LocalDate calendarDate);
 }

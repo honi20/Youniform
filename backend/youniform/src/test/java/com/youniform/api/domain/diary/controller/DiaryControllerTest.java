@@ -411,6 +411,97 @@ public class DiaryControllerTest {
                         )));
     }
 
+    @Test
+    public void 다이어리_월간_마이리스트_조회_성공() throws Exception {
+        List<DiaryMonthlyDto> diaryList = new ArrayList<>();
+        diaryList.add(new DiaryMonthlyDto(124L, LocalDate.parse("2024-07-01"), "http://youniform.com/sticker1.png"));
+        diaryList.add(new DiaryMonthlyDto(125L, LocalDate.parse("2024-07-12"), "http://youniform.com/sticker1.png"));
+        diaryList.add(new DiaryMonthlyDto(123L, LocalDate.parse("2024-07-31"), "http://youniform.com/sticker1.png"));
+
+        when(diaryService.findMyMonthlyDiaries(anyLong(), any())).thenReturn(new DiaryMonthlyListRes(diaryList));
+
+        ResultActions actions = mockMvc.perform(
+                get("/diaries/monthly")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("calendarDate", "2024-07-01"));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MY_MONTHLY_DIARIES_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MY_MONTHLY_DIARIES_OK.getMessage()))
+                .andDo(document(
+                        "Diary 월간 마이리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .summary("Diary 월간 마이리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("calendarDate").description("다이어리 조회할 월간 yyyy-mm-dd (dd 아무값 가능)")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.diaryList[]").type(JsonFieldType.ARRAY).description("월간 다이어리 리스트"),
+                                                fieldWithPath("body.*[].diaryId").type(JsonFieldType.NUMBER).description("다이어리 ID"),
+                                                fieldWithPath("body.*[].diaryDate").type(JsonFieldType.STRING).description("다이어리 작성일"),
+                                                fieldWithPath("body.*[].stampImgUrl").type(JsonFieldType.STRING).description("다이어리 스탬프 URL")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Diary 월간 마이리스트 조회 Response"))
+                                .build()
+                        )));
+    }
+
+    @Test
+    public void 다이어리_월간_리스트_조회_성공() throws Exception {
+        List<DiaryMonthlyDto> diaryList = new ArrayList<>();
+        diaryList.add(new DiaryMonthlyDto(124L, LocalDate.parse("2024-07-01"), "http://youniform.com/sticker1.png"));
+        diaryList.add(new DiaryMonthlyDto(125L, LocalDate.parse("2024-07-12"), "http://youniform.com/sticker1.png"));
+        diaryList.add(new DiaryMonthlyDto(123L, LocalDate.parse("2024-07-31"), "http://youniform.com/sticker1.png"));
+
+        when(diaryService.findMonthlyDiaries(anyString(), any())).thenReturn(new DiaryMonthlyListRes(diaryList));
+
+        ResultActions actions = mockMvc.perform(
+                get("/diaries/monthly/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("calendarDate", "2024-07-01"));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(OTHER_MONTHLY_DIARIES_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(OTHER_MONTHLY_DIARIES_OK.getMessage()))
+                .andDo(document(
+                        "Diary 월간 리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .summary("Diary 월간 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("calendarDate").description("다이어리 조회할 월간 yyyy-mm-dd (dd 아무값 가능)")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.diaryList[]").type(JsonFieldType.ARRAY).description("월간 다이어리 리스트"),
+                                                fieldWithPath("body.*[].diaryId").type(JsonFieldType.NUMBER).description("다이어리 ID"),
+                                                fieldWithPath("body.*[].diaryDate").type(JsonFieldType.STRING).description("다이어리 작성일"),
+                                                fieldWithPath("body.*[].stampImgUrl").type(JsonFieldType.STRING).description("다이어리 스탬프 URL")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Diary 월간 리스트 조회 Response"))
+                                .build()
+                        )));
+    }
 
     @Test
     public void 다이어리_수정_성공() throws Exception {
