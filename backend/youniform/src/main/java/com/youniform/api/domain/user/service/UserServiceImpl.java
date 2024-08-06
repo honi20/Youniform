@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void resign(Long userId) {
+    public void resignUser(Long userId) {
         queryFactory.update(users)
                 .set(users.isDeleted, true)
                 .where(users.id.eq(userId))

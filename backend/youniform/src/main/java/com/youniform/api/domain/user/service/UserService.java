@@ -5,7 +5,7 @@ import com.youniform.api.domain.user.dto.SignupReq;
 import com.youniform.api.domain.user.entity.Users;
 
 public interface UserService {
-    void resign(Long userId);
+    void resignUser(Long userId);
 
     String signin(LocalSigninReq user);
 

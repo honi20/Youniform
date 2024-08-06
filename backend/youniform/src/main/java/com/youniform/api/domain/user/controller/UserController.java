@@ -103,7 +103,7 @@ public class UserController {
 
     @PatchMapping("/resign")
     public ResponseEntity<?> userResign(Authentication authentication) {
-        userService.resign((Long) authentication.getPrincipal());
+        userService.resignUser((Long) authentication.getPrincipal());
         return new ResponseEntity<>(ResponseDto.success(USER_RESIGNED, null), HttpStatus.OK);
     }
 
