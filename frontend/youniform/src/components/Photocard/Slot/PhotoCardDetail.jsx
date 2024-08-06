@@ -3,11 +3,10 @@ import usePhotoCardStore from '@stores/photoCardStore';
 import styled from 'styled-components';
 import DetailControlButton from './DetailControlButton';
 import DeleteModal from '@components/Modal/PhotoCardDeleteModal';
-
-import DeleteIcon from '@assets/photocard/Icon/Delete.svg?react';
-import SaveIcon from '@assets/photocard/Icon/Save.svg?react';
-import NextIcon from '@assets/photocard/Icon/Next.svg?react';
-import PrevIcon from '@assets/photocard/Icon/Prev.svg?react';
+import DeleteIcon from '@assets/photocard/Svg/Delete.svg?react';
+import SaveIcon from '@assets/photocard/Svg/Save.svg?react';
+import NextIcon from '@assets/photocard/Svg/Next.svg?react';
+import PrevIcon from '@assets/photocard/Svg/Prev.svg?react';
 
 const PhotoDetailContainer = styled.div`
   display: flex;
