@@ -31,8 +31,6 @@ public class AlertDto {
 
 	private Boolean isRead;
 
-	private Boolean isDeleted;
-
 	private String createdAt;
 
 	public static AlertDto toDto(Alert alert) {
@@ -45,7 +43,6 @@ public class AlertDto {
 				.content(alert.getContent())
 				.link(alert.getLink())
 				.isRead(alert.getIsRead())
-				.isDeleted(alert.getIsDeleted())
 				.createdAt(calculateTime(alert.getCreatedAt()))
 				.build();
 	}

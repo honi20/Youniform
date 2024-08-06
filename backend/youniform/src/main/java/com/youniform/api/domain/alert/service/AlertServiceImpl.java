@@ -62,7 +62,7 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public AlertListRes findAlerts(Long userId) {
-		List<Alert> alerts = alertRepository.findByReceiverIdAndIsDeletedFalse(userId);
+		List<Alert> alerts = alertRepository.findByReceiverId(userId);
 
 		List<AlertDto> alertList = alerts.stream()
 				.map(AlertDto::toDto)
@@ -88,6 +88,21 @@ public class AlertServiceImpl implements AlertService {
 			alert.updateIsRead();
 			alertRepository.save(alert);
 		});
+	}
+
+	@Override
+	public void removeAlert(Long userId, Long alertId) {
+		Alert alert = alertRepository.findByIdAndReceiverId(alertId, userId)
+				.orElseThrow(() -> new CustomException(ALERT_NOT_FOUND));
+
+		alertRepository.delete(alert);
+	}
+
+	@Override
+	public void removeAllAlert(Long userId) {
+		List<Alert> alerts = alertRepository.findByReceiverId(userId);
+
+		alertRepository.deleteAll(alerts);
 	}
 
 	@Override

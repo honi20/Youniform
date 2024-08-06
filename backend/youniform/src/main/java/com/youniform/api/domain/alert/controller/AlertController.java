@@ -15,8 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 
-import static com.youniform.api.global.statuscode.SuccessCode.ALERT_LIST_OK;
-import static com.youniform.api.global.statuscode.SuccessCode.ALERT_READ_MODIFIED;
+import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -46,7 +45,7 @@ public class AlertController {
 		return new ResponseEntity<>(ResponseDto.success(ALERT_LIST_OK, response), HttpStatus.OK);
 	}
 
-	@PatchMapping("/read/{alertId}")
+	@PatchMapping("/{alertId}")
 	public ResponseEntity<?> alertReadModify(@PathVariable("alertId") Long alertId) {
 //		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
@@ -55,13 +54,31 @@ public class AlertController {
 		return new ResponseEntity<>(ResponseDto.success(ALERT_READ_MODIFIED, null), HttpStatus.OK);
 	}
 
-	@PatchMapping("/read")
+	@PatchMapping
 	public ResponseEntity<?> alertAllReadModify() {
 //		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		alertService.modifyAlertAllRead(123L);
 
 		return new ResponseEntity<>(ResponseDto.success(ALERT_READ_MODIFIED, null), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{alertId}")
+	public ResponseEntity<?> alertDeletedModify(@PathVariable("alertId") Long alertId) {
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		alertService.removeAlert(123L, alertId);
+
+		return new ResponseEntity<>(ResponseDto.success(ALERT_DELETED, null), HttpStatus.OK);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<?> alertAllDeletedModify() {
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		alertService.removeAllAlert(123L);
+
+		return new ResponseEntity<>(ResponseDto.success(ALERT_DELETED, null), HttpStatus.OK);
 	}
 
 	@GetMapping("/test")

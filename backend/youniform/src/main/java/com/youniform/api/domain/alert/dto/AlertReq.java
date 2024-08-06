@@ -31,7 +31,6 @@ public class AlertReq {
 				.content(this.content)
 				.link(this.link)
 				.isRead(false)
-				.isDeleted(false)
 				.createdAt(LocalDateTime.now())
 				.build();
 	}
