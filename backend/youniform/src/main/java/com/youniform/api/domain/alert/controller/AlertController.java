@@ -10,15 +10,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 
 import static com.youniform.api.global.statuscode.SuccessCode.ALERT_LIST_OK;
+import static com.youniform.api.global.statuscode.SuccessCode.ALERT_READ_MODIFIED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -46,6 +44,24 @@ public class AlertController {
 		AlertListRes response = alertService.findAlerts(123L);
 
 		return new ResponseEntity<>(ResponseDto.success(ALERT_LIST_OK, response), HttpStatus.OK);
+	}
+
+	@PatchMapping("/read/{alertId}")
+	public ResponseEntity<?> alertReadModify(@PathVariable("alertId") Long alertId) {
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		alertService.modifyAlertRead(123L, alertId);
+
+		return new ResponseEntity<>(ResponseDto.success(ALERT_READ_MODIFIED, null), HttpStatus.OK);
+	}
+
+	@PatchMapping("/read")
+	public ResponseEntity<?> alertAllReadModify() {
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		alertService.modifyAlertAllRead(123L);
+
+		return new ResponseEntity<>(ResponseDto.success(ALERT_READ_MODIFIED, null), HttpStatus.OK);
 	}
 
 	@GetMapping("/test")

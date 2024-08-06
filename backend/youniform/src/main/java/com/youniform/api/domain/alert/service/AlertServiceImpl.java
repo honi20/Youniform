@@ -8,6 +8,7 @@ import com.youniform.api.domain.alert.entity.AlertType;
 import com.youniform.api.domain.alert.repository.AlertRepository;
 import com.youniform.api.domain.alert.repository.SseRepository;
 import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import static com.youniform.api.global.statuscode.ErrorCode.ALERT_NOT_FOUND;
 
 @Service
 @Transactional
@@ -66,6 +69,25 @@ public class AlertServiceImpl implements AlertService {
 				.toList();
 
 		return new AlertListRes(alertList);
+	}
+
+	@Override
+	public void modifyAlertRead(Long userId, Long alertId) {
+		Alert alert = alertRepository.findByIdAndReceiverId(alertId, userId)
+				.orElseThrow(() -> new CustomException(ALERT_NOT_FOUND));
+
+		alert.updateIsRead();
+		alertRepository.save(alert);
+	}
+
+	@Override
+	public void modifyAlertAllRead(Long userId) {
+		List<Alert> alerts = alertRepository.findByReceiverId(userId);
+
+		alerts.forEach(alert -> {
+			alert.updateIsRead();
+			alertRepository.save(alert);
+		});
 	}
 
 	@Override
