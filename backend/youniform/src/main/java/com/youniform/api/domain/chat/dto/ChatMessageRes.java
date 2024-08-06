@@ -1,6 +1,5 @@
-package com.youniform.api.domain.chat.dto.res;
+package com.youniform.api.domain.chat.dto;
 
-import com.youniform.api.domain.chat.dto.ChatMessageDto;
 import com.youniform.api.global.dto.SliceDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

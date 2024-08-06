@@ -1,4 +1,4 @@
-package com.youniform.api.domain.chat.dto.res;
+package com.youniform.api.domain.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

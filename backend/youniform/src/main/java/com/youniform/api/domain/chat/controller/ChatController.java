@@ -1,9 +1,9 @@
 package com.youniform.api.domain.chat.controller;
 
 import com.youniform.api.domain.chat.dto.ChatMessageDto;
-import com.youniform.api.domain.chat.dto.res.ChatMessageRes;
-import com.youniform.api.domain.chat.dto.res.ChatRoomDetailsRes;
-import com.youniform.api.domain.chat.dto.res.ChatRoomListRes;
+import com.youniform.api.domain.chat.dto.ChatMessageRes;
+import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
+import com.youniform.api.domain.chat.dto.ChatRoomListRes;
 import com.youniform.api.domain.chat.service.ChatService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.dto.SliceDto;
@@ -46,7 +46,7 @@ public class ChatController {
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, chatRoomList), HttpStatus.OK);
     }
 
-    @GetMapping("/chats/messages/{roomId}/previous")
+    @GetMapping("/messages/{roomId}/previous")
     public ResponseEntity<?> getPreviousMessages(@PathVariable("roomId") Long roomId,
                                                  @RequestParam Long messageId,
                                                  @RequestParam(defaultValue = "100") int size) {
@@ -54,7 +54,7 @@ public class ChatController {
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, response), HttpStatus.OK);
     }
 
-    @GetMapping("/chats/messages/{roomId}/next")
+    @GetMapping("/messages/{roomId}/next")
     public ResponseEntity<?> getNextMessages(@PathVariable("roomId") Long roomId,
                                              @RequestParam Long messageId,
                                              @RequestParam(defaultValue = "100") int size) {
