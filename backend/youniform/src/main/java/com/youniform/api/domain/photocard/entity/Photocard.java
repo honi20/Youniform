@@ -24,9 +24,7 @@ public class Photocard {
 	@JoinColumn(name = "user_id")
 	private Users user;
 
-	private String name;
-
-	private String description;
+	private String imgUrl;
 
 	private LocalDateTime createdAt;
 }

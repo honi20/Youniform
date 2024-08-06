@@ -1,0 +1,36 @@
+package com.youniform.api.domain.photocard.service;
+
+import com.youniform.api.domain.photocard.dto.PhotocardAddReq;
+import com.youniform.api.domain.photocard.dto.PhotocardAddRes;
+import com.youniform.api.domain.photocard.entity.Photocard;
+import com.youniform.api.domain.photocard.repository.PhotocardRepository;
+import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.repository.UserRepository;
+import com.youniform.api.global.exception.CustomException;
+import org.springframework.stereotype.Service;
+
+import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
+
+@Service
+public class PhotocardServiceImpl implements PhotocardService {
+	private final PhotocardRepository photocardRepository;
+
+	private final UserRepository userRepository;
+
+	public PhotocardServiceImpl(UserRepository userRepository, PhotocardRepository photocardRepository) {
+		this.userRepository = userRepository;
+		this.photocardRepository = photocardRepository;
+	}
+
+	@Override
+	public PhotocardAddRes addPhotocard(Long userId, PhotocardAddReq photocardAddReq) {
+		Users user = userRepository.findById(userId)
+				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+		Photocard photocard = photocardAddReq.toEntity(user);
+
+		photocardRepository.save(photocard);
+
+		return new PhotocardAddRes(photocard.getId());
+	}
+}
