@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.youniform.api.domain.post.dto.PostAddReq;
 import com.youniform.api.domain.post.dto.PostAddRes;
 import com.youniform.api.domain.post.dto.PostModifyReq;
+import com.youniform.api.domain.post.dto.PostModifyRes;
 import com.youniform.api.domain.post.service.PostService;
 import com.youniform.api.domain.tag.dto.TagDto;
 import com.youniform.api.global.exception.CustomException;
@@ -37,8 +38,7 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.youniform.api.global.statuscode.ErrorCode.INVALID_TAG_CONTENTS;
-import static com.youniform.api.global.statuscode.ErrorCode.INVALID_TAG_SIZE;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
@@ -379,68 +379,6 @@ public class PostControllerTest {
                 .andDo(print())
                 .andDo(document(
                         "Post 생성 실패 - 태그 길이 초과(10자 초과)인 경우",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Post API")
-                                .summary("Post 생성 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("Post 생성 Request"))
-                                .responseSchema(Schema.schema("Post 생성 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 게시글_생성_실패_태그_길이_공백_포함() throws Exception {
-        // given
-        List<String> tagList = new ArrayList<>();
-        tagList.add("김도영");
-        tagList.add("잠실");
-        tagList.add("기아");
-        tagList.add("도영이");
-        tagList.add("도영이짱짱짱짱 멋져");
-
-        PostAddReq postAddReq = new PostAddReq();
-        postAddReq.setContents("테스트111");
-        postAddReq.setTags(tagList);
-
-        String jwtToken = jwtService.createAccessToken(UUID);
-
-        when(postService.addPost(any(), any(), any()))
-                .thenThrow(new CustomException(INVALID_TAG_CONTENTS));
-
-        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(postAddReq));
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                multipart("/posts")
-                        .file(dto)
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .contentType("multipart/form-data")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .with(csrf())
-        );
-
-        //then
-        actions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_TAG_CONTENTS.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(INVALID_TAG_CONTENTS.getMessage()))
-                .andDo(print())
-                .andDo(document(
-                        "Post 생성 실패 - 태그에 공백 포함인 경우",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
@@ -902,6 +840,30 @@ public class PostControllerTest {
         String content = gson.toJson(postModifyReq);
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
+        List<TagDto> tagDtoList = new ArrayList<>();
+        tagDtoList.add(TagDto.builder()
+                    .tagId(5L)
+                    .contents("게시글")
+                .build());
+        tagDtoList.add(TagDto.builder()
+                    .tagId(6L)
+                    .contents("수정")
+                .build());
+        tagDtoList.add(TagDto.builder()
+                    .tagId(7L)
+                    .contents("태그")
+                .build());
+        tagDtoList.add(TagDto.builder()
+                    .tagId(8L)
+                    .contents("다꾸")
+                .build());
+        when(postService.modifyPost(any(), any(), any(), any()))
+                .thenReturn(new PostModifyRes(
+                "게시글 수정",
+                tagDtoList,
+                "s3 url",
+                "1604b772-adc0-4212-8a90-81186c57f598"));
+
         // when
         ResultActions actions = mockMvc.perform(
                 multipart("/posts/{postId}", 1L)
@@ -946,6 +908,213 @@ public class PostControllerTest {
                                                         .description("유저 Id(UUID)"),
                                                 fieldWithPath("body.imageUrl").type(JsonFieldType.STRING)
                                                         .description("게시글 이미지")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Post 수정 Request"))
+                                .responseSchema(Schema.schema("Post 수정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 게시글_수정_실패_유효하지_않은_게시글_아이디() throws Exception {
+        // given
+        List<String> tagList = new ArrayList<>();
+        tagList.add("게시글");
+        tagList.add("수정");
+        tagList.add("태그");
+        tagList.add("다꾸");
+
+        PostModifyReq postModifyReq = new PostModifyReq();
+        postModifyReq.setContents("게시글 수정");
+        postModifyReq.setTags(tagList);
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        String content = gson.toJson(postModifyReq);
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", content.getBytes(StandardCharsets.UTF_8));
+
+        when(postService.modifyPost(any(), any(), any(), any()))
+                .thenThrow(new CustomException(POST_NOT_FOUND));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                multipart("/posts/{postId}", 10000L)
+                        .file(dto)
+                        .file(file)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                        })
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(POST_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(POST_NOT_FOUND.getMessage()))
+                .andDo(print())
+                .andDo(document(
+                        "Post 수정 실패 - 유효하지 않은 게시글 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("Post 수정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Post 수정 Request"))
+                                .responseSchema(Schema.schema("Post 수정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 게시글_수정_실패_태그_길이_초과() throws Exception {
+        // given
+        List<String> tagList = new ArrayList<>();
+        tagList.add("김도영");
+        tagList.add("잠실");
+        tagList.add("기아");
+        tagList.add("도영이");
+        tagList.add("도영이짱짱짱짱 멋져");
+
+        PostAddReq postAddReq = new PostAddReq();
+        postAddReq.setContents("테스트111");
+        postAddReq.setTags(tagList);
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        when(postService.modifyPost(any(), any(), any(), any()))
+                .thenThrow(new CustomException(INVALID_TAG_CONTENTS));
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(postAddReq));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                multipart("/posts/{postId}", 1L)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                        })
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_TAG_CONTENTS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_TAG_CONTENTS.getMessage()))
+                .andDo(print())
+                .andDo(document(
+                        "Post 수정 실패 - 태그 길이 초과(10자 초과)인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("Post 수정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Post 수정 Request"))
+                                .responseSchema(Schema.schema("Post 수정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 게시글_수정_실패_태그_개수_초과() throws Exception {
+        // given
+        List<String> tagList = new ArrayList<>();
+        tagList.add("김도영");
+        tagList.add("잠실");
+        tagList.add("기아");
+        tagList.add("도영이");
+        tagList.add("도영이짱5");
+        tagList.add("도영이짱6");
+        tagList.add("도영이짱7");
+        tagList.add("도영이짱8");
+        tagList.add("도영이짱9");
+        tagList.add("도영이짱10");
+        tagList.add("도영이짱11");
+
+        PostModifyReq postModifyReq = new PostModifyReq();
+        postModifyReq.setContents("테스트111");
+        postModifyReq.setTags(tagList);
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        when(postService.modifyPost(any(), any(), any(), any()))
+                .thenThrow(new CustomException(INVALID_TAG_SIZE));
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(postModifyReq));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                multipart("/posts/{postId}", 1L)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                        })
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_TAG_SIZE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_TAG_SIZE.getMessage()))
+                .andDo(print())
+                .andDo(document(
+                        "Post 수정 실패 - 태그 개수 초과(10자 초과)인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("Post 수정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("Post 수정 Request"))

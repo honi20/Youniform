@@ -753,32 +753,12 @@ public class PostController {
     @PatchMapping("/{postId}")
     public ResponseEntity<?> postModify(
             @PathVariable Long postId,
-            @RequestPart(value = "dto", required = false) PostModifyReq postModifyReq,
-            @RequestPart(value = "file", required = false) MultipartFile file) {
-        List<TagDto> tagList = new ArrayList<>();
-        tagList.add(TagDto.builder()
-                .tagId(1L)
-                .contents("게시글")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(2L)
-                .contents("수정")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(3L)
-                .contents("태그")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(4L)
-                .contents("다꾸")
-                .build());
+            @RequestPart(value = "dto") PostModifyReq postModifyReq,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
-        PostModifyRes result = PostModifyRes.builder()
-                .contents("게시글 수정")
-                .tags(tagList)
-                .imageUrl("수정할 이미지 url")
-                .userId(UUID)
-                .build();
+        Long userId = 123L;
+
+        PostModifyRes result = postService.modifyPost(postModifyReq, file, postId, userId);
 
         return new ResponseEntity<>(ResponseDto.success(POST_MODIFIED, result), HttpStatus.OK);
     }
