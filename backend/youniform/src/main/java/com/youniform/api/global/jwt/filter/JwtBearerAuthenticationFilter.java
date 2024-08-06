@@ -23,6 +23,8 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
+import static com.youniform.api.global.statuscode.SuccessCode.REISSUED_ACCESSTOKEN;
+
 @Component
 @RequiredArgsConstructor
 @Profile({"local", "prod"})
@@ -79,7 +81,7 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
 
-            ResponseDto<Object> res = ResponseDto.success(SuccessCode.REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
+            ResponseDto<Object> res = ResponseDto.success(REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
             ObjectMapper mapper = new ObjectMapper();
             response.getWriter().write(mapper.writeValueAsString(res));
         }

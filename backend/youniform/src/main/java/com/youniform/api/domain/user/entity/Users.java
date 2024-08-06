@@ -38,11 +38,11 @@ public class Users {
 
     private Theme theme;
 
-    private Boolean pushAlert;
+    private Boolean pushAlert = Boolean.TRUE;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private Boolean isDeleted;
+    private Boolean isDeleted = Boolean.FALSE;
 
     private LocalDateTime lastWriteDiary;
 

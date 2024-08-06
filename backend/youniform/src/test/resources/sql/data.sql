@@ -7,7 +7,7 @@ INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_writ
                    nickname, password, profile_url, provider_type, uuid)
 VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@google.com', '자기소개111', 'User1', 'sdklrjsr39324',
         's3 url', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
-       (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@google.com', '자기소개222', 'User2', 'eogheoghWkd',
+       (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', 'User2', 'eogheoghWkd',
         's3 url', 'local', '1604b772-adc0-4212-8a90-81186c57f100');
 
 -- stamp

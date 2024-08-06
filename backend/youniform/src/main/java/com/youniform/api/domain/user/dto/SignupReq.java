@@ -1,5 +1,7 @@
 package com.youniform.api.domain.user.dto;
 
+import com.youniform.api.domain.team.entity.Team;
+import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -40,8 +43,14 @@ public class SignupReq {
                 .password(this.password)
                 .providerType(this.providerType)
                 .profileUrl(this.profileUrl)
+                .theme(Theme.MONSTERS)
                 .nickname(this.nickname)
                 .introduce(this.introduce)
+                .isDeleted(false)
+                .pushAlert(true)
+                .createdAt(LocalDateTime.now())
+                .lastWriteDiary(LocalDateTime.now())
+                .team(Team.builder().id(1L).build())
                 .build();
     }
 
