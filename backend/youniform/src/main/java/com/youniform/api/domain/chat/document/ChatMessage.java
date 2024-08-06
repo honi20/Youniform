@@ -12,12 +12,14 @@ import java.time.LocalDateTime;
 @Builder
 @Document(collection = "chat_message")
 public class ChatMessage {
+    public static final String CHAT_MESSAGE_SEQUENCE = "chat_message_sequence";
+
     @Id
     private Long messageId;
 
     private Long roomId;
 
-    private String userId;
+    private String uuid;
 
     private String nickname;
 
@@ -27,7 +29,19 @@ public class ChatMessage {
 
     private LocalDateTime messageTime;
 
-    public void setMessageTime(LocalDateTime messageTime) {
+    public void updateMessageId(Long messageId) {
+        this.messageId = messageId;
+    }
+
+    public void updateRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
+    public void updateUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public void updateMessageTime(LocalDateTime messageTime) {
         this.messageTime = messageTime;
     }
 }

@@ -1,7 +1,9 @@
 package com.youniform.api.global.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.statuscode.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 @Slf4j
@@ -39,6 +42,12 @@ public class S3Service {
         removeNewFile(uploadFile); // convert() 과정에서 로컬에 생성된 파일 삭제
 
         return uploadImageUrl;
+    }
+
+    public InputStream download(String fileName) throws IOException {
+        S3Object s3Object = amazonS3Client.getObject(new GetObjectRequest(bucket, fileName));
+
+        return s3Object.getObjectContent();
     }
 
     private String putS3(File uploadFile, String fileName) {

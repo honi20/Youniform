@@ -4,7 +4,9 @@ import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.dto.ChatMessageDto;
 import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
 import com.youniform.api.domain.chat.dto.ChatRoomListRes;
+import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.global.dto.SliceDto;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ChatService {
     ChatRoomListRes getChatRoomList(Long userId);
@@ -17,7 +19,9 @@ public interface ChatService {
 
     SliceDto<ChatMessageDto> getNextMessages(Long roomId, Long messageId, int size);
 
-    ChatMessage processChatMessage(Long roomId, Long userId, ChatMessage chatMessage);
+    ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId);
 
-    ChatMessage saveChatMessage(ChatMessage chatMessage);
+    ChatMessage saveChatMessage(Long roomId, ChatMessage chatMessage, Users user);
+
+    long createSequence(String seqName);
 }
