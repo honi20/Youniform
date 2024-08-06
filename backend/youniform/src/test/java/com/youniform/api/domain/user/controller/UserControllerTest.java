@@ -129,7 +129,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(VERIFY_CODE_SEND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(VERIFY_CODE_SEND.getMessage()))
                 .andDo(document(
@@ -179,7 +179,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(EMAIL_VERIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(EMAIL_VERIFIED.getMessage()))
                 .andDo(document(
@@ -233,7 +233,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(PASSWORD_RESET_EMAIL_SEND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(PASSWORD_RESET_EMAIL_SEND.getMessage()))
                 .andDo(document(
@@ -286,7 +286,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(PASSWORD_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(PASSWORD_MODIFIED.getMessage()))
                 .andDo(document(
@@ -341,7 +341,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(PASSWORD_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(PASSWORD_MODIFIED.getMessage()))
                 .andDo(document(
@@ -556,7 +556,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(THEME_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(THEME_MODIFIED.getMessage()))
                 .andDo(document(
@@ -608,7 +608,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(ALERT_MODIFIED.getMessage()))
                 .andDo(document(
@@ -654,7 +654,7 @@ public class UserControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(USER_RESIGNED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(USER_RESIGNED.getMessage()))
                 .andDo(document(

@@ -2,6 +2,7 @@ package com.youniform.api.domain.post.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
+import com.epages.restdocs.apispec.SimpleType;
 import com.google.gson.Gson;
 import com.youniform.api.domain.post.dto.PostAddReq;
 import com.youniform.api.domain.post.dto.PostModifyReq;
@@ -516,6 +517,10 @@ public class PostControllerTest {
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
+                                .pathParameters(
+                                        parameterWithName("postId").type(SimpleType.NUMBER)
+                                                .description("조회할 post Id")
+                                )
                                 .responseFields(
                                         getCommonResponseFields(
                                                 fieldWithPath("body.postId").type(JsonFieldType.NUMBER)
@@ -634,7 +639,7 @@ public class PostControllerTest {
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(POST_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(POST_DELETED.getMessage()))
                 .andDo(MockMvcRestDocumentation.document(

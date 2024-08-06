@@ -419,7 +419,7 @@ public class DiaryControllerTest {
         diaryService.modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
 
         performPut("/diaries/{diaryId}", diaryModifyReq, 123L)
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_MODIFIED.getMessage()))
                 .andDo(document("Diary 수정 성공",
@@ -546,7 +546,7 @@ public class DiaryControllerTest {
         diaryService.removeDiary(anyLong(), anyLong());
 
         performDelete("/diaries/{diaryId}", 123L)
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_DELETED.getMessage()))
                 .andDo(document("Diary 삭제 성공",

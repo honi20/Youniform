@@ -2,6 +2,7 @@ package com.youniform.api.domain.friend.controller;
 
 import com.youniform.api.domain.friend.dto.*;
 import com.youniform.api.global.dto.ResponseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public class FriendController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> FriendDelete(@ModelAttribute FriendDeleteReq friendDeleteReq) {
-        return new ResponseEntity<>(ResponseDto.success(FRIEND_DELETED, null), HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> FriendDelete(@ModelAttribute @Valid FriendDeleteReq friendDeleteReq) {
+        return new ResponseEntity<>(ResponseDto.success(FRIEND_DELETED, null), HttpStatus.OK);
     }
 }

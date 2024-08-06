@@ -21,12 +21,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -215,12 +215,12 @@ public class FriendControllerTest {
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("id", id)
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(csrf())
+                        .with(csrf().asHeader())
         );
 
         //then
         actions
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(FRIEND_DELETED.getMessage()))
                 .andDo(document(
@@ -234,7 +234,7 @@ public class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .queryParameters(
-                                        parameterWithName("id").description("친구 Id(UUID)")
+                                        parameterWithName("id").description("친구 Id(UUID)").optional()
                                 )
                                 .responseFields(
                                         getCommonResponseFields(

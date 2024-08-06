@@ -800,6 +800,6 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> postDelete(@PathVariable Long postId) {
-        return new ResponseEntity<>(ResponseDto.success(POST_DELETED, null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(ResponseDto.success(POST_DELETED, null), HttpStatus.OK);
     }
 }

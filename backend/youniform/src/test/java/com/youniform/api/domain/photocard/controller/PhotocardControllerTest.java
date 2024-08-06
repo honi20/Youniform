@@ -164,7 +164,7 @@ class PhotocardControllerTest {
                         .with(csrf())
         );
 
-        actions.andExpect(status().isNoContent())
+        actions.andExpect(status().isOk())
                 .andDo(document("Photocard 삭제 성공",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
