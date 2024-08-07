@@ -11,4 +11,6 @@ public class PasswordModifyReq {
     @NotEmpty
     private String newPassword;
 
+    @NotEmpty
+    private String confirmPassword;
 }

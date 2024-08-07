@@ -52,6 +52,10 @@ public class Users {
         this.profileUrl = profileUrl;
     }
 
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }

@@ -8,6 +8,7 @@ import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.service.UserServiceImpl;
 import com.youniform.api.global.jwt.service.JwtServiceImpl;
+import com.youniform.api.global.mail.service.MailService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,6 +69,9 @@ public class UserControllerTest {
 
     @MockBean
     private UserServiceImpl userService;
+
+    @MockBean
+    private MailService mailService;
 
     @Test
     public void 닉네임_중복_검사_성공() throws Exception {
@@ -231,6 +235,7 @@ public class UserControllerTest {
         String content = gson.toJson(passwordResetSendReq);
 
         //when
+        when(mailService.sendMail(any(), any())).thenReturn("verify");
         ResultActions actions = mockMvc.perform(
                 post("/users/password/send")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -276,14 +281,17 @@ public class UserControllerTest {
     public void 비밀번호_재설정_성공() throws Exception {
         //given
         PasswordResetReq passwordResetReq = new PasswordResetReq();
-        passwordResetReq.setEmail("test@gmail.com");
+        passwordResetReq.setUuid("1604b772-adc0-4212-8a90-81186c57f100");
+        passwordResetReq.setVerify("asdfasdf");
         passwordResetReq.setPassword("password1321");
+        passwordResetReq.setConfirmPassword("password1321");
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
         String content = gson.toJson(passwordResetReq);
 
         //when
+        when(mailService.sendMail(any(), any())).thenReturn("asdf");
         ResultActions actions = mockMvc.perform(
                 patch("/users/password/reset")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -305,14 +313,18 @@ public class UserControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("User API")
                                 .summary("비밀번호 재설정 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
-                                        fieldWithPath("email").type(JsonFieldType.STRING)
-                                                .description("이메일"),
+                                        fieldWithPath("uuid").type(JsonFieldType.STRING)
+                                                .description("UUID"),
+                                        fieldWithPath("verify").type(JsonFieldType.STRING)
+                                                .description("인증키"),
                                         fieldWithPath("password").type(JsonFieldType.STRING)
-                                                .description("비밀번호")
+                                                .description("비밀번호"),
+                                        fieldWithPath("confirmPassword").type(JsonFieldType.STRING)
+                                                .description("비밀번호 확인")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -333,8 +345,9 @@ public class UserControllerTest {
         PasswordModifyReq passwordModifyReq = new PasswordModifyReq();
         passwordModifyReq.setCurrentPassword("currentPassword1241231");
         passwordModifyReq.setNewPassword("newpassWordpr293r2039");
+        passwordModifyReq.setConfirmPassword("newpassWordpr293r2039");
 
-        String jwtToken = jwtService.createAccessToken(UUID);
+        String jwtToken = jwtService.createAccessToken("1604b772-adc0-4212-8a90-81186c57f100");
 
         String content = gson.toJson(passwordModifyReq);
 
@@ -367,7 +380,9 @@ public class UserControllerTest {
                                         fieldWithPath("currentPassword").type(JsonFieldType.STRING)
                                                 .description("현재 비밀번호"),
                                         fieldWithPath("newPassword").type(JsonFieldType.STRING)
-                                                .description("새로운 비밀번호")
+                                                .description("새로운 비밀번호"),
+                                        fieldWithPath("confirmPassword").type(JsonFieldType.STRING)
+                                                .description("새로운 비밀번호 확인")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(

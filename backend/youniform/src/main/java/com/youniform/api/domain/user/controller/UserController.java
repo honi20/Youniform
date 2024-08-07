@@ -12,8 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 import static com.youniform.api.domain.user.entity.Theme.MONSTERS;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
@@ -43,16 +41,20 @@ public class UserController {
 
     @PostMapping("/password/send")
     public ResponseEntity<?> passwordResetSend(@RequestBody PasswordResetSendReq passwordResetSendReq) {
+        userService.passwordResetSend(passwordResetSendReq);
         return new ResponseEntity<>(ResponseDto.success(PASSWORD_RESET_EMAIL_SEND, null), HttpStatus.OK);
     }
 
     @PatchMapping("/password/reset")
     public ResponseEntity<?> passwordReset(@RequestBody PasswordResetReq passwordResetReq) {
+        userService.passwordReset(passwordResetReq);
         return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.OK);
     }
 
     @PatchMapping("/password")
     public ResponseEntity<?> passwordModify(@RequestBody PasswordModifyReq passwordModifyReq) {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        userService.modifyPassword(passwordModifyReq, userId);
         return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.OK);
     }
 

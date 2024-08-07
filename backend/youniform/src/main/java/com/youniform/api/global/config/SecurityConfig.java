@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/*/check-duplication",
                                 "/users/signup/**",
                                 "/users/find/password", "/users/check/email",
+                                "/users/password/reset", "/users/password/send",
                                 "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
