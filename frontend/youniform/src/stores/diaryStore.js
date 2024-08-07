@@ -5,6 +5,25 @@ const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useDiaryStore = create((set) => ({
   diaries: [],
   diary: [],
+  monthlyDiaries: [],
+  fetchMonthlyDiaries: async () => {
+    const res = await axios({
+      method: "get",
+      url: `${API_URL}/diaries/monthly`,
+      // headers: {
+      //   Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ",
+      // },
+      params: {
+        calendarDate: "2024-07-01",
+      },
+    })
+      .then((res) => {
+        set({ monthlyDiaries: res.data.body });
+      })
+      .catch((err) => {
+        console("Failed to fetch monthlyDiaries", err);
+      });
+  },
   fetchDiaries: async () => {
     await axios({
       method: "get",

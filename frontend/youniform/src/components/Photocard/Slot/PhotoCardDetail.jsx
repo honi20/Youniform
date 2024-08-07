@@ -95,23 +95,6 @@ const PhotoCardDetail = () => {
         onClose={closeConfirmModal}
         nickname={""}
       />
-      <PhotoDetailImage src={selectedImage} alt="Selected" />
-      <PhotoCardControls>
-        <PrevIcon />
-        <DetailControlButton
-          icon={DeleteIcon}
-          label="삭제"
-          onClick={openModal}
-        />
-        <DetailControlButton icon={SaveIcon} label="저장" />
-        <NextIcon />
-      </PhotoCardControls>
-      <DeleteModal
-        state={"ChatImgSaved"}
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        nickname={""}
-      />
     </PhotoDetailContainer>
   );
 };

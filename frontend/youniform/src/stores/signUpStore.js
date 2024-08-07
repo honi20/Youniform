@@ -59,6 +59,7 @@ const signUpStore = create((set) => ({
           verifyCode: authenticCode
         },
       })
+      
       console.log(3);
       console.log(res);
     } catch (error) {

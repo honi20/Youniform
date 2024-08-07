@@ -109,37 +109,43 @@ const DiaryHomeView = () => {
   const [calendarHeight, setCalendarHeight] = useState('auto');
   const [selectedUser, setSelectedUser] = useState(0);
   const diaryHomeRef = useRef(null);
-  const { diaries, fetchDiaries } = useDiaryStore();
+  const { diaries, fetchDiaries, monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
 
   useEffect(() => {
     
     const fetchData = async () => {
-      await fetchDiaries();
+      try {
+        await fetchDiaries();
+        await fetchMonthlyDiaries();
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      }
     };
 
     fetchData();
-
+    
+    
     const updateCalendarHeight = () => {
       if (diaryHomeRef.current) {
         const diaryHomeHeight = diaryHomeRef.current.offsetHeight;
         setCalendarHeight(`${diaryHomeHeight - 220}px`);
       }
     };
-
+    
     updateCalendarHeight();
     window.addEventListener('resize', updateCalendarHeight);
-
+    
     return () => {
       window.removeEventListener('resize', updateCalendarHeight);
     };
   }, []);
-
+  
   const handleUserClick = (user) => {
     setSelectedUser(user);
   };
-
+  
   const filteredStamps = selectedUser
-    ? userCalInfo.find(userItem => userItem.id === selectedUser.id)?.stamps || []
+  ? userCalInfo.find(userItem => userItem.id === selectedUser.id)?.stamps || []
     : userCalInfo[0]?.stamps || []; 
 
   return (
