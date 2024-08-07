@@ -2,6 +2,9 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import useUserStore from "../../stores/userStore";
 import * as Font from "@/typography";
+import { useNavigate } from "react-router-dom";
+import Loading from "@components/Share/Loading";
+import Error from "@components/Share/Error";
 
 const Section = styled.div`
   box-sizing: border-box;
@@ -63,7 +66,7 @@ const Introduce = styled.div`
 
 const ProfileComp = () => {
   const { user, fetchUser, clearUser, loading, error } = useUserStore();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,11 +83,11 @@ const ProfileComp = () => {
   }, [fetchUser, clearUser]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (error) {
-    return <div>Error loading user data: {error}</div>;
+    return <Error message={error} />;
   }
 
   if (!user) {
@@ -144,29 +147,32 @@ import EditIcon from "@assets/MyPage/edit.svg?react";
 import UserItem from "./UserItem";
 
 // 유저 컴포넌트
-const UserComp = () => (
-  <UserSection>
-    <ItemWrapper>
-      <UserItem
-        icon={NotebookIcon}
-        text="나의 다이어리"
-        onClick={() => console.log("나의 다이어리")}
-      />
-      <DotLine />
-      <UserItem
-        icon={OrderIcon}
-        text="나의 포스트"
-        onClick={() => console.log("나의 포스트")}
-      />
-      <DotLine />
-      <UserItem
-        icon={EditIcon}
-        text="프로필 변경"
-        onClick={() => console.log("프로필 변경")}
-      />
-    </ItemWrapper>
-  </UserSection>
-);
+const UserComp = () => {
+  const navigate = useNavigate();
+  return (
+    <UserSection>
+      <ItemWrapper>
+        <UserItem
+          icon={NotebookIcon}
+          text="나의 다이어리"
+          onClick={() => console.log("나의 다이어리")}
+        />
+        <DotLine />
+        <UserItem
+          icon={OrderIcon}
+          text="나의 포스트"
+          onClick={() => navigate("./my-post")}
+        />
+        <DotLine />
+        <UserItem
+          icon={EditIcon}
+          text="프로필 변경"
+          onClick={() => navigate("./change-profile")}
+        />
+      </ItemWrapper>
+    </UserSection>
+  );
+};
 const SocialSection = styled(Section)`
   height: 15%;
   width: 90%;
@@ -194,21 +200,19 @@ const SocialContent = styled.div`
 `;
 import GroupIcon from "@assets/MyPage/group.svg?react";
 import ArchiveIcon from "@assets/MyPage/archive.svg?react";
-import { useNavigate } from "react-router-dom";
 import usePostStore from "@stores/postStore";
 
 const SocialComp = () => {
-  const navigate = useNavigate();
   const { likePosts, fetchLikePosts } = usePostStore();
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchLikePosts();
   }, [fetchLikePosts]);
 
-  const handleLikePost = () => {
-    console.log("좋아요한 포스트로 이동");
-    navigate("./like-post");
-  };
+  // const handleLikePost = () => {
+  //   console.log("좋아요한 포스트로 이동");
+  //   navigate("./like-post");
+  // };
   return (
     <>
       <SocialSection>
@@ -224,7 +228,7 @@ const SocialComp = () => {
             <GroupIcon />
           </div>
         </SocialItem>
-        <SocialItem onClick={handleLikePost}>
+        <SocialItem onClick={() => navigate("./like-post")}>
           <SocialHeader>좋아요한 포스트</SocialHeader>
           <SocialContent>10</SocialContent>
           <div

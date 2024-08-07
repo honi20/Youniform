@@ -14,14 +14,14 @@ const useDiaryStore = create((set) => ({
       //   Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ",
       // },
       params: {
-        calendarDate: "2024-07-01",
+        calendarDate: "2024-07",
       },
     })
       .then((res) => {
         set({ monthlyDiaries: res.data.body });
       })
       .catch((err) => {
-        console("Failed to fetch monthlyDiaries", err);
+        console.log("Failed to fetch monthlyDiaries", err);
       });
   },
   fetchDiaries: async () => {

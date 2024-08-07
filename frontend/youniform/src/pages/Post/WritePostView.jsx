@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import * as Font from "@/typography";
 import useUserStore from "@stores/userStore";
 import Loading from "@components/Share/Loading";
 import ImgSvg from "@assets/Post/img_box.svg?react";
 import DoneSvg from "@assets/Post/done.svg?react";
+import axios from "axios";
 const Container = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -63,6 +64,18 @@ const Tag = styled.span`
   padding: 5px 10px;
   border-radius: 15px;
 `;
+const ImgBox = styled.img`
+  border: 1px solid black;
+  max-width: 50px;
+  margin-bottom: 10px;
+`;
+{
+  /* <img
+              src={filePreview}
+              alt="Preview"
+              style={{ maxWidth: "50px", marginBottom: "10px" }}
+            /> */
+}
 const Footer = styled.div`
   height: 70px;
   display: flex;
@@ -89,7 +102,9 @@ const WritePostView = () => {
   const { user, fetchUser, loading } = useUserStore();
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
-  const [htmlContent, setHtmlContent] = useState("");
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
   useEffect(() => {
     if (!user) {
       fetchUser();
@@ -101,16 +116,65 @@ const WritePostView = () => {
   useEffect(() => {
     console.log(content);
 
-    const extractedTags = content.match(/#\S+/g) || [];
+    const extractedTags = content.match(/# \S+/g) || [];
     const uniqueTags = [
       ...new Set(
         extractedTags.map((tag) =>
-          tag.length > 10 ? `${tag.slice(0, 11)}` : tag
+          tag.length > 10 ? `${tag.slice(2, 12)}` : tag.slice(2)
         )
       ),
     ];
     setTags(uniqueTags);
+    console.log("해쉬태그", uniqueTags);
   }, [content]);
+
+  const cleanContent = () => {
+    return content.replace(/# \S+/g, "").trim();
+  };
+  const API_URL = "http://i11a308.p.ssafy.io:8080";
+  const handleSave = async () => {
+    const cleanedContent = cleanContent();
+
+    console.log("저장할 내용:", cleanedContent);
+    console.log("해쉬태그", tags);
+    console.log("Selected file:", filePreview);
+
+    const formData = new FormData();
+    formData.append("contents", cleanedContent);
+    tags.forEach((tag) => formData.append("tags", tag));
+    if (selectedFile) {
+      formData.append("file", selectedFile);
+    }
+    try {
+      const res = await axios({
+        method: "post",
+        url: `${API_URL}/posts`,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+      console.log("Success:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddPhotoClick = () => {
+    fileInputRef.current.click();
+  };
 
   if (loading || !user) {
     return <Loading />;
@@ -129,16 +193,23 @@ const WritePostView = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
+          {filePreview && <ImgBox src={filePreview} alt="Preview" />}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
           <TagsContainer>
             {tags.map((tag, index) => (
-              <Tag key={index}>{tag}</Tag>
+              <Tag key={index}># {tag}</Tag>
             ))}
           </TagsContainer>
           <Footer>
-            <Btn onClick={() => console.log("사진 추가")}>
+            <Btn onClick={handleAddPhotoClick}>
               <ImgSvg />
             </Btn>
-            <CreateBtn onClick={() => console.log("저장")}>
+            <CreateBtn onClick={handleSave}>
               <DoneSvg />
             </CreateBtn>
           </Footer>
