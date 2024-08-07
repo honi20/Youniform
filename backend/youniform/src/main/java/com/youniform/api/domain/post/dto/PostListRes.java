@@ -10,5 +10,10 @@ import lombok.Data;
 @Builder
 public class PostListRes {
     private SliceDto<PostDto> postList;
-    
+
+    public static PostListRes toDto(SliceDto<PostDto> postList) {
+        return PostListRes.builder()
+                .postList(postList)
+                .build();
+    }
 }

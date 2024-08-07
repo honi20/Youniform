@@ -10,11 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 public class SliceDto<T> {
     private List<T> content;
-
     private int page;
-
     private int size;
-
     private boolean hasNext;
 
     public SliceDto(Slice<T> slice) {
