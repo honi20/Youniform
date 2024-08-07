@@ -64,6 +64,6 @@ VALUES (1, 1),
 
 -- photocard
 INSERT INTO PHOTOCARD(photocard_id, user_id, img_url, created_at)
-VALUES (123L, 123L, 'photocard1.png', CURRENT_TIME),
-       (124L, 123L, 'photocard2.png', CURRENT_TIME),
-       (125L, 124L, 'photocard3.png', CURRENT_TIME);
+VALUES (123, 123, 'photocard1.png', CURRENT_TIME),
+       (124, 123, 'photocard2.png', CURRENT_TIME),
+       (125, 124, 'photocard3.png', CURRENT_TIME);

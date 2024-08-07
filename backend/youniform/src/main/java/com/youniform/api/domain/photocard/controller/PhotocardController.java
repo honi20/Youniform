@@ -1,9 +1,6 @@
 package com.youniform.api.domain.photocard.controller;
 
-import com.youniform.api.domain.photocard.dto.PhotocardAddReq;
-import com.youniform.api.domain.photocard.dto.PhotocardAddRes;
-import com.youniform.api.domain.photocard.dto.PhotocardDetailDto;
-import com.youniform.api.domain.photocard.dto.PhotocardListRes;
+import com.youniform.api.domain.photocard.dto.*;
 import com.youniform.api.domain.photocard.service.PhotocardService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.exception.CustomException;
@@ -44,11 +41,11 @@ public class PhotocardController {
 		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_DETAILS_OK, response), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{photocardId}")
-	public ResponseEntity<?> photocardRemove(@PathVariable Long photocardId) throws Exception {
-		if (photocardId == null || photocardId < 0) {
-			throw new CustomException(ErrorCode.PHOTOCARD_NOT_FOUND);
-		}
+	@DeleteMapping
+	public ResponseEntity<?> photocardRemove(@ModelAttribute PhotocardDeleteReq photocardDeleteReq) throws Exception {
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		photocardService.removePhotocard(123L, photocardDeleteReq);
 
 		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_DELETED, null), HttpStatus.OK);
 	}
