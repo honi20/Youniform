@@ -11,4 +11,5 @@ import java.io.IOException;
 public interface PostService {
     PostAddRes addPost(PostAddReq postAddReq, MultipartFile file, Long userId) throws IOException;
     PostModifyRes modifyPost(PostModifyReq postModifyReq, MultipartFile file, Long postId, Long userId) throws IOException;
+    void removePost(Long postId, Long userId) throws IOException;
 }

@@ -764,7 +764,11 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> postDelete(@PathVariable Long postId) {
+    public ResponseEntity<?> postDelete(@PathVariable Long postId) throws IOException {
+        Long userId = 123L;
+
+        postService.removePost(postId, userId);
+
         return new ResponseEntity<>(ResponseDto.success(POST_DELETED, null), HttpStatus.OK);
     }
 }
