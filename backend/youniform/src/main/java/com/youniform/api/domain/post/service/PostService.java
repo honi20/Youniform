@@ -12,4 +12,5 @@ public interface PostService {
     void removePost(Long postId, Long userId) throws IOException;
     PostDetailsRes findPost(Long postId, Long userId);
     PostListRes findPublicPosts(Long userId, PublicPostListReq publicPostListReq, Pageable pageable);
+    PostListRes findMyPosts(Long userId, MyPostListReq myPostListReq, Pageable pageable);
 }

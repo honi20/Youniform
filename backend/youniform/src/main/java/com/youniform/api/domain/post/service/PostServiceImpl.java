@@ -170,6 +170,14 @@ public class PostServiceImpl implements PostService {
         return PostListRes.toDto(postDtoSliceDto);
     }
 
+    @Override
+    public PostListRes findMyPosts(Long userId, MyPostListReq myPostListReq, Pageable pageable) {
+        Slice<PostDto> posts = postRepository.findMyPostByCursor(userId, myPostListReq.getLastPostId(), pageable);
+
+        SliceDto<PostDto> postDtoSliceDto = new SliceDto<>(posts);
+        return PostListRes.toDto(postDtoSliceDto);
+    }
+
     private String replaceEnter(String contents) {
         return contents.replaceAll("\\r?\\n", "<br/>");
     }

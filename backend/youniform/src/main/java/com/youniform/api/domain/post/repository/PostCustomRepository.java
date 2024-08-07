@@ -9,4 +9,8 @@ public interface PostCustomRepository {
     Slice<PostDto> findPostByCursor(@Param("userId") Long userId,
                                     @Param("lastPostId") Long lastPostId,
                                     @Param("pageable")Pageable pageable);
+
+    Slice<PostDto> findMyPostByCursor(@Param("userId") Long userId,
+                                    @Param("lastPostId") Long lastPostId,
+                                    @Param("pageable")Pageable pageable);
 }
