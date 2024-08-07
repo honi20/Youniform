@@ -27,12 +27,23 @@ const usePostStore = create((set) => ({
     }
   },
   fetchPosts: async () => {
-    // 수정해야함
     try {
-      const response = await axios.get(`${API_URL}/posts`);
-      set({ posts: response.data.body.postList.content });
-    } catch (error) {
-      console.log("Failed to fetch posts", error);
+      const res = await axios({
+        method: "get",
+        url: `${API_URL}/posts`,
+        // headers: {
+        //   Authorization:
+        //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLTQyMTItOGE5MC04MTE4NmM1N2YxMDAiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDA3NDAwfQ.D856FncOnKSe1O_1vw0jyOHGMPfWionPRvMZ_QWPaPDnAmRHfM9U2VFOprdM3QP2JEQXz_Ewn4mJvPoVAg5NQA",
+        // },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+
+      set({
+        posts: res.data.body.postList.content,
+      });
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
     }
   },
   addPost: async (post) => {
