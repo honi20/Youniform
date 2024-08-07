@@ -4,9 +4,11 @@ import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ProfileModifyRes {
     private String nickname;//닉네임

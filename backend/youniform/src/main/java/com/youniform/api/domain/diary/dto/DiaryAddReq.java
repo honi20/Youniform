@@ -1,6 +1,5 @@
 package com.youniform.api.domain.diary.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youniform.api.domain.diary.entity.Diary;
 import com.youniform.api.domain.diary.entity.DiaryStamp;
 import com.youniform.api.domain.diary.entity.Scope;

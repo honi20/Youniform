@@ -4,6 +4,12 @@ import com.youniform.api.domain.user.dto.AlertModifyReq;
 import com.youniform.api.domain.user.dto.LocalSigninReq;
 import com.youniform.api.domain.user.dto.SignupReq;
 import com.youniform.api.domain.user.dto.ThemeModifyReq;
+import com.youniform.api.domain.user.dto.*;
+import com.youniform.api.domain.user.entity.Users;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface UserService {
     void resignUser(Long userId);
@@ -15,4 +21,6 @@ public interface UserService {
     void modifyAlert(AlertModifyReq req, Long userId);
 
     void modifyTheme(ThemeModifyReq req, Long userId);
+
+    ProfileModifyRes modifyProfile(ProfileModifyReq req, MultipartFile file, Long userId) throws Exception;
 }

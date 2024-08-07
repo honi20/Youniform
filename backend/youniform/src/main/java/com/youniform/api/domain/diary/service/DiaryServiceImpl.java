@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
-import static com.youniform.api.global.statuscode.ErrorCode.DIARY_UPDATE_FORBIDDEN;
 
 @Service
 @RequiredArgsConstructor
