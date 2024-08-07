@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static com.youniform.api.global.statuscode.ErrorCode.FRIEND_NOT_FOUND;
 import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
@@ -37,10 +39,6 @@ public class FriendServiceImpl implements FriendService {
 
         Users friend = userRepository.findByUuid(friendUuid)
                 .orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
-
-        if (friend == null) {
-            throw new CustomException(FRIEND_NOT_FOUND);
-        }
 
         FriendPK friendPk1 = new FriendPK(user.getId(), friend.getId());
         FriendPK friendPk2 = new FriendPK(friend.getId(), user.getId());
