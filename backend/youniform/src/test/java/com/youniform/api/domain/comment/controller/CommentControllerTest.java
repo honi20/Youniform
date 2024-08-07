@@ -4,7 +4,10 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
 import com.youniform.api.domain.comment.dto.CommentAddReq;
+import com.youniform.api.domain.comment.dto.CommentAddRes;
 import com.youniform.api.domain.comment.dto.CommentModifyReq;
+import com.youniform.api.domain.comment.service.CommentService;
+import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.youniform.api.global.statuscode.ErrorCode.INVALID_COMMENT_CONTENTS;
+import static com.youniform.api.global.statuscode.ErrorCode.POST_NOT_FOUND;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -51,6 +58,9 @@ public class CommentControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @MockBean
+    private CommentService commentService;
+
     @Test
     public void 댓글_생성_성공() throws Exception {
         //given
@@ -60,6 +70,10 @@ public class CommentControllerTest {
         String jwtToken = jwtService.createAccessToken(UUID);
 
         String content = gson.toJson(commentAddReq);
+
+        when(commentService.addComment(any(), any(), any()))
+                .thenReturn(new CommentAddRes(3L, "s3 url", "nickname",
+                        UUID, "댓글 내용", "0 초전"));
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -104,6 +118,116 @@ public class CommentControllerTest {
                                                         .description("댓글 내용"),
                                                 fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
                                                         .description("생성 날짜")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Comment 생성 Request"))
+                                .responseSchema(Schema.schema("Comment 생성 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 댓글_생성_실패_유효하지_않은_게시글_아이디() throws Exception {
+        //given
+        CommentAddReq commentAddReq = new CommentAddReq();
+        commentAddReq.setContents("도영이 귀여워");
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        String content = gson.toJson(commentAddReq);
+
+        when(commentService.addComment(any(), any(), any()))
+                .thenThrow(new CustomException(POST_NOT_FOUND));
+
+        ResultActions actions = mockMvc.perform(
+                post("/comments/{postId}", 10000L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(POST_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(POST_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "Comment 생성 실패 - 유효하지 않은 게시글 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Comment API")
+                                .summary("Comment 생성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("contents").type(JsonFieldType.STRING)
+                                                .description("댓글 내용")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body")
+                                                        .description("없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Comment 생성 Request"))
+                                .responseSchema(Schema.schema("Comment 생성 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 댓글_생성_실패_댓글이_공백인_경우() throws Exception {
+        //given
+        CommentAddReq commentAddReq = new CommentAddReq();
+        commentAddReq.setContents("        ");
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        String content = gson.toJson(commentAddReq);
+
+        when(commentService.addComment(any(), any(), any()))
+                .thenThrow(new CustomException(INVALID_COMMENT_CONTENTS));
+
+        ResultActions actions = mockMvc.perform(
+                post("/comments/{postId}", 1L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_COMMENT_CONTENTS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_COMMENT_CONTENTS.getMessage()))
+                .andDo(document(
+                        "Comment 생성 실패 - 댓글이 공백이거나 null인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Comment API")
+                                .summary("Comment 생성 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("contents").type(JsonFieldType.STRING)
+                                                .description("댓글 내용")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body")
+                                                        .description("없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("Comment 생성 Request"))
