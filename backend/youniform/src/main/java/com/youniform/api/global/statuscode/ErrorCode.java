@@ -35,6 +35,9 @@ public enum ErrorCode {
     FILE_DOWNLOAD_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 다운로드에 실패했습니다."),
     FILE_DELETE_FAIL(HttpStatus.BAD_REQUEST.value(), "파일 삭제에 실패했습니다"),
 
+    //friend error code
+    FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "친구를 찾을 수 없습니다."),
+
     // chat error code
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅방을 찾을 수 없습니다."),
     MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "메세지를 찾을 수 없습니다."),

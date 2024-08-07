@@ -595,6 +595,46 @@ public class PostControllerTest {
     public void 친구_게시글_목록_조회_성공() throws Exception {
         //given
         String jwtToken = jwtService.createAccessToken(UUID);
+        List<TagDto> tags = new ArrayList<>();
+        tags.add(TagDto.builder()
+                .contents("태그1")
+                .tagId(1L)
+                .build());
+
+        List<PostDto> result = new ArrayList<>();
+        result.add(PostDto.builder()
+                .postId(1L)
+                .profileImg("s3 img")
+                .userId(UUID)
+                .nickname("nickname")
+                .contents("게시글 내용")
+                .commentCount(3L)
+                .createdAt(LocalDate.now())
+                .isLiked(false)
+                .tags(tags)
+                .imageUrl("s3 url")
+                .build());
+        result.add(PostDto.builder()
+                .postId(1L)
+                .profileImg("s3 img")
+                .userId(UUID)
+                .nickname("nickname")
+                .contents("게시글 내용")
+                .commentCount(3L)
+                .createdAt(LocalDate.now())
+                .isLiked(false)
+                .tags(tags)
+                .imageUrl("s3 url")
+                .build());
+
+        SliceDto<PostDto> postDtoSliceDto = new SliceDto<>();
+        postDtoSliceDto.setContent(result);
+        postDtoSliceDto.setPage(1);
+        postDtoSliceDto.setSize(10);
+        postDtoSliceDto.setHasNext(false);
+
+        when(postService.findFriendPost(any(), any(), any(), any()))
+                .thenReturn(new PostListRes(postDtoSliceDto));
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -663,6 +703,54 @@ public class PostControllerTest {
                         ))
                 );
 
+    }
+
+    @Test
+    public void 게시글_목록_조회_실패_유효하지_않은_친구_아이디() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        when(postService.findFriendPost(any(), any(), any(), any()))
+                .thenThrow(new CustomException(FRIEND_NOT_FOUND));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/posts/friends/{userId}", "dfsdfds0sg-4r43rdsfgdsf-dfsfgvdsgv")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_NOT_FOUND.getMessage()))
+                .andDo(print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "친구 Post 목록 조회 실패 - 유효하지 않은 친구 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("친구 Post 목록 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .pathParameters(
+                                        parameterWithName("lastPostId").description("마지막 Post Id (Optional)").optional(),
+                                        parameterWithName("userId").description("친구 Id(UUID)")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("친구 Post 목록 조회 Request"))
+                                .responseSchema(Schema.schema("친구 Post 목록 조회 Response"))
+                                .build()
+                        ))
+                );
     }
 
     @Test

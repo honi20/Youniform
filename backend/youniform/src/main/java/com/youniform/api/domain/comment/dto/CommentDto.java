@@ -24,10 +24,14 @@ public class CommentDto {
                 .commentId(comment.getId())
                 .imgUrl(comment.getUser().getProfileUrl())
                 .nickname(comment.getUser().getProfileUrl())
-                .userId(comment.getUser().getProfileUrl())
+                .userId(comment.getUser().getUuid())
                 .contents(comment.getContent())
                 .createdAt(calculateTime(comment.getCreatedAt()))
-                .updatedAt(calculateTime(comment.getUpdatedAt()))
+                .updatedAt(convertTime(comment))
                 .build();
+    }
+
+    private static String convertTime(Comment comment) {
+        return comment.getUpdatedAt() == null ? "" : calculateTime(comment.getUpdatedAt());
     }
 }

@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static com.youniform.api.global.statuscode.ErrorCode.ALERT_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
 @Transactional
@@ -115,7 +114,9 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public void send(String receiverUuid, Long senderId, AlertType type, String content, String link) {
-		Users receiver = userRepository.findByUuid(receiverUuid);
+		Users receiver = userRepository.findByUuid(receiverUuid)
+				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
+
 		Users sender = userRepository.findById(senderId)
 				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
