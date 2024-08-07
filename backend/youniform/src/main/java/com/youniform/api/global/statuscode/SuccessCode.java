@@ -81,6 +81,9 @@ public enum SuccessCode {
     // chat success code
     CHATROOM_DETAILS_OK(HttpStatus.OK.value(), "채팅방 조회에 성공했습니다."),
     CHATROOM_LIST_OK(HttpStatus.OK.value(), "채팅방 리스트 조회에 성공했습니다."),
+
+    // player success code
+    PLAYER_LIST_OK(HttpStatus.OK.value(), "선수 리스트 조회에 성공했습니다"),
     ;
 
     private final int httpStatusCode;
