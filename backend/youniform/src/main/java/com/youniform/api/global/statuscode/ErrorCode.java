@@ -58,7 +58,10 @@ public enum ErrorCode {
     INVALID_TAG_FORM(HttpStatus.BAD_REQUEST.value(), "태그에는 띄어쓰기를 하실 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 게시글 ID 입니다."),
     POST_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "게시글 수정은 작성자만 수정이 가능합니다."),
-    POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "게시글 삭제는 작성자만 가능합니다.")
+    POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "게시글 삭제는 작성자만 가능합니다."),
+
+    //comment error
+    INVALID_COMMENT_CONTENTS(HttpStatus.BAD_REQUEST.value(), "댓글은 null이거나 공백일 수 없습니다.")
     ;
 
     private final int httpStatusCode;
