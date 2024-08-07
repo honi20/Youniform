@@ -28,12 +28,12 @@ export const ChatContainer = styled.div`
   align-items: ${(props) => (props.$isUser ? "flex-end" : "flex-start")};
   flex-direction: column;
   padding: 0.25rem 0.5rem;
-  /* border: 1px solid black; */
+  border: 1px solid black;
 `;
 export const ChatWrapper = styled.div`
   max-width: 80%;
   /* padding: 1rem 1rem; */
-  border: 1px solid burlywood;
+  /* border: 1px solid burlywood; */
 `;
 export const ChatInfo = styled.div`
   display: flex;

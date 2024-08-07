@@ -150,7 +150,7 @@ function App() {
                 <Route path="/team-song/:id" element={<TeamSongView />} />
                 <Route path="/player-song/:id" element={<PlayerSongView />} />
                 {/* 채팅 관련 */}
-                <Route path="/chat/:room-id" element={<ChatView />} />
+                <Route path="/chat/:roomId" element={<ChatView />} />
                 <Route path="/setting/*">
                   <Route index element={<SettingView />} />
                   <Route

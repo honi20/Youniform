@@ -17,12 +17,12 @@ const useDiaryStore = create((set) => ({
         calendarDate: "2024-07",
       },
     })
-    .then((res) => {
-      set({ monthlyDiaries: res.data.body.diaryList });
-    })
-    .catch((err) => {
-      console("Failed to fetch monthlyDiaries", err);
-    });
+      .then((res) => {
+        set({ monthlyDiaries: res.data.body.diaryList });
+      })
+      .catch((err) => {
+        console("Failed to fetch monthlyDiaries", err);
+      });
   },
   fetchFriendsDiaries: async (userId, date) => {
     const res = await axios({
@@ -36,13 +36,13 @@ const useDiaryStore = create((set) => ({
         calendarDate: "2024-07",
       },
     })
-    .then((res) => {
-      set({ monthlyDiaries: res.data.body.diaryList });
-      console.log(monthlyDiaries);
-    })
-    .catch((err) => {
-      console("Failed to fetch monthlyDiaries", err);
-    });      
+      .then((res) => {
+        set({ monthlyDiaries: res.data.body.diaryList });
+        console.log(monthlyDiaries);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch monthlyDiaries", err);
+      });
   },
   fetchDiaries: async () => {
     await axios({
