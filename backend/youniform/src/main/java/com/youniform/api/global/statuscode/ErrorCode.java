@@ -11,6 +11,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "사용자를 찾을 수 없습니다."),
     INVALID_SIGNUP(HttpStatus.BAD_REQUEST.value(), "잘못된 회원가입 요청입니다."),
     PROFILE_MOIDFY_FAILED(HttpStatus.BAD_REQUEST.value(), "프로필을 변경하지 못하였습니다."),
+    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "프로필을 찾지 못하였습니다."),
 
     // diary error code
     DIARY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 다이어리 ID 입니다."),

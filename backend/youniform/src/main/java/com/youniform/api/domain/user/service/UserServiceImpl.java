@@ -1,6 +1,7 @@
 package com.youniform.api.domain.user.service;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.youniform.api.domain.friend.service.FriendService;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.entity.Users;
@@ -17,10 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.youniform.api.domain.user.entity.QUsers.users;
+import static com.youniform.api.global.statuscode.ErrorCode.PROFILE_NOT_FOUND;
 import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
 @Service
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private final JPAQueryFactory queryFactory;
     private final PasswordEncoder passwordEncoder;
+    private final FriendService friendService;
     private final S3Service s3Service;
 
     @Transactional
@@ -89,20 +91,37 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public ProfileModifyRes modifyProfile(ProfileModifyReq req, MultipartFile file, Long userId) throws Exception {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    public ProfileModifyRes modifyProfile(ProfileModifyReq req, MultipartFile file, Long userId) throws IOException {
+        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        user.updateIntroduce(req.getIntroduce());
+        user.updateNickname(req.getNickname());
 
         if(!file.isEmpty()) {
             if(!user.getProfileUrl().isEmpty()) {
                 s3Service.fileDelete(user.getProfileUrl());
             }
-            String profileUrl = s3Service.upload(file, "profile");
-            user.updateProfileUrl(profileUrl);
+            String imgUrl = s3Service.upload(file, "profile");
+            user.updateProfileUrl(imgUrl);
         }
-
         userRepository.save(user);
-        ProfileModifyRes result =  new ProfileModifyRes();
-        return result.toDto(user);
+        ProfileModifyRes res = ProfileModifyRes.builder().build();
+        return res.toDto(user);
+    }
+
+    @Override
+    public UserDetailsRes findUserDetails(Long myUserId, String uuid){
+        Users user = userRepository.findByUuid(uuid).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(user == null) throw new CustomException(PROFILE_NOT_FOUND);
+        String isFriend = friendService.isFriend(myUserId, user.getId()).toString();
+        if(isFriend == null) isFriend = "NOT_FRIEND";
+        UserDetailsRes userDetail = UserDetailsRes.builder().build();
+        return userDetail.toDto(user, isFriend);
+    }
+
+    @Override
+    public MyDetailsRes findMyDetails(Long userId) {
+        Users myDetail = userRepository.findById(userId).orElseThrow();
+        MyDetailsRes myDetails = MyDetailsRes.builder().build();
+        return myDetails.toDto(myDetail);
     }
 }

@@ -19,13 +19,16 @@ public class UserDetailsRes {
 
     private String teamImage;
 
-    public UserDetailsRes toDto(Users user) {
+    private String isFriend;
+
+    public UserDetailsRes toDto(Users user, String isFriend) {
         return UserDetailsRes.builder()
                 .userId(user.getUuid())
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
                 .profileUrl(user.getProfileUrl())
                 .teamImage(user.getTeam().getImgUrl())
+                .isFriend(isFriend)
                 .build();
     }
 }
