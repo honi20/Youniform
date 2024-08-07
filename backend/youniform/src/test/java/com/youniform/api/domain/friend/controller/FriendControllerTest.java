@@ -5,6 +5,10 @@ import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
 import com.youniform.api.domain.friend.dto.FriendAcceptReq;
 import com.youniform.api.domain.friend.dto.FriendRequestReq;
+import com.youniform.api.domain.friend.service.FriendService;
+import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.repository.UserRepository;
+import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +25,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Optional;
+
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.youniform.api.global.statuscode.ErrorCode.FRIEND_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +62,9 @@ public class FriendControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private FriendService friendService;
 
     @Test
     public void 친구_요청_성공() throws Exception {
@@ -104,6 +115,117 @@ public class FriendControllerTest {
                                 )
                                 .requestSchema(Schema.schema("Friend 요청 Request"))
                                 .responseSchema(Schema.schema("Friend 요청 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 친구_요청_실패_유효하지_않은_친구_아이디() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFriendUuid("1604b772-adc0-4212-8a90-8");
+
+        //when
+        when(friendService.requestFriend(any(), any()))
+                .thenThrow(new CustomException(FRIEND_NOT_FOUND));
+
+        String content = gson.toJson(friendRequestReq);
+
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+
+        );
+
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "Friend 요청 실패 - 친구 없음",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("Friend 요청 실패 - 친구 없음 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("friendUuid").type(JsonFieldType.STRING)
+                                                .description("요청 할 친구 ID(UUID)")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Friend 요청 실패 - 친구 없음 Request"))
+                                .responseSchema(Schema.schema("Friend 요청 실패 - 친구 없음 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 친구_요청_실패_사용자_없음() throws Exception {
+        // given
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFriendUuid("1604b772-adc0-4212-8a90-81186c57f598");
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        String content = gson.toJson(friendRequestReq);
+
+        // when
+//        when(jwtService.getUserId(any())).thenThrow(new CustomException(USER_NOT_FOUND));
+        when(friendService.requestFriend(any(), any())).thenThrow(new CustomException(USER_NOT_FOUND));
+
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        // then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(USER_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "Friend 요청 실패 - 사용자 없음",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("Friend 요청 실패 - 사용자 없음 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("friendUuid").type(JsonFieldType.STRING)
+                                                .description("요청 할 친구 ID(UUID)")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Friend 요청 실패 - 사용자 없음 Request"))
+                                .responseSchema(Schema.schema("Friend 요청 실패 - 사용자 없음 Response"))
                                 .build()
                         ))
                 );
