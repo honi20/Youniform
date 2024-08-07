@@ -42,6 +42,8 @@ import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -1125,6 +1127,76 @@ public class PostControllerTest {
     }
 
     @Test
+    public void 게시글_수정_실패_나의_게시글이_아닌_경우() throws Exception {
+        // given
+        List<String> tagList = new ArrayList<>();
+        tagList.add("김도영");
+        tagList.add("잠실");
+        tagList.add("기아");
+        tagList.add("도영이");
+        tagList.add("도영이짱5");
+        tagList.add("도영이짱6");
+        tagList.add("도영이짱7");
+        tagList.add("도영이짱8");
+        tagList.add("도영이짱9");
+
+        PostModifyReq postModifyReq = new PostModifyReq();
+        postModifyReq.setContents("테스트111");
+        postModifyReq.setTags(tagList);
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        when(postService.modifyPost(any(), any(), any(), any()))
+                .thenThrow(new CustomException(POST_UPDATE_FORBIDDEN));
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(postModifyReq));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                multipart("/posts/{postId}", 1L)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                        })
+        );
+
+        //then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(POST_UPDATE_FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(POST_UPDATE_FORBIDDEN.getMessage()))
+                .andDo(print())
+                .andDo(document(
+                        "Post 수정 실패 - 나의 게시글이 아닌 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("Post 수정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Post 수정 Request"))
+                                .responseSchema(Schema.schema("Post 수정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
     public void 게시글_삭제_성공() throws Exception {
         //given
         String jwtToken = jwtService.createAccessToken(UUID);
@@ -1163,4 +1235,92 @@ public class PostControllerTest {
                         ))
                 );
     }
+
+    @Test
+    public void 게시글_삭제_실패_유효하지_않은_게시글_아이디() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        doThrow(new CustomException(POST_NOT_FOUND))
+                .when(postService).removePost(anyLong(), anyLong());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/posts/{postId}", 10000L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(POST_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(POST_NOT_FOUND.getMessage()))
+                .andDo(MockMvcRestDocumentation.document(
+                        "Post 삭제 실패 - 유효하지 않은 게시글 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("Post 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Post 삭제 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 게시글_삭제_실패_나의_게시글이_아닌_경우() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        doThrow(new CustomException(POST_DELETE_FORBIDDEN))
+                .when(postService).removePost(anyLong(), anyLong());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/posts/{postId}", 2L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(POST_DELETE_FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(POST_DELETE_FORBIDDEN.getMessage()))
+                .andDo(MockMvcRestDocumentation.document(
+                        "Post 삭제 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Post API")
+                                .summary("Post 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("본문 없음")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Post 삭제 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+
 }

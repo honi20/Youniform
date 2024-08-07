@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.youniform.api.global.statuscode.ErrorCode.POST_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +81,10 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
+        if(!post.getUser().getId().equals(userId)) {
+            throw new CustomException(POST_UPDATE_FORBIDDEN);
+        }
+
         List<TagDto> tagDtoList = new ArrayList<>();
 
         if(!file.isEmpty()) {
@@ -112,6 +115,26 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
 
         return PostModifyRes.toDto(post, tagDtoList, user.getUuid());
+    }
+
+    @Override
+    public void removePost(Long postId, Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+
+        if(!post.getUser().getId().equals(userId)) {
+            throw new CustomException(POST_DELETE_FORBIDDEN);
+        }
+
+        if(!post.getImgUrl().isEmpty()) {
+            s3Service.fileDelete(post.getImgUrl());
+        }
+
+        postTagRepository.deletePostTagsByPostId(post.getId());
+        postRepository.delete(post);
     }
 
     private String replaceEnter(String contents) {
