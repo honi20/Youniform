@@ -25,12 +25,18 @@ public class FriendServiceImpl implements FriendService {
     private final UserRepository userRepository;
 
     @Override
+    public Status isFriend(Long userId, Long friendId) {
+        return null;
+    }
+
+    @Override
     @Transactional
     public FriendRequestReq requestFriend(Long userId, String friendUuid) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        Users friend = userRepository.findByUuid(friendUuid);
+        Users friend = userRepository.findByUuid(friendUuid)
+                .orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
 
         if (friend == null) {
             throw new CustomException(FRIEND_NOT_FOUND);

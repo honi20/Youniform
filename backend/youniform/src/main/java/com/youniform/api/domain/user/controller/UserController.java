@@ -15,8 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import static com.youniform.api.domain.user.entity.Theme.MONSTERS;
-import static com.youniform.api.global.statuscode.ErrorCode.INVALID_SIGNUP;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
@@ -59,29 +58,18 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> myDetails() {
-        MyDetailsRes result = MyDetailsRes.builder()
-                .nickname("bebebe")
-                .introduce("기아 짱팬")
-                .profileUrl("S3 URL")
-                .theme(MONSTERS)
-                .pushAlert(true)
-                .teamImage("team S3 URL")
-                .build();
-
-        return new ResponseEntity<>(ResponseDto.success(USER_DETAILS_OK, result), HttpStatus.OK);
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        MyDetailsRes result = userService.findMyDetails(userId);
+        return new ResponseEntity<>(ResponseDto.success(USER_DETAILS_OK, result),
+                HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> userDetails(@PathVariable("userId") String userId) {
-        UserDetailsRes result = UserDetailsRes.builder()
-                .userId("dsf394dsf0sd9fs")
-                .nickname("bebebe")
-                .introduce("기아 짱팬")
-                .profileUrl("S3 URL")
-                .teamImage("team S3 URL")
-                .build();
-
-        return new ResponseEntity<>(ResponseDto.success(USER_DETAILS_OK, result), HttpStatus.OK);
+    public ResponseEntity<?> userDetails(@PathVariable("userId") String userId) throws Exception {
+        Long myUserId = jwtService.getUserId(SecurityContextHolder.getContext());
+        UserDetailsRes result = userService.findUserDetails(myUserId, userId);
+        return new ResponseEntity<>(ResponseDto.success(USER_DETAILS_OK, result),
+                HttpStatus.OK);
     }
 
     @PatchMapping("/profile")

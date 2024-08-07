@@ -5,6 +5,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
 import com.youniform.api.domain.user.dto.*;
+import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.service.UserServiceImpl;
 import com.youniform.api.global.jwt.service.JwtServiceImpl;
 import jakarta.transaction.Transactional;
@@ -387,6 +388,16 @@ public class UserControllerTest {
         String jwtToken = jwtService.createAccessToken(UUID);
 
         //when
+        when(userService.findMyDetails(any())).thenReturn(
+                MyDetailsRes.builder()
+                        .nickname("닉네임")
+                        .theme(Theme.MONSTERS)
+                        .pushAlert(true)
+                        .teamImage("최애 팀 이미지 url")
+                        .introduce("자기소개")
+                        .profileUrl("프로필 이미지 url")
+                        .build()
+        );
         ResultActions actions = mockMvc.perform(
                 get("/users")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -437,6 +448,16 @@ public class UserControllerTest {
         String jwtToken = jwtService.createAccessToken(UUID);
 
         //when
+        when(userService.findUserDetails(any(), any())).thenReturn(
+                UserDetailsRes.builder()
+                        .userId(UUID)
+                        .nickname("닉네임")
+                        .teamImage("팀 이미지")
+                        .introduce("자기소개")
+                        .profileUrl("s3 url")
+                        .isFriend("NOTFRIEND / WATTING / FRIEND")
+                        .build()
+        );
         ResultActions actions = mockMvc.perform(
                 get("/users/{userId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -470,7 +491,9 @@ public class UserControllerTest {
                                                 fieldWithPath("body.profileUrl").type(JsonFieldType.STRING)
                                                         .description("회원 프로필 Url"),
                                                 fieldWithPath("body.teamImage").type(JsonFieldType.STRING)
-                                                        .description("응원하는 팀 이미지 url")
+                                                        .description("응원하는 팀 이미지 url"),
+                                                fieldWithPath("body.isFriend").type(JsonFieldType.STRING)
+                                                        .description("친구여부(친구X, 요청대기, 친구O)")
                                         )
                                 )
                                 .responseSchema(Schema.schema("유저 정보 조회 Response"))
