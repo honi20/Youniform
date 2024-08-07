@@ -425,7 +425,7 @@ public class DiaryControllerTest {
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("calendarDate", "2024-07-01"));
+                        .param("calendarDate", "2024-07"));
 
         actions
                 .andExpect(status().isOk())
@@ -458,6 +458,48 @@ public class DiaryControllerTest {
     }
 
     @Test
+    public void 다이어리_월간_마이리스트_조회_실패_잘못된_날짜_형식() throws Exception {
+        List<DiaryMonthlyDto> diaryList = new ArrayList<>();
+        diaryList.add(new DiaryMonthlyDto(124L, LocalDate.parse("2024-07-01"), "http://youniform.com/sticker1.png"));
+        diaryList.add(new DiaryMonthlyDto(125L, LocalDate.parse("2024-07-12"), "http://youniform.com/sticker1.png"));
+        diaryList.add(new DiaryMonthlyDto(123L, LocalDate.parse("2024-07-31"), "http://youniform.com/sticker1.png"));
+
+        when(diaryService.findMyMonthlyDiaries(anyLong(), any())).thenThrow(new CustomException(INVALID_CALENDAR_DATE));
+
+        ResultActions actions = mockMvc.perform(
+                get("/diaries/monthly")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("calendarDate", "2024-07-01"));
+
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_CALENDAR_DATE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_CALENDAR_DATE.getMessage()))
+                .andDo(document(
+                        "Diary 월간 마이리스트 조회 실패 - 잘못된 캘린더 날짜 형식 (yyyy-mm 형식 맞추기)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Diary API")
+                                .summary("Diary 월간 마이리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("calendarDate").description("다이어리 조회할 월간 (yyyy-mm)")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
     public void 다이어리_월간_리스트_조회_성공() throws Exception {
         List<DiaryMonthlyDto> diaryList = new ArrayList<>();
         diaryList.add(new DiaryMonthlyDto(124L, LocalDate.parse("2024-07-01"), "http://youniform.com/sticker1.png"));
@@ -471,7 +513,7 @@ public class DiaryControllerTest {
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("calendarDate", "2024-07-01"));
+                        .param("calendarDate", "2024-07"));
 
         actions
                 .andExpect(status().isOk())

@@ -46,4 +46,13 @@ public class DiaryValidation {
 			throw new CustomException(INVALID_DIARY_SCOPE);
 		}
 	}
+
+	public static void isInvalidCalendarDate(String calendarDate) {
+		System.out.println(calendarDate);
+		try {
+			LocalDate.parse(calendarDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		} catch (DateTimeParseException e) {
+			throw new CustomException(INVALID_CALENDAR_DATE);
+		}
+	}
 }

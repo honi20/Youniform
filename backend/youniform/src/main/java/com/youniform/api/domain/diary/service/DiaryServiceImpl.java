@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,7 +112,7 @@ public class DiaryServiceImpl implements DiaryService {
 
 	@Override
 	public DiaryListRes findDiaries(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
-		Users user = userRepository.findByUuid(userUuid);
+//		Users user = userRepository.findByUuid(userUuid);
 
 		// [TODO] 친구 여부에 따른 다이어리 리스트 필터링 (공개 범위)
 
@@ -119,7 +120,7 @@ public class DiaryServiceImpl implements DiaryService {
 		int pageSize = pageable.getPageSize();
 		boolean isAscending = pageable.getSort().stream().anyMatch(Sort.Order::isAscending);
 
-		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(user.getId(), lastDiaryDate, pageSize, isAscending);
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(123L, lastDiaryDate, pageSize, isAscending);
 
 		List<DiaryListDto> diaryList = diaries.stream()
 				.map(DiaryListDto::toDto)
@@ -139,7 +140,10 @@ public class DiaryServiceImpl implements DiaryService {
 
 	@Override
 	public DiaryMonthlyListRes findMyMonthlyDiaries(Long userId, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
-		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(userId, diaryMonthlyListReq.getCalendarDate());
+		isInvalidCalendarDate(diaryMonthlyListReq.getCalendarDate() + "-01");
+
+		LocalDate date = LocalDate.parse(diaryMonthlyListReq.getCalendarDate() + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(userId, date);
 
 		List<DiaryMonthlyDto> diaryList = diaries.stream()
 				.map(DiaryMonthlyDto::toDto)
@@ -150,11 +154,15 @@ public class DiaryServiceImpl implements DiaryService {
 
 	@Override
 	public DiaryMonthlyListRes findMonthlyDiaries(String userUuid, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
-		Users user = userRepository.findByUuid(userUuid);
+//		Users user = userRepository.findByUuid(userUuid);
 
 		// [TODO] 친구 여부에 따른 다이어리 리스트 필터링 (공개 범위)
 
-		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(user.getId(), diaryMonthlyListReq.getCalendarDate());
+		isInvalidCalendarDate(diaryMonthlyListReq.getCalendarDate() + "-01");
+
+		LocalDate date = LocalDate.parse(diaryMonthlyListReq.getCalendarDate() + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(123L, date);
 
 		List<DiaryMonthlyDto> diaryList = diaries.stream()
 				.map(DiaryMonthlyDto::toDto)
