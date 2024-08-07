@@ -1,9 +1,6 @@
 package com.youniform.api.domain.photocard.service;
 
-import com.youniform.api.domain.photocard.dto.PhotocardAddReq;
-import com.youniform.api.domain.photocard.dto.PhotocardAddRes;
-import com.youniform.api.domain.photocard.dto.PhotocardDeleteReq;
-import com.youniform.api.domain.photocard.dto.PhotocardDetailDto;
+import com.youniform.api.domain.photocard.dto.*;
 import com.youniform.api.domain.photocard.entity.Photocard;
 import com.youniform.api.domain.photocard.repository.PhotocardRepository;
 import com.youniform.api.domain.user.entity.Users;
@@ -67,5 +64,16 @@ public class PhotocardServiceImpl implements PhotocardService {
 		});
 
 		photocardRepository.deleteAllById(photocardIdList);
+	}
+
+	@Override
+	public PhotocardListRes findPhotocards(Long userId) {
+		List<Photocard> photocards = photocardRepository.findByUserId(userId);
+
+		List<PhotocardDetailDto> photocardList = photocards.stream()
+				.map(PhotocardDetailDto::toDto)
+				.toList();
+
+		return new PhotocardListRes(photocardList);
 	}
 }
