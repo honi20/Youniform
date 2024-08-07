@@ -84,6 +84,9 @@ public enum SuccessCode {
 
     // player success code
     PLAYER_LIST_OK(HttpStatus.OK.value(), "선수 리스트 조회에 성공했습니다"),
+
+    // team success code
+    TEAM_SONG_LIST_OK(HttpStatus.OK.value(), "최애 구단 응원가 리스트 조회에 성공했습니다."),
     ;
 
     private final int httpStatusCode;
