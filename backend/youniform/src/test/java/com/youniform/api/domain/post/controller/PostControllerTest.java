@@ -9,6 +9,7 @@ import com.youniform.api.domain.comment.dto.CommentDto;
 import com.youniform.api.domain.post.dto.*;
 import com.youniform.api.domain.post.service.PostService;
 import com.youniform.api.domain.tag.dto.TagDto;
+import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import org.junit.jupiter.api.DisplayName;
@@ -368,6 +369,46 @@ public class PostControllerTest {
     public void 전체_게시글_목록_조회_성공() throws Exception {
         //given
         String jwtToken = jwtService.createAccessToken(UUID);
+        List<TagDto> tags = new ArrayList<>();
+        tags.add(TagDto.builder()
+                        .contents("태그1")
+                        .tagId(1L)
+                .build());
+
+        List<PostDto> result = new ArrayList<>();
+        result.add(PostDto.builder()
+                    .postId(1L)
+                    .profileImg("s3 img")
+                    .userId(UUID)
+                    .nickname("nickname")
+                    .contents("게시글 내용")
+                    .commentCount(3L)
+                    .createdAt(LocalDate.now())
+                    .isLiked(false)
+                    .tags(tags)
+                    .imageUrl("s3 url")
+                .build());
+        result.add(PostDto.builder()
+                    .postId(1L)
+                    .profileImg("s3 img")
+                    .userId(UUID)
+                    .nickname("nickname")
+                    .contents("게시글 내용")
+                    .commentCount(3L)
+                    .createdAt(LocalDate.now())
+                    .isLiked(false)
+                    .tags(tags)
+                    .imageUrl("s3 url")
+                .build());
+
+        SliceDto<PostDto> postDtoSliceDto = new SliceDto<>();
+        postDtoSliceDto.setContent(result);
+        postDtoSliceDto.setPage(1);
+        postDtoSliceDto.setSize(10);
+        postDtoSliceDto.setHasNext(false);
+
+        when(postService.findPublicPosts(any(), any(), any()))
+                .thenReturn(new PostListRes(postDtoSliceDto));
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -441,6 +482,46 @@ public class PostControllerTest {
     public void 나의_게시글_목록_조회_성공() throws Exception {
         //given
         String jwtToken = jwtService.createAccessToken(UUID);
+        List<TagDto> tags = new ArrayList<>();
+        tags.add(TagDto.builder()
+                .contents("태그1")
+                .tagId(1L)
+                .build());
+
+        List<PostDto> result = new ArrayList<>();
+        result.add(PostDto.builder()
+                .postId(1L)
+                .profileImg("s3 img")
+                .userId(UUID)
+                .nickname("nickname")
+                .contents("게시글 내용")
+                .commentCount(3L)
+                .createdAt(LocalDate.now())
+                .isLiked(false)
+                .tags(tags)
+                .imageUrl("s3 url")
+                .build());
+        result.add(PostDto.builder()
+                .postId(1L)
+                .profileImg("s3 img")
+                .userId(UUID)
+                .nickname("nickname")
+                .contents("게시글 내용")
+                .commentCount(3L)
+                .createdAt(LocalDate.now())
+                .isLiked(false)
+                .tags(tags)
+                .imageUrl("s3 url")
+                .build());
+
+        SliceDto<PostDto> postDtoSliceDto = new SliceDto<>();
+        postDtoSliceDto.setContent(result);
+        postDtoSliceDto.setPage(1);
+        postDtoSliceDto.setSize(10);
+        postDtoSliceDto.setHasNext(false);
+
+        when(postService.findMyPosts(any(), any(), any()))
+                .thenReturn(new PostListRes(postDtoSliceDto));
 
         //when
         ResultActions actions = mockMvc.perform(
