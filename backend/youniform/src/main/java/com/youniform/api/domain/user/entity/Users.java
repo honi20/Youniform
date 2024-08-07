@@ -47,4 +47,8 @@ public class Users {
     private LocalDateTime lastWriteDiary;
 
     private String uuid;
+
+    public void updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
 }

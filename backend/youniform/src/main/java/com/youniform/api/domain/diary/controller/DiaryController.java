@@ -2,7 +2,8 @@ package com.youniform.api.domain.diary.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.youniform.api.domain.diary.dto.*;
-import com.youniform.api.domain.diary.dto.resource.*;
+import com.youniform.api.domain.diary.dto.resource.ResourceListRes;
+import com.youniform.api.domain.diary.dto.resource.StampListRes;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.service.JwtService;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

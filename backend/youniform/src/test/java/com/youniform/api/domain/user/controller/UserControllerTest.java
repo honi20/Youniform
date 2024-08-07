@@ -23,6 +23,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ import java.util.List;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -49,6 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(RestDocumentationExtension.class)
 @DisplayName("유저 API 명세서")
 @WithMockUser
+@CrossOrigin("*")
 public class UserControllerTest {
     private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
 
@@ -490,6 +494,13 @@ public class UserControllerTest {
         String jwtToken = jwtService.createAccessToken(UUID);
 
         //when
+        when(userService.modifyProfile(any(), any(), any())).thenReturn(
+                ProfileModifyRes.builder()
+                        .nickname("수정 된 닉네임")
+                        .introduce("수정 된 한줄 소개")
+                        .profileUrl("수정 된 프로필 사진")
+                        .build()
+        );
         ResultActions actions = mockMvc.perform(
                 multipart("/users/profile")
                         .file(file)
@@ -658,7 +669,6 @@ public class UserControllerTest {
 //        );
 
         //when
-//        when().thenReturn(null);
         ResultActions actions = mockMvc.perform(
                 patch("/users/resign")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -712,27 +722,27 @@ public class UserControllerTest {
         );
 
         //then
-//        actions
-//                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_SIGNIN_SUCCESS.getHttpStatusCode()))
-//                .andExpect(jsonPath("$.header.message").value(USER_SIGNIN_SUCCESS.getMessage()))
-//                .andDo(document(
-//                        "로컬 로그인 성공",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        resource(ResourceSnippetParameters.builder()
-//                                .tag("User API")
-//                                .summary("로컬 로그인 API")
-//                                .requestFields(
-//                                        fieldWithPath("email").type(JsonFieldType.STRING)
-//                                                .description("이메일"),
-//                                        fieldWithPath("password").type(JsonFieldType.STRING)
-//                                                .description("비밀번호")
-//                                )
-//                                .requestSchema(Schema.schema("로컬 로그인 Request"))
-//                                .responseSchema(Schema.schema("로컬 로그인 Response"))
-//                                .build()
-//                        ))
-//                );
+        actions
+                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_SIGNIN_SUCCESS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(USER_SIGNIN_SUCCESS.getMessage()))
+                .andDo(document(
+                        "로컬 로그인 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("로컬 로그인 API")
+                                .requestFields(
+                                        fieldWithPath("email").type(JsonFieldType.STRING)
+                                                .description("이메일"),
+                                        fieldWithPath("password").type(JsonFieldType.STRING)
+                                                .description("비밀번호")
+                                )
+                                .requestSchema(Schema.schema("로컬 로그인 Request"))
+                                .responseSchema(Schema.schema("로컬 로그인 Response"))
+                                .build()
+                        ))
+                );
     }
 
     @Test

@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -81,7 +83,7 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
 
-            ResponseDto<Object> res = ResponseDto.success(REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
+            ResponseEntity<ResponseDto<?>> res = new ResponseEntity<>(ResponseDto.success(REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid)), HttpStatus.FORBIDDEN);
             ObjectMapper mapper = new ObjectMapper();
             response.getWriter().write(mapper.writeValueAsString(res));
         }

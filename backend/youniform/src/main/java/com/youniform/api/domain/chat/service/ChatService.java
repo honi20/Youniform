@@ -6,7 +6,6 @@ import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
 import com.youniform.api.domain.chat.dto.ChatRoomListRes;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.global.dto.SliceDto;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface ChatService {
     ChatRoomListRes getChatRoomList(Long userId);
