@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.photocard.dto.PhotocardAddReq;
 import com.youniform.api.domain.photocard.dto.PhotocardAddRes;
+import com.youniform.api.domain.photocard.dto.PhotocardDeleteReq;
 import com.youniform.api.domain.photocard.dto.PhotocardDetailDto;
 import com.youniform.api.domain.photocard.service.PhotocardService;
 import com.youniform.api.global.exception.CustomException;
@@ -33,18 +34,20 @@ import java.util.List;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.ErrorCode.PHOTOCARD_ACCESS_FORBIDDEN;
 import static com.youniform.api.global.statuscode.ErrorCode.PHOTOCARD_NOT_FOUND;
-import static com.youniform.api.global.statuscode.SuccessCode.PHOTOCARD_CREATED;
-import static com.youniform.api.global.statuscode.SuccessCode.PHOTOCARD_DETAILS_OK;
+import static com.youniform.api.global.statuscode.SuccessCode.*;
+import static com.youniform.api.global.statuscode.SuccessCode.PHOTOCARD_DELETED;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -229,70 +232,130 @@ class PhotocardControllerTest {
                 );
     }
 
-//    @Test
-//    public void 포토카드_삭제_성공() throws Exception {
-//        String jwtToken = jwtService.createAccessToken(UUID);
-//
-//        ResultActions actions = mockMvc.perform(
-//                delete("/photocards/{photocardId}", 1L)
-//                        .header("Authorization", "Bearer " + jwtToken)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .with(csrf())
-//        );
-//
-//        actions.andExpect(status().isOk())
-//                .andDo(document("Photocard 삭제 성공",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        resource(ResourceSnippetParameters.builder()
-//                                .tag("Photocard API")
-//                                .summary("Photocard 삭제 API")
-//                                .requestHeaders(
-//                                        headerWithName("Authorization").description("JWT 토큰")
-//                                )
-//                                .responseFields(
-//                                        getCommonResponseFields(
-//                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("response body").optional().ignored()
-//                                        )
-//                                )
-//                                .responseSchema(Schema.schema("Photocard 삭제 Response"))
-//                                .build()
-//                        ))
-//                );
-//    }
-//
-//    @Test
-//    public void 포토카드_삭제_실패_존재하지_않는_포토카드() throws Exception {
-//        String jwtToken = jwtService.createAccessToken(UUID);
-//
-//        ResultActions actions = mockMvc.perform(
-//                delete("/photocards/{photocardId}", -1L)
-//                        .header("Authorization", "Bearer " + jwtToken)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .with(csrf())
-//        );
-//
-//        actions.andExpect(status().isNotFound())
-//                .andDo(document("Photocard 삭제 실패 - 존재하지 않는 포토카드",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        resource(ResourceSnippetParameters.builder()
-//                                .tag("Photocard API")
-//                                .requestHeaders(
-//                                        headerWithName("Authorization").description("JWT 토큰")
-//                                )
-//                                .responseFields(
-//                                        getCommonResponseFields(
-//                                                fieldWithPath("body").type(JsonFieldType.OBJECT).description("에러 상세").optional().ignored()
-//                                        )
-//                                )
-//                                .build()
-//                        ))
-//                );
-//    }
-//
+    @Test
+    public void 포토카드_삭제_성공() throws Exception {
+        List<Long> photocardIdList = List.of(123L, 124L);
+        String[] photocardIds = photocardIdList.stream().map(String::valueOf).toArray(String[]::new);
+
+        photocardService.removePhotocard(anyLong(), any(PhotocardDeleteReq.class));
+
+        ResultActions actions = mockMvc.perform(
+                delete("/photocards")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("photocardIdList", photocardIds)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PHOTOCARD_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PHOTOCARD_DELETED.getMessage()))
+                .andDo(document("Photocard 삭제 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Photocard API")
+                                .summary("Photocard 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("photocardIdList").description("삭제할 포토카드 ID 리스트").optional()
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Photocard 삭제 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 포토카드_삭제_실패_존재하지_않는_포토카드() throws Exception {
+        List<Long> photocardIdList = List.of(123L, 128L);
+        String[] photocardIds = photocardIdList.stream().map(String::valueOf).toArray(String[]::new);
+
+        doThrow(new CustomException(PHOTOCARD_NOT_FOUND)).when(photocardService).removePhotocard(anyLong(), any(PhotocardDeleteReq.class));
+
+        ResultActions actions = mockMvc.perform(
+                delete("/photocards")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("photocardIdList", photocardIds)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        actions.andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PHOTOCARD_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PHOTOCARD_NOT_FOUND.getMessage()))
+                .andDo(document("Photocard 삭제 실패 - 존재하지 않는 포토카드 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Photocard API")
+                                .summary("Photocard 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("photocardIdList").description("삭제할 포토카드 ID 리스트").optional()
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 포토카드_삭제_실패_권한_없음() throws Exception {
+        List<Long> photocardIdList = List.of(123L, 125L);
+        String[] photocardIds = photocardIdList.stream().map(String::valueOf).toArray(String[]::new);
+
+        doThrow(new CustomException(PHOTOCARD_ACCESS_FORBIDDEN)).when(photocardService).removePhotocard(anyLong(), any(PhotocardDeleteReq.class));
+
+        ResultActions actions = mockMvc.perform(
+                delete("/photocards")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("photocardIdList", photocardIds)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        actions.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PHOTOCARD_ACCESS_FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PHOTOCARD_ACCESS_FORBIDDEN.getMessage()))
+                .andDo(document("Photocard 삭제 실패 - 권한 없음 (작성자만 삭제 가능)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Photocard API")
+                                .summary("Photocard 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("photocardIdList").description("삭제할 포토카드 ID 리스트").optional()
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        ))
+                );
+    }
+
 //    @Test
 //    public void 포토카드_리스트_조회_성공() throws Exception {
 //        String jwtToken = jwtService.createAccessToken(UUID);
