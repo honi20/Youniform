@@ -54,8 +54,8 @@ public class DiaryController {
 		return new ResponseEntity<>(ResponseDto.success(MY_DIARIES_OK, response), HttpStatus.OK);
 	}
 
-	@GetMapping("/list/{userUuid}")
-	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userUuid") String userUuid) throws JsonProcessingException {
+	@GetMapping("/list/{userId}")
+	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userId") String userUuid) throws JsonProcessingException {
 		DiaryListRes response = diaryService.findDiaries(userUuid, diaryListReq, pageable);
 
 		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);

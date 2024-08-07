@@ -10,5 +10,5 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiaryMonthlyListReq {
-	private LocalDate calendarDate;
+	private String calendarDate;
 }
