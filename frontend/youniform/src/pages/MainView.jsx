@@ -54,7 +54,7 @@ const TextContainer = styled.div`
   line-height: normal;
 `;
 const MainView = () => {
-  const [selectedPlayer, setSelectedPlayer] = useState(0);
+  const [selectedPlayer, setSelectedPlayer] = useState(1);
   const navigate = useNavigate();
 
   const handleSelectPlayer = (playerId) => {
