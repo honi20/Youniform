@@ -1,8 +1,6 @@
 package com.youniform.api.domain.post.dto;
 
-import com.youniform.api.domain.post.entity.Post;
 import com.youniform.api.domain.tag.dto.TagDto;
-import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,23 +26,24 @@ public class PostDto {
 
     private LocalDate createdAt;
 
-    private Integer commentCount;
+    private Long commentCount;
 
     private String userId;
 
     private Boolean isLiked;
 
-    public static PostDto toDto(Post post, Users user, List<TagDto> tags, Integer commentCount, Boolean isLiked) {
+    public static PostDto toDto(PostListDto post, List<TagDto> tags) {
         return PostDto.builder()
-                .postId(post.getId())
-                .profileImg(user.getProfileUrl())
-                .nickname(user.getNickname())
-                .imageUrl(post.getImgUrl())
+                .postId(post.getPostId())
+                .profileImg(post.getProfileImg())
+                .nickname(post.getNickname())
+                .imageUrl(post.getImageUrl())
                 .contents(post.getContents())
                 .tags(tags)
-                .createdAt(post.getDate())
-                .commentCount(commentCount)
-                .userId(user.getUuid())
+                .createdAt(post.getCreatedAt())
+                .commentCount(post.getCommentCount())
+                .userId(post.getUserId())
+                .isLiked(post.getIsLiked())
                 .build();
     }
 }

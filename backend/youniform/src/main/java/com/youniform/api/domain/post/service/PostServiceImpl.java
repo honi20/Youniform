@@ -15,9 +15,12 @@ import com.youniform.api.domain.tag.repository.TagRepository;
 import com.youniform.api.domain.tag.service.TagService;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
+import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -157,6 +160,14 @@ public class PostServiceImpl implements PostService {
         Boolean isLiked = likePostRepository.isLikedPost(postId);
 
         return PostDetailsRes.toDto(post, user, tags, commentList, isMine, isLiked);
+    }
+
+    @Override
+    public PostListRes findPublicPosts(Long userId, PublicPostListReq publicPostListReq, Pageable pageable) {
+        Slice<PostDto> posts = postRepository.findPostByCursor(userId, publicPostListReq.getLastPostId(), pageable);
+
+        SliceDto<PostDto> postDtoSliceDto = new SliceDto<>(posts);
+        return PostListRes.toDto(postDtoSliceDto);
     }
 
     private String replaceEnter(String contents) {
