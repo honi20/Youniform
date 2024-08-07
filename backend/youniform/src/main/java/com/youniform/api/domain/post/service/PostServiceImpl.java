@@ -178,6 +178,18 @@ public class PostServiceImpl implements PostService {
         return PostListRes.toDto(postDtoSliceDto);
     }
 
+    @Override
+    public PostListRes findFriendPost(Long userId, String friendId, FriendPostListReq friendPostListReq, Pageable pageable) {
+        Users user = userRepository.findByUuid(friendId)
+                .orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
+
+
+        Slice<PostDto> posts = postRepository.findFriendPostByCursor(userId, friendId, friendPostListReq.getLastPostId(), pageable);
+
+        SliceDto<PostDto> postDtoSliceDto = new SliceDto<>(posts);
+        return PostListRes.toDto(postDtoSliceDto);
+    }
+
     private String replaceEnter(String contents) {
         return contents.replaceAll("\\r?\\n", "<br/>");
     }
