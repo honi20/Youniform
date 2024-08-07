@@ -26,6 +26,8 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -57,13 +59,15 @@ public class FriendControllerTest {
     public void 친구_요청_성공() throws Exception {
         //given
         FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setId("dstfiposdjfsd0f-sb3t466t54regfdb-dsbsdb4324543");
+        friendRequestReq.setFriendUuid("1604b772-adc0-4212-8a90-81186c57f100");
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
         String content = gson.toJson(friendRequestReq);
 
         //when
+        when(jwtService.getUserId(any())).thenReturn(123L);
+
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -89,7 +93,7 @@ public class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        fieldWithPath("id").type(JsonFieldType.STRING)
+                                        fieldWithPath("friendUuid").type(JsonFieldType.STRING)
                                                 .description("요청 할 친구 ID(UUID)")
                                 )
                                 .responseFields(
@@ -104,7 +108,7 @@ public class FriendControllerTest {
                         ))
                 );
     }
-    
+
     @Test
     public void 친구_요청_수락_성공() throws Exception {
         //given
@@ -201,7 +205,7 @@ public class FriendControllerTest {
                         ))
                 );
     }
-    
+
     @Test
     public void 친구_삭제_성공() throws Exception {
         //given
@@ -246,6 +250,6 @@ public class FriendControllerTest {
                                 .build()
                         ))
                 );
-    
+
     }
 }

@@ -4,6 +4,5 @@ import lombok.Data;
 
 @Data
 public class FriendRequestReq {
-    private String id;
-
+    private String friendUuid;
 }
