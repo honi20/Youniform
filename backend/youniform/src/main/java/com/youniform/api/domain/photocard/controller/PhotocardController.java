@@ -2,6 +2,8 @@ package com.youniform.api.domain.photocard.controller;
 
 import com.youniform.api.domain.photocard.dto.PhotocardAddReq;
 import com.youniform.api.domain.photocard.dto.PhotocardAddRes;
+import com.youniform.api.domain.photocard.dto.PhotocardDetailDto;
+import com.youniform.api.domain.photocard.dto.PhotocardListRes;
 import com.youniform.api.domain.photocard.service.PhotocardService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.exception.CustomException;
@@ -11,6 +13,7 @@ import com.youniform.api.global.statuscode.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,13 +36,12 @@ public class PhotocardController {
 	}
 
 	@GetMapping("/{photocardId}")
-	public ResponseEntity<?> photocardDetails(@PathVariable Long photocardId) throws Exception {
-		if (photocardId == null || photocardId < 0) {
-			throw new CustomException(ErrorCode.PHOTOCARD_NOT_FOUND);
-		}
+	public ResponseEntity<?> photocardDetails(@PathVariable("photocardId") Long photocardId) throws Exception {
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-//		PhotocardDetailsRes response = getPhotocardDetailsRes();
-		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_DETAILS_OK, null), HttpStatus.OK);
+		PhotocardDetailDto response = photocardService.findPhotocard(123L, photocardId);
+
+		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_DETAILS_OK, response), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{photocardId}")

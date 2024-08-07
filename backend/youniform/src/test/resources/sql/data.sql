@@ -61,3 +61,9 @@ VALUES (1, 1),
        (1, 2),
        (1, 3),
        (1, 4);
+
+-- photocard
+INSERT INTO PHOTOCARD(photocard_id, user_id, img_url, created_at)
+VALUES (123L, 123L, 'photocard1.png', CURRENT_TIME),
+       (124L, 123L, 'photocard2.png', CURRENT_TIME),
+       (125L, 124L, 'photocard3.png', CURRENT_TIME);
