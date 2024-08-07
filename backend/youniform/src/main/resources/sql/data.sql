@@ -62,18 +62,22 @@ VALUES ('최강'),
        ('최고'),
        ('홈런');
 
--- post
 INSERT INTO POST(user_id, img_url, contents, date)
 VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png',
         '최강 몬스터즈 진짜 최고!!', current_date),
-       (124, null, '최강 몬스터즈', current_date);
+       (124, null, '최강 몬스터즈1', current_date),
+       (124, null, '최강 몬스터즈2', current_date),
+       (124, null, '최강 몬스터즈3', current_date),
+       (124, null, '최강 몬스터즈4', current_date),
+       (124, null, '최강 몬스터즈5', current_date);
 
 -- post_tag
 INSERT INTO POST_TAG(post_id, tag_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),
-       (1, 4);
+       (1, 4),
+       (2, 2);
 
 -- like_post
 INSERT INTO LIKE_POST(user_id, post_id)

@@ -8,5 +8,5 @@ public class TagPostReq {
     private Long lastPostId;
 
     @NotNull
-    private String name;
+    private Long tagId;
 }

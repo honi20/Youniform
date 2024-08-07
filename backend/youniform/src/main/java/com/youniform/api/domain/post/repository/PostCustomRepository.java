@@ -22,4 +22,9 @@ public interface PostCustomRepository {
     Slice<PostDto> findLikedPostByCursor(@Param("userId") Long userId,
                                           @Param("lastPostId") Long lastPostId,
                                           @Param("pageable") Pageable pageable);
+
+    Slice<PostDto> findTagPostByCursor(@Param("userId") Long userId,
+                                         @Param("tagId") Long tagId,
+                                         @Param("lastPostId") Long lastPostId,
+                                         @Param("pageable") Pageable pageable);
 }
