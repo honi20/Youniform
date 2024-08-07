@@ -17,11 +17,11 @@ VALUES (1, 'http://youniform.com/sticker1.png'),
        (3, 'http://youniform.com/stamp3.png');
 
 -- diary
-INSERT INTO DIARY (diary_id, user_id, stamp_id, diary_date, scope, img_url)
-VALUES (123, 123, 1, '2024-07-31', 'FRIENDS', 'diary1'),
-       (124, 123, 1, '2024-07-01', 'ALL', 'diary2'),
-       (125, 123, 1, '2024-07-12', 'PRIVATE', 'diary3'),
-       (126, 124, 1, '2024-08-01', 'ALL', 'diary4');
+INSERT INTO DIARY (user_id, stamp_id, diary_date, scope, img_url)
+VALUES (123, 1, '2024-07-31', 'FRIENDS', 'diary1'),
+       (123, 1, '2024-07-01', 'ALL', 'diary2'),
+       (123, 1, '2024-07-12', 'PRIVATE', 'diary3'),
+       (124, 1, '2024-08-01', 'ALL', 'diary4');
 
 -- diary resource
 INSERT INTO DIARY_RESOURCE (resource_id, img_url, type, category)
@@ -35,12 +35,12 @@ VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
        (8, 'theme_2.png', 'THEME', 'NONE');
 
 -- alert
-INSERT INTO ALERT(alert_id, receiver_id, sender_id, type, content, link, is_read, created_at)
-VALUES (123, 123, 124, 'FRIEND_REQUEST', '', 'friend link', false, '2024-07-31T16:47:20.394415'),
-       (124, 123, 124, 'POST_COMMENT', '최강 몬스터즈 우승', 'post link', false, '2024-07-31T21:50:20.394415'),
-       (125, 123, 124, 'FRIEND_REQUEST', '', 'friend link', true, DATEADD('HOUR', -1, CURRENT_TIMESTAMP)),
-       (126, 123, 124, 'POST_COMMENT', '대호 이번주 홈런 침', 'post link', false, '2024-08-03T20:47:20.394415'),
-       (127, 124, 123, 'POST_COMMENT', '하이하이', 'post link', true, '2024-08-05T11:23:20.394415');
+INSERT INTO ALERT(receiver_id, sender_id, type, content, link, is_read, created_at)
+VALUES (123, 124, 'FRIEND_REQUEST', '', 'friend link', false, '2024-07-31T16:47:20.394415'),
+       (123, 124, 'POST_COMMENT', '최강 몬스터즈 우승', 'post link', false, '2024-07-31T21:50:20.394415'),
+       (123, 124, 'FRIEND_REQUEST', '', 'friend link', true, DATEADD('HOUR', -1, CURRENT_TIMESTAMP)),
+       (123, 124, 'POST_COMMENT', '대호 이번주 홈런 침', 'post link', false, '2024-08-03T20:47:20.394415'),
+       (124, 123, 'POST_COMMENT', '하이하이', 'post link', true, '2024-08-05T11:23:20.394415');
 
 -- tag
 INSERT INTO TAG(contents)
@@ -63,7 +63,7 @@ VALUES (1, 1),
        (1, 4);
 
 -- photocard
-INSERT INTO PHOTOCARD(photocard_id, user_id, img_url, created_at)
-VALUES (123, 123, 'photocard1.png', CURRENT_TIME),
-       (124, 123, 'photocard2.png', CURRENT_TIME),
-       (125, 124, 'photocard3.png', CURRENT_TIME);
+INSERT INTO PHOTOCARD(user_id, img_url, created_at)
+VALUES (123, 'photocard1.png', CURRENT_TIME),
+       (123, 'photocard2.png', CURRENT_TIME),
+       (124, 'photocard3.png', CURRENT_TIME);

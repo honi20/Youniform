@@ -52,7 +52,10 @@ public class PhotocardController {
 
 	@GetMapping
 	public ResponseEntity<?> photocardList() throws Exception {
-//		PhotocardListRes response = getPhotocardListRes();
-		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_LIST_OK, null), HttpStatus.OK);
+//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		PhotocardListRes response = photocardService.findPhotocards(123L);
+
+		return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_LIST_OK, response), HttpStatus.OK);
 	}
 }
