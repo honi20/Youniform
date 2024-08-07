@@ -6,7 +6,7 @@ const useDiaryStore = create((set) => ({
   diaries: [],
   diary: [],
   monthlyDiaries: [],
-  fetchMonthlyDiaries: async () => {
+  fetchMonthlyDiaries: async (date) => {
     const res = await axios({
       method: "get",
       url: `${API_URL}/diaries/monthly`,
@@ -17,12 +17,32 @@ const useDiaryStore = create((set) => ({
         calendarDate: "2024-07",
       },
     })
-      .then((res) => {
-        set({ monthlyDiaries: res.data.body });
-      })
-      .catch((err) => {
-        console.log("Failed to fetch monthlyDiaries", err);
-      });
+    .then((res) => {
+      set({ monthlyDiaries: res.data.body.diaryList });
+    })
+    .catch((err) => {
+      console("Failed to fetch monthlyDiaries", err);
+    });
+  },
+  fetchFriendsDiaries: async (userId, date) => {
+    const res = await axios({
+      method: "get",
+      url: `${API_URL}/diaries/monthly`,
+      // headers: {
+      //   Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ",
+      // },
+      params: {
+        userId: userId,
+        calendarDate: "2024-07",
+      },
+    })
+    .then((res) => {
+      set({ monthlyDiaries: res.data.body.diaryList });
+      console.log(monthlyDiaries);
+    })
+    .catch((err) => {
+      console("Failed to fetch monthlyDiaries", err);
+    });      
   },
   fetchDiaries: async () => {
     await axios({
