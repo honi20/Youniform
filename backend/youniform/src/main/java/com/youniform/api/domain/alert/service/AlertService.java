@@ -1,6 +1,7 @@
 package com.youniform.api.domain.alert.service;
 
 import com.youniform.api.domain.alert.dto.AlertListRes;
+import com.youniform.api.domain.alert.entity.AlertType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -17,6 +18,8 @@ public interface AlertService {
 	void removeAlert(Long userId, Long alertId);
 
 	void removeAllAlert(Long userId);
+
+	void send(String receiverUuid, Long senderId, AlertType type, String content, String link);
 
 	void testAlert();
 }

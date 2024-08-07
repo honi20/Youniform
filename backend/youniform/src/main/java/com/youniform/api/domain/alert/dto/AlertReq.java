@@ -17,7 +17,7 @@ public class AlertReq {
 
 	private Users sender;
 
-	private String type;
+	private AlertType type;
 
 	private String content;
 
@@ -27,7 +27,7 @@ public class AlertReq {
 		return Alert.builder()
 				.receiver(this.receiver)
 				.sender(this.sender)
-				.type(AlertType.valueOf(this.type))
+				.type(this.type)
 				.content(this.content)
 				.link(this.link)
 				.isRead(false)
