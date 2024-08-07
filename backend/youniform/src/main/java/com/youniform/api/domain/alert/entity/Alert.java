@@ -33,7 +33,6 @@ public class Alert {
 	@Enumerated(EnumType.STRING)
 	private AlertType type;
 
-	@Column(nullable = false)
 	private String content;
 
 	private String link;
