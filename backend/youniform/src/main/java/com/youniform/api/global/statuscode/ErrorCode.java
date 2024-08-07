@@ -24,6 +24,7 @@ public enum ErrorCode {
 
     // photocard error code
     PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 포토카드 ID 입니다."),
+    PHOTOCARD_ACCESS_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "포토카드 접근 권한이 없습니다.(작성자만 접근 가능)"),
 
     //token
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST.value(), "만료된 토큰입니다."),

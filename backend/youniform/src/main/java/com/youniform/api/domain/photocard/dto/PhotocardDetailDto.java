@@ -1,8 +1,7 @@
 package com.youniform.api.domain.photocard.dto;
 
+import com.youniform.api.domain.photocard.entity.Photocard;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -13,5 +12,10 @@ public class PhotocardDetailDto {
 
 	private String imgUrl;
 
-	private LocalDateTime createdAt;
+	public static PhotocardDetailDto toDto(Photocard photocard) {
+		return PhotocardDetailDto.builder()
+				.photocardId(photocard.getId())
+				.imgUrl(photocard.getImgUrl())
+				.build();
+	}
 }

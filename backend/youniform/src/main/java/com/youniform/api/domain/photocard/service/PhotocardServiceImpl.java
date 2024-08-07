@@ -2,6 +2,7 @@ package com.youniform.api.domain.photocard.service;
 
 import com.youniform.api.domain.photocard.dto.PhotocardAddReq;
 import com.youniform.api.domain.photocard.dto.PhotocardAddRes;
+import com.youniform.api.domain.photocard.dto.PhotocardDetailDto;
 import com.youniform.api.domain.photocard.entity.Photocard;
 import com.youniform.api.domain.photocard.repository.PhotocardRepository;
 import com.youniform.api.domain.user.entity.Users;
@@ -9,7 +10,7 @@ import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
 public class PhotocardServiceImpl implements PhotocardService {
@@ -32,5 +33,17 @@ public class PhotocardServiceImpl implements PhotocardService {
 		photocardRepository.save(photocard);
 
 		return new PhotocardAddRes(photocard.getId());
+	}
+
+	@Override
+	public PhotocardDetailDto findPhotocard(Long userId, Long photocardId) {
+		Photocard photocard = photocardRepository.findById(photocardId)
+				.orElseThrow(() -> new CustomException(PHOTOCARD_NOT_FOUND));
+
+		if (!photocard.getUser().getId().equals(userId)) {
+			throw new CustomException(PHOTOCARD_ACCESS_FORBIDDEN);
+		}
+
+		return PhotocardDetailDto.toDto(photocard);
 	}
 }
