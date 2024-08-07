@@ -1,7 +1,6 @@
 package com.youniform.api.domain.comment.dto;
 
 import com.youniform.api.domain.comment.entity.Comment;
-import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,22 +10,24 @@ import static com.youniform.api.global.dateformat.DateFormatter.calculateTime;
 @Data
 @AllArgsConstructor
 @Builder
-public class CommentListDto {
+public class CommentDto {
     private Long commentId;
     private String imgUrl;
     private String nickname;
+    private String userId;
     private String contents;
-    private String createAt;
-    private String updateAt;
+    private String createdAt;
+    private String updatedAt;
 
-    public static CommentListDto toDto(Comment comment, Users user) {
-        return CommentListDto.builder()
+    public static CommentDto toDto(Comment comment) {
+        return CommentDto.builder()
                 .commentId(comment.getId())
-                .imgUrl(user.getProfileUrl())
-                .nickname(user.getNickname())
+                .imgUrl(comment.getUser().getProfileUrl())
+                .nickname(comment.getUser().getProfileUrl())
+                .userId(comment.getUser().getProfileUrl())
                 .contents(comment.getContent())
-                .createAt(calculateTime(comment.getCreatedAt()))
-                .updateAt(calculateTime(comment.getUpdatedAt()))
+                .createdAt(calculateTime(comment.getCreatedAt()))
+                .updatedAt(calculateTime(comment.getUpdatedAt()))
                 .build();
     }
 }

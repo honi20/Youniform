@@ -6,9 +6,9 @@ VALUES (1, CURRENT_DATE, 3, 1, 2, 66.6, '홈그라운드', '서울', '팀 이름
 INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_write_diary, team_id, email, introduce,
                    nickname, password, profile_url, provider_type, uuid)
 VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@google.com', '자기소개111', 'User1', '$2a$10$0EMRXBOjq3aEqYROBSC44O36f8YrhiJ35d4A/IgcRhrrhSM6C9Tf6',
-        's3 url', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
+        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
        (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', 'User2', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        's3 url', 'local', '1604b772-adc0-4212-8a90-81186c57f100');
+        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100');
 
 -- stamp
 INSERT INTO DIARY_STAMP (stamp_id, img_url)
@@ -64,15 +64,25 @@ VALUES ('최강'),
 
 -- post
 INSERT INTO POST(user_id, img_url, contents, date)
-VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/post/upload_2024-08-06_22_42_06.png',
-    '최강 몬스터즈 진짜 최고!!', current_date);
+VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png',
+        '최강 몬스터즈 진짜 최고!!', current_date),
+       (124, null, '최강 몬스터즈', current_date);
 
 -- post_tag
 INSERT INTO POST_TAG(post_id, tag_id)
 VALUES (1, 1),
-    (1, 2),
-    (1, 3),
-    (1, 4);
+       (1, 2),
+       (1, 3),
+       (1, 4);
+
+-- like_post
+INSERT INTO LIKE_POST(user_id, post_id)
+VALUES(123, 1);
+
+-- comment
+    INSERT INTO COMMENT(user_id, post_id, content, created_at, updated_at)
+VALUES(123, 1, '멋져요', DATEADD('HOUR', -2, CURRENT_TIMESTAMP), null),
+    (124, 1, '응원합니다', DATEADD('HOUR', -1, CURRENT_TIMESTAMP), DATEADD('MINUTE', -5, CURRENT_TIMESTAMP));
 
 -- photocard
 INSERT INTO PHOTOCARD(photocard_id, user_id, img_url, created_at)

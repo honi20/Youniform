@@ -62,6 +62,15 @@ VALUES (1, 1),
        (1, 3),
        (1, 4);
 
+-- like_post
+INSERT INTO LIKE_POST(user_id, post_id)
+VALUES(123, 1);
+
+-- comment
+INSERT INTO COMMENT(user_id, post_id, content, created_at, updated_at)
+VALUES(123, 1, '멋져요', DATEADD('HOUR', -2, CURRENT_TIMESTAMP), null),
+      (124, 1, '응원합니다', DATEADD('HOUR', -1, CURRENT_TIMESTAMP), DATEADD('MINUTE', -5, CURRENT_TIMESTAMP));
+
 -- photocard
 INSERT INTO PHOTOCARD(photocard_id, user_id, img_url, created_at)
 VALUES (123, 123, 'photocard1.png', CURRENT_TIME),

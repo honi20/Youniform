@@ -3,6 +3,7 @@ package com.youniform.api.domain.tag.repository;
 import com.youniform.api.domain.tag.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "WHERE t.contents IN :names")
     List<Tag> findByContentsIn(List<String> names);
 
+    @Query("SELECT t FROM Tag t " +
+            "JOIN PostTag pt ON t.id = pt.tag.id " +
+            "WHERE pt.post.id = :postId")
+    List<Tag> findTagsByPostId(@Param("postId") Long postId);
 }

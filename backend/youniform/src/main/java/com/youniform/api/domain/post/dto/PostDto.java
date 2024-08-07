@@ -32,7 +32,9 @@ public class PostDto {
 
     private String userId;
 
-    public static PostDto toDto(Post post, Users user, List<TagDto> tags, Integer commentCount) {
+    private Boolean isLiked;
+
+    public static PostDto toDto(Post post, Users user, List<TagDto> tags, Integer commentCount, Boolean isLiked) {
         return PostDto.builder()
                 .postId(post.getId())
                 .profileImg(user.getProfileUrl())

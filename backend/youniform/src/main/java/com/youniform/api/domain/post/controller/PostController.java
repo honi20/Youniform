@@ -167,6 +167,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             } else if (i % 3 == 1) {
@@ -183,6 +184,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(false)
                                 .build()
                 );
             } else {
@@ -200,6 +202,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             }
@@ -291,6 +294,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             } else if (i % 3 == 1) {
@@ -307,6 +311,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(false)
                                 .build()
                 );
             } else {
@@ -324,6 +329,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             }
@@ -416,6 +422,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             } else if (i % 3 == 1) {
@@ -432,6 +439,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(false)
                                 .build()
                 );
             } else {
@@ -449,6 +457,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             }
@@ -540,6 +549,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             } else if (i % 3 == 1) {
@@ -556,6 +566,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             } else {
@@ -573,6 +584,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             }
@@ -664,6 +676,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             } else if (i % 3 == 1) {
@@ -680,6 +693,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(false)
                                 .build()
                 );
             } else {
@@ -697,6 +711,7 @@ public class PostController {
                                 .createdAt(LocalDate.now().minusDays(i))
                                 .commentCount(i)
                                 .userId(UUID)
+                                .isLiked(true)
                                 .build()
                 );
             }
@@ -717,35 +732,9 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<?> postDetails(@PathVariable Long postId) {
-        List<TagDto> tagList = new ArrayList<>();
-        tagList.add(TagDto.builder()
-                .tagId(1L)
-                .contents("기아")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(2L)
-                .contents("우승")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(3L)
-                .contents("기원")
-                .build());
-        tagList.add(TagDto.builder()
-                .tagId(4L)
-                .contents("다꾸")
-                .build());
+        Long userId = 123L;
 
-        PostDetailsRes result = PostDetailsRes.builder()
-                .postId(1L)
-                .profileImg("profile image url")
-                .nickname("테스트 유저")
-                .imageUrl("게시글 image url")
-                .contents("게시글 내용~")
-                .tags(tagList)
-                .createdAt(LocalDate.now())
-                .commentCount(5)
-                .userId(UUID)
-                .build();
+        PostDetailsRes result = postService.findPost(postId, userId);
 
         return new ResponseEntity<>(ResponseDto.success(POST_DETAILS_OK, result), HttpStatus.OK);
     }
