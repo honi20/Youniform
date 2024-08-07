@@ -15,4 +15,5 @@ public interface PostService {
     PostListRes findMyPosts(Long userId, MyPostListReq myPostListReq, Pageable pageable);
     PostListRes findFriendPost(Long userId, String friendId, FriendPostListReq friendPostReq, Pageable pageable);
     PostListRes findLikedPost(Long userId, LikedPostListReq likedPostListReq, Pageable pageable);
+    PostListRes findTagPost(Long userId, TagPostReq tagPostReq, Pageable pageable);
 }
