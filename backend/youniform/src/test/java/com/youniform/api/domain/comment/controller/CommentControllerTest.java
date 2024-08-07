@@ -92,6 +92,14 @@ public class CommentControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
+                                                fieldWithPath("body.commentId").type(JsonFieldType.NUMBER)
+                                                                .description("댓글 ID"),
+                                                fieldWithPath("body.nickname").type(JsonFieldType.STRING)
+                                                                .description("작성자 닉네임"),
+                                                fieldWithPath("body.imgUrl").type(JsonFieldType.STRING)
+                                                                .description("작성자 프로필 이미지 Url"),
+                                                fieldWithPath("body.userId").type(JsonFieldType.STRING)
+                                                                .description("작성자 Id(UUID)"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("댓글 내용"),
                                                 fieldWithPath("body.createdAt").type(JsonFieldType.STRING)
@@ -100,55 +108,6 @@ public class CommentControllerTest {
                                 )
                                 .requestSchema(Schema.schema("Comment 생성 Request"))
                                 .responseSchema(Schema.schema("Comment 생성 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    public void 댓글_전체_조회_성공() throws Exception {
-        //given
-        String jwtToken = jwtService.createAccessToken(UUID);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                get("/comments/{postId}", 1L)
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-        );
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(COMMENT_LIST_OK.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(COMMENT_LIST_OK.getMessage()))
-                .andDo(document(
-                        "Comment 전체 조회 성공",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Comment API")
-                                .summary("Comment 전체 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body.commentList[].commentId").type(JsonFieldType.NUMBER)
-                                                        .description("댓글 PK"),
-                                                fieldWithPath("body.commentList[].imgUrl").type(JsonFieldType.STRING)
-                                                        .description("작성자 프로필 사진 URL"),
-                                                fieldWithPath("body.commentList[].nickname").type(JsonFieldType.STRING)
-                                                        .description("작성자 닉네임"),
-                                                fieldWithPath("body.commentList[].contents").type(JsonFieldType.STRING)
-                                                        .description("댓글 내용"),
-                                                fieldWithPath("body.commentList[].createAt").type(JsonFieldType.STRING)
-                                                        .description("댓글 생성일"),
-                                                fieldWithPath("body.commentList[].updateAt").type(JsonFieldType.STRING)
-                                                        .description("댓글 업데이트일")
-                                        )
-                                )
-                                .responseSchema(Schema.schema("Comment 전체 조회 Response"))
                                 .build()
                         ))
                 );

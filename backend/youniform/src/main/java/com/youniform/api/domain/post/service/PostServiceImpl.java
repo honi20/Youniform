@@ -1,9 +1,9 @@
 package com.youniform.api.domain.post.service;
 
-import com.youniform.api.domain.post.dto.PostAddReq;
-import com.youniform.api.domain.post.dto.PostAddRes;
-import com.youniform.api.domain.post.dto.PostModifyReq;
-import com.youniform.api.domain.post.dto.PostModifyRes;
+import com.youniform.api.domain.comment.dto.CommentDto;
+import com.youniform.api.domain.comment.repository.CommentRepository;
+import com.youniform.api.domain.like_post.repository.LikePostRepository;
+import com.youniform.api.domain.post.dto.*;
 import com.youniform.api.domain.post.entity.Post;
 import com.youniform.api.domain.post.repository.PostRepository;
 import com.youniform.api.domain.post_tag.entity.PostTag;
@@ -11,6 +11,7 @@ import com.youniform.api.domain.post_tag.entity.PostTagPK;
 import com.youniform.api.domain.post_tag.repository.PostTagRepository;
 import com.youniform.api.domain.tag.dto.TagDto;
 import com.youniform.api.domain.tag.entity.Tag;
+import com.youniform.api.domain.tag.repository.TagRepository;
 import com.youniform.api.domain.tag.service.TagService;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
@@ -29,12 +30,17 @@ import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostTagRepository postTagRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
+    private final LikePostRepository likePostRepository;
     private final TagService tagService;
     private final S3Service s3Service;
+
 
     @Override
     @Transactional
@@ -59,17 +65,7 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
 
-        tagList.forEach(tag -> {
-            postTagRepository.save(new PostTag(new PostTagPK(post.getId(), tag.getId()),
-                    post, tag));
-        });
-
-
-        List<TagDto> tagDtoList = tagList.stream()
-                .map(TagDto::toDto)
-                .toList();
-
-        return PostAddRes.toDto(post, tagDtoList, user.getUuid());
+        return PostAddRes.toDto(post);
     }
 
     @Override
@@ -114,10 +110,11 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
 
-        return PostModifyRes.toDto(post, tagDtoList, user.getUuid());
+        return PostModifyRes.toDto(post);
     }
 
     @Override
+    @Transactional
     public void removePost(Long postId, Long userId) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -134,7 +131,32 @@ public class PostServiceImpl implements PostService {
         }
 
         postTagRepository.deletePostTagsByPostId(post.getId());
+
         postRepository.delete(post);
+    }
+
+    @Override
+    public PostDetailsRes findPost(Long postId, Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+
+        List<TagDto> tags = tagRepository.findTagsByPostId(postId)
+                .stream()
+                .map(TagDto::toDto)
+                .toList();
+
+        List<CommentDto> commentList = commentRepository.findCommentsByPostId(postId)
+                .stream()
+                .map(CommentDto::toDto)
+                .toList();
+
+        Boolean isMine = post.getUser().getId().equals(userId);
+        Boolean isLiked = likePostRepository.isLikedPost(postId);
+
+        return PostDetailsRes.toDto(post, user, tags, commentList, isMine, isLiked);
     }
 
     private String replaceEnter(String contents) {

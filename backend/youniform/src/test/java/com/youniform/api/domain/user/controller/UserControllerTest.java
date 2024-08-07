@@ -708,8 +708,8 @@ public class UserControllerTest {
     public void 로컬_로그인_성공() throws Exception{
         //given
         LocalSigninReq content = LocalSigninReq.builder()
-                .email("test@test.com")
-                .password("eogheoghWkd")
+                .email("test@google.com")
+                .password("sdklrjsr39324")
                 .build();
 
         //when

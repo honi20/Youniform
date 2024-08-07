@@ -1,5 +1,6 @@
 package com.youniform.api.domain.post.dto;
 
+import com.youniform.api.domain.comment.dto.CommentDto;
 import com.youniform.api.domain.post.entity.Post;
 import com.youniform.api.domain.tag.dto.TagDto;
 import com.youniform.api.domain.user.entity.Users;
@@ -30,9 +31,13 @@ public class PostDetailsRes {
 
     private LocalDate createdAt;
 
-    private Integer commentCount;
+    private Boolean isMyPost;
 
-    public static PostDetailsRes toDto(Post post, Users user, List<TagDto> tags, Integer commentCount) {
+    private List<CommentDto> commentList;
+
+    private Boolean isLiked;
+
+    public static PostDetailsRes toDto(Post post, Users user, List<TagDto> tags, List<CommentDto> commentList, Boolean isMyPost, Boolean isLiked) {
         return PostDetailsRes.builder()
                 .postId(post.getId())
                 .profileImg(user.getProfileUrl())
@@ -41,8 +46,10 @@ public class PostDetailsRes {
                 .contents(post.getContents())
                 .tags(tags)
                 .createdAt(post.getDate())
-                .commentCount(commentCount)
+                .commentList(commentList)
                 .userId(user.getUuid())
+                .isMyPost(isMyPost)
+                .isLiked(isLiked)
                 .build();
     }
 }
