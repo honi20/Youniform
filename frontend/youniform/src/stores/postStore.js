@@ -12,7 +12,8 @@ const usePostStore = create((set) => ({
         method: "get",
         url: `${API_URL}/posts/${postId}`,
         // headers: {
-        //   Authorization: "Bearer your_token_here",
+        //   Authorization:
+        //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLTQyMTItOGE5MC04MTE4NmM1N2YxMDAiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDA3NDAwfQ.D856FncOnKSe1O_1vw0jyOHGMPfWionPRvMZ_QWPaPDnAmRHfM9U2VFOprdM3QP2JEQXz_Ewn4mJvPoVAg5NQA",
         // },
       });
       console.log(res.data.header.message);
@@ -58,6 +59,23 @@ const usePostStore = create((set) => ({
 
       set({
         likePosts: res.data.body.postList.content,
+      });
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  },
+  myPosts: [],
+  fetchMyPosts: async () => {
+    try {
+      const res = await axios({
+        method: "get",
+        url: `${API_URL}/posts/list`,
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body.postList.content);
+
+      set({
+        myPosts: res.data.body.postList.content,
       });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);

@@ -12,6 +12,7 @@ const useUserStore = create((set) => ({
     try {
       const response = await axios.get(`${API_URL}/users`);
       console.log(response.data.header.message);
+      console.log(response.data.body);
       set({ user: response.data.body, loading: false });
     } catch (error) {
       console.log("Failed to fetch user", error);
