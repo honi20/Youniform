@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
-import Calendar from "../components/Diary/Calendar";
-import styled from "styled-components";
-import DiaryFriendsList from "../components/Diary/DiaryFriendsList";
-import useDiaryStore from "../stores/diaryStore";
+import React, { useEffect, useState, useRef } from 'react';
+import Calendar from '../components/Diary/Calendar';
+import styled from 'styled-components';
+import DiaryFriendsList from '../components/Diary/DiaryFriendsList';
+import useDiaryStore from '@stores/diaryStore';
+import useFriendStore from '@stores/friendStore';
 
 // 더미 데이터
 import Stamp1 from "../assets/stickers/stamps/stamp_1.png";
@@ -33,31 +34,31 @@ const stampSrc = [
 const userCalInfo = [
   {
     id: 1,
-    stamps: [
-      { date: "2024-08-04", stampSrc: stampSrc[4] },
-      { date: "2024-08-06", stampSrc: stampSrc[0] },
-      { date: "2024-08-13", stampSrc: stampSrc[1] },
-      { date: "2024-08-16", stampSrc: stampSrc[5] },
-      { date: "2024-08-18", stampSrc: stampSrc[7] },
-      { date: "2024-08-27", stampSrc: stampSrc[8] },
-      { date: "2024-08-28", stampSrc: stampSrc[9] },
+    stamps: [ // 7
+      { date: '2024-08-04', stampSrc: stampSrc[4] },
+      { date: '2024-08-06', stampSrc: stampSrc[0] },
+      { date: '2024-08-13', stampSrc: stampSrc[1] },
+      { date: '2024-08-16', stampSrc: stampSrc[5] },
+      { date: '2024-08-18', stampSrc: stampSrc[7] },
+      { date: '2024-08-27', stampSrc: stampSrc[8] },
+      { date: '2024-08-28', stampSrc: stampSrc[9] },
     ],
   },
   {
     id: 2,
-    stamps: [
-      { date: "2024-08-01", stampSrc: stampSrc[3] },
-      { date: "2024-08-02", stampSrc: stampSrc[4] },
-      { date: "2024-08-06", stampSrc: stampSrc[5] },
-      { date: "2024-08-09", stampSrc: stampSrc[6] },
-      { date: "2024-08-15", stampSrc: stampSrc[7] },
+    stamps: [ // 5
+      { date: '2024-08-01', stampSrc: stampSrc[3] },
+      { date: '2024-08-02', stampSrc: stampSrc[4] },
+      { date: '2024-08-06', stampSrc: stampSrc[5] },
+      { date: '2024-08-09', stampSrc: stampSrc[6] },
+      { date: '2024-08-15', stampSrc: stampSrc[7] },
     ],
   },
   {
     id: 3,
-    stamps: [
-      { date: "2024-08-11", stampSrc: Stamp2 },
-      { date: "2024-08-20", stampSrc: Stamp1 },
+    stamps: [ // 2
+      { date: '2024-08-11', stampSrc: Stamp2 },
+      { date: '2024-08-20', stampSrc: Stamp1 },
     ],
   },
   {
@@ -109,23 +110,28 @@ const DiaryHomeView = () => {
   const [calendarHeight, setCalendarHeight] = useState("auto");
   const [selectedUser, setSelectedUser] = useState(0);
   const diaryHomeRef = useRef(null);
-  const { diaries, fetchDiaries, monthlyDiaries, fetchMonthlyDiaries } =
-    useDiaryStore();
+  const { diaries, fetchDiaries, monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
+  const { friends, fetchFriends } = useFriendStore();
 
   useEffect(() => {
-    
     fetchMonthlyDiaries();
+  }, [fetchMonthlyDiaries]);
 
+  useEffect(() => {
+    fetchFriends();
+  }, [fetchFriends]);
+
+  useEffect(() => {
     const updateCalendarHeight = () => {
       if (diaryHomeRef.current) {
         const diaryHomeHeight = diaryHomeRef.current.offsetHeight;
         setCalendarHeight(`${diaryHomeHeight - 220}px`);
       }
     };
-
+    
     updateCalendarHeight();
-    window.addEventListener("resize", updateCalendarHeight);
-
+    window.addEventListener('resize', updateCalendarHeight);
+    
     return () => {
       window.removeEventListener("resize", updateCalendarHeight);
     };
@@ -133,12 +139,12 @@ const DiaryHomeView = () => {
 
   const handleUserClick = (user) => {
     setSelectedUser(user);
+    console.log(user);
   };
-
+  
   const filteredStamps = selectedUser
-    ? userCalInfo.find((userItem) => userItem.id === selectedUser.id)?.stamps ||
-      []
-    : userCalInfo[0]?.stamps || [];
+  ? friends.find(friend => friend.friendId === selectedUser.friendId)?.imgUrl || []
+    : userCalInfo[0]?.imgUrl || []; 
 
   return (
     <DiaryHome ref={diaryHomeRef}>

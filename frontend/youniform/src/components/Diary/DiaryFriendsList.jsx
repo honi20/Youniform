@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import useFriendStore from '@stores/friendStore';
 
 // test
 import User1 from '../../assets/Test/User/user_1.png';
@@ -8,6 +9,7 @@ import User3 from '../../assets/Test/User/user_3.png';
 import User4 from '../../assets/Test/User/user_4.png';
 import User5 from '../../assets/Test/User/user_5.png';
 import User6 from '../../assets/Test/User/user_6.png';
+import useDiaryStore from '../../stores/diaryStore';
 
 const UserInfo = [
   { id: 1, imgSrc: User1, nickName: '하츄핑', updateStatus: false },
@@ -44,6 +46,7 @@ const ListContainer = styled.div`
 
 const FriendsList = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const UserCard = styled.div`
@@ -90,32 +93,54 @@ const UpdateStatusCircle = styled.div`
   display: ${props => props.$updateStatus ? 'block' : 'none'};
 `;
 
+const VerticalBar = styled.div`
+  background: #b7b7b7;
+  width: 2px;
+  height: 50px;
+  margin: 0 5px;
+  border-radius: 10px;
+`;
+
 const DiaryFriendsList = ({ onUserClick }) => {
   const [selectedUserIndex, setSelectedUserIndex] = useState(null);
+  const { friends } = useFriendStore();
+  const { fetchFriendsDiaries } = useDiaryStore();
 
-  const handleUserClick = (index) => {
-    UserInfo[index].updateStatus = false;
+  // useEffect(() => {
+  //   fetchFriends();
+  // }, [fetchFriends]);
+
+  const handleUserClick = async (index) => {
+    // UserInfo[index].updateStatus = false;
     setSelectedUserIndex(index);
     if (onUserClick) {
-      onUserClick(UserInfo[index]);
+      onUserClick(friends[index]);
     }
+    await fetchFriendsDiaries();
+
   };
 
   return (
     <ListContainer>
       <FriendsList>
-        {UserInfo.map((user, index) => (
+        {/* Login User */}
+        <UserCard>
+          
+        </UserCard>
+        <VerticalBar />
+        {/* Friends List */}
+        {friends.map((user, index) => (
           <UserCard
-            key={user.id}
+            key={user.friendId}
             $isSelected={index === selectedUserIndex}
             $noneSelected={selectedUserIndex === null}
             onClick={() => handleUserClick(index)}
           >
-            <UserImage src={user.imgSrc} alt={user.nickName} />
+            <UserImage src={user.imgUrl} alt={user.nickname} />
             <UpdateStatusCircle $updateStatus={user.updateStatus} />
-            <UserName>{user.nickName}</UserName>
+            <UserName>{user.nickname}</UserName>
           </UserCard>
-        ))}
+        ))};
       </FriendsList>
     </ListContainer>
   );
