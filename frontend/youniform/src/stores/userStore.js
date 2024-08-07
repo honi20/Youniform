@@ -7,6 +7,7 @@ const useUserStore = create((set) => ({
   friend: null,
   loading: false,
   error: null,
+  accessToken: null,
   fetchUser: async () => {
     set({ loading: true, error: null });
     try {
@@ -31,6 +32,25 @@ const useUserStore = create((set) => ({
     }
   },
   clearFriend: () => set({ friend: null, error: null }),
+  fetchLogin: async (email, password) => {
+    console.log(1);
+    const res = await axios({
+      method: "post",
+      url: `${API_URL}/users/signin/local`,
+      data: {
+        email: email,
+        password: password
+      }
+    })
+    .then((res) => {
+      set({ accessToken: res.data.body.accessToken });
+      return "$OK";
+    })
+    .catch((err) => {
+      console.log("Failed to fetchLogin", err);
+      return "$FAIL";
+    })
+  },
 }));
 
 export default useUserStore;
