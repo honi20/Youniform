@@ -18,4 +18,8 @@ public interface PostCustomRepository {
                                           @Param("friend") String friendId,
                                           @Param("lastPostId") Long lastPostId,
                                           @Param("pageable") Pageable pageable);
+
+    Slice<PostDto> findLikedPostByCursor(@Param("userId") Long userId,
+                                          @Param("lastPostId") Long lastPostId,
+                                          @Param("pageable") Pageable pageable);
 }

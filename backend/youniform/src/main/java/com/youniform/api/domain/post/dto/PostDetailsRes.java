@@ -3,7 +3,6 @@ package com.youniform.api.domain.post.dto;
 import com.youniform.api.domain.comment.dto.CommentDto;
 import com.youniform.api.domain.post.entity.Post;
 import com.youniform.api.domain.tag.dto.TagDto;
-import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,17 +36,17 @@ public class PostDetailsRes {
 
     private Boolean isLiked;
 
-    public static PostDetailsRes toDto(Post post, Users user, List<TagDto> tags, List<CommentDto> commentList, Boolean isMyPost, Boolean isLiked) {
+    public static PostDetailsRes toDto(Post post,List<TagDto> tags, List<CommentDto> commentList, Boolean isMyPost, Boolean isLiked) {
         return PostDetailsRes.builder()
                 .postId(post.getId())
-                .profileImg(user.getProfileUrl())
-                .nickname(user.getNickname())
+                .profileImg(post.getUser().getProfileUrl())
+                .nickname(post.getUser().getNickname())
                 .imageUrl(post.getImgUrl())
                 .contents(post.getContents())
                 .tags(tags)
                 .createdAt(post.getDate())
                 .commentList(commentList)
-                .userId(user.getUuid())
+                .userId(post.getUser().getUuid())
                 .isMyPost(isMyPost)
                 .isLiked(isLiked)
                 .build();

@@ -148,6 +148,46 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 		return new SliceImpl<>(posts, pageable, hasNext);
 	}
 
+	@Override
+	public Slice<PostDto> findLikedPostByCursor(Long userId, Long lastPostId, Pageable pageable) {
+		List<PostListDto> postList = queryFactory.select(Projections.constructor(PostListDto.class,
+						post.id.as("postId"),
+						post.user.profileUrl.as("profileImg"),
+						post.user.nickname.as("nickname"),
+						post.imgUrl.as("imageUrl"),
+						post.contents.as("contents"),
+						post.date.as("createdAt"),
+						comment.countDistinct().as("commentCount"),
+						post.user.uuid.as("userId"),
+						likePost.likePostPK.isNotNull()
+				))
+				.from(post)
+				.leftJoin(comment).on(post.id.eq(comment.post.id))
+				.leftJoin(likePost).on(post.id.eq(likePost.post.id))
+				.leftJoin(postTag).on(post.id.eq(postTag.post.id))
+				.leftJoin(tag).on(postTag.tag.id.eq(tag.id))
+				.where(likePost.user.id.eq(userId))
+				.where(conditionPostId(lastPostId))
+				.groupBy(post.id)
+				.orderBy(post.id.desc())
+				.limit(pageable.getPageSize() + 1)
+				.fetch();
+
+		List<PostDto> posts = postList.stream()
+				.map(p -> {
+					List<TagDto> tags = findTagsByPostId(p.getPostId());
+					return PostDto.toDto(p, tags);
+				}).toList();
+
+		boolean hasNext = false;
+		if (posts.size() > pageable.getPageSize()) {
+			posts.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+
+		return new SliceImpl<>(posts, pageable, hasNext);
+	}
+
 	private List<TagDto> findTagsByPostId(Long postId) {
 		return queryFactory.select(Projections.constructor(TagDto.class,
 						tag.id.as("tagId"),

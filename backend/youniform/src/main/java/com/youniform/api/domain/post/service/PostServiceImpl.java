@@ -159,7 +159,7 @@ public class PostServiceImpl implements PostService {
         Boolean isMine = post.getUser().getId().equals(userId);
         Boolean isLiked = likePostRepository.isLikedPost(postId);
 
-        return PostDetailsRes.toDto(post, user, tags, commentList, isMine, isLiked);
+        return PostDetailsRes.toDto(post, tags, commentList, isMine, isLiked);
     }
 
     @Override
@@ -185,6 +185,14 @@ public class PostServiceImpl implements PostService {
 
 
         Slice<PostDto> posts = postRepository.findFriendPostByCursor(userId, friendId, friendPostListReq.getLastPostId(), pageable);
+
+        SliceDto<PostDto> postDtoSliceDto = new SliceDto<>(posts);
+        return PostListRes.toDto(postDtoSliceDto);
+    }
+
+    @Override
+    public PostListRes findLikedPost(Long userId, LikedPostListReq likedPostListReq, Pageable pageable) {
+        Slice<PostDto> posts = postRepository.findLikedPostByCursor(userId, likedPostListReq.getLastPostId(), pageable);
 
         SliceDto<PostDto> postDtoSliceDto = new SliceDto<>(posts);
         return PostListRes.toDto(postDtoSliceDto);
