@@ -8,6 +8,7 @@ import com.youniform.api.domain.alert.entity.AlertType;
 import com.youniform.api.domain.alert.repository.AlertRepository;
 import com.youniform.api.domain.alert.repository.SseRepository;
 import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.youniform.api.global.statuscode.ErrorCode.ALERT_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @Transactional
@@ -33,7 +35,8 @@ public class AlertServiceImpl implements AlertService {
 
 	// 연결 지속 시간 : 1시간
 	private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-	
+	private final UserRepository userRepository;
+
 	@Override
 	public SseEmitter subscribe(Long userId, String lastEventId) throws IOException {
 		String emitterId = userId + "_" + System.currentTimeMillis();
@@ -107,31 +110,27 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public void testAlert() {
-		Users receiver = Users.builder()
-				.id(123L)
-				.uuid("1604b772-adc0-4212-8a90-81186c57f598")
-				.nickname("User1")
-				.build();
+		send("1604b772-adc0-4212-8a90-81186c57f598", 124L, AlertType.POST_COMMENT, "최강 몬스터즈 우승", "http://youniform.com");
+	}
 
-		Users sender = Users.builder()
-				.id(124L)
-				.uuid("1604b772-adc0-4212-8a90-81186c57f100")
-				.nickname("User2")
-				.profileUrl("user2 profile url")
-				.build();
+	@Override
+	public void send(String receiverUuid, Long senderId, AlertType type, String content, String link) {
+		Users receiver = userRepository.findByUuid(receiverUuid);
+		Users sender = userRepository.findById(senderId)
+				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
 		AlertReq alertReq = AlertReq.builder()
 				.receiver(receiver)
 				.sender(sender)
-				.type(String.valueOf(AlertType.POST_COMMENT))
-				.content("최강 몬스터즈 우승")
-				.link("http://youniform.com")
+				.type(type)
+				.content(content)
+				.link(link)
 				.build();
 
 		send(alertReq);
 	}
 
-	public void send(AlertReq alertReq) {
+	private void send(AlertReq alertReq) {
 		Alert alert = alertRepository.save(alertReq.toEntity());
 		AlertDto alertDto = AlertDto.toDto(alert);
 		String userId = String.valueOf(alertReq.getReceiver().getId());
