@@ -46,6 +46,8 @@ import FriendView from "@pages/MyPage/FriendView";
 import PostDetailView from "@pages/Post/PostDetailView";
 import SearchView from "./pages/Post/SearchView";
 import WritePostView from "./pages/Post/WritePostView";
+import MyPost from "@pages/MyPage/MyPost";
+import ChangeProfile from "./pages/MyPage/ChangeProfile";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -128,6 +130,8 @@ function App() {
                   <Route index element={<MyPageView />} />
                   <Route path="friend-list" element={<FriendView />} />
                   <Route path="like-post" element={<LikePostView />} />
+                  <Route path="my-post" element={<MyPost />} />
+                  <Route path="change-profile" element={<ChangeProfile />} />
                 </Route>
                 <Route path="/diary/detail" element={<DiaryDetailView />} />
                 <Route path="/diary/write" element={<WriteDiaryView />} />
