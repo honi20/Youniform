@@ -27,4 +27,10 @@ public interface UserService {
     UserDetailsRes findUserDetails(Long myUserId, String uuid) throws Exception;
 
     MyDetailsRes findMyDetails(Long userId);
+
+    void passwordReset(PasswordResetReq req);
+
+    void modifyPassword(PasswordModifyReq req, Long userId);
+
+    void passwordResetSend(PasswordResetSendReq req);
 }

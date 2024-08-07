@@ -9,6 +9,7 @@ import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
+import com.youniform.api.global.mail.service.MailService;
 import com.youniform.api.global.redis.RedisUtils;
 import com.youniform.api.global.s3.S3Service;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static com.youniform.api.domain.user.entity.QUsers.users;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.ErrorCode.PROFILE_NOT_FOUND;
 import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final FriendService friendService;
     private final S3Service s3Service;
+    private final MailService mailService;
 
     @Transactional
     @Override
@@ -123,5 +126,56 @@ public class UserServiceImpl implements UserService {
         Users myDetail = userRepository.findById(userId).orElseThrow();
         MyDetailsRes myDetails = MyDetailsRes.builder().build();
         return myDetails.toDto(myDetail);
+    }
+
+    @Override
+    public void passwordReset(PasswordResetReq req) {
+        JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(req.getUuid());
+        if(jwtRedis == null) {
+            throw new CustomException(TEMP_PASSWORD_TIMEOUT);
+        }
+        if(!req.getPassword().equals(req.getConfirmPassword())){
+            throw new CustomException(PASSWORD_NOT_MATCH);
+        }
+        if(jwtRedis.getVerify().equals(req.getVerify())){
+            Users user = userRepository.findByUuid(req.getUuid())
+                    .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+            user.updatePassword(passwordEncoder.encode(req.getPassword()));
+            userRepository.save(user);
+            redisUtils.deleteData(user.getUuid());
+            return;
+        }
+        throw new CustomException(VERIFY_NOT_MATCH);
+    }
+
+    @Override
+    public void modifyPassword(PasswordModifyReq req, Long userId) {
+        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if(req.getNewPassword().equals(req.getConfirmPassword())
+                && passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
+            user.updatePassword(passwordEncoder.encode(req.getNewPassword()));
+        }
+        userRepository.save(user);
+    }
+
+    @Override
+    public void passwordResetSend(PasswordResetSendReq req) {
+        Users user = userRepository.findByEmail(req.getEmail());
+        if(user == null){
+            throw new CustomException(USER_NOT_FOUND);
+        }
+        if(!mailService.isValidEmail(req.getEmail())){
+            throw new CustomException(INVALID_EMAIL);
+        }
+        //email로 비밀번호 재설정 email 전송
+        String verify_key = "";
+        verify_key = mailService.sendMail(req.getEmail(), user.getUuid());
+        JwtRedis jwtRedis = JwtRedis.builder()
+                .uuid(user.getUuid())
+                .verify(verify_key)
+                .build();
+        //redis에 key: email
+        redisUtils.setDataWithExpiration(user.getUuid(), jwtRedis, System.currentTimeMillis() + (600_000));
     }
 }

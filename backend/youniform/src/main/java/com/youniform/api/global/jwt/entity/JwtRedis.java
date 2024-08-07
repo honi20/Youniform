@@ -17,4 +17,6 @@ public class JwtRedis {
     private Long userId;
 
     private String refreshToken;
+
+    private String verify;
 }

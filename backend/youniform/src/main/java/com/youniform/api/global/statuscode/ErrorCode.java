@@ -12,6 +12,11 @@ public enum ErrorCode {
     INVALID_SIGNUP(HttpStatus.BAD_REQUEST.value(), "잘못된 회원가입 요청입니다."),
     PROFILE_MOIDFY_FAILED(HttpStatus.BAD_REQUEST.value(), "프로필을 변경하지 못하였습니다."),
     PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "프로필을 찾지 못하였습니다."),
+    PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
+    INVALID_EMAIL(HttpStatus.BAD_REQUEST.value(), "잘못된 이메일입니다."),
+    TEMP_PASSWORD_TIMEOUT(HttpStatus.FORBIDDEN.value(), "인증시간이 만료되었습니다."),
+    VERIFY_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "인증번호가 일치하지 않습니다."),
+    FAIL_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "메일을 보내지 못하였습니다."),
 
     // diary error code
     DIARY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 다이어리 ID 입니다."),
