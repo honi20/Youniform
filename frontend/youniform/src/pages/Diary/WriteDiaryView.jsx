@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
@@ -18,13 +18,26 @@ import CanvasComp from "@components/Diary/Write/CanvasComp";
 import ColorChipComp from "../../components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
 
+import useDiaryStore from "@stores/diaryStore";
+
 const WriteDiaryView = () => {
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
   const [isDecorated, setIsDecorated] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const [diary, setDiary] = useState(null);
+  const [date, setDate] = useState(null);
+  const [update, setUpdate] = useState(false);
+  const { diaryId } = useParams();
+  const { diary, fetchDiary, addDiary } = useDiaryStore();
+
+  useEffect(() => {
+    if (diaryId) {
+      fetchDiary(diaryId);
+      setUpdate(true);
+    }
+  }, [fetchDiary]);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -139,7 +152,6 @@ const WriteDiaryView = () => {
         return <WallPaperComp />;
     }
   };
-  // axios 요청 시 날짜
   const getCurrentDate = () => {
     const date = new Date();
     const year = date.getFullYear();
@@ -148,58 +160,87 @@ const WriteDiaryView = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const handleAfterSave = () => {
-    saveCanvas();
-    saveCanvasAtLocalStorage();
-    // .then(() => {
-    //   return axios({
-    //     method: "post",
-    //     url: "http://i11a308.p.ssafy.io:8080/diaries",
-    //     data: {
-    //       diaryDate: getCurrentDate(),
-    //       contents: diary,
-    //     },
-    //     scope: "ALL",
-    //     stampId: 1,
-    //   });
-    // })
-    // .then((res) => {
-    //   console.log(res.body.diaryId);
-    //   navigate("/diary/detail/${diaryId}");
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
-  };
-  const saveCanvas = () => {
-    if (selectCanvas) {
-      const json = selectCanvas.toJSON();
-      const dataStr =
-        "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(json));
-      const downloadAnchorNode = document.createElement("a");
-      downloadAnchorNode.setAttribute("href", dataStr);
-      downloadAnchorNode.setAttribute("download", "canvas.json");
-      document.body.appendChild(downloadAnchorNode);
-      downloadAnchorNode.click();
-      downloadAnchorNode.remove();
+  useEffect(() => {
+    const currentDate = getCurrentDate();
+    setDate(currentDate);
+  }, []);
+
+  const handleAfterSave = async () => {
+    try {
+      // saveCanvas();
+      const formData = await saveDiaryObject();
+      const diaryId = await addDiary(formData);
+      console.log("Diary ID:", diaryId);
+      await moveToDetailPage(diaryId);
+    } catch (error) {
+      console.error("Error saving diary object:", error);
     }
   };
-  const saveCanvasAtLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      try {
-        if (selectCanvas) {
-          const json = selectCanvas.toJSON();
-          const jsonString = JSON.stringify(json);
-          localStorage.setItem("canvasData", jsonString);
-          setDiary(jsonString);
-          resolve();
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
+  // const saveCanvas = () => {
+  //   if (selectCanvas) {
+  //     const json = selectCanvas.toJSON();
+  //     const dataStr =
+  //       "data:text/json;charset=utf-8," +
+  //       encodeURIComponent(JSON.stringify(json));
+  //     const downloadAnchorNode = document.createElement("a");
+  //     downloadAnchorNode.setAttribute("href", dataStr);
+  //     downloadAnchorNode.setAttribute("download", "canvas.json");
+  //     document.body.appendChild(downloadAnchorNode);
+  //     downloadAnchorNode.click();
+  //     downloadAnchorNode.remove();
+  //   }
+  // };
+  const logFormData = (formData) => {
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
   };
+  const saveDiaryObject = async () => {
+    try {
+      if (selectCanvas) {
+        const json = selectCanvas.toJSON();
+        // const jsonBlob = await fetch(json).then((res) => res.blob());
+        const jsonBlob = new Blob([JSON.stringify(json)], {
+          type: "application/json",
+        });
+
+        const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
+        const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
+
+        const formData = new FormData();
+        const dto = {
+          diaryDate: date,
+          contents: json,
+          scope: "ALL",
+          stampId: 1,
+        };
+
+        const dtoBlob = new Blob([JSON.stringify(dto)], {
+          type: "application/json",
+        });
+        formData.append("file", imageBlob);
+        formData.append("dto", dtoBlob);
+
+        console.log("FormData contents:");
+        logFormData(formData);
+        return formData;
+      }
+    } catch (error) {
+      throw new Error("Error saving diary object: " + error.message);
+    }
+  };
+
+  const moveToDetailPage = async (diaryId) => {
+    try {
+      if (diaryId) {
+        console.log(diaryId);
+        navigate(`/diary/${diaryId}`); // 페이지 이동
+      }
+    } catch (error) {
+      console.error("Error moving to detail page:", error);
+    }
+  };
+
   const downloadCanvas = () => {
     if (selectCanvas) {
       const dataURL = selectCanvas.toDataURL({ format: "png" });
@@ -211,22 +252,7 @@ const WriteDiaryView = () => {
       document.body.removeChild(link);
     }
   };
-  const fetchData = async () => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: "http://i11a308.p.ssafy.io:8080/diaries",
-        // headers: {
-        //   // "Content-Type": "application/json",
-        //   Authorization:
-        //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ", // 실제 토큰으로 교체하세요
-        // },
-      });
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
@@ -249,6 +275,8 @@ const WriteDiaryView = () => {
           selectCanvas={selectCanvas}
           setSelectCanvas={setSelectCanvas}
           decorated={isDecorated}
+          diary={diary.contents}
+          update={update}
         />
         <St.DecorationContainer $decorated={isDecorated}>
           <St.BtnContainer $decorated={isDecorated}>

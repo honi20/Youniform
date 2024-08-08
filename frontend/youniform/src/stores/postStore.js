@@ -3,6 +3,7 @@ import axios from "axios";
 
 const API_URL = "http://i11a308.p.ssafy.io:8080";
 const usePostStore = create((set) => ({
+  // API_URL: "http://i11a308.p.ssafy.io:8080",
   posts: [],
   post: [],
   fetchPost: async (postId) => {

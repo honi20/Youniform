@@ -36,9 +36,11 @@ const ProfileImage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  &img {
+  /* border: 1px solid black; */
+  & img {
     height: 100%;
     width: 100%;
+    border-radius: 50px;
     object-fit: cover;
     /* border: 1px solid black; */
   }
