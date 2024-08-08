@@ -22,7 +22,7 @@ public interface DiaryService {
 
 	DiaryMonthlyListRes findMonthlyDiaries(Long userId, String friendUuid, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException;
 
-	void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq) throws JsonProcessingException;
+	void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq, MultipartFile file) throws IOException;
 
 	void removeDiary(Long userId, Long diaryId);
 

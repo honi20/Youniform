@@ -201,7 +201,7 @@ public class DiaryServiceImpl implements DiaryService {
 
 	@Override
 	@Transactional
-	public void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
+	public void modifyDiary(Long userId, Long diaryId, DiaryModifyReq diaryModifyReq, MultipartFile file) throws IOException {
 		validateDiaryContent(diaryModifyReq.getDiaryDate(), diaryModifyReq.getContents(), diaryModifyReq.getScope());
 
 		Diary diary = diaryRepository.findById(diaryId)
@@ -218,7 +218,16 @@ public class DiaryServiceImpl implements DiaryService {
 
 		diary.updateStamp(stamp);
 		diary.updateScope(Scope.valueOf(diaryModifyReq.getScope()));
-		diary.updateImgUrl(diaryModifyReq.getDiaryImgUrl());
+
+		if (!file.isEmpty()) {
+			if (diary.getImgUrl() != null) {
+				s3Service.fileDelete(diary.getImgUrl());
+			}
+
+			String imgUrl = s3Service.upload(file, "diary");;
+			diary.updateImgUrl(imgUrl);
+		}
+
 		diaryRepository.save(diary);
 
 		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
@@ -238,8 +247,11 @@ public class DiaryServiceImpl implements DiaryService {
 		}
 
 		redisUtils.deleteData("diaryContents_" + diary.getId());
-
 		diaryRepository.deleteById(diaryId);
+
+		if (diary.getImgUrl() != null) {
+			s3Service.fileDelete(diary.getImgUrl());
+		}
 	}
 
 	@Override
