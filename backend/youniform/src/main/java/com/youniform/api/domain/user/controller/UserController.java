@@ -134,4 +134,6 @@ public class UserController {
         userService.modifyUserFavorite(userId, userFavoriteReq);
         return new ResponseEntity<>(ResponseDto.success(USER_FAVORITE_MODIFIED, null), HttpStatus.OK);
     }
+
+
 }
