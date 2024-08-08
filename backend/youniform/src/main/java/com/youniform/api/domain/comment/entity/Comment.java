@@ -36,4 +36,12 @@ public class Comment {
 
     @Nullable
     private LocalDateTime updatedAt;
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateUpdatedAt() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

@@ -2,6 +2,8 @@ package com.youniform.api.domain.comment.service;
 
 import com.youniform.api.domain.comment.dto.CommentAddReq;
 import com.youniform.api.domain.comment.dto.CommentAddRes;
+import com.youniform.api.domain.comment.dto.CommentModifyReq;
+import com.youniform.api.domain.comment.dto.CommentModifyRes;
 import com.youniform.api.domain.comment.entity.Comment;
 import com.youniform.api.domain.comment.repository.CommentRepository;
 import com.youniform.api.domain.post.entity.Post;
@@ -14,8 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.youniform.api.domain.comment.validation.CommentValidation.validateContents;
-import static com.youniform.api.global.statuscode.ErrorCode.POST_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
+import static com.youniform.api.domain.comment.validation.CommentValidation.validateMyComment;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +42,24 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         return CommentAddRes.toDto(comment);
+    }
+
+    @Override
+    @Transactional
+    public CommentModifyRes modifyComment(Long userId, Long commentId, CommentModifyReq commentModifyReq) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+        validateContents(commentModifyReq.getContents());
+        validateMyComment(comment.getUser().getId(), userId);
+
+        comment.updateContent(commentModifyReq.getContents());
+        comment.updateUpdatedAt();
+        commentRepository.save(comment);
+
+        return CommentModifyRes.toDto(comment);
     }
 }

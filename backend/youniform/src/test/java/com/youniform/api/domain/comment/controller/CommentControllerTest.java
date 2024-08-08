@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.youniform.api.domain.comment.dto.CommentAddReq;
 import com.youniform.api.domain.comment.dto.CommentAddRes;
 import com.youniform.api.domain.comment.dto.CommentModifyReq;
+import com.youniform.api.domain.comment.dto.CommentModifyRes;
 import com.youniform.api.domain.comment.service.CommentService;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
@@ -25,8 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.youniform.api.global.statuscode.ErrorCode.INVALID_COMMENT_CONTENTS;
-import static com.youniform.api.global.statuscode.ErrorCode.POST_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
@@ -247,6 +247,9 @@ public class CommentControllerTest {
 
         String content = gson.toJson(commentModifyReq);
 
+        when(commentService.modifyComment(any(), any(), any()))
+                .thenReturn(new CommentModifyRes("수정", "0초 전"));
+
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/comments/{commentId}", 1L)
@@ -282,6 +285,168 @@ public class CommentControllerTest {
                                                         .description("댓글 내용"),
                                                 fieldWithPath("body.updateAt").type(JsonFieldType.STRING)
                                                         .description("수정 날짜")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Comment 수정 Request"))
+                                .responseSchema(Schema.schema("Comment 수정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 댓글_수정_실패_유효하지_않은_댓글_아이디() throws Exception {
+        //given
+        CommentModifyReq commentModifyReq = new CommentModifyReq();
+        commentModifyReq.setContents("댓글수정");
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        String content = gson.toJson(commentModifyReq);
+
+        when(commentService.modifyComment(any(), any(), any()))
+                .thenThrow(new CustomException(COMMENT_NOT_FOUND));
+
+        ResultActions actions = mockMvc.perform(
+                patch("/comments/{commentId}", 10000L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COMMENT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COMMENT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "Comment 수정 실패 - 유효하지 않은 댓글 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Comment API")
+                                .summary("Comment 수정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("contents").type(JsonFieldType.STRING)
+                                                .description("댓글 수정 내용")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Comment 수정 Request"))
+                                .responseSchema(Schema.schema("Comment 수정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 댓글_수정_실패_댓글이_공백인_경우() throws Exception {
+        //given
+        CommentModifyReq commentModifyReq = new CommentModifyReq();
+        commentModifyReq.setContents(" ");
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        String content = gson.toJson(commentModifyReq);
+
+        when(commentService.modifyComment(any(), any(), any()))
+                .thenThrow(new CustomException(INVALID_COMMENT_CONTENTS));
+
+        ResultActions actions = mockMvc.perform(
+                patch("/comments/{commentId}", 1L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_COMMENT_CONTENTS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(INVALID_COMMENT_CONTENTS.getMessage()))
+                .andDo(document(
+                        "Comment 수정 실패 - 댓글이 공백이거나 null인 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Comment API")
+                                .summary("Comment 수정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("contents").type(JsonFieldType.STRING)
+                                                .description("댓글 수정 내용")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("Comment 수정 Request"))
+                                .responseSchema(Schema.schema("Comment 수정 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 댓글_수정_실패_나의_댓글이_아닌_경우() throws Exception {
+        //given
+        CommentModifyReq commentModifyReq = new CommentModifyReq();
+        commentModifyReq.setContents("댓글 수정");
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        String content = gson.toJson(commentModifyReq);
+
+        when(commentService.modifyComment(any(), any(), any()))
+                .thenThrow(new CustomException(COMMENT_UPDATE_FORBIDDEN));
+
+        ResultActions actions = mockMvc.perform(
+                patch("/comments/{commentId}", 2L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COMMENT_UPDATE_FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COMMENT_UPDATE_FORBIDDEN.getMessage()))
+                .andDo(document(
+                        "Comment 수정 실패 - 나의 댓글이 아닌 경우",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Comment API")
+                                .summary("Comment 수정 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("contents").type(JsonFieldType.STRING)
+                                                .description("댓글 수정 내용")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
                                 .requestSchema(Schema.schema("Comment 수정 Request"))

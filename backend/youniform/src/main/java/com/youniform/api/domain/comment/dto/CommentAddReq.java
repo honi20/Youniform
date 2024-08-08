@@ -23,6 +23,7 @@ public class CommentAddReq {
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .post(post)
+                .updatedAt(null)
                 .build();
     }
 }
