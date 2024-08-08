@@ -2,9 +2,7 @@ package com.youniform.api.domain.chat.service;
 
 import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.document.DatabaseSequence;
-import com.youniform.api.domain.chat.dto.ChatMessageDto;
-import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
-import com.youniform.api.domain.chat.dto.ChatRoomListRes;
+import com.youniform.api.domain.chat.dto.*;
 import com.youniform.api.domain.chat.entity.ChatRoom;
 import com.youniform.api.domain.chat.repository.ChatMessageRepository;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
@@ -16,6 +14,7 @@ import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -25,8 +24,14 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -145,5 +150,34 @@ public class ChatServiceImpl implements ChatService {
                 DatabaseSequence.class);
 
         return !Objects.isNull(counter) ? counter.getSeq() : 1;
+    }
+
+    @Override
+    public ChatUploadImageRes uploadImage(MultipartFile file) throws IOException {
+        ChatUploadImageRes chatUploadImageRes = new ChatUploadImageRes(null);
+
+        if (file.isEmpty()) {
+            return chatUploadImageRes;
+        } else {
+            String imgUrl = s3Service.upload(file, "chat_image");
+            chatUploadImageRes.setImageUrl(imgUrl);
+
+            return chatUploadImageRes;
+        }
+    }
+
+    @Override
+    public ChatDownloadImageRes downloadImage(String imgUrl) throws IOException {
+        InputStream imageStream = s3Service.download(imgUrl);
+        InputStreamResource resource = new InputStreamResource(imageStream);
+
+        ChatDownloadImageRes response = new ChatDownloadImageRes();
+
+        response.setResource(resource);
+        response.setHeaders(new HttpHeaders());
+        response.getHeaders().setContentDispositionFormData("attachment", imgUrl);
+        response.getHeaders().setContentType(MediaType.IMAGE_JPEG);
+
+        return response;
     }
 }

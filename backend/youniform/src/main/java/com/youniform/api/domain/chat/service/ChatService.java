@@ -1,11 +1,14 @@
 package com.youniform.api.domain.chat.service;
 
 import com.youniform.api.domain.chat.document.ChatMessage;
-import com.youniform.api.domain.chat.dto.ChatMessageDto;
-import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
-import com.youniform.api.domain.chat.dto.ChatRoomListRes;
+import com.youniform.api.domain.chat.dto.*;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.global.dto.SliceDto;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface ChatService {
     ChatRoomListRes getChatRoomList(Long userId);
@@ -23,4 +26,8 @@ public interface ChatService {
     ChatMessage saveChatMessage(Long roomId, ChatMessage chatMessage, Users user);
 
     long createSequence(String seqName);
+
+    ChatUploadImageRes uploadImage(MultipartFile file) throws IOException;
+
+    ChatDownloadImageRes downloadImage(String imgUrl) throws IOException;
 }
