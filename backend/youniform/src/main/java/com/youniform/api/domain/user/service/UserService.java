@@ -34,4 +34,8 @@ public interface UserService {
     SearchUserRes searchUser(Long userId, Long lastUserId, Pageable pageable);
 
     void modifyUserFavorite(Long userId, UserFavoriteReq userFavoriteReq);
+
+    void sendEmail(EmailSendReq req);
+
+    void verifyEmail(EmailVerifyReq req);
 }

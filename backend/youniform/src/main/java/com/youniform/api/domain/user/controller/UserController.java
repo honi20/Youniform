@@ -32,11 +32,13 @@ public class UserController {
 
     @PostMapping("/email/send")
     public ResponseEntity<?> emailSend(@RequestBody EmailSendReq emailSendReq) {
+        userService.sendEmail(emailSendReq);
         return new ResponseEntity<>(ResponseDto.success(VERIFY_CODE_SEND, null), HttpStatus.OK);
     }
 
     @GetMapping("/email/verify")
     public ResponseEntity<?> emailVerify(@ModelAttribute EmailVerifyReq emailVerifyReq) {
+        userService.verifyEmail(emailVerifyReq);
         return new ResponseEntity<>(ResponseDto.success(EMAIL_VERIFIED, null), HttpStatus.OK);
     }
 
