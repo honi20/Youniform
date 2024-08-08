@@ -148,6 +148,9 @@ const WriteDiaryView = () => {
         return <div>테마</div>; // 테마 컴포지션
       case 4:
         return <div>사진</div>; // 사진 컴포지션
+      case 5:
+        // 프레임
+        return;
       default:
         return <WallPaperComp />;
     }

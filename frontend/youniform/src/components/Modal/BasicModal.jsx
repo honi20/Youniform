@@ -145,7 +145,17 @@ const stateMap = {
     icon: <CheckIcon />,
     title: "포토카드가 삭제되었습니다.",
     btn: [0],
-  }
+  },
+  PhotocardSaveWarning: {
+    icon: <AlarmIcon />,
+    title: "포토카드를 생성하시겠습니까?",
+    btn: [1, 5],
+  },
+  PhotoCardSaved: {
+    icon: <CheckIcon />,
+    title: "포토카드가 생성되었습니다.",
+    btn: [0],
+  },
 };
 // btn 종류
 // 0: 확인 1: 취소(색깔 다름) 2: 변경 3: 삭제 4: 초기화
@@ -155,7 +165,9 @@ const buttonMap = {
   2: { bgcolor: "#262F66", color: "white", label: "변경" },
   3: { bgcolor: "#262F66", color: "white", label: "삭제" },
   4: { bgcolor: "#262F66", color: "white", label: "초기화" },
+  5: { bgcolor: "#262F66", color: "white", label: "생성" },
 };
+
 const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
   if (!isOpen) return null;
 

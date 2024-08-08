@@ -45,13 +45,11 @@ const PhotoCardDetail = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const openWarningModal = () => {
-    console.log("Opening Warning Modal");
     setIsWarningModalOpen(true);
   };
 
   const closeWarningModal = () => setIsWarningModalOpen(false);
   const openConfirmModal = () => {
-    console.log("Opening Confirm Modal");
     setIsConfirmModalOpen(true);
   };
 
@@ -59,7 +57,6 @@ const PhotoCardDetail = () => {
 
   const handleDelete = () => {
     // 포토카드 삭제 로직 구현
-    console.log("Deleting PhotoCard");
     closeWarningModal();
     openConfirmModal();
   };

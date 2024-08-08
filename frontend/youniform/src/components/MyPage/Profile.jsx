@@ -67,7 +67,7 @@ const Introduce = styled.div`
 `;
 
 const ProfileComp = () => {
-  const { user, fetchUser, clearUser, loading, error } = useUserStore();
+  const { user, fetchUser, clearUser, loading, error, accessToken } = useUserStore();
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
