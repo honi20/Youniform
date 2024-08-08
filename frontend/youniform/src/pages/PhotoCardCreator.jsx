@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
-import { wallpapers, stickers, fonts } from "@assets";
+import { frames, wallpapers, stickers, fonts } from "@assets";
 
 import DecoIcon from "@assets/DecoIcon.svg?react";
 import ExampleIcon from "@assets/ExIcon.svg?react";
@@ -13,7 +13,7 @@ import SaveIcon from "@assets/Save_fill.svg?react";
 import BackgroundIcon from "@assets/Canvas/background.svg?react";
 
 import FontComp from "@components/Diary/Write/FontComp";
-import WallPaperComp from "@components/Diary/Write/WallPaperComp";
+import FrameComp from "../components/Photocard/Create/FrameComp";
 import StickerComp from "@components/Diary/Write/StickerComp";
 import ColorChipComp from "@components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
@@ -25,12 +25,21 @@ const PhotoCardCreator = () => {
   const [isDecorated, setIsDecorated] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [diary, setDiary] = useState(null);
+
+  const fileInputRef = useRef(null); // 파일 입력 참조
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
   const openSaveModal = () => setIsSaveModalOpen(true);
   const closeSaveModal = () => setIsSaveModalOpen(false);
+
+  const openConfirmModal = () => {
+    setIsConfirmModalOpen(true);
+  };
+
+  const closeConfirmModal = () => setIsConfirmModalOpen(false);
 
   const navigate = useNavigate();
 
@@ -41,6 +50,14 @@ const PhotoCardCreator = () => {
   const handleImageClick = async (selectedImg) => {
     console.log(selectedImg);
     if (selectCanvas) {
+      // 기존의 프레임 객체를 찾아서 제거
+      const objects = selectCanvas.getObjects();
+      objects.forEach((obj) => {
+        if (obj.type === 'image' && obj !== selectCanvas.backgroundImage) {
+          selectCanvas.remove(obj);
+        }
+      });
+  
       fabric.Image.fromURL(selectedImg, (img) => {
         img.scaleToWidth(selectCanvas.getWidth());
         img.scaleToHeight(selectCanvas.getHeight());
@@ -50,10 +67,9 @@ const PhotoCardCreator = () => {
           left: selectCanvas.getWidth() / 2,
           top: selectCanvas.getHeight() / 2,
         });
-        selectCanvas.setBackgroundImage(
-          img,
-          selectCanvas.renderAll.bind(selectCanvas)
-        );
+        selectCanvas.add(img);
+        selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
+        selectCanvas.renderAll();
       });
     }
   };
@@ -74,7 +90,7 @@ const PhotoCardCreator = () => {
       });
     }
   };
-
+  
   const handleFontClick = async (selectedFont) => {
     const getFontName = (path) => {
       const parts = path.split("/");
@@ -92,11 +108,13 @@ const PhotoCardCreator = () => {
         fontFamily: getFontName(selectedFont),
         fill: "#000000",
       });
-
+  
       selectCanvas.add(text);
       selectCanvas.renderAll();
     }
   };
+  
+
   const handleResetClick = () => {
     if (selectCanvas) {
       selectCanvas.clear();
@@ -106,14 +124,15 @@ const PhotoCardCreator = () => {
       );
     }
   };
+
   const renderContent = () => {
     switch (selectedBtn) {
       case 0:
         return (
           <>
             <ColorChipComp />
-            <WallPaperComp
-              wallpapers={Object.values(wallpapers).map((mod) => mod.default)}
+            <FrameComp
+              wallpapers={Object.values(frames).map((mod) => mod.default)}
               onImageClick={handleImageClick}
             />
           </>
@@ -137,9 +156,10 @@ const PhotoCardCreator = () => {
       case 4:
         return <div>사진</div>; // 사진 컴포지션
       default:
-        return <WallPaperComp />;
+        return <FrameComp />;
     }
   };
+
   // axios 요청 시 날짜
   const getCurrentDate = () => {
     const date = new Date();
@@ -172,6 +192,7 @@ const PhotoCardCreator = () => {
     //   console.log(err);
     // });
   };
+
   const saveCanvas = () => {
     if (selectCanvas) {
       const json = selectCanvas.toJSON();
@@ -186,6 +207,7 @@ const PhotoCardCreator = () => {
       downloadAnchorNode.remove();
     }
   };
+
   const saveCanvasAtLocalStorage = () => {
     return new Promise((resolve, reject) => {
       try {
@@ -201,6 +223,7 @@ const PhotoCardCreator = () => {
       }
     });
   };
+
   const downloadCanvas = () => {
     if (selectCanvas) {
       const dataURL = selectCanvas.toDataURL({ format: "png" });
@@ -212,6 +235,7 @@ const PhotoCardCreator = () => {
       document.body.removeChild(link);
     }
   };
+
   const fetchData = async () => {
     try {
       const response = await axios({
@@ -228,6 +252,7 @@ const PhotoCardCreator = () => {
       console.error(error);
     }
   };
+
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
@@ -237,15 +262,38 @@ const PhotoCardCreator = () => {
     selectCanvas.renderAll();
     setIsDecorated(!isDecorated);
   };
-  const setBackground = () => {};
+
+  const setBackground = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      if (selectCanvas) {
+        fabric.Image.fromURL(fileURL, (img) => {
+          img.scaleToWidth(selectCanvas.getWidth());
+          img.scaleToHeight(selectCanvas.getHeight());
+          img.set({
+            originX: "center",
+            originY: "center",
+            left: selectCanvas.getWidth() / 2,
+            top: selectCanvas.getHeight() / 2,
+          });
+          selectCanvas.setBackgroundImage(
+            img,
+            selectCanvas.renderAll.bind(selectCanvas)
+          );
+        });
+      }
+    }
+  };
+
   return (
     <>
-      <St.SaveBtn onClick={openSaveModal}>
-        <St.IconContainer>
-          <SaveIcon />
-        </St.IconContainer>
-        <St.IconFont>저장</St.IconFont>
-      </St.SaveBtn>
+    {/* onClick={openSaveModal} */}
+    {/* onClick={downloadCanvas} */}
       <St.Div $decorated={isDecorated}>
         <PhotocardCanvas
           selectCanvas={selectCanvas}
@@ -255,7 +303,7 @@ const PhotoCardCreator = () => {
         <St.DecorationContainer $decorated={isDecorated}>
           <St.BtnContainer $decorated={isDecorated}>
             <div style={{ display: "flex" }}>
-              <St.Btn $decorated={isDecorated} onClick={() => setBackground()}>
+              <St.Btn $decorated={isDecorated} onClick={setBackground}>
                 <St.IconContainer>
                   <BackgroundIcon />
                 </St.IconContainer>
@@ -276,11 +324,11 @@ const PhotoCardCreator = () => {
                 </St.IconContainer>
                 <St.IconFont>예시</St.IconFont>
               </St.Btn>
-              <St.Btn $decorated={isDecorated} onClick={downloadCanvas}>
+              <St.Btn $decorated={isDecorated} onClick={openSaveModal}>
                 <St.IconContainer>
                   <DownloadIcon />
                 </St.IconContainer>
-                <St.IconFont>다운로드</St.IconFont>
+                <St.IconFont>저장</St.IconFont>
               </St.Btn>
             </div>
             <St.Btn $decorated={isDecorated} onClick={handleResetClick}>
@@ -293,7 +341,7 @@ const PhotoCardCreator = () => {
           <St.DecorationPanel $decorated={isDecorated}>
             <St.DecorationBtnContainer $decorated={isDecorated}>
               <div style={{ display: "flex", width: "100%" }}>
-                {["배경", "스티커", "폰트", "테마", "사진"].map(
+                {["템플릿", "스티커", "폰트"].map(
                   (text, index) => (
                     <St.DecorationBtn
                       key={index}
@@ -315,12 +363,24 @@ const PhotoCardCreator = () => {
           </St.CloseBtn>
         </St.DecorationContainer>
         <BasicModal
-          state="DiarySaved"
+          state="PhotocardSaveWarning"
           isOpen={isSaveModalOpen}
           onClose={closeSaveModal}
           onButtonClick={handleAfterSave}
         />
+        <BasicModal
+          state={"PhotoCardSaved"}
+          isOpen={isConfirmModalOpen}
+          onClose={closeConfirmModal}
+          nickname={""}
+        />
       </St.Div>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
     </>
   );
 };
