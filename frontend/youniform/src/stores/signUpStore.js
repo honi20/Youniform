@@ -1,36 +1,46 @@
-import { create } from 'zustand';
-import axios from 'axios';
+import { create } from "zustand";
+import axios from "axios";
 
 const API_URL = "http://i11a308.p.ssafy.io:8080";
 const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
-  setStep: (num) => set((state) => {
-    if (state.step < 4) {
-      return { step: num };
-    }
-    return state;
-  }),
+  setStep: (num) =>
+    set((state) => {
+      if (state.step < 4) {
+        return { step: num };
+      }
+      return state;
+    }),
   user: {
-    email: '',
-    password: '',
-    confirmPw: '',
+    email: "",
+    password: "",
+    confirmPw: "",
     profileUrl: null,
-    nickname: '',
-    introduce: '',
+    nickname: "",
+    introduce: "",
     players: [],
     isVerified: false,
     isPwVerified: false,
     isNicknameUnique: false,
-    setEmail: (val) => set((state) => ({ user: { ...state.user, email: val } })),
-    setPassword: (val) => set((state) => ({ user: { ...state.user, password: val } })),
-    setConfirmPw: (val) => set((state) => ({ user: { ...state.user, confirmPw: val } })),
-    setNickname: (val) => set((state) => ({ user: { ...state.user, nickname: val } })),
-    setIntroduce: (val) => set((state) => ({ user: { ...state.user, introduce: val } })),
-    setIsVerified: (val) => set((state) => ({ user: { ...state.user, isVerified: val } })),
-    setIsPwVerified: (val) => set((state) => ({ user: { ...state.user, isPwVerified: val } })),
-    setIsNicknameUnique: (val) => set((state) => ({ user: { ...state.user, isNicknameUnique: val } })),
-    setPlayers: (players) => set((state) => ({ user: { ...state.user, players } })),
+    setEmail: (val) =>
+      set((state) => ({ user: { ...state.user, email: val } })),
+    setPassword: (val) =>
+      set((state) => ({ user: { ...state.user, password: val } })),
+    setConfirmPw: (val) =>
+      set((state) => ({ user: { ...state.user, confirmPw: val } })),
+    setNickname: (val) =>
+      set((state) => ({ user: { ...state.user, nickname: val } })),
+    setIntroduce: (val) =>
+      set((state) => ({ user: { ...state.user, introduce: val } })),
+    setIsVerified: (val) =>
+      set((state) => ({ user: { ...state.user, isVerified: val } })),
+    setIsPwVerified: (val) =>
+      set((state) => ({ user: { ...state.user, isPwVerified: val } })),
+    setIsNicknameUnique: (val) =>
+      set((state) => ({ user: { ...state.user, isNicknameUnique: val } })),
+    setPlayers: (players) =>
+      set((state) => ({ user: { ...state.user, players } })),
   },
   sendEmail: async (email) => {
     try {
@@ -38,13 +48,13 @@ const signUpStore = create((set, get) => ({
         method: "post",
         url: `${API_URL}/users/email/send`,
         data: { email },
-      })
+      });
       if (res.status === 200) {
-        console.log(res.data)
+        console.log(res.data);
         return "$OK";
       }
     } catch (error) {
-      console.error('이메일 발송 중 오류 발생:', error);
+      console.error("이메일 발송 중 오류 발생:", error);
       return "$FAIL";
     }
   },
@@ -55,11 +65,10 @@ const signUpStore = create((set, get) => ({
         url: `${API_URL}/users/email/verify`,
         params: {
           email: email,
-          verifyCode: authenticCode
+          verifyCode: authenticCode,
         },
-      })
-    } catch (error) {
-    }
+      });
+    } catch (error) {}
   },
   verifyNickname: async () => {
     try {
@@ -69,7 +78,7 @@ const signUpStore = create((set, get) => ({
         url: `${API_URL}/users/verify`,
         params: {
           nickname: user.nickname,
-        }
+        },
       });
       console.log(res);
       return "$OK";
@@ -94,10 +103,11 @@ const signUpStore = create((set, get) => ({
           introduce: user.introduce,
           team: "MONSTERS",
           players: user.players,
-        }
+        },
       });
       console.log("Success to fetch Local SignUp");
-      console.log(res);
+      console.log(res.data.header);
+      console.log(res.data.body);
     } catch (err) {
       console.log("Failed to fetch Local SignUp", err);
     }

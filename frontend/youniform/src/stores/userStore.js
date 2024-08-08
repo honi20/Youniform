@@ -1,6 +1,8 @@
 import { create } from "zustand";
-import { getApiClient } from "@stores/apiClient";
+import { createApiClient, getApiClient } from "@stores/apiClient";
+import axios from "axios";
 
+const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useUserStore = create((set, get) => ({
   user: null,
   friend: null,
@@ -9,14 +11,17 @@ const useUserStore = create((set, get) => ({
   accessToken: null,
   setAccessToken: (token) => set({ accessToken: token }),
   clearAccessToken: () => set({ accessToken: null }),
+
   fetchUser: async () => {
     set({ loading: true, error: null });
-    const { accessToken } = get();
-    if (!accessToken) {
-      console.error("No access token found");
-      return;
-    }
-    const apiClient = getApiClient(accessToken);
+    // const { accessToken } = get();
+    // if (!accessToken) {
+    //   console.error("No access token found");
+    //   return;
+    // }
+    // console.log(accessToken);
+    const apiClient = getApiClient();
+    console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users`);
       console.log(response.data.header.message);
@@ -28,10 +33,12 @@ const useUserStore = create((set, get) => ({
     }
   },
   clearUser: () => set({ user: null, error: null }),
+  
   fetchFriend: async (userId) => {
     set({ loading: true, error: null });
     const { accessToken } = get();
     const apiClient = getApiClient(accessToken);
+    console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users/${userId}`);
       set({ friend: response.data.body, loading: false });
@@ -41,16 +48,21 @@ const useUserStore = create((set, get) => ({
     }
   },
   clearFriend: () => set({ friend: null, error: null }),
+
   fetchLogin: async (email, password) => {
     const apiClient = getApiClient();
     try {
-      const response = await apiClient.post("/users/signin/local", {
+      const response = await axios.post(`${API_URL}/users/signin/local`, {
         email,
         password,
       });
       console.log(response.data.body);
       const { accessToken } = response.data.body;
       set({ accessToken });
+      const handleLoginSuccess = (accessToken) => {
+        localStorage.setItem("accessToken", accessToken);
+      };
+      handleLoginSuccess(response.data.body.accessToken);
       return "$OK";
     } catch (err) {
       console.log("Failed to fetchLogin", err);
