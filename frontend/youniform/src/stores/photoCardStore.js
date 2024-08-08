@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import useUserStore from '@stores/userStore';
 import axios from 'axios';
+import { getApiClient } from "@stores/apiClient";
 
-const usePhotoCardStore = create((set) => ({
+const usePhotoCardStore = create((set, get) => ({
   photoCards: [],
   isFlipped: false,
   flipPage: () => set((state) => ({ isFlipped: !state.isFlipped })),
@@ -13,37 +14,67 @@ const usePhotoCardStore = create((set) => ({
   setPage: (page) => set({ page }),
   selectedImage: null,
   setSelectedImage: (image) => set({ selectedImage: image }),
-  fetchPhotoCardList: async (accessToken) => {
+  fetchPhotoCardList: async () => {
+    const { accessToken } = get();
+    const apiClient = getApiClient(accessToken);
     try {
-      const res = await axios({
-        method: "get",
-        url: `${API_URL}/photocards`,
-        params: {
-          Authorization: accessToken
-        }
-      });
+      const res = await apiClient.get(`/photocards`);
       console.log(res);
+      set({ photoCards: res.data.body });
+      console.log(res.data.body);
     } catch (error) {
       console.log("Failed to fetchPhotocards", err);
     }
   },
-  createPhotoCard: async (accessToken, url) => {
+  createPhotoCard: async (imageBlob) => {
+    const { accessToken } = get();
+    const apiClient = getApiClient(accessToken);
     try {
-      const res = await axios({
-        method: "post",
-        url: `${API_URL}/photocards`,
-        params: {
-          Authorization: accessToken
-        },
+      const res = await apiClient.post(`/photocards`, {
         data: {
-          imgUrl: url
+          imgUrl: imageBlob
         }
       });
-      console.log(res);
+      console.log(res.data);
     } catch (error) {
-      console.log("Failed to fetchPhotocards", err);
+      console.log("Failed to createPhotoCard", err);
     }
-  }
+  },
+  // 포토카드 다중 삭재
+  deletePhotocards: async (list) => {
+    const { accessToken } = get();
+    const apiClient = getApiClient(accessToken);
+    try {
+      const res = await apiClient.delete(`/photocards`, {
+        params: {
+          photocardIdList: list
+        }
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.log("Failed to createPhotoCard", err);
+    }
+  },
+  // 포토카드 단일 삭제
+  deletePhotocard: async (id) => {
+    const { accessToken } = get();
+    const apiClient = getApiClient(accessToken);
+    try {
+      const res = await apiClient.delete(`/photocards/${id}`, {
+        params: {
+          photocardId: id
+        }
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.log("Failed to createPhotoCard", err);
+    }
+  },
+  
+  fetchPhotocardDetail: async () => {
+
+  },
+  
 }));
 
 export default usePhotoCardStore;

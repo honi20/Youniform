@@ -119,7 +119,7 @@ const DiaryHomeView = () => {
 
   useEffect(() => {
     fetchFriends();
-  }, [fetchFriends]);
+  }, [fetchFriends]); 
 
   useEffect(() => {
     const updateCalendarHeight = () => {
