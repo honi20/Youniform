@@ -7,7 +7,7 @@ import useUserStore from "@stores/userStore";
 import Loading from "@components/Share/Loading";
 import { styled as muiStyled } from "@mui/material/styles";
 import { Button } from "@mui/material";
-import axios from "axios";
+import { getApiClient } from "@stores/apiClient";
 
 const Container = styled.div`
   display: flex;
@@ -99,7 +99,6 @@ const ColorBtn = muiStyled(Button)(({ theme, ismodified }) => ({
   pointerEvents: ismodified ? "auto" : "none",
 }));
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
 const ChangeProfile = () => {
   const [image, setImage] = useState(null);
   const [nickname, setNickname] = useState("");
@@ -129,13 +128,10 @@ const ChangeProfile = () => {
   // 닉네임 중복 확인 처리
   const handleNicknameCheck = async () => {
     console.log("Checking nickname...");
+    const apiClient = getApiClient();
+    console.log("API Client:", apiClient);
     try {
-      const res = await axios({
-        method: "get",
-        url: `${API_URL}/users/verify`,
-        // headers: {
-        //   Authorization: "Bearer your_token_here",
-        // },
+      const res = await apiClient.get(`/users/verify`, {
         params: {
           nickname: nickname,
         },
@@ -154,15 +150,11 @@ const ChangeProfile = () => {
       console.log("Cannot submit, either no changes or nickname not checked");
       return;
     }
+    const apiClient = getApiClient();
+    console.log("API Client:", apiClient);
     console.log("Submitting changes...");
     try {
-      const res = await axios({
-        method: "patch",
-        url: `${API_URL}/users/profile`,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          //   Authorization: "Bearer your_token_here",
-        },
+      const res = await apiClient.patch("/users/profile", {
         data: {
           nickname: nickname,
           introduce: introduce,
