@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 const API_URL = "http://i11a308.p.ssafy.io:8080";
-const signUpStore = create((set) => ({
+const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
   setStep: (num) => set((state) => {
@@ -15,6 +15,7 @@ const signUpStore = create((set) => ({
     email: '',
     password: '',
     confirmPw: '',
+    profileUrl: null,
     nickname: '',
     introduce: '',
     players: [],
@@ -48,9 +49,7 @@ const signUpStore = create((set) => ({
     }
   },
   verifyEmailCode: async (email, authenticCode) => {
-    console.log(1);
     try {
-      console.log(2);
       const res = await axios({
         method: "get",
         url: `${API_URL}/users/email/verify`,
@@ -59,13 +58,50 @@ const signUpStore = create((set) => ({
           verifyCode: authenticCode
         },
       })
-      
-      console.log(3);
-      console.log(res);
     } catch (error) {
-      
     }
-  }
+  },
+  verifyNickname: async () => {
+    try {
+      const { user } = get();
+      const res = await axios({
+        method: "get",
+        url: `${API_URL}/users/verify`,
+        params: {
+          nickname: user.nickname,
+        }
+      });
+      console.log(res);
+      return "$OK";
+    } catch (err) {
+      console.log(err);
+      return "$FAIL";
+    }
+  },
+  fetchLocalSignUp: async () => {
+    try {
+      const { user } = get();
+      console.log(user);
+      const res = await axios({
+        method: "post",
+        url: `${API_URL}/users/signup/local`,
+        data: {
+          email: user.email,
+          password: user.password,
+          providerType: "LOCAL",
+          profileUrl: user.profileUrl,
+          nickname: user.nickname,
+          introduce: user.introduce,
+          team: "MONSTERS",
+          players: user.players,
+        }
+      });
+      console.log("Success to fetch Local SignUp");
+      console.log(res);
+    } catch (err) {
+      console.log("Failed to fetch Local SignUp", err);
+    }
+  },
 }));
 
 export default signUpStore;

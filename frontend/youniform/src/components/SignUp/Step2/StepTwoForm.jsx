@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import ProfileImg from '../../../assets/login/user.svg?react';
+import useSignUpStore from '@stores/signUpStore';
+import ProfileImg from '@assets/login/user.svg?react';
+import StatusMessageForm from '../StatusMessageForm';
 
 import { styled as muiStyled } from '@mui/material/styles';
 import { TextField, Button } from '@mui/material';
@@ -8,7 +10,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AddIcon from '@mui/icons-material/ControlPoint';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import CheckIcon from '@mui/icons-material/Check';
-import useSignUpStore from '../../../stores/signUpStore';
+import WarningIcon from '@mui/icons-material/PriorityHigh';
 
 const ProfileImgWrapper = styled.div`
   position: relative;
@@ -86,10 +88,14 @@ const VisuallyHiddenInput = muiStyled('input')({
 });
 
 const UserInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 90%;
   margin: 0 auto;
   margin-top: 2rem;
+  gap: 0.5rem;
 `;
+
 const ProfileImgContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -98,15 +104,48 @@ const ProfileImgContainer = styled.div`
   position: relative;
 `;
 
+const validateNickname = (nickname) => {
+  const regex = /^[가-힣a-z0-9]{1,10}$/; // 정규식: 한글 or 소문자 or 숫자 && 1~10자
+  return regex.test(nickname);
+};
+
 const StepTwoForm = () => {
-  const { user } = useSignUpStore();
-  const { nickname, introduce, isNicknameUnique, setNickname, setIntroduce, setIsNicknameUnique } = user;
+  const { user, verifyNickname } = useSignUpStore();
+  const { nickname, introduce, isNicknameUnique,
+    setNickname, setIntroduce, setIsNicknameUnique, } = user;
 
   const [profileImage, setProfileImage] = useState(ProfileImg);
+  const [statusMsg, setStatusMsg] = useState(null);
+  const [introduceStatusMsg, setIntroduceStatusMsg] = useState(null);
+  const [typingTimeout, setTypingTimeout] = useState(null);
+  const [nicknameChecked, setNicknameChecked] = useState(false);
 
-  const confirmUnique = () => {
-    setIsNicknameUnique(true);
-  };
+  useEffect(() => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    
+    if (nickname.length > 0) {
+      if (validateNickname(nickname)) {
+        const timeout = setTimeout(async () => {
+          const result = await verifyNickname();
+          if (result === "$OK") {
+            setIsNicknameUnique(true);
+            setStatusMsg(null);
+          } else {
+            setIsNicknameUnique(false);
+            setStatusMsg('이미 사용 중인 닉네임입니다.');
+          }
+        }, 1000);
+        setTypingTimeout(timeout);
+      } else {
+        setIsNicknameUnique(false);
+        setStatusMsg('유효하지 않은 닉네임입니다. 10자 이내의 한글, 소문자 영어, 숫자만 사용 가능합니다.')
+      }
+      setNicknameChecked(true);
+    }
+    return () => clearTimeout(typingTimeout);
+  }, [nickname]);
 
   const handleNicknameChange = (event) => {
     setIsNicknameUnique(false);
@@ -114,7 +153,14 @@ const StepTwoForm = () => {
   };
 
   const handleIntroduceChange = (event) => {
-    setIntroduce(event.target.value);
+    const value = event.target.value;
+    const length = [...value].length; // 한글도 한 자로 계산
+    if (length <= 20) {
+      setIntroduce(value);
+      setIntroduceStatusMsg('');
+    } else {
+      setIntroduceStatusMsg('한 줄 소개는 20자 이내로 작성해주세요.');
+    }
   };
 
   const handleAddIconClick = () => {
@@ -126,7 +172,6 @@ const StepTwoForm = () => {
   };
 
   const handleFileChange = (event) => {
-    console.log(event);
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -157,28 +202,38 @@ const StepTwoForm = () => {
       </ProfileImgContainer>
       <UserInfoContainer>
         <TextField
-          sx={{ width: "100%", marginBottom: "1rem" }}
+          sx={{ width: "100%" }}
           label="닉네임 입력"
           value={nickname}
           onChange={handleNicknameChange}
           InputProps={{
             endAdornment: (
-              <Button
-                variant="contained"
-                onClick={confirmUnique}
-                sx={{ height: "30px", width: "34%" }}
-              >
-                {isNicknameUnique ? <CheckIcon /> : '중복확인'}
-              </Button>
+              <>
+                {nicknameChecked &&
+                  <Button
+                    variant="contained"
+                    sx={{ height: "30px", width: "34%", backgroundColor: isNicknameUnique ? 'navy' : 'red' }}
+                  >
+                    {isNicknameUnique ? <CheckIcon /> : <WarningIcon />}
+                    
+                  </Button>
+                }
+              </>
             ),
           }}
         />
+        {statusMsg &&
+          <StatusMessageForm statusMsg={statusMsg} />
+        }
         <TextField
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", marginTop: "0.8rem" }}
           label="한줄소개 입력"
           value={introduce}
           onChange={handleIntroduceChange}
         />
+        {introduceStatusMsg &&
+          <StatusMessageForm statusMsg={introduceStatusMsg} />
+        }
       </UserInfoContainer>
     </>
   );
