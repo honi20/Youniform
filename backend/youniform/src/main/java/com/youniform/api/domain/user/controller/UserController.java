@@ -140,8 +140,6 @@ public class UserController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchNickname(@RequestParam("nickname") String nickname) {
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-
         SearchNicknameRes result = userService.findUserByNickName(nickname);
 
         return new ResponseEntity<>(ResponseDto.success(USER_SEARCH_OK, result), HttpStatus.OK);
