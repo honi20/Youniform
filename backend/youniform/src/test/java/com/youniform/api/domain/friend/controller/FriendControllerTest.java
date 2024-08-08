@@ -329,7 +329,7 @@ public class FriendControllerTest {
     @Test
     public void 친구_삭제_성공() throws Exception {
         //given
-        String id = "dstfiposdjfsd0f-sb3t466t54regfdb-dsbsdb4324543";
+        String friendUuid = "dstfiposdjfsd0f-sb3t466t54regfdb-dsbsdb4324543";
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
@@ -337,7 +337,7 @@ public class FriendControllerTest {
         ResultActions actions = mockMvc.perform(
                 delete("/friends")
                         .header("Authorization", "Bearer " + jwtToken)
-                        .param("id", id)
+                        .param("friendUuid", friendUuid)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf().asHeader())
         );
@@ -358,7 +358,7 @@ public class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .queryParameters(
-                                        parameterWithName("id").description("친구 Id(UUID)").optional()
+                                        parameterWithName("friendUuid").description("친구 Id(UUID)").optional()
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
