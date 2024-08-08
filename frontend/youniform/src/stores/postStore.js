@@ -1,15 +1,15 @@
 import { create } from "zustand";
+import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
-
 const API_URL = "http://i11a308.p.ssafy.io:8080";
 const usePostStore = create((set) => ({
-  // API_URL: "http://i11a308.p.ssafy.io:8080",
   posts: [],
   post: [],
   fetchPost: async (postId) => {
     console.log(postId);
+    const apiClient = getApiClient();
     try {
-      const res = await axios({
+      const res = await apiClient({
         method: "get",
         url: `${API_URL}/posts/${postId}`,
         // headers: {

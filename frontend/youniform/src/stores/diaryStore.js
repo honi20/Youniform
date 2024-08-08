@@ -57,9 +57,14 @@ const useDiaryStore = create((set) => ({
       });
   },
   fetchDiaries: async () => {
+    const { accessToken } = useUserStore.getState();
+    console.log(accessToken);
     await axios({
       method: "get",
       url: `${API_URL}/diaries`,
+      headers: {
+        Authorization: accessToken ? `Bearer ${accessToken}` : "",
+      },
       data: {
         // diaryDate: getCurrentDate(),
         contents: diary,
@@ -75,10 +80,15 @@ const useDiaryStore = create((set) => ({
       });
   },
   fetchDiary: async (diaryId) => {
+    const { accessToken } = useUserStore.getState();
+    console.log(accessToken);
     try {
       const res = await axios({
         method: "get",
         url: `${API_URL}/diaries/${diaryId}`,
+        headers: {
+          Authorization: accessToken ? `Bearer ${accessToken}` : "",
+        },
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
@@ -93,8 +103,6 @@ const useDiaryStore = create((set) => ({
     logFormData(formData);
     const { accessToken } = useUserStore.getState();
     console.log(accessToken);
-    const access =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzZGMzYzQzYy0zYTk3LTRhMWQtYjY1OC1iMmE0NGFhOWViMzUiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDk3MDYwfQ.vFbCmWfvzrXNHQ72zGxOkbKn0y4lFEK9MrhWaPDxbJ0SH2M5VkBlACRNMEuG9XpybVl1hJjj7myXkMCz42aeYw";
     try {
       const res = await axios({
         method: "post",
@@ -103,7 +111,7 @@ const useDiaryStore = create((set) => ({
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${access}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         // transformRequest: (formData) => formData,
       });
