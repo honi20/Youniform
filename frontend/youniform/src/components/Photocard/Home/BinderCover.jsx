@@ -12,7 +12,7 @@ const BinderContainer = styled.div`
   width: 88%;
   background-color: #f5f5f5;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
 `;
@@ -20,7 +20,8 @@ const BinderContainer = styled.div`
 const CoverImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: contain; /* 이미지 비율 유지 && 컨테이너에 맞게 사이즈 조절 */
+  border-radius: 25px;
+  object-fit: cover; /* 이미지 비율 유지 && 컨테이너에 맞게 사이즈 조절 */
 `;
 
 const BinderCover = () => {

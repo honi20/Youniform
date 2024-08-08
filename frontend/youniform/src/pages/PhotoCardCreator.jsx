@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
-import { frames, wallpapers, stickers, fonts } from "@assets";
+import { frames, stickers, fonts } from "@assets";
+import usePhotoCardStore from "@stores/photoCardStore";
 
 import DecoIcon from "@assets/DecoIcon.svg?react";
 import ExampleIcon from "@assets/ExIcon.svg?react";
 import DownloadIcon from "@assets/Img_out-box_Fill.svg?react";
 import InitializeIcon from "@assets/Refresh.svg?react";
-import SaveIcon from "@assets/Save_fill.svg?react";
 import BackgroundIcon from "@assets/Canvas/background.svg?react";
 
 import FontComp from "@components/Diary/Write/FontComp";
@@ -20,6 +20,8 @@ import BasicModal from "@components/Modal/BasicModal";
 import PhotocardCanvas from "@components/Photocard/Create/PhotocardCanvas";
 
 const PhotoCardCreator = () => {
+  const { createPhotoCard, fetchPhotoCardList } = usePhotoCardStore();
+
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
   const [isDecorated, setIsDecorated] = useState(false);
@@ -70,6 +72,9 @@ const PhotoCardCreator = () => {
         selectCanvas.add(img);
         selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
         selectCanvas.renderAll();
+        selectCanvas.add(img);
+        selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
+        selectCanvas.renderAll();
       });
     }
   };
@@ -91,6 +96,7 @@ const PhotoCardCreator = () => {
     }
   };
   
+  
   const handleFontClick = async (selectedFont) => {
     const getFontName = (path) => {
       const parts = path.split("/");
@@ -109,10 +115,13 @@ const PhotoCardCreator = () => {
         fill: "#000000",
       });
   
+  
       selectCanvas.add(text);
       selectCanvas.renderAll();
     }
   };
+  
+
   
 
   const handleResetClick = () => {
@@ -124,6 +133,7 @@ const PhotoCardCreator = () => {
       );
     }
   };
+
 
   const renderContent = () => {
     switch (selectedBtn) {
@@ -157,8 +167,10 @@ const PhotoCardCreator = () => {
         return <div>사진</div>; // 사진 컴포지션
       default:
         return <FrameComp />;
+        return <FrameComp />;
     }
   };
+
 
   // axios 요청 시 날짜
   const getCurrentDate = () => {
@@ -169,9 +181,18 @@ const PhotoCardCreator = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const handleAfterSave = () => {
-    saveCanvas();
-    saveCanvasAtLocalStorage();
+  const handleAfterSave = async (index) => {
+    if (index == 5) {
+      // saveCanvas();
+      // saveCanvasAtLocalStorage();
+      const photocardImgUrl = selectCanvas.toDataURL({ format: "png" });
+      const imageBlob = await fetch(photocardImgUrl).then((res) => res.blob());
+      await createPhotoCard(imageBlob);
+      await fetchPhotoCardList();
+
+      setIsConfirmModalOpen(true);
+      // 다음 모달 open
+    }
     // .then(() => {
     //   return axios({
     //     method: "post",
@@ -193,6 +214,7 @@ const PhotoCardCreator = () => {
     // });
   };
 
+
   const saveCanvas = () => {
     if (selectCanvas) {
       const json = selectCanvas.toJSON();
@@ -207,6 +229,7 @@ const PhotoCardCreator = () => {
       downloadAnchorNode.remove();
     }
   };
+
 
   const saveCanvasAtLocalStorage = () => {
     return new Promise((resolve, reject) => {
@@ -224,6 +247,7 @@ const PhotoCardCreator = () => {
     });
   };
 
+
   const downloadCanvas = () => {
     if (selectCanvas) {
       const dataURL = selectCanvas.toDataURL({ format: "png" });
@@ -235,6 +259,7 @@ const PhotoCardCreator = () => {
       document.body.removeChild(link);
     }
   };
+
 
   const fetchData = async () => {
     try {
@@ -253,6 +278,7 @@ const PhotoCardCreator = () => {
     }
   };
 
+
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
@@ -261,10 +287,6 @@ const PhotoCardCreator = () => {
     }
     selectCanvas.renderAll();
     setIsDecorated(!isDecorated);
-  };
-
-  const setBackground = () => {
-    fileInputRef.current.click();
   };
 
   const handleFileChange = (event) => {
@@ -288,6 +310,11 @@ const PhotoCardCreator = () => {
         });
       }
     }
+  };
+
+
+  const setBackground = () => {
+    fileInputRef.current.click();
   };
 
   return (
@@ -345,7 +372,7 @@ const PhotoCardCreator = () => {
                   (text, index) => (
                     <St.DecorationBtn
                       key={index}
-                      $selected={selectedBtn === index} // 현재 선택된 버튼인지 여부를 prop으로 전달
+                      $selected={selectedBtn === index}
                       onClick={() => handleBtnClick(index)}
                     >
                       {text}
@@ -372,9 +399,14 @@ const PhotoCardCreator = () => {
           state={"PhotoCardSaved"}
           isOpen={isConfirmModalOpen}
           onClose={closeConfirmModal}
-          nickname={""}
         />
       </St.Div>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
       <input
         type="file"
         ref={fileInputRef}

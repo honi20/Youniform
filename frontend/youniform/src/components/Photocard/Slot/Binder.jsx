@@ -5,6 +5,7 @@ import coverimg from '/src/assets/photocard/cover2.png';
 import usePhotoCardStore from '@stores/photoCardStore';
 import ArrowPrev from '@mui/icons-material/KeyboardArrowLeft';
 import ArrowNext from '@mui/icons-material/KeyboardArrowRight';
+import CheckIcon from '@mui/icons-material/Check';
 import ColorBtn from '@components/Common/ColorBtn';
 
 const rotateAnimation = keyframes`
@@ -24,12 +25,12 @@ const CoverImage = styled.img`
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   transform-origin: left center;
   z-index: 10;
   transition-duration: 1s;
   transition-timing-function: ease-in;
-
+  border-radius: 25px;
   &.animate {
     animation: ${rotateAnimation} 2s forwards;
   }
@@ -43,7 +44,7 @@ const BinderContainer = styled.div`
   width: 88%;
   height: 64vh;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #f5f5f5;
@@ -125,12 +126,25 @@ const PhotoGroup = styled.div`
   }
 `;
 
+const SelectButton = styled.div`
+  position: absolute;
+  top: 6px;  /* 원하는 위치로 조정 */
+  left: 6px;  /* 원하는 위치로 조정 */
+  width: 30px;
+  height: 30px;
+  background-color: #ffffff; /* 약간의 투명도 */
+  border-radius: 50%;
+  border: 2px solid #b4b4b4;
+  z-index: 20; /* img 위에 오도록 설정 */
+  cursor: pointer;
+`;
+
 const PhotoFrame = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  padding-top: calc(100% * 17 / 11); /* 11:17 */
-  background-color: #e0e0e0;
+  padding-top: calc(100% * 17 / 11); /* 11:17 비율 유지 */
+  background-color: #b3b3b3;
   border: 2px solid #ccc;
   border-radius: 10px;
   overflow: hidden;
@@ -156,11 +170,6 @@ const ButtonGroup = styled.div`
   align-items: center;
 `;
 
-const BtnBox = styled.div`
-  display: flex;
-  gap: 2px;
-`;
-
 const MiddleGroup = styled.div`
   display: flex;
   gap: inherit;
@@ -169,7 +178,10 @@ const MiddleGroup = styled.div`
 const Binder = () => {
   const navigate = useNavigate();
   const [animate, setAnimate] = useState(false);
-  const { page, nextPage, prevPage, setSelectedImage } = usePhotoCardStore();
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  const [selectedCards, setSelectedCards] = useState([]);
+
+  const { photocards, page, nextPage, prevPage, setSelectedImage } = usePhotoCardStore();
 
   const images = import.meta.glob('/src/assets/photocard/cards/*.png', { eager: true });
   const imageArray = Object.values(images).map((module) => module.default);
@@ -183,18 +195,38 @@ const Binder = () => {
     navigate('/photo-card/detail');
   };
 
+  const handleSelectCard = () => {
+    // 선택 로직을 여기에 추가합니다.
+  };
+
+  const toggleSelectMode = () => {
+    setIsSelectMode((prevMode) => !prevMode);
+  };
+
   const renderPhotoFrames = () => {
     const startIndex = page * 4;
     return imageArray.slice(startIndex, startIndex + 4).map((image, index) => (
       <PhotoFrame key={index} onClick={() => handlePhotoFrameClick(image)}>
-        <img src={image} alt={`Photo ${startIndex + index + 1}`} />
+        {isSelectMode && (
+          <SelectButton onClick={(e) => { 
+            e.stopPropagation(); 
+            handleSelectCard(); 
+          }}>
+            <CheckIcon style={{ display: "flex", width: "80%", height: "100%", color: "#b4b4b4", margin: "0 auto"}}/>
+          </SelectButton>
+        )}
+        {image && <img src={image} alt={`Photo ${startIndex + index + 1}`} />}
       </PhotoFrame>
     ));
   };
 
   const createCard = () => {
     navigate(`/photo-card/create`);
-  }
+  };
+
+  const deleteCard = () => {
+    // 삭제 로직을 여기에 추가합니다.
+  };
 
   return (
     <BinderContainer>
@@ -223,10 +255,12 @@ const Binder = () => {
                onClick={createCard}>
                 생성
               </ColorBtn>
-              <ColorBtn variant="contained" style={{ borderRadius: '20px' }}>
+              <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
+               onClick={toggleSelectMode}>
                 선택
               </ColorBtn>
-              <ColorBtn variant="contained" style={{ borderRadius: '20px' }}>
+              <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
+               onClick={deleteCard}>
                 삭제
               </ColorBtn>
             </MiddleGroup>
