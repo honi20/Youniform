@@ -11,8 +11,8 @@ const ImageContainer = styled.div`
   border: 1px solid black;
 `;
 const DiaryComp = ({ state, diary }) => {
-  const [selectCanvas, setSelectCanvas] = useState(null);
-  const [isDecorated, setIsDecorated] = useState(false);
+  // const [selectCanvas, setSelectCanvas] = useState(null);
+  // const [isDecorated, setIsDecorated] = useState(false);
   const navigate = useNavigate();
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -34,12 +34,13 @@ const DiaryComp = ({ state, diary }) => {
       </St.DiaryHeader>
       <St.DiaryContent>
         <ImageContainer>
-          <CanvasComp
+          <img src={diary.diaryImgUrl}/>
+          {/* <CanvasComp
             selectCanvas={selectCanvas}
             setSelectCanvas={setSelectCanvas}
             decorated={isDecorated}
             diary={diary.contents}
-          />
+          /> */}
         </ImageContainer>
       </St.DiaryContent>
       <St.DiaryFooter>

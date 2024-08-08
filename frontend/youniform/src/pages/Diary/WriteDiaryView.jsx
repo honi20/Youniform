@@ -221,7 +221,7 @@ const WriteDiaryView = () => {
         const dtoBlob = new Blob([JSON.stringify(dto)], {
           type: "application/json",
         });
-        formData.append("file", imageBlob);
+        formData.append("file", imageBlob, "canvas.png");
         formData.append("dto", dtoBlob);
 
         console.log("FormData contents:");
