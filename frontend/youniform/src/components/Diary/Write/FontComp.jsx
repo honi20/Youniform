@@ -25,7 +25,7 @@ const FontContainer = styled.div`
   overflow-y: auto;
   max-height: 100%;
   margin-bottom: 5px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 `;
 
 const FontItem = styled.div`

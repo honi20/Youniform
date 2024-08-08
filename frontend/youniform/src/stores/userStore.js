@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import apiClient from "./apiClient";
 
-const useUserStore = create((set, get) => ({
+const API_URL = "http://i11a308.p.ssafy.io:8080";
+
+const useUserStore = create((set) => ({
   user: null,
   friend: null,
   loading: false,
@@ -19,7 +21,8 @@ const useUserStore = create((set, get) => ({
       return;
     }
     try {
-      const response = await apiClient.get("/users");
+      const response = await axios.get(`${API_URL}/users`);
+      console.log(response.data.header.message);
       console.log(response.data.body);
       set({ user: response.data.body, loading: false });
     } catch (error) {
