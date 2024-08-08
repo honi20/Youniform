@@ -88,7 +88,7 @@ const signUpStore = create((set, get) => ({
         data: {
           email: user.email,
           password: user.password,
-          providerType: "LOCAL",
+          providerType: "local",
           profileUrl: user.profileUrl,
           nickname: user.nickname,
           introduce: user.introduce,

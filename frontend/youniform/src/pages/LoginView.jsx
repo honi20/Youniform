@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useUserStore from '@stores/userStore';
 
@@ -129,9 +129,10 @@ const ColorBtn = muiStyled(Button)(() => ({
 
 const LoginView = () => {
 
-  const { fetchLogin, accessToken } = useUserStore();
+  const { fetchLogin, accessToken, clearAccessToken } = useUserStore();
   const [emailInput, setEmailInput] = useState('');
   const [isCustomDomain, setIsCustomDomain] = useState(false);
+  const navigate = useNavigate();
   const customDomainRef = useRef(null);
   const [currency, setCurrency] = useState('');
   let fullEmail = "";
@@ -196,9 +197,12 @@ const LoginView = () => {
     const result = await fetchLogin(fullEmail, values.password);
     if (result == "$FAIL") {
       alert("로그인에 실패하였습니다.");
+    } else if (result === "$OK") {
+      console.log(`로그인 성공, 사용자 토큰: ${accessToken}`);
+      navigate("/");
     }
   };
-  
+
   // console.log(accessToken);
 
   return (
