@@ -95,8 +95,7 @@ const Header = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const { accessToken, clearAccessToken, user } = useUserStore();
-
+  const accessToken = localStorage.getItem("accessToken");
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const [isAlarm, setIsAlarm] = useState(null); // 알람 유무에 따라 색 변경
 

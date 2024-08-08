@@ -1,21 +1,17 @@
 import { create } from "zustand";
+import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
-
 const API_URL = "http://i11a308.p.ssafy.io:8080";
 const usePostStore = create((set) => ({
-  // API_URL: "http://i11a308.p.ssafy.io:8080",
   posts: [],
   post: [],
   fetchPost: async (postId) => {
     console.log(postId);
+    const apiClient = getApiClient();
     try {
-      const res = await axios({
+      const res = await apiClient({
         method: "get",
         url: `${API_URL}/posts/${postId}`,
-        // headers: {
-        //   Authorization:
-        //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLTQyMTItOGE5MC04MTE4NmM1N2YxMDAiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDA3NDAwfQ.D856FncOnKSe1O_1vw0jyOHGMPfWionPRvMZ_QWPaPDnAmRHfM9U2VFOprdM3QP2JEQXz_Ewn4mJvPoVAg5NQA",
-        // },
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
@@ -28,15 +24,9 @@ const usePostStore = create((set) => ({
     }
   },
   fetchPosts: async () => {
+    const apiClient = getApiClient();
     try {
-      const res = await axios({
-        method: "get",
-        url: `${API_URL}/posts`,
-        // headers: {
-        //   Authorization:
-        //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLTQyMTItOGE5MC04MTE4NmM1N2YxMDAiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDA3NDAwfQ.D856FncOnKSe1O_1vw0jyOHGMPfWionPRvMZ_QWPaPDnAmRHfM9U2VFOprdM3QP2JEQXz_Ewn4mJvPoVAg5NQA",
-        // },
-      });
+      const res = await apiClient.get(`/posts`);
       console.log(res.data.header.message);
       console.log(res.data.body);
 
@@ -48,12 +38,19 @@ const usePostStore = create((set) => ({
     }
   },
   addPost: async (post) => {
-    // 수정해야함
+    const apiClient = getApiClient();
     try {
-      const response = await axios.post(`${API_URL}/posts`, post);
+      const res = await apiClient.post(`/posts`, post, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+
       set((state) => ({ posts: [...state.posts, response.data.body] }));
-    } catch (error) {
-      console.log("Failed to add post", error);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
     }
   },
   likePosts: [],

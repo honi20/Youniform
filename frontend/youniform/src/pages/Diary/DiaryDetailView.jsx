@@ -20,7 +20,7 @@ const DiaryDetailView = () => {
   }, [fetchDiary]);
   return (
     <Div>
-      <DiaryComp state="write" diary={diary} />
+      <DiaryComp diary={diary} />
     </Div>
   );
 };

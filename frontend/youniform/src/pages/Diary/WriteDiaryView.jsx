@@ -29,7 +29,7 @@ const WriteDiaryView = () => {
   const [date, setDate] = useState(null);
   const [update, setUpdate] = useState(false);
   const { diaryId } = useParams();
-  const { diary, fetchDiary, addDiary } = useDiaryStore();
+  const { diary, fetchDiary, addDiary, updateDiary } = useDiaryStore();
 
   useEffect(() => {
     if (diaryId) {
@@ -172,9 +172,16 @@ const WriteDiaryView = () => {
     try {
       // saveCanvas();
       const formData = await saveDiaryObject();
-      const diaryId = await addDiary(formData);
+      // const diaryId = await addDiary(formData);
+      let newId = "";
+      ///// 수정 /////
+      if (diaryId) {
+        await updateDiary(diaryId, formData);
+      } else {
+        newId = await addDiary(formData);
+      }
       console.log("Diary ID:", diaryId);
-      await moveToDetailPage(diaryId);
+      await moveToDetailPage(newId ? newId : diaryId);
     } catch (error) {
       console.error("Error saving diary object:", error);
     }
@@ -221,7 +228,7 @@ const WriteDiaryView = () => {
         const dtoBlob = new Blob([JSON.stringify(dto)], {
           type: "application/json",
         });
-        formData.append("file", imageBlob);
+        formData.append("file", imageBlob, "canvas.png");
         formData.append("dto", dtoBlob);
 
         console.log("FormData contents:");

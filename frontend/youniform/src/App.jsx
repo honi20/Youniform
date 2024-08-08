@@ -29,7 +29,7 @@ import BinderCover from "@/components/Photocard/Home/BinderCover";
 import Binder from "@/components/Photocard/Slot/Binder";
 import PhotoCardCreator from "@/pages/PhotoCardCreator";
 import DiaryHomeView from "@/pages/DiaryHomeView";
-import CommunityView from "@/pages/PostView";
+import PostView from "@/pages/PostView";
 import MyPageView from "@/pages/MyPageView";
 import SettingView from "@pages/Setting/SettingView";
 import ChangePasswordView from "./pages/Setting/ChangePasswordView";
@@ -126,7 +126,7 @@ function App() {
                   <Route path="write" element={<WriteDiaryView />} />
                 </Route>
                 <Route path="/post/*">
-                  <Route index element={<CommunityView />} />
+                  <Route index element={<PostView />} />
                   <Route path=":postId" element={<PostDetailView />} />
                   <Route path="write" element={<WritePostView />} />
                 </Route>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Profile from "@components/MyPage/Profile";
 import styled from "styled-components";
 
@@ -9,13 +9,11 @@ const Div = styled.div`
 `;
 
 const MyPageView = () => {
-  const isLogin = true;
   return (
     <>
       <Div>
         <Profile />
       </Div>
-      {isLogin ? <button>LOGOUT</button> : <Link to="/login">LOGIN</Link>}
       <Outlet />
     </>
   );

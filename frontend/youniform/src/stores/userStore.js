@@ -1,27 +1,29 @@
 import { create } from "zustand";
-import apiClient from "./apiClient";
+import { getApiClient } from "@stores/apiClient";
+import axios from "axios";
 
 const API_URL = "http://i11a308.p.ssafy.io:8080";
-
-const useUserStore = create((set) => ({
+const useUserStore = create((set, get) => ({
   user: null,
   friend: null,
   loading: false,
   error: null,
-  accessToken:
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLTQyMTItOGE5MC04MTE4NmM1N2Y1OTgiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDk5OTEwfQ.m-My4huKrm0EE-J2riaB6pSU8adRYp4MchfyHLSx1q3SEUEMDLsimSs__LDIfH3oXQb8OIRzeWgqVkNJNrUgKg",
-  refreshToken: null,
+  accessToken: null,
   setAccessToken: (token) => set({ accessToken: token }),
   clearAccessToken: () => set({ accessToken: null }),
+
   fetchUser: async () => {
     set({ loading: true, error: null });
-    const { accessToken } = get();
-    if (!accessToken) {
-      console.error("No access token found");
-      return;
-    }
+    // const { accessToken } = get();
+    // if (!accessToken) {
+    //   console.error("No access token found");
+    //   return;
+    // }
+    // console.log(accessToken);
+    const apiClient = getApiClient();
+    console.log("API Client:", apiClient);
     try {
-      const response = await axios.get(`${API_URL}/users`);
+      const response = await apiClient.get(`/users`);
       console.log(response.data.header.message);
       console.log(response.data.body);
       set({ user: response.data.body, loading: false });
@@ -31,8 +33,12 @@ const useUserStore = create((set) => ({
     }
   },
   clearUser: () => set({ user: null, error: null }),
+  
   fetchFriend: async (userId) => {
     set({ loading: true, error: null });
+    const { accessToken } = get();
+    const apiClient = getApiClient(accessToken);
+    console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users/${userId}`);
       set({ friend: response.data.body, loading: false });
@@ -42,15 +48,21 @@ const useUserStore = create((set) => ({
     }
   },
   clearFriend: () => set({ friend: null, error: null }),
+
   fetchLogin: async (email, password) => {
+    const apiClient = getApiClient();
     try {
-      const response = await apiClient.post("/users/signin/local", {
+      const response = await axios.post(`${API_URL}/users/signin/local`, {
         email,
         password,
       });
       console.log(response.data.body);
       const { accessToken } = response.data.body;
       set({ accessToken });
+      const handleLoginSuccess = (accessToken) => {
+        localStorage.setItem("accessToken", accessToken);
+      };
+      handleLoginSuccess(response.data.body.accessToken);
       return "$OK";
     } catch (err) {
       console.log("Failed to fetchLogin", err);

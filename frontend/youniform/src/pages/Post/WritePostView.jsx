@@ -5,7 +5,7 @@ import useUserStore from "@stores/userStore";
 import Loading from "@components/Share/Loading";
 import ImgSvg from "@assets/Post/img_box.svg?react";
 import DoneSvg from "@assets/Post/done.svg?react";
-import axios from "axios";
+import { getApiClient } from "@stores/apiClient";
 const Container = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -131,30 +131,37 @@ const WritePostView = () => {
   const cleanContent = () => {
     return content.replace(/# \S+/g, "").trim();
   };
-  const API_URL = "http://i11a308.p.ssafy.io:8080";
   const handleSave = async () => {
     const cleanedContent = cleanContent();
 
     console.log("저장할 내용:", cleanedContent);
     console.log("해쉬태그", tags);
     console.log("Selected file:", filePreview);
-
+    ///////// 추후 수정 ////////////
+    const apiClient = getApiClient();
     const formData = new FormData();
     formData.append("contents", cleanedContent);
     tags.forEach((tag) => formData.append("tags", tag));
+    const dto = {
+      // diaryDate: date,
+      // contents: json,
+      // tags: "ALL",
+      // stampId: 1,
+    };
+    const dtoBlob = new Blob([JSON.stringify(dto)], {
+      type: "application/json",
+    });
     if (selectedFile) {
       formData.append("file", selectedFile);
     }
     try {
-      const res = await axios({
-        method: "post",
-        url: `${API_URL}/posts`,
+      const res = await apiClient.post("/posts", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        body: formData,
       });
-      console.log("Success:", response.data);
+      console.log(res.data.header.message);
+      console.log(res.data.body);
     } catch (error) {
       console.error("Error:", error);
     }

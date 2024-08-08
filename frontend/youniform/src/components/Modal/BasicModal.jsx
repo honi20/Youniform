@@ -187,7 +187,8 @@ const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
     const subtitle = stateMap[state]?.subtitle || <></>;
     return subtitle;
   };
-  const handleBtnClick = () => {
+  const handleBtnClick = (btnType) => {
+    console.log(btnType);
     // onButtonClick 함수 연결
     if (onButtonClick) {
       onButtonClick();
