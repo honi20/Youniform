@@ -3,6 +3,7 @@ import styled, { useTheme } from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import SettingIcon from "@assets/Header/setting.svg?react";
+import useUserStore from "@stores/userStore";
 import * as Font from "@/typography";
 import ColorBtn from "../Common/ColorBtn";
 
@@ -94,6 +95,7 @@ const Header = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const { accessToken, clearAccessToken, user } = useUserStore();
 
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const [isAlarm, setIsAlarm] = useState(null); // 알람 유무에 따라 색 변경
@@ -103,7 +105,13 @@ const Header = () => {
   };
 
   const handleLoginClick = () => {
+    console.log(accessToken);
     navigate("/login");
+  };
+
+  const handleLogoutClick = () => {
+    clearAccessToken();
+    console.log(accessToken);
   };
 
   useEffect(() => {
@@ -122,7 +130,12 @@ const Header = () => {
               <SportsBaseballIcon />
               <strong>Youniform</strong>
             </Logo>
-            <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
+            {accessToken ? (
+              <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
+              ) : (
+                <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
+              )
+            }
           </InnerHead>
         );
       case "/my-page":
