@@ -18,4 +18,10 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "JOIN PostTag pt ON t.id = pt.tag.id " +
             "WHERE pt.post.id = :postId")
     List<Tag> findTagsByPostId(@Param("postId") Long postId);
+
+    @Query("SELECT t FROM Tag t " +
+            "WHERE t.contents LIKE :contents% " +
+            "ORDER BY CASE WHEN t.contents = :contents THEN 0 ELSE 1 END," +
+            "t.contents")
+    List<Tag> findTagsByContents(@Param("contents") String contents);
 }

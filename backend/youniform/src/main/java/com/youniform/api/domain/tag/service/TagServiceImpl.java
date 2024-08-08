@@ -1,6 +1,8 @@
 package com.youniform.api.domain.tag.service;
 
 import com.youniform.api.domain.tag.dto.TagAdd;
+import com.youniform.api.domain.tag.dto.TagListReq;
+import com.youniform.api.domain.tag.dto.TagListRes;
 import com.youniform.api.domain.tag.entity.Tag;
 import com.youniform.api.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import static com.youniform.api.domain.post.validation.PostValidation.InvalidTag
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
@@ -63,6 +66,13 @@ public class TagServiceImpl implements TagService {
         existingTags.addAll(newTags);
 
         return existingTags;
+    }
+
+    @Override
+    public TagListRes findTags(TagListReq tagListReq) {
+        List<Tag> tagList = tagRepository.findTagsByContents(tagListReq.getName());
+
+        return TagListRes.toTagListRes(tagList);
     }
 
     private List<String> replaceSpaces(List<String> tags) {

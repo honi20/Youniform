@@ -57,10 +57,12 @@ VALUES (123, 124, 'FRIEND_REQUEST', '', 'friend link', false, '2024-07-31T16:47:
 
 -- tag
 INSERT INTO TAG(contents)
-VALUES ('최강'),
+VALUES ('최강야구'),
+       ('최강'),
        ('몬스터즈'),
        ('최고'),
-       ('홈런');
+       ('홈런'),
+       ('최강몬스터즈');
 
 INSERT INTO POST(user_id, img_url, contents, date)
 VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png',

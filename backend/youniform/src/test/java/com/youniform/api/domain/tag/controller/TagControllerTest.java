@@ -3,6 +3,9 @@ package com.youniform.api.domain.tag.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
+import com.youniform.api.domain.tag.dto.TagDto;
+import com.youniform.api.domain.tag.dto.TagListRes;
+import com.youniform.api.domain.tag.service.TagService;
 import com.youniform.api.global.jwt.service.JwtService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +24,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.TAG_LIST_OK;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -50,12 +58,23 @@ public class TagControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private TagService tagService;
     
     @Test
     public void 태그_검색_성공() throws Exception {
         //given
         String jwtToken = jwtService.createAccessToken(UUID);
 
+        List<TagDto> tagDtoList = new ArrayList<>();
+        tagDtoList.add(TagDto.builder()
+                .tagId(1L)
+                .contents("태그1")
+                .build());
+
+        when(tagService.findTags(any()))
+                .thenReturn(new TagListRes(tagDtoList));
         //when
         ResultActions actions = mockMvc.perform(
                 get("/tags")
