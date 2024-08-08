@@ -4,7 +4,7 @@ import com.youniform.api.domain.chat.dto.*;
 import com.youniform.api.domain.chat.service.ChatService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.dto.SliceDto;
-import com.youniform.api.global.exception.CustomException;
+import com.youniform.api.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -12,12 +12,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
@@ -29,12 +29,12 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 public class ChatController {
     private final ChatService chatService;
 
-//    private final JwtService jwtService;
+    private final JwtService jwtService;
 
     @GetMapping("/rooms")
     public ResponseEntity<?> getChatRoomList() {
-//        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-        ChatRoomListRes response = chatService.getChatRoomList(123L);
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        ChatRoomListRes response = chatService.getChatRoomList(userId);
 
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, response), HttpStatus.OK);
     }
