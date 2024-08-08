@@ -119,7 +119,12 @@ function App() {
                   <Route path="detail" element={<PhotoCardDetail />} />
                   <Route path="create" element={<PhotoCardCreator />} />
                 </Route>
-                <Route path="/diary" element={<DiaryHomeView />} />
+                <Route path="/diary/*">
+                  <Route index element={<DiaryHomeView />} />
+                  <Route path=":diaryId" element={<DiaryDetailView />} />
+                  <Route path=":diaryId/update" element={<WriteDiaryView />} />
+                  <Route path="write" element={<WriteDiaryView />} />
+                </Route>
                 <Route path="/post/*">
                   <Route index element={<CommunityView />} />
                   <Route path=":postId" element={<PostDetailView />} />
@@ -133,8 +138,7 @@ function App() {
                   <Route path="my-post" element={<MyPost />} />
                   <Route path="change-profile" element={<ChangeProfile />} />
                 </Route>
-                <Route path="/diary/detail" element={<DiaryDetailView />} />
-                <Route path="/diary/write" element={<WriteDiaryView />} />
+
                 {/* SignUp */}
                 <Route path="/sign-up/*" element={<SignUpView />}>
                   <Route index element={<StepOneForm />} />

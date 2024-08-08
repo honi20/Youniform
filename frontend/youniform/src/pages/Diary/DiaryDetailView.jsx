@@ -1,33 +1,26 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import DiaryComp from "@components/Diary/Write/DiaryComp";
+import { useParams } from "react-router-dom";
+import useDiaryStore from "@stores/diaryStore";
 
 const Div = styled.div`
   flex-shrink: 0;
   display: flex;
-  flex-direction: column; /* 수직 정렬 */
+  flex-direction: column;
   align-items: center;
   height: auto;
 `;
 
-// test props
-const data = {
-  profileUrl: "",
-  nickname: "하츄핑",
-  date: "Tue Jul 26 2024 00:00:00 GMT+0900",
-  imageUrl: "../../assets/doyeong.png",
-  content: "기아 우승 기념 도영이 다꾸를 해보아따!",
-  tags: [
-    { index: 1, tag: "김도영" },
-    { index: 2, tag: "기아" },
-    { index: 3, tag: "도영이" },
-  ],
-};
-
 const DiaryDetailView = () => {
+  const { diaryId } = useParams();
+  const { diary, fetchDiary } = useDiaryStore();
+  useEffect(() => {
+    fetchDiary(diaryId);
+  }, [fetchDiary]);
   return (
     <Div>
-      <DiaryComp state="write" data={data} />
+      <DiaryComp state="write" diary={diary} />
     </Div>
   );
 };
