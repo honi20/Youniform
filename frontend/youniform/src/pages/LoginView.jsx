@@ -1,29 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import useUserStore from '@stores/userStore';
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import useUserStore from "@stores/userStore";
 
-import GoogleIcon from '../assets/login/google.png';
-import KakaoIcon from '../assets/login/kakao.png';
-import NaverIcon from '../assets/login/naver.png';
+import GoogleIcon from "../assets/login/google.png";
+import KakaoIcon from "../assets/login/kakao.png";
+import NaverIcon from "../assets/login/naver.png";
 
-import { styled as muiStyled } from '@mui/material/styles';
-import { TextField, MenuItem, Button } from '@mui/material';
-import SportsBaseballIcon from '@mui/icons-material/SportsBaseball';
+import { styled as muiStyled } from "@mui/material/styles";
+import { TextField, MenuItem, Button } from "@mui/material";
+import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const LoginViewContainer = styled.div`
   display: table;
   width: 100%;
   height: 100%;
-  background-color: #F8F8F8;
+  background-color: #f8f8f8;
 `;
 
 const LoginContent = styled.div`
@@ -91,8 +91,7 @@ const StyledLink = styled(Link)`
   }
 `;
 
-const SocialLogin = styled.div`
-`;
+const SocialLogin = styled.div``;
 
 const SocialLoginText = styled.div`
   display: flex;
@@ -128,30 +127,29 @@ const ColorBtn = muiStyled(Button)(() => ({
 }));
 
 const LoginView = () => {
-
   const { fetchLogin, accessToken, clearAccessToken } = useUserStore();
-  const [emailInput, setEmailInput] = useState('');
+  const [emailInput, setEmailInput] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const navigate = useNavigate();
   const customDomainRef = useRef(null);
-  const [currency, setCurrency] = useState('');
+  const [currency, setCurrency] = useState("");
   let fullEmail = "";
 
   const [values, setValues] = useState({
-    amount: '',
-    password: '',
-    weight: '',
-    weightRange: '',
+    amount: "",
+    password: "",
+    weight: "",
+    weightRange: "",
     showPassword: false,
   });
 
   // domains;
   const domains = [
-    { value: 'naver.com', label: 'naver.com', display: 'naver' },
-    { value: 'gmail.com', label: 'gmail.com', display: 'gmail' },
-    { value: 'hanmail.net', label: 'hanmail.net', display: 'hanmail' },
-    { value: 'nate.com', label: 'nate.com', display: 'nate' },
-    { value: 'custom', label: '', display: '직접입력' }
+    { value: "naver.com", label: "naver.com", display: "naver" },
+    { value: "gmail.com", label: "gmail.com", display: "gmail" },
+    { value: "hanmail.net", label: "hanmail.net", display: "hanmail" },
+    { value: "nate.com", label: "nate.com", display: "nate" },
+    { value: "custom", label: "", display: "직접입력" },
   ];
 
   const handleChange = (prop) => (event) => {
@@ -181,9 +179,9 @@ const LoginView = () => {
     const value = event.target.value;
     setCurrency(value);
 
-    if (value === 'custom') {
+    if (value === "custom") {
       setIsCustomDomain(true);
-      setCurrency('');
+      setCurrency("");
       if (customDomainRef.current) {
         customDomainRef.current.focus();
       }
@@ -193,16 +191,18 @@ const LoginView = () => {
   };
 
   const handleLoginClick = async () => {
-    fullEmail = isCustomDomain ? `${emailInput}@${currency}` : `${emailInput}@${currency}`;
+    fullEmail = isCustomDomain
+      ? `${emailInput}@${currency}`
+      : `${emailInput}@${currency}`;
     const result = await fetchLogin(fullEmail, values.password);
     if (result == "$FAIL") {
       alert("로그인에 실패하였습니다.");
     } else if (result === "$OK") {
-      console.log(`로그인 성공, 사용자 토큰: ${accessToken}`);
+      console.log(`로그인 성공`);
       navigate("/");
     }
   };
-
+ 
   // console.log(accessToken);
 
   return (
@@ -216,101 +216,112 @@ const LoginView = () => {
         {/* 인풋 & 로그인 버튼 */}
         <InputForm>
           <div>
-          <InputEmail>
-            <TextField
-              sx={{ width: "30%" }}
-              label="Email"
-              value={emailInput}
-              onChange={handleEmailChange}
-            />
-            <span>@</span>
-            <TextField
-              inputRef={customDomainRef}
-              disabled={!isCustomDomain}
-              value={currency}
-              onChange={handleCustomDomainChange}
-              sx={{ 
-                width: "37%",
-                backgroundColor: isCustomDomain ? '#FFFFFF' : '#F4F4F4'
-              }}
-            />
-            {/* 도메인 드롭다운 */}
-            <TextField
-              label="선택"
-              id="outlined-select-currency"
-              select
-              value={isCustomDomain ? 'custom' : currency}
-              onChange={handleCurrencyChange}
-              sx={{
-                width: "33%",
-                backgroundColor: isCustomDomain ? '#F4F4F4' : '#FFFFFF'
-              }}
-            >
-              {domains.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.display}
-                </MenuItem>
-              ))}
-            </TextField>
-          </InputEmail>
+            <InputEmail>
+              <TextField
+                sx={{ width: "30%" }}
+                label="Email"
+                value={emailInput}
+                onChange={handleEmailChange}
+              />
+              <span>@</span>
+              <TextField
+                inputRef={customDomainRef}
+                disabled={!isCustomDomain}
+                value={currency}
+                onChange={handleCustomDomainChange}
+                sx={{
+                  width: "37%",
+                  backgroundColor: isCustomDomain ? "#FFFFFF" : "#F4F4F4",
+                }}
+              />
+              {/* 도메인 드롭다운 */}
+              <TextField
+                label="선택"
+                id="outlined-select-currency"
+                select
+                value={isCustomDomain ? "custom" : currency}
+                onChange={handleCurrencyChange}
+                sx={{
+                  width: "33%",
+                  backgroundColor: isCustomDomain ? "#F4F4F4" : "#FFFFFF",
+                }}
+              >
+                {domains.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.display}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </InputEmail>
           </div>
           <div>
-            <form>  {/* 콘솔 에러 제거용 form 태그 */}
-            <FormControl sx={{ width: "100%" }} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-              <OutlinedInput
-                autoComplete="off" // 콘솔 에러 제거
-                id="outlined-adornment-password"
-                type={values.showPassword ? 'text' : 'password'}
-                value={values.password}
-                onChange={handleChange('password')}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-              />
-            </FormControl>
+            <form>
+              {" "}
+              {/* 콘솔 에러 제거용 form 태그 */}
+              <FormControl sx={{ width: "100%" }} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  autoComplete="off" // 콘솔 에러 제거
+                  id="outlined-adornment-password"
+                  type={values.showPassword ? "text" : "password"}
+                  value={values.password}
+                  onChange={handleChange("password")}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {values.showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
             </form>
           </div>
           {/* login button */}
           <ColorBtn
-            sx={{ width: "100%" }} variant="contained"
+            sx={{ width: "100%" }}
+            variant="contained"
             onClick={handleLoginClick}
-          >로그인</ColorBtn>
+          >
+            로그인
+          </ColorBtn>
         </InputForm>
         {/* 이메일 / 비밀번호 찾기 */}
         <FindBox>
           <StyledLink to="find-email">이메일 찾기</StyledLink>
-          <VerticalBar/>
+          <VerticalBar />
           <StyledLink to="find-password">비밀번호 찾기</StyledLink>
-          <VerticalBar/>
+          <VerticalBar />
           <StyledLink to="/sign-up">회원가입</StyledLink>
         </FindBox>
         {/* 소셜 로그인 */}
         <SocialLogin>
           <SocialLoginText>
-              <Bar/>
-              <span>SNS 계정으로 시작하기</span>
-              <Bar/>
+            <Bar />
+            <span>SNS 계정으로 시작하기</span>
+            <Bar />
           </SocialLoginText>
           <LoginLinkIcon>
-                <LoginIcon src={KakaoIcon}></LoginIcon>
-                <LoginIcon src={NaverIcon}></LoginIcon>
-                <LoginIcon src={GoogleIcon}></LoginIcon>
+            <LoginIcon src={KakaoIcon}></LoginIcon>
+            <LoginIcon src={NaverIcon}></LoginIcon>
+            <LoginIcon src={GoogleIcon}></LoginIcon>
           </LoginLinkIcon>
         </SocialLogin>
       </LoginContent>
     </LoginViewContainer>
   );
-}
+};
 
 export default LoginView;

@@ -1,21 +1,25 @@
 import { create } from "zustand";
-import axios from "axios";
+import apiClient from "./apiClient";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
-
-const useUserStore = create((set) => ({
+const useUserStore = create((set, get) => ({
   user: null,
   friend: null,
   loading: false,
   error: null,
-  accessToken: null,
+  accessToken:
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLTQyMTItOGE5MC04MTE4NmM1N2Y1OTgiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDk5OTEwfQ.m-My4huKrm0EE-J2riaB6pSU8adRYp4MchfyHLSx1q3SEUEMDLsimSs__LDIfH3oXQb8OIRzeWgqVkNJNrUgKg",
+  refreshToken: null,
   setAccessToken: (token) => set({ accessToken: token }),
   clearAccessToken: () => set({ accessToken: null }),
   fetchUser: async () => {
     set({ loading: true, error: null });
+    const { accessToken } = get();
+    if (!accessToken) {
+      console.error("No access token found");
+      return;
+    }
     try {
-      const response = await axios.get(`${API_URL}/users`);
-      console.log(response.data.header.message);
+      const response = await apiClient.get("/users");
       console.log(response.data.body);
       set({ user: response.data.body, loading: false });
     } catch (error) {
@@ -27,7 +31,7 @@ const useUserStore = create((set) => ({
   fetchFriend: async (userId) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/users/${userId}`);
+      const response = await apiClient.get(`/users/${userId}`);
       set({ friend: response.data.body, loading: false });
     } catch (error) {
       console.log("Failed to fetch friend", error);
@@ -36,18 +40,14 @@ const useUserStore = create((set) => ({
   },
   clearFriend: () => set({ friend: null, error: null }),
   fetchLogin: async (email, password) => {
-    console.log(email);
-    console.log(password);
     try {
-      const res = await axios({
-        method: "post",
-        url: `${API_URL}/users/signin/local`,
-        data: {
-          email: email,
-          password: password
-        }
+      const response = await apiClient.post("/users/signin/local", {
+        email,
+        password,
       });
-      set((state) => ({ ...state, accessToken: res.data.body.accessToken }));
+      console.log(response.data.body);
+      const { accessToken } = response.data.body;
+      set({ accessToken });
       return "$OK";
     } catch (err) {
       console.log("Failed to fetchLogin", err);

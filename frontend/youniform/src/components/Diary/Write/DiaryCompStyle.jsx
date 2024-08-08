@@ -68,7 +68,8 @@ export const TextContainer = styled.div`
 `;
 
 export const Btn = styled.div`
-  background-color: ${(props) => (props.$isShare ? props.theme.primary : "#E3E3E3")};
+  background-color: ${(props) =>
+    props.$isShare ? props.theme.primary : "#E3E3E3"};
   color: ${(props) => (props.$isShare ? "#FFFFFF" : "#000000")};
   /* border-bottom: 1px solid #E3E3E3; */
   /* border: 1px solid black; */
@@ -107,7 +108,7 @@ export const DiaryContent = styled.div`
   height: auto;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
+  align-items: center;
 `;
 export const DiaryImageContainer = styled.div`
   display: flex;
@@ -170,7 +171,7 @@ export const DiaryFooter = styled.div`
         /* border: 1px solid black;
     } */
 `;
-const CanvasContainer = styled.div`
+export const CanvasContainer = styled.div`
   height: 502px;
   width: 302px;
   flex-shrink: 0;

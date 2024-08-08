@@ -34,7 +34,7 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-`
+`;
 
 const backSvg = (theme) => {
   return (
@@ -114,6 +114,10 @@ const Header = () => {
     console.log(accessToken);
   };
 
+  const checkToken = () => {
+    console.log(accessToken);
+  };
+
   useEffect(() => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
@@ -130,12 +134,12 @@ const Header = () => {
               <SportsBaseballIcon />
               <strong>Youniform</strong>
             </Logo>
+            <ColorBtn onClick={checkToken}>토큰확인</ColorBtn>
             {accessToken ? (
               <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
-              ) : (
-                <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
-              )
-            }
+            ) : (
+              <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
+            )}
           </InnerHead>
         );
       case "/my-page":
