@@ -6,7 +6,7 @@ import queryString from "query-string";
 import SearchBox from "@components/Post/Search/SearchBox";
 import axios from "axios";
 import Posts from "./Posts";
-
+import { getApiClient } from "@stores/apiClient";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,16 +30,14 @@ const SearchView = () => {
   const API_URL = "http://i11a308.p.ssafy.io:8080";
   useEffect(() => {
     const fetchResult = async () => {
+      const apiClient = getApiClient();
       try {
         console.log(`Search Type: ${searchType}`);
         console.log(`Searching for: ${searchQuery}`);
-        const res = await axios.get(`${API_URL}/posts/tags`, {
-          // headers: {
-          //   Authorization: "Bearer your_token_here",
-          // },
+        const res = await apiClient.get("/posts/tags", {
           params: {
             name: searchQuery,
-            // lastPostId: "",
+            lastPostId: "1",
           },
         });
         console.log(res.data.header.message);

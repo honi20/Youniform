@@ -153,15 +153,26 @@ const ChangeProfile = () => {
     const apiClient = getApiClient();
     console.log("API Client:", apiClient);
     console.log("Submitting changes...");
+    const dto = {
+      nickname: nickname,
+      introduce: introduce,
+    };
+    const dtoBlob = new Blob([JSON.stringify(dto)], {
+      type: "application/json",
+    });
+    const formData = new FormData();
+    const imageBlob = await fetch(image).then((res) => res.blob());
+    formData.append("file", imageBlob);
+    formData.append("dto", dtoBlob);
+    ////////////// 수정 예정 ////////////////
     try {
-      const res = await apiClient.patch("/users/profile", {
-        data: {
-          nickname: nickname,
-          introduce: introduce,
-          profileUrl: image,
+      const res = await apiClient.patch("/users/profile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
       });
       console.log(res.data.header.message);
+      console.log(res.data.body);
       if (res.data.header.message === "사용 가능한 닉네임입니다.") {
         setIsNicknameChecked(true);
       }

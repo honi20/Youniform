@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createApiClient, getApiClient } from "@stores/apiClient";
+import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
 
 const API_URL = "http://i11a308.p.ssafy.io:8080";
