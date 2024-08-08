@@ -4,8 +4,6 @@ import com.youniform.api.domain.user.dto.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 public interface UserService {
     void resignUser(Long userId);
 
@@ -38,4 +36,6 @@ public interface UserService {
     void sendEmail(EmailSendReq req);
 
     void verifyEmail(EmailVerifyReq req);
+
+    SearchNicknameRes findUserByNickName(String nickname);
 }

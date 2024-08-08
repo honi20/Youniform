@@ -292,4 +292,15 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(VERIFY_NOT_MATCH);
         }
     }
+
+    @Override
+    public SearchNicknameRes findUserByNickName(String nickname) {
+        List<Users> users = userRepository.findUsersByNickname(nickname);
+
+        List<SearchUserDto> userList = users.stream()
+                .map(SearchUserDto::toDto)
+                .toList();
+
+        return SearchNicknameRes.toDto(userList);
+    }
 }
