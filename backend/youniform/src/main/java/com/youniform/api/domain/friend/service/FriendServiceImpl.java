@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 import static com.youniform.api.global.statuscode.ErrorCode.FRIEND_NOT_FOUND;
 import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
