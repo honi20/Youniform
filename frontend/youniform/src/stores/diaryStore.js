@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import axios from "axios";
 import useUserStore from "@stores/userStore";
+import { getApiClient } from "@stores/apiClient";
 
 const logFormData = (formData) => {
   for (const [key, value] of formData.entries()) {
     console.log(`${key}:`, value);
   }
 };
-const API_URL = "http://i11a308.p.ssafy.io:8080";
+
 const useDiaryStore = create((set) => ({
   diaries: [],
   diary: [],
@@ -20,125 +21,101 @@ const useDiaryStore = create((set) => ({
     return `${year}-${month}-${day}`;
   },
   fetchMonthlyDiaries: async (date) => {
-    const res = await axios({
-      method: "get",
-      url: `${API_URL}/diaries/monthly`,
-      // headers: {
-      //   Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ",
-      // },
-      params: {
-        calendarDate: "2024-07",
-      },
-    })
-      .then((res) => {
-        set({ monthlyDiaries: res.data.body.diaryList });
-      })
-      .catch((err) => {
-        console.error("Failed to fetch monthlyDiaries", err);
-      });
-  },
-  fetchFriendsDiaries: async (userId, date) => {
-    const res = await axios({
-      method: "get",
-      url: `${API_URL}/diaries/monthly`,
-      // headers: {
-      //   Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ",
-      // },
-      params: {
-        userId: userId,
-        calendarDate: "2024-07",
-      },
-    })
-      .then((res) => {
-        set({ monthlyDiaries: res.data.body.diaryList });
-      })
-      .catch((err) => {
-        console.error("Failed to fetch monthlyDiaries", err);
-      });
-  },
-  fetchDiaries: async () => {
-    const { accessToken } = useUserStore.getState();
-    console.log(accessToken);
-    await axios({
-      method: "get",
-      url: `${API_URL}/diaries`,
-      headers: {
-        Authorization: accessToken ? `Bearer ${accessToken}` : "",
-      },
-      data: {
-        // diaryDate: getCurrentDate(),
-        contents: diary,
-        scope: "ALL",
-        stampId: 1,
-      },
-    })
-      .then((res) => {
-        set({ diaries: res.data.body });
-      })
-      .catch((err) => {
-        console("Failed to fetch diaries", err);
-      });
-  },
-  fetchDiary: async (diaryId) => {
-    const { accessToken } = useUserStore.getState();
-    console.log(accessToken);
+    const apiClient = getApiClient();
     try {
-      const res = await axios({
-        method: "get",
-        url: `${API_URL}/diaries/${diaryId}`,
-        headers: {
-          Authorization: accessToken ? `Bearer ${accessToken}` : "",
+      const res = await apiClient.get(`/diaries/monthly`, {
+        params: {
+          calendarDate: "2024-07",
         },
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
+      set({ monthlyDiaries: res.data.body.diaryList });
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  },
+  fetchFriendsDiaries: async (userId, date) => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.get(`/diaries/monthly`, {
+        params: {
+          userId: userId,
+          calendarDate: "2024-07",
+        },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+      set({ monthlyDiaries: res.data.body.diaryList });
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  },
+  fetchDiaries: async () => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.get(`/diaries`, {
+        data: {
+          // diaryDate: getCurrentDate(),
+          contents: diary,
+          scope: "ALL",
+          stampId: 1,
+        },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+      set({ diaries: res.data.body });
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  },
+  fetchDiary: async (diaryId) => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.get(`/diaries/${diaryId}`);
+      console.log(res.data.header.message);
+      console.log(res.data.body);
 
       set({ diary: res.data.body });
-      // return res.data.body;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
   },
   addDiary: async (formData) => {
-    logFormData(formData);
-    const { accessToken } = useUserStore.getState();
-    console.log(accessToken);
+    // logFormData(formData);
+    const apiClient = getApiClient();
+    console.log("API Client:", apiClient);
     try {
-      const res = await axios({
-        method: "post",
-        // url: `${API_URL}/diaries`,
-        url: `${API_URL}/diaries`,
-        data: formData,
+      const res = await apiClient.post("/diaries", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${accessToken}`,
         },
-        // transformRequest: (formData) => formData,
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
-
-      // set((state) => ({
-      //   diaries: [...state.diaries, diary],
-      // }));
       return res.data.body.diaryId;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
   },
-  updateDiary: async (id, updatedDiary) => {
+  updateDiary: async (diaryId, updatedDiary) => {
+    const apiClient = getApiClient();
+    console.log("API Client:", apiClient);
     try {
-      const response = await axios.put(
-        `${API_URL}/diaries/${id}`,
-        updatedDiary
-      );
+      const res = await apiClient.put(`/diaries/${diaryId}`, updatedDiary, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body);
       set((state) => ({
         diaries: state.diaries.map((diary) =>
           diary.id === id ? response.data : diary
         ),
       }));
-    } catch (error) {
-      console.error("Failed to update diary", error);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
     }
   },
   deleteDiary: async (id) => {

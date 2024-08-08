@@ -36,7 +36,7 @@ const AddBtn = styled.div`
     background-color: ${(props) => props.theme.secondary};
   }
 `;
-const CommunityView = () => {
+const PostView = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { posts, fetchPosts } = usePostStore();
   const navigate = useNavigate();
@@ -78,4 +78,4 @@ const CommunityView = () => {
   );
 };
 
-export default CommunityView;
+export default PostView;
