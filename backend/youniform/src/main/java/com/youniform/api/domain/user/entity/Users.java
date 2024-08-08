@@ -63,4 +63,8 @@ public class Users {
     public void updateIntroduce(String introduce) {
         this.introduce = introduce;
     }
+
+    public void updateTeam(Team team) {
+        this.team = team;
+    }
 }

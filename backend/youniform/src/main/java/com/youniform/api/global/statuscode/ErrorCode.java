@@ -60,6 +60,10 @@ public enum ErrorCode {
     POST_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "게시글 수정은 작성자만 수정이 가능합니다."),
     POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "게시글 삭제는 작성자만 가능합니다."),
 
+    // player error
+    PLAYER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 선수를 찾을 수 없습니다."),
+    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 구단을 찾을 수 없습니다."),
+
     //comment error
     INVALID_COMMENT_CONTENTS(HttpStatus.BAD_REQUEST.value(), "댓글은 null이거나 공백일 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "댓글을 찾을 수 없습니다."),
