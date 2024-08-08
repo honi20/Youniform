@@ -33,7 +33,7 @@ public class DiaryController {
 	@PostMapping
 	public ResponseEntity<?> diaryAdd(
 			@RequestPart(value = "dto") DiaryAddReq diaryAddReq,
-			@RequestPart(value = "file", required = true) MultipartFile file) throws IOException {
+			@RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 //		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryAddRes response = diaryService.addDiary(123L, diaryAddReq, file);

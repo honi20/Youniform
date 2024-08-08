@@ -2,6 +2,7 @@ package com.youniform.api.domain.player.controller;
 
 import com.youniform.api.domain.player.dto.FavoritePlayerListRes;
 import com.youniform.api.domain.player.dto.PlayerListRes;
+import com.youniform.api.domain.player.dto.PlayerSongListRes;
 import com.youniform.api.domain.player.service.PlayerService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.service.JwtService;
@@ -9,6 +10,7 @@ import com.youniform.api.global.statuscode.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,5 +42,12 @@ public class PlayerController {
         FavoritePlayerListRes response = playerService.findFavoritePlayers(123L);
 
         return new ResponseEntity<>(ResponseDto.success(SuccessCode.FAVORITE_PLAYER_LIST_OK, response), HttpStatus.OK);
+    }
+
+    @GetMapping("/song/{playerId}")
+    public ResponseEntity<?> playerSongList(@PathVariable("playerId") Long playerId) {
+        PlayerSongListRes response = playerService.findPlayerSongs(playerId);
+
+        return new ResponseEntity<>(ResponseDto.success(SuccessCode.PLAYER_SONG_LIST_OK, response), HttpStatus.OK);
     }
 }

@@ -1,10 +1,9 @@
 package com.youniform.api.domain.player.service;
 
-import com.youniform.api.domain.player.dto.FavoritePlayerListRes;
-import com.youniform.api.domain.player.dto.PlayerDetailDto;
-import com.youniform.api.domain.player.dto.PlayerListDto;
-import com.youniform.api.domain.player.dto.PlayerListRes;
+import com.youniform.api.domain.player.dto.*;
+import com.youniform.api.domain.player.entity.CheeringSong;
 import com.youniform.api.domain.player.entity.Player;
+import com.youniform.api.domain.player.repository.CheeringSongRepository;
 import com.youniform.api.domain.player.repository.PlayerRepository;
 import com.youniform.api.domain.user.repository.UserPlayerCustomRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,8 @@ public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository;
 
     private final UserPlayerCustomRepository userPlayerCustomRepository;
+
+    private final CheeringSongRepository cheeringSongRepository;
 
     @Override
     public PlayerListRes findPlayers(Long teamId) {
@@ -39,5 +40,16 @@ public class PlayerServiceImpl implements PlayerService {
                 .toList();
 
         return new FavoritePlayerListRes(playerList);
+    }
+
+    @Override
+    public PlayerSongListRes findPlayerSongs(Long playerId) {
+        List<CheeringSong> songs = cheeringSongRepository.findByPlayerId(playerId);
+
+        List<PlayerSongDto> songList = songs.stream()
+                .map(PlayerSongDto::toDto)
+                .toList();
+
+        return new PlayerSongListRes(songList);
     }
 }
