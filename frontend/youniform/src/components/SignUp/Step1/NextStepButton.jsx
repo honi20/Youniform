@@ -20,38 +20,49 @@ const NextStepBtn = styled.div`
 `;
 
 const NextStepButton = () => {
-  const { step, setStep, user } = useSignUpStore();
+  const { step, setStep, user, fetchLocalSignUp } = useSignUpStore();
   const navigate = useNavigate();
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     let nextStep;
     switch (step) {
       case 1:
         if (user.isVerified && user.isPwVerified) {
+          setStep(2);
           nextStep = 2;
         }
         break;
       case 2:
-        nextStep = 3;
+        if (user.isNicknameUnique && [...user.introduce].length <= 20) {
+          setStep(3);
+          nextStep = 3;
+        }
         break;
       case 3:
-        // 마지막 단계는 별도 설정
-        
+        if (user.players.length > 0) {
+          nextStep = 4;
+          setStep(4);
+          const res = await fetchLocalSignUp();
+        }
         break;
+      case 4:
+          // 마지막 단계는 별도 설정
+          setStep(1);
+          navigate(`/`);
+        return;
       default:
         nextStep = 1;
         break;
     }
     
     if (nextStep) {
-      setStep(nextStep);
       navigate(`/sign-up/step-${nextStep}`);
     }
   };
 
   return (
     <NextStepBtn onClick={handleNextStep}>
-      다음 단계로
+      { step == 4 ? "홈으로" : "다음 단계로" }
     </NextStepBtn>
   );
 }

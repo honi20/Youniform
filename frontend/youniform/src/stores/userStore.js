@@ -33,7 +33,8 @@ const useUserStore = create((set) => ({
   },
   clearFriend: () => set({ friend: null, error: null }),
   fetchLogin: async (email, password) => {
-    console.log(1);
+    console.log(email);
+    console.log(password);
     const res = await axios({
       method: "post",
       url: `${API_URL}/users/signin/local`,
@@ -43,6 +44,7 @@ const useUserStore = create((set) => ({
       }
     })
     .then((res) => {
+      console.log(res.data.body.accessToken);
       set({ accessToken: res.data.body.accessToken });
       return "$OK";
     })
