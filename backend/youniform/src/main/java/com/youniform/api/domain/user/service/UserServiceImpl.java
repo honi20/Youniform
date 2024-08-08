@@ -13,16 +13,19 @@ import com.youniform.api.domain.user.entity.UserPlayerPK;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserPlayerRepository;
 import com.youniform.api.domain.user.repository.UserRepository;
+import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.mail.service.MailService;
 import com.youniform.api.global.redis.RedisUtils;
 import com.youniform.api.global.s3.S3Service;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,11 +36,10 @@ import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.user.entity.QUsers.users;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
-import static com.youniform.api.global.statuscode.ErrorCode.PROFILE_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisUtils redisUtils;
@@ -204,6 +206,15 @@ public class UserServiceImpl implements UserService {
                 .build();
         //redis에 key: email
         redisUtils.setDataWithExpiration(user.getUuid(), jwtRedis, System.currentTimeMillis() + (600_000));
+    }
+
+    @Override
+    public SearchUserRes searchUser(Long userId, Long lastUserId, Pageable pageable) {
+        Slice<SearchUserDto> users = userRepository.findUserByCursor(userId, lastUserId, pageable);
+
+        SliceDto<SearchUserDto> postDtoSliceDto = new SliceDto<>(users);
+
+        return SearchUserRes.toDto(postDtoSliceDto);
     }
 
     @Override

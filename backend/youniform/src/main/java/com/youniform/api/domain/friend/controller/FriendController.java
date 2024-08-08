@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +30,7 @@ public class FriendController {
     private final JwtService jwtService;
 
     @PostMapping("/request")
-    public ResponseEntity<?> FriendRequest(@RequestBody FriendRequestReq friendRequestReq) {
+    public ResponseEntity<?> friendRequest(@RequestBody FriendRequestReq friendRequestReq) {
 //        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 //        String friendUuid = friendRequestReq.getFriendUuid();
 
@@ -43,7 +42,7 @@ public class FriendController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<?> FriendAccept(@RequestBody FriendAcceptReq friendAcceptReq) {
+    public ResponseEntity<?> friendAccept(@RequestBody FriendAcceptReq friendAcceptReq) {
 
         return new ResponseEntity<>(ResponseDto.success(FRIEND_ACCEPT_OK, null), HttpStatus.CREATED);
     }
@@ -69,7 +68,7 @@ public class FriendController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> FriendDelete(@ModelAttribute @Valid FriendDeleteReq friendDeleteReq) {
+    public ResponseEntity<?> friendDelete(@ModelAttribute @Valid FriendDeleteReq friendDeleteReq) {
 
         return new ResponseEntity<>(ResponseDto.success(FRIEND_DELETED, null), HttpStatus.OK);
     }

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface UserRepository extends JpaRepository<Users, Long> {
+public interface UserRepository extends JpaRepository<Users, Long>, UserCustomRepository {
     Users findByEmail(String email);
     Optional<Users> findByUuid(String uuid);
     Users findById(long id);

@@ -1,12 +1,7 @@
 package com.youniform.api.domain.user.service;
 
-import com.youniform.api.domain.user.dto.AlertModifyReq;
-import com.youniform.api.domain.user.dto.LocalSigninReq;
-import com.youniform.api.domain.user.dto.SignupReq;
-import com.youniform.api.domain.user.dto.ThemeModifyReq;
 import com.youniform.api.domain.user.dto.*;
-import com.youniform.api.domain.user.entity.Users;
-import org.springframework.security.core.Authentication;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,6 +28,8 @@ public interface UserService {
     void modifyPassword(PasswordModifyReq req, Long userId);
 
     void passwordResetSend(PasswordResetSendReq req);
+
+    SearchUserRes searchUser(Long userId, Long lastUserId, Pageable pageable);
 
     void modifyUserFavorite(Long userId, UserFavoriteReq userFavoriteReq);
 }

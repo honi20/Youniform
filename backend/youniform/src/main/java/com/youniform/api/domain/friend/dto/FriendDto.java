@@ -13,4 +13,6 @@ public class FriendDto {
     private String nickname;
 
     private String introduce;
+
+    private String teamUrl;
 }

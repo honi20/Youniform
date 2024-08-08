@@ -5,6 +5,8 @@ import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -116,6 +118,16 @@ public class UserController {
         String accessToken = userService.signin(user);
         SigninRes result = SigninRes.builder().accessToken(accessToken).build();
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
+    }
+
+    @GetMapping("/team")
+    public ResponseEntity<?> searchUserList(@RequestParam(value = "lastUserId", required = false) Long lastUserId,
+                                            @PageableDefault(size = 20) Pageable pageable) {
+        Long userId = 123L;
+
+        SearchUserRes result = userService.searchUser(userId, lastUserId, pageable);
+
+        return new ResponseEntity<>(ResponseDto.success(USER_RECOMMEND_SUCCESS, result), HttpStatus.OK);
     }
 
     @PatchMapping("/favorite")
