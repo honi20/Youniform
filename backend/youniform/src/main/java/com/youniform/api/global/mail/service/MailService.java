@@ -1,5 +1,7 @@
 package com.youniform.api.global.mail.service;
 
+import com.youniform.api.global.exception.CustomException;
+import com.youniform.api.global.statuscode.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +43,25 @@ public class MailService {
                 .toString();
     }
 
+    public MimeMessage CreateVerifyMail(String email, String verify){
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        try{
+            mimeMessage.setFrom(senderEmail);
+            mimeMessage.setRecipients(MimeMessage.RecipientType.TO, email);
+            mimeMessage.setSubject("이메일 인증");
+            String body = "";
+            body += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
+            body += "<h1>" + verify + "</h1>";
+            body += "<h3>" + "감사합니다." + "</h3>";
+            mimeMessage.setText(body,"UTF-8", "html");
+        }catch (MessagingException e){
+            throw new CustomException(MAIL_SEND_FAILURE);
+        }
+
+        return mimeMessage;
+    }
+
     public MimeMessage CreateMail(String uuid, String mail, String verify) {
         MimeMessage message = javaMailSender.createMimeMessage();
 
@@ -53,15 +76,22 @@ public class MailService {
             body += "<h3>" + "감사합니다." + "</h3>";
             message.setText(body,"UTF-8", "html");
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new CustomException(MAIL_SEND_FAILURE);
         }
 
         return message;
     }
 
-    public String sendMail(String mail, String uuid) {
+    public String sendPasswordResetMail(String mail, String uuid) {
         String verify  = generateRandomString();
         MimeMessage message = CreateMail(uuid, mail, verify);
+        javaMailSender.send(message);
+        return verify;
+    }
+
+    public String sendVerifyEmail(String mail){
+        String verify = generateRandomString();
+        MimeMessage message = CreateVerifyMail(mail, verify);
         javaMailSender.send(message);
         return verify;
     }

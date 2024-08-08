@@ -241,7 +241,7 @@ public class UserControllerTest {
         String content = gson.toJson(passwordResetSendReq);
 
         //when
-        when(mailService.sendMail(any(), any())).thenReturn("verify");
+        when(mailService.sendPasswordResetMail(any(), any())).thenReturn("verify");
         ResultActions actions = mockMvc.perform(
                 post("/users/password/send")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -297,7 +297,7 @@ public class UserControllerTest {
         String content = gson.toJson(passwordResetReq);
 
         //when
-        when(mailService.sendMail(any(), any())).thenReturn("asdf");
+        when(mailService.sendPasswordResetMail(any(), any())).thenReturn("asdf");
         ResultActions actions = mockMvc.perform(
                 patch("/users/password/reset")
                         .header("Authorization", "Bearer " + jwtToken)

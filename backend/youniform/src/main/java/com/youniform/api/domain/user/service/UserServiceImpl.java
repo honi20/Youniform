@@ -202,7 +202,7 @@ public class UserServiceImpl implements UserService {
         }
         //email로 비밀번호 재설정 email 전송
         String verify_key = "";
-        verify_key = mailService.sendMail(req.getEmail(), user.getUuid());
+        verify_key = mailService.sendPasswordResetMail(req.getEmail(), user.getUuid());
         JwtRedis jwtRedis = JwtRedis.builder()
                 .uuid(user.getUuid())
                 .verify(verify_key)
@@ -267,5 +267,29 @@ public class UserServiceImpl implements UserService {
         Users user = userRepository.findByNickname(nickname);
         if(user == null) return;
         throw new CustomException(ALREADY_EXIST_NICKNAME);
+    }
+
+    @Override
+    public void sendEmail(EmailSendReq req) {
+        Users user = userRepository.findByEmail(req.getEmail());
+
+        if(user == null) {
+            String verify = mailService.sendVerifyEmail(req.getEmail());
+            redisUtils.setDataWithExpiration(req.getEmail()+"_verify", verify, System.currentTimeMillis() + (600_000));
+            return;
+        }
+        throw new CustomException(ALREADY_EXIST_USER);
+    }
+
+    @Override
+    public void verifyEmail(EmailVerifyReq req) {
+        String verify = (String)redisUtils.getData(req.getEmail()+"_verify");
+
+        if(verify == null) {
+            throw new CustomException(NOT_EXIST_VERIFY);
+        }
+        if(!verify.equals(req.getVerifyCode())){
+            throw new CustomException(VERIFY_NOT_MATCH);
+        }
     }
 }
