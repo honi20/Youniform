@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,10 @@ public class FriendController {
 
     @PostMapping("/accept")
     public ResponseEntity<?> friendAccept(@RequestBody FriendAcceptReq friendAcceptReq) {
+//        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+//        String friendUuid = friendAcceptReq.getFriendUuid();
+
+        friendService.acceptFriend(123L, "1604b772-adc0-4212-8a90-81186c57f100");
 
         return new ResponseEntity<>(ResponseDto.success(FRIEND_ACCEPT_OK, null), HttpStatus.CREATED);
     }

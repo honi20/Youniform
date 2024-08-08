@@ -1,5 +1,6 @@
 package com.youniform.api.domain.friend.service;
 
+import com.youniform.api.domain.friend.dto.FriendListRes;
 import com.youniform.api.domain.friend.dto.FriendRequestReq;
 import com.youniform.api.domain.friend.entity.Friend;
 import com.youniform.api.domain.friend.entity.FriendPK;
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.youniform.api.domain.friend.entity.Status.FRIEND;
+import static com.youniform.api.domain.friend.entity.Status.WAITING;
 import static com.youniform.api.global.statuscode.ErrorCode.FRIEND_NOT_FOUND;
 import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
@@ -43,14 +46,56 @@ public class FriendServiceImpl implements FriendService {
         FriendPK friendPk1 = new FriendPK(user.getId(), friend.getId());
         FriendPK friendPk2 = new FriendPK(friend.getId(), user.getId());
 
-        Friend friendRequest1 = Friend.builder().friendPK(friendPk1).user(user).friend(friend).status(Status.WAITING).build();
+        Friend friendRequest1 = Friend.builder()
+                .friendPK(friendPk1)
+                .user(user)
+                .friend(friend)
+                .status(WAITING)
+                .build();
+
+        Friend friendRequest2 = Friend.builder()
+                .friendPK(friendPk2)
+                .user(friend)
+                .friend(user)
+                .status(WAITING)
+                .build();
 
         friendRepository.save(friendRequest1);
-
-        Friend friendRequest2 = Friend.builder().friendPK(friendPk2).user(friend).friend(user).status(Status.WAITING).build();
 
         friendRepository.save(friendRequest2);
 
         return null;
+    }
+
+    @Override
+    @Transactional
+    public void acceptFriend(Long userId, String friendUuid) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Users friend = userRepository.findByUuid(friendUuid)
+                .orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
+
+        FriendPK friendPk1 = new FriendPK(user.getId(), friend.getId());
+        FriendPK friendPk2 = new FriendPK(friend.getId(), user.getId());
+
+        Friend friendRequest1 = friendRepository.findByFriendPK(friendPk1);
+        Friend friendRequest2 = friendRepository.findByFriendPK(friendPk2);
+
+        friendRequest1.updateStatus(FRIEND);
+        friendRequest2.updateStatus(FRIEND);
+
+        friendRepository.save(friendRequest1);
+        friendRepository.save(friendRequest2);
+    }
+
+    @Override
+    public FriendListRes getFriendList(Long userId) {
+        return null;
+    }
+
+    @Override
+    public void removeFriend(Long userId, String friendUuid) {
+
     }
 }

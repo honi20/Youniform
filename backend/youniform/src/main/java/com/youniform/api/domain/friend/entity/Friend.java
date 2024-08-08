@@ -32,4 +32,8 @@ public class Friend {
     private Status status;
 
     private LocalDateTime lastVisited;
+
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
 }
