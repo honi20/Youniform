@@ -445,7 +445,7 @@ public class DiaryControllerTest {
         SliceDto<DiaryListDto> sliceDto = new SliceDto<>(new SliceImpl<>(diaryList, pageRequest, false));
         DiaryListRes response = new DiaryListRes(sliceDto);
 
-        when(diaryService.findDiaries(anyString(), any(), any())).thenReturn(response);
+        when(diaryService.findDiaries(anyLong(), anyString(), any(), any())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
                 get("/diaries/list/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")
@@ -578,7 +578,7 @@ public class DiaryControllerTest {
         diaryList.add(new DiaryMonthlyDto(125L, LocalDate.parse("2024-07-12"), "http://youniform.com/sticker1.png"));
         diaryList.add(new DiaryMonthlyDto(123L, LocalDate.parse("2024-07-31"), "http://youniform.com/sticker1.png"));
 
-        when(diaryService.findMonthlyDiaries(anyString(), any())).thenReturn(new DiaryMonthlyListRes(diaryList));
+        when(diaryService.findMonthlyDiaries(anyLong(), anyString(), any())).thenReturn(new DiaryMonthlyListRes(diaryList));
 
         ResultActions actions = mockMvc.perform(
                 get("/diaries/monthly/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")

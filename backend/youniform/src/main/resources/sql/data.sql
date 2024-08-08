@@ -25,7 +25,9 @@ INSERT INTO DIARY (user_id, stamp_id, diary_date, scope, img_url)
 VALUES (123, 1, '2024-07-31', 'FRIENDS', 'diary1'),
        (123, 1, '2024-07-01', 'ALL', 'diary2'),
        (123, 1, '2024-07-12', 'PRIVATE', 'diary3'),
-       (124, 1, '2024-08-01', 'ALL', 'diary4');
+       (124, 1, '2024-08-01', 'FRIENDS', 'diary4'),
+       (124, 1, '2024-08-01', 'PRIVATE', 'diary5'),
+       (125, 1, '2024-08-01', 'FRIENDS', 'diary6');
 
 -- friend
 INSERT INTO FRIEND (user_id, friend_id, status, last_visited) VALUES (123, 124, 'FRIEND', CURRENT_DATE);

@@ -34,6 +34,7 @@ public enum ErrorCode {
     DIARY_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "다이어리 업데이트가 불가능합니다. 작성자만 수정이 가능하고, 다이어리 날짜는 수정 불가능합니다."),
     WRITER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 유저(다이어리 작성자) ID 입니다."),
     INVALID_CALENDAR_DATE(HttpStatus.BAD_REQUEST.value(), "잘못된 캘린더 날짜 형식입니다. yyyy-mm 형식을 따릅니다."),
+    DIARY_ACCESS_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "다이어리 접근 권한이 없습니다. (공개 범위에 따른 접근 권한)"),
 
     // photocard error code
     PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 포토카드 ID 입니다."),

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,50 +35,54 @@ public class DiaryController {
 	public ResponseEntity<?> diaryAdd(
 			@RequestPart(value = "dto") DiaryAddReq diaryAddReq,
 			@RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryAddRes response = diaryService.addDiary(123L, diaryAddReq, file);
+		DiaryAddRes response = diaryService.addDiary(userId, diaryAddReq, file);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_CREATED, response), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{diaryId}")
 	public ResponseEntity<?> diaryDetails(@PathVariable("diaryId") Long diaryId) throws JsonProcessingException {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryDetailDto response = diaryService.detailDiary(123L, diaryId);
+		DiaryDetailDto response = diaryService.detailDiary(userId, diaryId);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_DETAILS_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("/list")
 	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable) throws JsonProcessingException {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryListRes response = diaryService.findMyDiaries(123L, diaryListReq, pageable);
+		DiaryListRes response = diaryService.findMyDiaries(userId, diaryListReq, pageable);
 
 		return new ResponseEntity<>(ResponseDto.success(MY_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("/list/{userId}")
-	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userId") String userUuid) throws JsonProcessingException {
-		DiaryListRes response = diaryService.findDiaries(userUuid, diaryListReq, pageable);
+	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userId") String friendUuid) throws JsonProcessingException {
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		DiaryListRes response = diaryService.findDiaries(userId, friendUuid, diaryListReq, pageable);
 
 		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("monthly")
 	public ResponseEntity<?> diaryMyMonthlyList(@ModelAttribute DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryMonthlyListRes response = diaryService.findMyMonthlyDiaries(123L, diaryMonthlyListReq);
+		DiaryMonthlyListRes response = diaryService.findMyMonthlyDiaries(userId, diaryMonthlyListReq);
 
 		return new ResponseEntity<>(ResponseDto.success(MY_MONTHLY_DIARIES_OK, response), HttpStatus.OK);
 	}
 
 	@GetMapping("monthly/{userId}")
 	public ResponseEntity<?> diaryMonthlyList(@ModelAttribute DiaryMonthlyListReq diaryMonthlyListReq, @PathVariable("userId") String userUuid) throws JsonProcessingException {
-		DiaryMonthlyListRes response = diaryService.findMonthlyDiaries(userUuid, diaryMonthlyListReq);
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+		DiaryMonthlyListRes response = diaryService.findMonthlyDiaries(userId, userUuid, diaryMonthlyListReq);
 
 		return new ResponseEntity<>(ResponseDto.success(OTHER_MONTHLY_DIARIES_OK, response), HttpStatus.OK);
 	}
@@ -85,7 +90,7 @@ public class DiaryController {
 
 	@PutMapping("/{diaryId}")
 	public ResponseEntity<?> diaryModify(@PathVariable("diaryId") Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		diaryService.modifyDiary(123L, diaryId, diaryModifyReq);
 
@@ -94,9 +99,9 @@ public class DiaryController {
 
 	@DeleteMapping("/{diaryId}")
 	public ResponseEntity<?> diaryRemove(@PathVariable("diaryId") Long diaryId) {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		diaryService.removeDiary(123L, diaryId);
+		diaryService.removeDiary(userId, diaryId);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_DELETED, null), HttpStatus.OK);
 	}
