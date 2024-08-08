@@ -26,7 +26,8 @@ public class UserController {
 
     @GetMapping("/verify")
     public ResponseEntity<?> nicknameCheck(@RequestParam("nickname") String nickname) {
-        return new ResponseEntity<>(ResponseDto.success(USER_NICKNAME_OK, null), HttpStatus.OK);
+        userService.verifyNickname(nickname);
+        return new ResponseEntity<>(ResponseDto.success(USER_NICKNAME_OK, true), HttpStatus.OK);
     }
 
     @PostMapping("/email/send")

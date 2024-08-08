@@ -36,6 +36,9 @@ import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.user.entity.QUsers.users;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
+import static com.youniform.api.global.statuscode.ErrorCode.ALREADY_EXIST_NICKNAME;
+import static com.youniform.api.global.statuscode.ErrorCode.PROFILE_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -257,5 +260,12 @@ public class UserServiceImpl implements UserService {
                     .build();
             userPlayerRepository.save(userPlayer);
         });
+    }
+
+    @Override
+    public void verifyNickname(String nickname) {
+        Users user = userRepository.findByNickname(nickname);
+        if(user == null) return;
+        throw new CustomException(ALREADY_EXIST_NICKNAME);
     }
 }
