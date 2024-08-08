@@ -4,7 +4,7 @@ import com.youniform.api.domain.friend.dto.FriendRequestReq;
 import com.youniform.api.domain.friend.entity.Status;
 
 public interface FriendService {
-    FriendRequestReq requestFriend(Long userId, String friendUuid);
-
     Status isFriend(Long userId, Long friendId);
+
+    FriendRequestReq requestFriend(Long userId, String friendUuid);
 }
