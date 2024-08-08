@@ -57,10 +57,12 @@ VALUES (123, 123, 124, 'FRIEND_REQUEST', '', 'friend link', false, '2024-07-31T1
 
 -- tag
 INSERT INTO TAG(contents)
-VALUES ('최강'),
+VALUES ('최강야구'),
+       ('최강'),
        ('몬스터즈'),
        ('최고'),
-       ('홈런');
+       ('홈런'),
+       ('최강몬스터즈');
 
 -- post
 INSERT INTO POST(user_id, img_url, contents, date)

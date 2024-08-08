@@ -1,14 +1,18 @@
 package com.youniform.api.domain.tag.dto;
 
 import com.youniform.api.domain.tag.entity.Tag;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TagListRes {
     private List<TagDto> tags;
 

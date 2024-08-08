@@ -7,7 +7,6 @@ import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.redis.RedisUtils;
 import com.youniform.api.global.statuscode.ErrorCode;
-import com.youniform.api.global.statuscode.SuccessCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -16,8 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -81,9 +78,9 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
         if (!response.isCommitted()) {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-            ResponseEntity<ResponseDto<?>> res = new ResponseEntity<>(ResponseDto.success(REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid)), HttpStatus.FORBIDDEN);
+            ResponseDto<?> res = ResponseDto.success(REISSUED_ACCESSTOKEN, jwtService.createAccessToken(uuid));
             ObjectMapper mapper = new ObjectMapper();
             response.getWriter().write(mapper.writeValueAsString(res));
         }
