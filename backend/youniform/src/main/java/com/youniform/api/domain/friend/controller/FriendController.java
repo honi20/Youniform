@@ -32,22 +32,22 @@ public class FriendController {
 
     @PostMapping("/request")
     public ResponseEntity<?> friendRequest(@RequestBody FriendRequestReq friendRequestReq) {
-//        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-//        String friendUuid = friendRequestReq.getFriendUuid();
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        String friendUuid = friendRequestReq.getFriendUuid();
 
-        friendService.requestFriend(123L, "1604b772-adc0-4212-8a90-81186c57f100");
+        friendService.requestFriend(userId, friendUuid);
 
-        alertService.send("1604b772-adc0-4212-8a90-81186c57f100", 123L, FRIEND_REQUEST, null, null);
+        alertService.send(friendUuid, userId, FRIEND_REQUEST, null, null);
 
         return new ResponseEntity<>(ResponseDto.success(FRIEND_REQUEST_OK, null), HttpStatus.CREATED);
     }
 
     @PostMapping("/accept")
     public ResponseEntity<?> friendAccept(@RequestBody FriendAcceptReq friendAcceptReq) {
-//        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-//        String friendUuid = friendAcceptReq.getFriendUuid();
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        String friendUuid = friendAcceptReq.getFriendUuid();
 
-        friendService.acceptFriend(123L, "1604b772-adc0-4212-8a90-81186c57f100");
+        friendService.acceptFriend(userId, friendUuid);
 
         return new ResponseEntity<>(ResponseDto.success(FRIEND_ACCEPT_OK, null), HttpStatus.CREATED);
     }
