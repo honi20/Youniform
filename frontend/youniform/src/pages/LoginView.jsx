@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useUserStore from "@stores/userStore";
+import usePhotoCardStore from "@stores/photoCardStore";
 
 import GoogleIcon from "../assets/login/google.png";
 import KakaoIcon from "../assets/login/kakao.png";
@@ -128,11 +129,15 @@ const ColorBtn = muiStyled(Button)(() => ({
 
 const LoginView = () => {
   const { fetchLogin, accessToken, clearAccessToken } = useUserStore();
+  const { photoCards, fetchPhotoCardList } = usePhotoCardStore();
   const [emailInput, setEmailInput] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
-  const navigate = useNavigate();
-  const customDomainRef = useRef(null);
   const [currency, setCurrency] = useState("");
+
+  const navigate = useNavigate();
+
+  const customDomainRef = useRef(null);
+
   let fullEmail = "";
 
   const [values, setValues] = useState({
@@ -198,6 +203,7 @@ const LoginView = () => {
     if (result == "$FAIL") {
       alert("로그인에 실패하였습니다.");
     } else if (result === "$OK") {
+      await fetchPhotoCardList();
       console.log(`로그인 성공`);
       navigate("/");
     }

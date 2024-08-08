@@ -166,6 +166,7 @@ const buttonMap = {
   3: { bgcolor: "#262F66", color: "white", label: "삭제" },
   4: { bgcolor: "#262F66", color: "white", label: "초기화" },
   5: { bgcolor: "#262F66", color: "white", label: "생성" },
+  5: { bgcolor: "#262F66", color: "white", label: "생성" },
 };
 
 const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
@@ -187,11 +188,10 @@ const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
     const subtitle = stateMap[state]?.subtitle || <></>;
     return subtitle;
   };
-  const handleBtnClick = (btnType) => {
-    console.log(btnType);
+  const handleBtnClick = (index) => {
     // onButtonClick 함수 연결
     if (onButtonClick) {
-      onButtonClick();
+      onButtonClick(index);
     }
     // modal 창 닫음
     onClose();
@@ -205,7 +205,7 @@ const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
           key={index}
           $bgcolor={bgcolor}
           $color={color}
-          onClick={() => handleBtnClick(btnType)}
+          onClick={() => handleBtnClick(btnType, index)}
         >
           {label}
         </Btn>
