@@ -2,9 +2,16 @@ package com.youniform.api.domain.user.service;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.youniform.api.domain.friend.service.FriendService;
+import com.youniform.api.domain.player.entity.Player;
+import com.youniform.api.domain.player.repository.PlayerRepository;
+import com.youniform.api.domain.team.entity.Team;
+import com.youniform.api.domain.team.repository.TeamRepository;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.entity.Theme;
+import com.youniform.api.domain.user.entity.UserPlayer;
+import com.youniform.api.domain.user.entity.UserPlayerPK;
 import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.repository.UserPlayerRepository;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.entity.JwtRedis;
@@ -19,7 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.user.entity.QUsers.users;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
@@ -37,6 +47,9 @@ public class UserServiceImpl implements UserService {
     private final FriendService friendService;
     private final S3Service s3Service;
     private final MailService mailService;
+    private final PlayerRepository playerRepository;
+    private final TeamRepository teamRepository;
+    private final UserPlayerRepository userPlayerRepository;
 
     @Transactional
     @Override
@@ -57,6 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public String signup(SignupReq user) {
         String uuid = UUID.randomUUID().toString();
 
@@ -67,6 +81,19 @@ public class UserServiceImpl implements UserService {
 
         user.setTeam("MONSTERS");
         Users users = userRepository.save(user.toEntity(uuid));
+
+        user.getPlayers().forEach(playerId -> {
+            Player player = playerRepository.findById(playerId)
+                    .orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
+
+            UserPlayer userPlayer = UserPlayer.builder()
+                    .userPlayerPK(new UserPlayerPK(users.getId(), playerId))
+                    .user(users)
+                    .player(player)
+                    .build();
+
+            userPlayerRepository.save(userPlayer);
+        });
 
         JwtRedis jwtRedis = user.toRedis(uuid, users.getId(), jwtService.createRefreshToken(uuid));
         redisUtils.setData(uuid, jwtRedis);
@@ -177,5 +204,47 @@ public class UserServiceImpl implements UserService {
                 .build();
         //redis에 key: email
         redisUtils.setDataWithExpiration(user.getUuid(), jwtRedis, System.currentTimeMillis() + (600_000));
+    }
+
+    @Override
+    @Transactional
+    public void modifyUserFavorite(Long userId, UserFavoriteReq userFavoriteReq) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (userFavoriteReq.getTeamId() != null) {
+            Team newTeam = teamRepository.findById(Long.valueOf(userFavoriteReq.getTeamId()))
+                    .orElseThrow(() -> new CustomException(TEAM_NOT_FOUND));
+            user.updateTeam(newTeam);
+        }
+
+        List<UserPlayer> currentPlayers = userPlayerRepository.findByUserId(userId);
+        Set<Long> currentPlayerIds = currentPlayers.stream()
+                .map(up -> up.getUserPlayerPK().getPlayerId())
+                .collect(Collectors.toSet());
+
+        Set<Long> newPlayerIdSet = Set.copyOf(userFavoriteReq.getPlayers());
+
+        List<UserPlayer> playersToRemove = currentPlayers.stream()
+                .filter(up -> !newPlayerIdSet.contains(up.getUserPlayerPK().getPlayerId()))
+                .collect(Collectors.toList());
+
+        List<Long> playersToAdd = userFavoriteReq.getPlayers().stream()
+                .filter(pid -> !currentPlayerIds.contains(pid))
+                .collect(Collectors.toList());
+
+        userPlayerRepository.deleteAll(playersToRemove);
+
+        playersToAdd.forEach(playerId -> {
+            Player player = playerRepository.findById(playerId)
+                    .orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
+            UserPlayerPK userPlayerPK = new UserPlayerPK(userId, playerId);
+            UserPlayer userPlayer = UserPlayer.builder()
+                    .userPlayerPK(userPlayerPK)
+                    .user(user)
+                    .player(player)
+                    .build();
+            userPlayerRepository.save(userPlayer);
+        });
     }
 }

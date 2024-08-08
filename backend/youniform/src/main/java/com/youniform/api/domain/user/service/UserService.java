@@ -33,4 +33,6 @@ public interface UserService {
     void modifyPassword(PasswordModifyReq req, Long userId);
 
     void passwordResetSend(PasswordResetSendReq req);
+
+    void modifyUserFavorite(Long userId, UserFavoriteReq userFavoriteReq);
 }

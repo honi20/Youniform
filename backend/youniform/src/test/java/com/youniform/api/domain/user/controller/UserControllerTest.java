@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.service.UserServiceImpl;
+import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtServiceImpl;
 import com.youniform.api.global.mail.service.MailService;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -33,8 +35,11 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -850,6 +855,157 @@ public class UserControllerTest {
                                                 .responseSchema(Schema.schema("로컬 회원가입 Response"))
                                                 .build()
                                 ))
+                );
+    }
+
+    @Test
+    public void 회원_최애_변경_성공() throws Exception {
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        List<Long> players = new ArrayList<>();
+        players.add(4L);
+        players.add(10L);
+
+        UserFavoriteReq userFavoriteReq = new UserFavoriteReq(1L, players);
+        String content = gson.toJson(userFavoriteReq);
+
+        userService.modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
+
+        ResultActions actions = mockMvc.perform(
+                patch("/users/favorite")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_FAVORITE_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(USER_FAVORITE_MODIFIED.getMessage()))
+                .andDo(document("User 최애 변경 성공 (구단 & 선수)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("User 최애 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("teamId").type(JsonFieldType.NUMBER)
+                                                .description("변경된 최애 구단 ID"),
+                                        fieldWithPath("players[]").type(JsonFieldType.ARRAY)
+                                                .description("변경된 최애 선수 ID 리스트")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .requestSchema(Schema.schema("User 최애 변경 Request"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 회원_최애_변경_실패_존재하지_않는_구단() throws Exception {
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        List<Long> players = new ArrayList<>();
+        players.add(4L);
+        players.add(10L);
+
+        UserFavoriteReq userFavoriteReq = new UserFavoriteReq(100L, players);
+        String content = gson.toJson(userFavoriteReq);
+
+        doThrow(new CustomException(TEAM_NOT_FOUND)).when(userService).modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
+
+        ResultActions actions = mockMvc.perform(
+                patch("/users/favorite")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        actions.andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TEAM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TEAM_NOT_FOUND.getMessage()))
+                .andDo(document("User 최애 변경 실패 - 존재하지 않는 구단",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("User 최애 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("teamId").type(JsonFieldType.NUMBER)
+                                                .description("변경된 최애 구단 ID"),
+                                        fieldWithPath("players[]").type(JsonFieldType.ARRAY)
+                                                .description("변경된 최애 선수 ID 리스트")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 회원_최애_변경_실패_존재하지_않는_선수() throws Exception {
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        List<Long> players = new ArrayList<>();
+        players.add(4L);
+        players.add(100L);
+
+        UserFavoriteReq userFavoriteReq = new UserFavoriteReq(1L, players);
+        String content = gson.toJson(userFavoriteReq);
+
+        doThrow(new CustomException(PLAYER_NOT_FOUND)).when(userService).modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
+
+        ResultActions actions = mockMvc.perform(
+                patch("/users/favorite")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        actions.andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PLAYER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PLAYER_NOT_FOUND.getMessage()))
+                .andDo(document("User 최애 변경 실패 - 존재하지 않는 선수",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("User 최애 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("teamId").type(JsonFieldType.NUMBER)
+                                                .description("변경된 최애 구단 ID"),
+                                        fieldWithPath("players[]").type(JsonFieldType.ARRAY)
+                                                .description("변경된 최애 선수 ID 리스트")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .build()
+                        ))
                 );
     }
 }

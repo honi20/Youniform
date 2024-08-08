@@ -117,4 +117,11 @@ public class UserController {
         SigninRes result = SigninRes.builder().accessToken(accessToken).build();
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
     }
+
+    @PatchMapping("/favorite")
+    public ResponseEntity<?> userFavoriteModify(@RequestBody UserFavoriteReq userFavoriteReq) {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        userService.modifyUserFavorite(userId, userFavoriteReq);
+        return new ResponseEntity<>(ResponseDto.success(USER_FAVORITE_MODIFIED, null), HttpStatus.OK);
+    }
 }
