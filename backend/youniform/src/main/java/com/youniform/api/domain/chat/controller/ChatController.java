@@ -6,6 +6,7 @@ import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/chats")
 @Validated
 public class ChatController {
@@ -64,17 +66,21 @@ public class ChatController {
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, response), HttpStatus.OK);
     }
 
-    @PostMapping("/chats/messages/upload")
+    @PostMapping("/messages/upload")
     public ResponseEntity<?> uploadImage(@RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         ChatUploadImageRes response = chatService.uploadImage(file);
 
         return new ResponseEntity<>(ResponseDto.success(IMAGE_UPLOAD_OK, response), HttpStatus.OK);
     }
 
-    @GetMapping("/download/{imgUrl}")
-    public ResponseEntity<?> downloadImage(@PathVariable String imgUrl) throws IOException {
-        ChatDownloadImageRes response = chatService.downloadImage(imgUrl);
+    @GetMapping("/messages/download")
+    public ResponseEntity<?> downloadImage(@RequestParam String imgUrl) throws IOException {
+        InputStreamResource resource = chatService.downloadImage(imgUrl);
 
-        return new ResponseEntity<>(ResponseDto.success(IMAGE_DOWNLOAD_OK, response), HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);  // 파일 타입을 동적으로 설정하려면 적절한 방식으로 변경
+        headers.setContentDispositionFormData("attachment", imgUrl);  // 파일 이름을 동적으로 설정
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }
