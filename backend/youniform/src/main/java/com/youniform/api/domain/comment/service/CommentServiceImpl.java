@@ -15,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.youniform.api.domain.comment.validation.CommentValidation.validateContents;
-import static com.youniform.api.domain.comment.validation.CommentValidation.validateMyComment;
+import static com.youniform.api.domain.comment.validation.CommentValidation.*;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
@@ -61,5 +60,18 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         return CommentModifyRes.toDto(comment);
+    }
+
+    @Override
+    public void removeComment(Long userId, Long commentId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+        validateMyCommentDeleted(comment.getUser().getId(), userId);
+
+        commentRepository.delete(comment);
     }
 }

@@ -8,4 +8,5 @@ import com.youniform.api.domain.comment.dto.CommentModifyRes;
 public interface CommentService {
     CommentAddRes addComment(Long postId, Long userId, CommentAddReq commentAddReq);
     CommentModifyRes modifyComment(Long userId, Long commentId, CommentModifyReq commentModifyReq);
+    void removeComment(Long userId, Long commentId);
 }

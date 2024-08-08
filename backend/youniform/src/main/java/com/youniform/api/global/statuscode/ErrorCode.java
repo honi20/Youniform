@@ -63,7 +63,8 @@ public enum ErrorCode {
     //comment error
     INVALID_COMMENT_CONTENTS(HttpStatus.BAD_REQUEST.value(), "댓글은 null이거나 공백일 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "댓글을 찾을 수 없습니다."),
-    COMMENT_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "댓글 수정은 작성자만 수정이 가능합니다.")
+    COMMENT_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "댓글 수정은 작성자만 가능합니다."),
+    COMMENT_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "댓글 삭제는 작성자만 가능합니다.")
     ;
 
     private final int httpStatusCode;
