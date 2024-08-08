@@ -2,12 +2,15 @@ import { create } from "zustand";
 import axios from "axios";
 
 const API_URL = "http://i11a308.p.ssafy.io:8080";
+
 const useUserStore = create((set) => ({
   user: null,
   friend: null,
   loading: false,
   error: null,
   accessToken: null,
+  setAccessToken: (token) => set({ accessToken: token }),
+  clearAccessToken: () => set({ accessToken: null }),
   fetchUser: async () => {
     set({ loading: true, error: null });
     try {
@@ -35,23 +38,21 @@ const useUserStore = create((set) => ({
   fetchLogin: async (email, password) => {
     console.log(email);
     console.log(password);
-    const res = await axios({
-      method: "post",
-      url: `${API_URL}/users/signin/local`,
-      data: {
-        email: email,
-        password: password
-      }
-    })
-    .then((res) => {
-      console.log(res.data.body.accessToken);
-      set({ accessToken: res.data.body.accessToken });
+    try {
+      const res = await axios({
+        method: "post",
+        url: `${API_URL}/users/signin/local`,
+        data: {
+          email: email,
+          password: password
+        }
+      });
+      set((state) => ({ ...state, accessToken: res.data.body.accessToken }));
       return "$OK";
-    })
-    .catch((err) => {
+    } catch (err) {
       console.log("Failed to fetchLogin", err);
       return "$FAIL";
-    })
+    }
   },
 }));
 
