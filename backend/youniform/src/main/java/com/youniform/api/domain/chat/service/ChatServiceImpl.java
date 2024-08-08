@@ -3,12 +3,15 @@ package com.youniform.api.domain.chat.service;
 import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.document.DatabaseSequence;
 import com.youniform.api.domain.chat.dto.*;
+import com.youniform.api.domain.chat.entity.ChatPart;
+import com.youniform.api.domain.chat.entity.ChatPartPK;
 import com.youniform.api.domain.chat.entity.ChatRoom;
 import com.youniform.api.domain.chat.repository.ChatMessageRepository;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
 import com.youniform.api.domain.chat.repository.ChatRoomRepository;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
+import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.s3.S3Service;
@@ -39,6 +42,7 @@ import java.util.stream.Collectors;
 
 import static com.youniform.api.global.statuscode.ErrorCode.CHATROOM_NOT_FOUND;
 import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
+import static com.youniform.api.global.statuscode.SuccessCode.IMAGE_DOWNLOAD_OK;
 
 @Slf4j
 @Service
@@ -167,17 +171,24 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatDownloadImageRes downloadImage(String imgUrl) throws IOException {
-        InputStream imageStream = s3Service.download(imgUrl);
-        InputStreamResource resource = new InputStreamResource(imageStream);
+    public InputStreamResource downloadImage(String imgUrl) throws IOException {
+        String s3Key = extractS3KeyFromUrl(imgUrl);
+        InputStream imageStream = s3Service.download(s3Key);
 
-        ChatDownloadImageRes response = new ChatDownloadImageRes();
+        return new InputStreamResource(imageStream);
+    }
 
-        response.setResource(resource);
-        response.setHeaders(new HttpHeaders());
-        response.getHeaders().setContentDispositionFormData("attachment", imgUrl);
-        response.getHeaders().setContentType(MediaType.IMAGE_JPEG);
+    private String extractS3KeyFromUrl(String url) {
+        return url.replace("https://youniforms3.s3.ap-northeast-2.amazonaws.com/", "");
+    }
 
-        return response;
+    @Override
+    public void updateLastReadTime(Long userId, Long roomId, LocalDateTime lastReadTime) {
+        ChatPart chatPart = chatPartRepository.findById(new ChatPartPK(userId, roomId))
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+        chatPart.updateLastReadTime(lastReadTime);
+
+        chatPartRepository.save(chatPart);
     }
 }

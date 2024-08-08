@@ -231,7 +231,7 @@ public class FriendControllerTest {
     public void 친구_요청_수락_성공() throws Exception {
         //given
         FriendAcceptReq friendAcceptReq = new FriendAcceptReq();
-        friendAcceptReq.setId("dstfiposdjfsd0f-sb3t466t54regfdb-dsbsdb4324543");
+        friendAcceptReq.setFriendUuid("dstfiposdjfsd0f-sb3t466t54regfdb-dsbsdb4324543");
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
@@ -263,7 +263,7 @@ public class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        fieldWithPath("id").type(JsonFieldType.STRING)
+                                        fieldWithPath("friendUuid").type(JsonFieldType.STRING)
                                                 .description("요청 수락 할 친구 ID(UUID)")
                                 )
                                 .responseFields(

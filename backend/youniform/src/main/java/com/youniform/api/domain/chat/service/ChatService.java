@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public interface ChatService {
     ChatRoomListRes getChatRoomList(Long userId);
@@ -29,5 +30,7 @@ public interface ChatService {
 
     ChatUploadImageRes uploadImage(MultipartFile file) throws IOException;
 
-    ChatDownloadImageRes downloadImage(String imgUrl) throws IOException;
+    InputStreamResource downloadImage(String imgUrl) throws IOException;
+
+    void updateLastReadTime(Long roomId, Long userId, LocalDateTime lastReadTime);
 }
