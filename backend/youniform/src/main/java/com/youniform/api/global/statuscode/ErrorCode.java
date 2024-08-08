@@ -44,9 +44,10 @@ public enum ErrorCode {
     NOT_VALID_TOKEN(HttpStatus.BAD_REQUEST.value(), "유효하지 않은 토큰입니다."),
 
     //file
-    FILE_CONVERT_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 업로드에 실패했습니다."),
+    FILE_UPLOAD_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 업로드에 실패했습니다."),
     FILE_DOWNLOAD_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 다운로드에 실패했습니다."),
     FILE_DELETE_FAIL(HttpStatus.BAD_REQUEST.value(), "파일 삭제에 실패했습니다"),
+    FILE_EXTENSION_FAIL(HttpStatus.BAD_REQUEST.value(), "파일 확장자는 jpg, jpeg, png만 가능합니다"),
 
     //friend error code
     FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "친구를 찾을 수 없습니다."),
