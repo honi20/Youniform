@@ -14,8 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.youniform.api.domain.user.entity.Theme.MONSTERS;
-import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
@@ -120,7 +118,7 @@ public class UserController {
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
     }
 
-    @GetMapping("/team")
+    @GetMapping("/search")
     public ResponseEntity<?> searchUserList(@RequestParam(value = "lastUserId", required = false) Long lastUserId,
                                             @PageableDefault(size = 20) Pageable pageable) {
         Long userId = 123L;

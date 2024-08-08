@@ -6,8 +6,6 @@ import com.google.gson.Gson;
 import com.youniform.api.domain.friend.dto.FriendAcceptReq;
 import com.youniform.api.domain.friend.dto.FriendRequestReq;
 import com.youniform.api.domain.friend.service.FriendService;
-import com.youniform.api.domain.user.entity.Users;
-import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +22,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.Optional;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
@@ -319,7 +315,9 @@ public class FriendControllerTest {
                                                 fieldWithPath("body.friendList[].nickname").type(JsonFieldType.STRING)
                                                         .description("친구 닉네임"),
                                                 fieldWithPath("body.friendList[].introduce").type(JsonFieldType.STRING)
-                                                        .description("친구 한줄소개")
+                                                        .description("친구 한줄소개"),
+                                                fieldWithPath("body.friendList[].teamUrl").type(JsonFieldType.STRING)
+                                                        .description("응원 team image url")
                                         )
                                 )
                                 .responseSchema(Schema.schema("Friend 리스트 조회 Response"))

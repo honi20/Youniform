@@ -57,6 +57,7 @@ public class FriendController {
                     .imgUrl("친구 프사 s3 url")
                     .nickname("친구 닉네임" + i)
                     .introduce("친구 자기소개" + i)
+                    .teamUrl("응원 구단 image url")
                     .build());
         }
 

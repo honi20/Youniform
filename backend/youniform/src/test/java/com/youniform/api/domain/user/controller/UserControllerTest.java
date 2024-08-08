@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.service.UserServiceImpl;
+import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtServiceImpl;
 import com.youniform.api.global.mail.service.MailService;
@@ -23,7 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -35,13 +35,14 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.youniform.api.global.statuscode.ErrorCode.*;
+import static com.youniform.api.global.statuscode.ErrorCode.PLAYER_NOT_FOUND;
+import static com.youniform.api.global.statuscode.ErrorCode.TEAM_NOT_FOUND;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
+import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -1004,6 +1005,87 @@ public class UserControllerTest {
                                                 fieldWithPath("body").type(JsonFieldType.NULL).ignored()
                                         )
                                 )
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 유저_추천_성공() throws Exception {
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        List<SearchUserDto> result = new ArrayList<>();
+        result.add(SearchUserDto.builder()
+                    .userId(UUID)
+                    .imgUrl("s3 img")
+                    .introduce("한줄 소개")
+                    .nickname("User1")
+                    .teamUrl("team img url")
+                .build());
+        result.add(SearchUserDto.builder()
+                .userId(UUID)
+                .imgUrl("s3 img")
+                .introduce("한줄 소개")
+                .nickname("User1")
+                .teamUrl("team img url")
+                .build());
+
+        SliceDto<SearchUserDto> searchUSerDto = new SliceDto<>();
+        searchUSerDto.setContent(result);
+        searchUSerDto.setPage(1);
+        searchUSerDto.setSize(10);
+        searchUSerDto.setHasNext(false);
+
+        when(userService.searchUser(any(), any(), any()))
+                .thenReturn(new SearchUserRes(searchUSerDto));
+
+        ResultActions actions = mockMvc.perform(
+                get("/users/search")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("lastUserId", "")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_RECOMMEND_SUCCESS.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(USER_RECOMMEND_SUCCESS.getMessage()))
+                .andDo(document("유저 추천 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("User 추천 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("lastUserId")
+                                                .description("마지막 User Id").optional()
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.userList.content").type(JsonFieldType.ARRAY)
+                                                        .description("게시글 목록"),
+                                                fieldWithPath("body.userList.page").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 번호"),
+                                                fieldWithPath("body.userList.size").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 사이즈"),
+                                                fieldWithPath("body.userList.hasNext").type(JsonFieldType.BOOLEAN)
+                                                        .description("다음 슬라이스 여부"),
+                                                fieldWithPath("body.userList.*[].userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
+                                                fieldWithPath("body.userList.*[].imgUrl").type(JsonFieldType.STRING)
+                                                        .description("유저 프로필 사진 url"),
+                                                fieldWithPath("body.userList.*[].nickname").type(JsonFieldType.STRING)
+                                                        .description("유저 닉네임"),
+                                                fieldWithPath("body.userList.*[].introduce").type(JsonFieldType.STRING)
+                                                        .description("유저 한줄소개"),
+                                                fieldWithPath("body.userList.*[].teamUrl").type(JsonFieldType.STRING)
+                                                        .description("유저가 응원하는 팀 사진 url")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("User 추천 Request"))
+                                .responseSchema(Schema.schema("User 추천 Response"))
                                 .build()
                         ))
                 );
