@@ -1,8 +1,11 @@
 package com.youniform.api.domain.player.controller;
 
+import com.youniform.api.domain.player.dto.FavoritePlayerListRes;
 import com.youniform.api.domain.player.dto.PlayerListRes;
 import com.youniform.api.domain.player.service.PlayerService;
 import com.youniform.api.global.dto.ResponseDto;
+import com.youniform.api.global.jwt.service.JwtService;
+import com.youniform.api.global.statuscode.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,8 @@ import static com.youniform.api.global.statuscode.SuccessCode.PLAYER_LIST_OK;
 @RequiredArgsConstructor
 @Validated
 public class PlayerController {
+    private final JwtService jwtService;
+
     private final PlayerService playerService;
 
     @GetMapping("/{teamId}")
@@ -26,5 +31,14 @@ public class PlayerController {
         PlayerListRes response = playerService.findPlayers(teamId);
 
         return new ResponseEntity<>(ResponseDto.success(PLAYER_LIST_OK, response), HttpStatus.OK);
+    }
+
+    @GetMapping("/favorite")
+    public ResponseEntity<?> favoritePlayerList() {
+//        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+        FavoritePlayerListRes response = playerService.findFavoritePlayers(123L);
+
+        return new ResponseEntity<>(ResponseDto.success(SuccessCode.FAVORITE_PLAYER_LIST_OK, response), HttpStatus.OK);
     }
 }
