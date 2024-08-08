@@ -32,10 +32,9 @@ public class CommentController {
 
     @PatchMapping("/{commentId}")
     public ResponseEntity<?> commentModify(@PathVariable Long commentId, @RequestBody CommentModifyReq commentModifyReq) {
-        CommentModifyRes result = CommentModifyRes.builder()
-                .contents("댓글 수정예시 11111")
-                .updateAt("20초 전")
-                .build();
+        Long userId = 123L;
+
+        CommentModifyRes result = commentService.modifyComment(userId, commentId, commentModifyReq);
 
         return new ResponseEntity<>(ResponseDto.success(SuccessCode.COMMENT_MODIFIED, result), HttpStatus.OK);
     }
