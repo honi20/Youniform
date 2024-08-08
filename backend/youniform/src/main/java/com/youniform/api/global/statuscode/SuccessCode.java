@@ -71,9 +71,8 @@ public enum SuccessCode {
     PHOTOCARD_LIST_OK(HttpStatus.OK.value(), "포토카드 리스트 조회에 성공했습니다."),
 
     // likes success code
-    LIKES_CREATED(HttpStatus.CREATED.value(), "좋아요 생성에 성공했습니다."),
-    LIKES_DELETED(HttpStatus.OK.value(), "좋아요 삭제에 성공했습니다."),
-    REISSUED_ACCESSTOKEN(HttpStatus.FORBIDDEN.value(), "accessToken이 재발급 되었습니다."),
+    LIKES_STATUS_OK(HttpStatus.OK.value(), "좋아요 상태가 저장됐습니다."),
+    REISSUED_ACCESSTOKEN(HttpStatus.FORBIDDEN.value(), "accessToken이 재발급 됐습니다."),
 
     // alert success code
     ALERT_CONNECTION_OK(HttpStatus.OK.value(), "알림 설정 연결에 성공했습니다."),
