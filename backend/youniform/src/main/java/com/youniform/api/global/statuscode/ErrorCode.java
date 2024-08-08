@@ -12,6 +12,8 @@ public enum ErrorCode {
     INVALID_SIGNUP(HttpStatus.BAD_REQUEST.value(), "잘못된 회원가입 요청입니다."),
     PROFILE_MOIDFY_FAILED(HttpStatus.BAD_REQUEST.value(), "프로필을 변경하지 못하였습니다."),
     PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "프로필을 찾지 못하였습니다."),
+    ALREADY_EXIST_NICKNAME(HttpStatus.BAD_REQUEST.value(), "이미 사용중인 닉네임입니다."),
+    ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST.value(), "이미 사용중인 이메일입니다."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_EMAIL(HttpStatus.BAD_REQUEST.value(), "잘못된 이메일입니다."),
     TEMP_PASSWORD_TIMEOUT(HttpStatus.FORBIDDEN.value(), "인증시간이 만료되었습니다."),

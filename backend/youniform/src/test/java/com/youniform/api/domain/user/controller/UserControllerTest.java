@@ -115,8 +115,8 @@ public class UserControllerTest {
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
+                                                fieldWithPath("body").type(JsonFieldType.BOOLEAN)
+                                                        .description("유효성 여부")
                                         )
                                 )
                                 .requestSchema(Schema.schema("닉네임 중복 검사 Request"))

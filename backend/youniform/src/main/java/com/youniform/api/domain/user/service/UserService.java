@@ -17,7 +17,9 @@ public interface UserService {
 
     void modifyTheme(ThemeModifyReq req, Long userId);
 
-    ProfileModifyRes modifyProfile(ProfileModifyReq req, MultipartFile file, Long userId) throws IOException;
+    ProfileModifyRes modifyProfile(ProfileModifyReq req, MultipartFile file, Long userId) throws Exception;
+
+    void verifyNickname(String nickname);
 
     UserDetailsRes findUserDetails(Long myUserId, String uuid) throws Exception;
 
