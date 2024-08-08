@@ -4,10 +4,8 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.youniform.api.domain.player.dto.FavoritePlayerListRes;
-import com.youniform.api.domain.player.dto.PlayerDetailDto;
-import com.youniform.api.domain.player.dto.PlayerListDto;
-import com.youniform.api.domain.player.dto.PlayerListRes;
+import com.youniform.api.domain.player.dto.*;
+import com.youniform.api.domain.player.entity.SongType;
 import com.youniform.api.domain.player.service.PlayerService;
 import com.youniform.api.global.jwt.service.JwtService;
 import jakarta.transaction.Transactional;
@@ -150,7 +148,7 @@ class PlayerControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Player API")
-                                .summary("선수 리스트 조회 API")
+                                .summary("최애 선수 정보 리스트 조회 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
@@ -174,6 +172,48 @@ class PlayerControllerTest {
                                         )
                                 )
                                 .responseSchema(Schema.schema("최애 선수 정보 리스트 조회 Response"))
+                                .build()
+                        )));
+    }
+
+    @Test
+    public void 최애_선수_응원가_조회_성공() throws Exception {
+        List<PlayerSongDto> songList = new ArrayList<>();
+        songList.add(new PlayerSongDto(1L, "title", "lyrics", SongType.CHEERING, "link"));
+
+        when(playerService.findPlayerSongs(4L)).thenReturn(new PlayerSongListRes(songList));
+
+        ResultActions actions = mockMvc.perform(
+                get("/players/song/{playerId}", 4L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PLAYER_SONG_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PLAYER_SONG_LIST_OK.getMessage()))
+                .andDo(document(
+                        "선수 응원가 리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Player API")
+                                .summary("선수 응원가 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.songList[]").description("응원가 리스트"),
+                                                fieldWithPath("body.*[].songId").type(JsonFieldType.NUMBER).description("응원가 ID"),
+                                                fieldWithPath("body.*[].title").type(JsonFieldType.STRING).description("응원가 제목"),
+                                                fieldWithPath("body.*[].lyrics").type(JsonFieldType.STRING).description("응원가 가사"),
+                                                fieldWithPath("body.*[].type").type(JsonFieldType.STRING).description("응원가 타입"),
+                                                fieldWithPath("body.*[].link").type(JsonFieldType.STRING).description("응원가 유튜브 링크")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("선수 응원가 리스트 조회 Response"))
                                 .build()
                         )));
     }
