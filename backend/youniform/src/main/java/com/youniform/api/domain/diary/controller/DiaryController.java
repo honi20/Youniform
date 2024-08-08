@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
@@ -28,10 +31,12 @@ public class DiaryController {
 	private final JwtService jwtService;
 
 	@PostMapping
-	public ResponseEntity<?> diaryAdd(@RequestBody @Valid DiaryAddReq diaryAddReq) throws JsonProcessingException {
+	public ResponseEntity<?> diaryAdd(
+			@RequestPart(value = "dto") DiaryAddReq diaryAddReq,
+			@RequestPart(value = "file", required = true) MultipartFile file) throws IOException {
 //		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		DiaryAddRes response = diaryService.addDiary(123L, diaryAddReq);
+		DiaryAddRes response = diaryService.addDiary(123L, diaryAddReq, file);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_CREATED, response), HttpStatus.CREATED);
 	}

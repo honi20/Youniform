@@ -25,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -105,12 +106,26 @@ public class DiaryControllerTest {
     @Test
     public void 다이어리_생성_성공() throws Exception {
         // given
-        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 1L, "diary image url");
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 1L);
 
-        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenReturn(new DiaryAddRes(2L));
+        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class), any())).thenReturn(new DiaryAddRes(2L));
 
-        // when & then
-        performPost("/diaries", diaryAddReq)
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries")
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        actions
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_CREATED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_CREATED.getMessage()))
@@ -122,9 +137,6 @@ public class DiaryControllerTest {
                                 .summary("Diary 생성 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        getDiaryFields("")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -140,11 +152,26 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_잘못된_날짜형식() throws Exception {
-        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07", getDiaryContentDto(true), "ALL", 1L, "diary image url");
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07", getDiaryContentDto(true), "ALL", 1L);
 
-        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(INVALID_DIARY_DATE));
+        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class), any())).thenThrow(new CustomException(INVALID_DIARY_DATE));
 
-        performPost("/diaries", diaryAddReq)
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries")
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        actions
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DIARY_DATE.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(INVALID_DIARY_DATE.getMessage()))
@@ -170,11 +197,26 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_잘못된_컨텐츠형식() throws Exception {
-        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(false), "ALL", 1L, "diary image url");
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(false), "ALL", 1L);
 
-        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(INVALID_DIARY_CONTENTS));
+        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class), any())).thenThrow(new CustomException(INVALID_DIARY_CONTENTS));
 
-        performPost("/diaries", diaryAddReq)
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries")
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        actions
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DIARY_CONTENTS.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(INVALID_DIARY_CONTENTS.getMessage()))
@@ -199,11 +241,26 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_잘못된_공개범위() throws Exception {
-        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ONLY_ME", 1L, "diary image url");
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ONLY_ME", 1L);
 
-        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(INVALID_DIARY_SCOPE));
+        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class), any())).thenThrow(new CustomException(INVALID_DIARY_SCOPE));
 
-        performPost("/diaries", diaryAddReq)
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries")
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        actions
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(INVALID_DIARY_SCOPE.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(INVALID_DIARY_SCOPE.getMessage()))
@@ -228,11 +285,26 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_생성_실패_존재하지_않은_스탬프() throws Exception {
-        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 100L, "diary image url");
+        DiaryAddReq diaryAddReq = new DiaryAddReq("2024-07-27", getDiaryContentDto(true), "ALL", 100L);
 
-        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class))).thenThrow(new CustomException(STAMP_NOT_FOUND));
+        when(diaryService.addDiary(anyLong(), any(DiaryAddReq.class), any())).thenThrow(new CustomException(STAMP_NOT_FOUND));
 
-        performPost("/diaries", diaryAddReq)
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries")
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+        );
+
+        actions
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(STAMP_NOT_FOUND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(STAMP_NOT_FOUND.getMessage()))
@@ -850,19 +922,6 @@ public class DiaryControllerTest {
                                 .build()
                         ))
                 );
-    }
-
-    private ResultActions performPost(String path, DiaryAddReq diaryAddReq) throws Exception {
-        String content = mapper.writeValueAsString(diaryAddReq);
-
-        return mockMvc.perform(
-                post(path)
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-                        .with(csrf())
-        );
     }
 
     private ResultActions performGet(String path, Object... pathVariable) throws Exception {

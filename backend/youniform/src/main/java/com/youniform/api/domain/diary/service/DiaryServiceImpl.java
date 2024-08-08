@@ -17,13 +17,16 @@ import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.redis.RedisUtils;
+import com.youniform.api.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -49,9 +52,11 @@ public class DiaryServiceImpl implements DiaryService {
 
 	private final UserRepository userRepository;
 
+	private final S3Service s3Service;
+
 	@Override
 	@Transactional
-	public DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq) throws JsonProcessingException {
+	public DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq, MultipartFile file) throws IOException {
 		validateDiaryContent(diaryAddReq.getDiaryDate(), diaryAddReq.getContents(), diaryAddReq.getScope());
 
 		Users user = userRepository.findById(userId)
@@ -60,7 +65,15 @@ public class DiaryServiceImpl implements DiaryService {
 		DiaryStamp stamp = stampRepository.findById(diaryAddReq.getStampId())
 				.orElseThrow(() -> new CustomException(STAMP_NOT_FOUND));
 
-		Diary diary = diaryAddReq.toEntity(user, stamp);
+		Diary diary;
+
+		if (file.isEmpty()) {
+			diary = diaryAddReq.toEntity(user, stamp);
+		} else {
+			String imgUrl = s3Service.upload(file, "diary");
+			diary = diaryAddReq.toEntity(user, stamp, imgUrl);
+		}
+
 		diaryRepository.save(diary);
 
 		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
