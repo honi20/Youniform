@@ -1040,7 +1040,7 @@ public class UserControllerTest {
                 .thenReturn(new SearchUserRes(searchUSerDto));
 
         ResultActions actions = mockMvc.perform(
-                get("/users/search")
+                get("/users/lists")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastUserId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -1086,6 +1086,73 @@ public class UserControllerTest {
                                 )
                                 .requestSchema(Schema.schema("User 추천 Request"))
                                 .responseSchema(Schema.schema("User 추천 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 유저_검색_성공() throws Exception {
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        List<SearchUserDto> result = new ArrayList<>();
+        result.add(SearchUserDto.builder()
+                .userId(UUID)
+                .imgUrl("s3 img")
+                .introduce("한줄 소개")
+                .nickname("User1")
+                .teamUrl("team img url")
+                .build());
+        result.add(SearchUserDto.builder()
+                .userId(UUID)
+                .imgUrl("s3 img")
+                .introduce("한줄 소개")
+                .nickname("User1")
+                .teamUrl("team img url")
+                .build());
+
+        when(userService.findUserByNickName(any()))
+                .thenReturn(new SearchNicknameRes(result));
+
+        ResultActions actions = mockMvc.perform(
+                get("/users/search")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("nickname", "User")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_SEARCH_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(USER_SEARCH_OK.getMessage()))
+                .andDo(document("유저 검색 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("User 검색 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("nickname")
+                                                .description("검색할 유저의 닉네임")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.userList[].userId").type(JsonFieldType.STRING)
+                                                        .description("유저 Id(UUID)"),
+                                                fieldWithPath("body.userList[].imgUrl").type(JsonFieldType.STRING)
+                                                        .description("유저 프로필 사진 url"),
+                                                fieldWithPath("body.userList[].nickname").type(JsonFieldType.STRING)
+                                                        .description("유저 닉네임"),
+                                                fieldWithPath("body.userList[].introduce").type(JsonFieldType.STRING)
+                                                        .description("유저 한줄소개"),
+                                                fieldWithPath("body.userList[].teamUrl").type(JsonFieldType.STRING)
+                                                        .description("유저가 응원하는 팀 사진 url")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("User 검색 Request"))
+                                .responseSchema(Schema.schema("User 검색 Response"))
                                 .build()
                         ))
                 );

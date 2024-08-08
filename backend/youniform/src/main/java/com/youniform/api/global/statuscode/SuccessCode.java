@@ -25,6 +25,7 @@ public enum SuccessCode {
     USER_SIGNIN_SUCCESS(HttpStatus.OK.value(), "로그인에 성공하였습니다."),
     USER_FAVORITE_MODIFIED(HttpStatus.OK.value(), "최애 구단 및 선수 변경에 성공했습니다."),
     USER_RECOMMEND_SUCCESS(HttpStatus.OK.value(), "유저 추천에 성공했습니다"),
+    USER_SEARCH_OK(HttpStatus.OK.value(), "유저 검색에 성공했습니다"),
 
     //friends
     FRIEND_REQUEST_OK(HttpStatus.CREATED.value(), "친구 요청에 성공했습니다."),

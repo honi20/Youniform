@@ -121,7 +121,7 @@ public class UserController {
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/lists")
     public ResponseEntity<?> searchUserList(@RequestParam(value = "lastUserId", required = false) Long lastUserId,
                                             @PageableDefault(size = 20) Pageable pageable) {
         Long userId = 123L;
@@ -138,5 +138,12 @@ public class UserController {
         return new ResponseEntity<>(ResponseDto.success(USER_FAVORITE_MODIFIED, null), HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchNickname(@RequestParam("nickname") String nickname) {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
+        SearchNicknameRes result = userService.findUserByNickName(nickname);
+
+        return new ResponseEntity<>(ResponseDto.success(USER_SEARCH_OK, result), HttpStatus.OK);
+    }
 }
