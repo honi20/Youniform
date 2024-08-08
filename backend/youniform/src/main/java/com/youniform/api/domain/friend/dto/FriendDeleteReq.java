@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class FriendDeleteReq {
     @NotNull
-    private String id;
+    private String friendUuid;
 }

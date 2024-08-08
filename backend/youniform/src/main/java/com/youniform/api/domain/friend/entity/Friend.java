@@ -36,4 +36,8 @@ public class Friend {
     public void updateStatus(Status status) {
         this.status = status;
     }
+
+    public void updateLastVisited(LocalDateTime lastVisited) {
+        this.lastVisited = lastVisited;
+    }
 }

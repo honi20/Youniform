@@ -95,7 +95,21 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
+    @Transactional
     public void removeFriend(Long userId, String friendUuid) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
+        Users friend = userRepository.findByUuid(friendUuid)
+                .orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
+
+        FriendPK friendPk1 = new FriendPK(user.getId(), friend.getId());
+        FriendPK friendPk2 = new FriendPK(friend.getId(), user.getId());
+
+        Friend friendRequest1 = friendRepository.findByFriendPK(friendPk1);
+        Friend friendRequest2 = friendRepository.findByFriendPK(friendPk2);
+
+        friendRepository.delete(friendRequest1);
+        friendRepository.delete(friendRequest2);
     }
 }

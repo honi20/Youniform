@@ -75,6 +75,10 @@ public class FriendController {
 
     @DeleteMapping
     public ResponseEntity<?> friendDelete(@ModelAttribute @Valid FriendDeleteReq friendDeleteReq) {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        String friendUuid = friendDeleteReq.getFriendUuid();
+
+        friendService.removeFriend(userId, friendUuid);
 
         return new ResponseEntity<>(ResponseDto.success(FRIEND_DELETED, null), HttpStatus.OK);
     }
