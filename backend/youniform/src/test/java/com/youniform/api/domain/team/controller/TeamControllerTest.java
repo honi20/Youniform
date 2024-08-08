@@ -107,7 +107,7 @@ class TeamControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
-                                .tag("Player API")
+                                .tag("Team API")
                                 .summary("최애 구단 응원가 리스트 조회 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")

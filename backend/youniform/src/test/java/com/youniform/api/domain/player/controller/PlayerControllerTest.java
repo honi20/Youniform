@@ -4,6 +4,8 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.youniform.api.domain.player.dto.FavoritePlayerListRes;
+import com.youniform.api.domain.player.dto.PlayerDetailDto;
 import com.youniform.api.domain.player.dto.PlayerListDto;
 import com.youniform.api.domain.player.dto.PlayerListRes;
 import com.youniform.api.domain.player.service.PlayerService;
@@ -27,6 +29,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,6 +123,57 @@ class PlayerControllerTest {
                                         )
                                 )
                                 .responseSchema(Schema.schema("선수 리스트 조회 Response"))
+                                .build()
+                        )));
+    }
+
+    @Test
+    public void 최애_선수_정보_조회_성공() throws Exception {
+        List<PlayerDetailDto> playerList = new ArrayList<>();
+        playerList.add(new PlayerDetailDto(1L, "박용택", LocalDate.parse("1979-04-21"), 33, 0.0F, 0, 0, 0, null, null, null, null, "외야수", "우투좌타"));
+
+        when(playerService.findFavoritePlayers(123L)).thenReturn(new FavoritePlayerListRes(playerList));
+
+        ResultActions actions = mockMvc.perform(
+                get("/players/favorite")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FAVORITE_PLAYER_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FAVORITE_PLAYER_LIST_OK.getMessage()))
+                .andDo(document(
+                        "최애 선수 정보 리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Player API")
+                                .summary("선수 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.playerList[]").description("선수 리스트"),
+                                                fieldWithPath("body.*[].playerId").type(JsonFieldType.NUMBER).description("선수 ID"),
+                                                fieldWithPath("body.*[].name").type(JsonFieldType.STRING).description("선수 이름"),
+                                                fieldWithPath("body.*[].age").type(JsonFieldType.STRING).description("선수 생년월일"),
+                                                fieldWithPath("body.*[].backNum").type(JsonFieldType.NUMBER).description("선수 등번호"),
+                                                fieldWithPath("body.*[].battingAverage").type(JsonFieldType.NUMBER).description("선수 타율 (타자)").optional(),
+                                                fieldWithPath("body.*[].hit").type(JsonFieldType.NUMBER).description("선수 안타 (타자)").optional(),
+                                                fieldWithPath("body.*[].homerun").type(JsonFieldType.NUMBER).description("선수 홈런 (타자)").optional(),
+                                                fieldWithPath("body.*[].steal").type(JsonFieldType.NUMBER).description("선수 도루 (타자)").optional(),
+                                                fieldWithPath("body.*[].era").type(JsonFieldType.NUMBER).description("선수 ERA (투수)").optional(),
+                                                fieldWithPath("body.*[].whip").type(JsonFieldType.NUMBER).description("선수 WHIP (투수)").optional(),
+                                                fieldWithPath("body.*[].win").type(JsonFieldType.NUMBER).description("선수 승수 (투수)").optional(),
+                                                fieldWithPath("body.*[].struck").type(JsonFieldType.NUMBER).description("선수 삼진 (투수)").optional(),
+                                                fieldWithPath("body.*[].position").type(JsonFieldType.STRING).description("선수 포지션"),
+                                                fieldWithPath("body.*[].twoWay").type(JsonFieldType.STRING).description("선수 투타")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("최애 선수 정보 리스트 조회 Response"))
                                 .build()
                         )));
     }

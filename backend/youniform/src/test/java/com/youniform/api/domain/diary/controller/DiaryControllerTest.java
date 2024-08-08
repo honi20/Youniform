@@ -442,7 +442,7 @@ public class DiaryControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .queryParameters(
-                                        parameterWithName("calendarDate").description("다이어리 조회할 월간 yyyy-mm-dd (dd 아무값 가능)")
+                                        parameterWithName("calendarDate").description("다이어리 조회할 월간 yyyy-mm)")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -530,7 +530,7 @@ public class DiaryControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .queryParameters(
-                                        parameterWithName("calendarDate").description("다이어리 조회할 월간 yyyy-mm-dd (dd 아무값 가능)")
+                                        parameterWithName("calendarDate").description("다이어리 조회할 월간 yyyy-mm")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
