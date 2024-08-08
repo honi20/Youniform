@@ -5,9 +5,12 @@ import com.youniform.api.domain.diary.dto.*;
 import com.youniform.api.domain.diary.dto.resource.ResourceListRes;
 import com.youniform.api.domain.diary.dto.resource.StampListRes;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface DiaryService {
-	DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq) throws JsonProcessingException;
+	DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq, MultipartFile file) throws IOException;
 
 	DiaryDetailDto detailDiary(Long userId, Long diaryId) throws JsonProcessingException;
 

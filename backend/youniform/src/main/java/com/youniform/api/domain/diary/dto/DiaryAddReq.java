@@ -27,16 +27,22 @@ public class DiaryAddReq {
 	@NotNull
 	private Long stampId;
 
-	@NotNull
-	private String diaryImgUrl;
-
 	public Diary toEntity(Users user, DiaryStamp stamp) {
 		return Diary.builder()
 				.user(user)
 				.stamp(stamp)
 				.diaryDate(LocalDate.parse(this.diaryDate))
 				.scope(Scope.valueOf(this.scope))
-				.imgUrl(this.diaryImgUrl)
+				.build();
+	}
+
+	public Diary toEntity(Users user, DiaryStamp stamp, String imgUrl) {
+		return Diary.builder()
+				.user(user)
+				.stamp(stamp)
+				.diaryDate(LocalDate.parse(this.diaryDate))
+				.scope(Scope.valueOf(this.scope))
+				.imgUrl(imgUrl)
 				.build();
 	}
 }
