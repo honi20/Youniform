@@ -12,6 +12,8 @@ import com.youniform.api.domain.diary.repository.DiaryCustomRepository;
 import com.youniform.api.domain.diary.repository.DiaryRepository;
 import com.youniform.api.domain.diary.repository.ResourceRepository;
 import com.youniform.api.domain.diary.repository.StampRepository;
+import com.youniform.api.domain.friend.entity.Status;
+import com.youniform.api.domain.friend.service.FriendService;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.dto.SliceDto;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +56,8 @@ public class DiaryServiceImpl implements DiaryService {
 	private final UserRepository userRepository;
 
 	private final S3Service s3Service;
+
+	private final FriendService friendService;
 
 	@Override
 	@Transactional
@@ -83,6 +88,8 @@ public class DiaryServiceImpl implements DiaryService {
 
 		redisUtils.setData("diaryContents_"+diary.getId(), objectMapper.writeValueAsString(redisDto));
 
+		user.updateLastWriteDiary(LocalDateTime.now());
+
 		return new DiaryAddRes(diary.getId());
 	}
 
@@ -91,7 +98,14 @@ public class DiaryServiceImpl implements DiaryService {
 		Diary diary = diaryRepository.findById(diaryId)
 				.orElseThrow(() -> new CustomException(DIARY_NOT_FOUND));
 
-		// [TODO] 친구 여부에 따른 다이어리 공개 여부에 대한 유효성 검사
+		Users writer = diary.getUser();
+
+		Status status = friendService.isFriend(userId, writer.getId());
+		boolean isFriend = (status == Status.FRIEND);
+
+		if (userId != writer.getId()) {
+			isForbiddenDiary(diary.getScope(), isFriend);
+		}
 
 		DiaryContentDto contents = getContentsFromRedis(diaryId);
 
@@ -104,7 +118,7 @@ public class DiaryServiceImpl implements DiaryService {
 		int pageSize = pageable.getPageSize();
 		boolean isAscending = pageable.getSort().stream().anyMatch(Sort.Order::isAscending);
 
-		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(userId, lastDiaryDate, pageSize, isAscending);
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(userId, null, lastDiaryDate, pageSize, isAscending, true);
 
 		List<DiaryListDto> diaryList = diaries.stream()
 				.map(DiaryListDto::toDto)
@@ -123,16 +137,17 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
-	public DiaryListRes findDiaries(String userUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
-//		Users user = userRepository.findByUuid(userUuid);
+	public DiaryListRes findDiaries(Long userId, String friendUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
+		Users friend = userRepository.findByUuid(friendUuid)
+				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
 
-		// [TODO] 친구 여부에 따른 다이어리 리스트 필터링 (공개 범위)
+		Status status = friendService.isFriend(userId, friend.getId());
 
 		LocalDate lastDiaryDate = diaryListReq.getLastDiaryDate();
 		int pageSize = pageable.getPageSize();
 		boolean isAscending = pageable.getSort().stream().anyMatch(Sort.Order::isAscending);
 
-		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(123L, lastDiaryDate, pageSize, isAscending);
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndCursor(friend.getId(), status, lastDiaryDate, pageSize, isAscending, false);
 
 		List<DiaryListDto> diaryList = diaries.stream()
 				.map(DiaryListDto::toDto)
@@ -155,7 +170,7 @@ public class DiaryServiceImpl implements DiaryService {
 		isInvalidCalendarDate(diaryMonthlyListReq.getCalendarDate() + "-01");
 
 		LocalDate date = LocalDate.parse(diaryMonthlyListReq.getCalendarDate() + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(userId, date);
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(userId, null, date, true);
 
 		List<DiaryMonthlyDto> diaryList = diaries.stream()
 				.map(DiaryMonthlyDto::toDto)
@@ -165,16 +180,17 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
-	public DiaryMonthlyListRes findMonthlyDiaries(String userUuid, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
-//		Users user = userRepository.findByUuid(userUuid);
-
-		// [TODO] 친구 여부에 따른 다이어리 리스트 필터링 (공개 범위)
-
+	public DiaryMonthlyListRes findMonthlyDiaries(Long userId, String friendUuid, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
 		isInvalidCalendarDate(diaryMonthlyListReq.getCalendarDate() + "-01");
+
+		Users friend = userRepository.findByUuid(friendUuid)
+				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
+
+		Status status = friendService.isFriend(userId, friend.getId());
 
 		LocalDate date = LocalDate.parse(diaryMonthlyListReq.getCalendarDate() + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(123L, date);
+		List<Diary> diaries = diaryCustomRepository.findByUserIdAndDate(friend.getId(), status, date, false);
 
 		List<DiaryMonthlyDto> diaryList = diaries.stream()
 				.map(DiaryMonthlyDto::toDto)

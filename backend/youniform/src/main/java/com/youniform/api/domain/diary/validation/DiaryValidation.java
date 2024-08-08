@@ -2,6 +2,7 @@ package com.youniform.api.domain.diary.validation;
 
 import com.youniform.api.domain.diary.dto.DiaryContentDto;
 import com.youniform.api.domain.diary.dto.DiaryContentObjectDto;
+import com.youniform.api.domain.diary.entity.Scope;
 import com.youniform.api.global.exception.CustomException;
 
 import java.time.LocalDate;
@@ -54,5 +55,13 @@ public class DiaryValidation {
 		} catch (DateTimeParseException e) {
 			throw new CustomException(INVALID_CALENDAR_DATE);
 		}
+	}
+
+	public static void isForbiddenDiary(Scope scope, boolean isFriend) {
+		if (isFriend && scope.equals(Scope.PRIVATE))
+			throw new CustomException(DIARY_ACCESS_FORBIDDEN);
+
+		if (!isFriend && !scope.equals(Scope.ALL))
+			throw new CustomException(DIARY_ACCESS_FORBIDDEN);
 	}
 }

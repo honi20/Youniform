@@ -67,4 +67,8 @@ public class Users {
     public void updateTeam(Team team) {
         this.team = team;
     }
+
+    public void updateLastWriteDiary(LocalDateTime lastWriteDiary) {
+        this.lastWriteDiary = lastWriteDiary;
+    }
 }
