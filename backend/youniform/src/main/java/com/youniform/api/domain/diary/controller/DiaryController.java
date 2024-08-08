@@ -7,7 +7,6 @@ import com.youniform.api.domain.diary.dto.resource.StampListRes;
 import com.youniform.api.domain.diary.service.DiaryService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.service.JwtService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -89,10 +88,12 @@ public class DiaryController {
 
 
 	@PutMapping("/{diaryId}")
-	public ResponseEntity<?> diaryModify(@PathVariable("diaryId") Long diaryId, @RequestBody @Valid DiaryModifyReq diaryModifyReq) throws JsonProcessingException {
+	public ResponseEntity<?> diaryModify(@PathVariable("diaryId") Long diaryId,
+										 @RequestPart(value = "dto") DiaryModifyReq diaryModifyReq,
+										 @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		diaryService.modifyDiary(123L, diaryId, diaryModifyReq);
+		diaryService.modifyDiary(123L, diaryId, diaryModifyReq, file);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_MODIFIED, null), HttpStatus.OK);
 	}

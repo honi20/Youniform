@@ -619,11 +619,30 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_수정_성공() throws Exception {
-        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 1L, "diary image url");
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 1L);
 
-        diaryService.modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+        diaryService.modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class), any());
 
-        performPut("/diaries/{diaryId}", diaryModifyReq, 123L)
+        MockMultipartFile file = new MockMultipartFile("file", "new_sample.jpg", "image/jpeg", "image/new_sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries/{diaryId}", 123L)
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        })
+        );
+
+        actions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_MODIFIED.getMessage()))
@@ -635,9 +654,6 @@ public class DiaryControllerTest {
                                 .summary("Diary 수정 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        getDiaryFields("")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -652,11 +668,30 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_수정_실패_존재하지_않는_다이어리() throws Exception {
-        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 1L, "diary image url");
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 1L);
 
-        doThrow(new CustomException(DIARY_NOT_FOUND)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+        doThrow(new CustomException(DIARY_NOT_FOUND)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class), any());
 
-        performPut("/diaries/{diaryId}", diaryModifyReq, 100L)
+        MockMultipartFile file = new MockMultipartFile("file", "new_sample.jpg", "image/jpeg", "image/new_sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries/{diaryId}", 100L)
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        })
+        );
+
+        actions
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_NOT_FOUND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_NOT_FOUND.getMessage()))
@@ -667,9 +702,6 @@ public class DiaryControllerTest {
                                 .tag("Diary API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        getDiaryFields("")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -684,11 +716,30 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_수정_실패_존재하지_않는_스탬프() throws Exception {
-        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 100L, "diary image url");
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-07-31", getDiaryContentDto(true), "ALL", 1L);
 
-        doThrow(new CustomException(STAMP_NOT_FOUND)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+        doThrow(new CustomException(STAMP_NOT_FOUND)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class), any());
 
-        performPut("/diaries/{diaryId}", diaryModifyReq, 123L)
+        MockMultipartFile file = new MockMultipartFile("file", "new_sample.jpg", "image/jpeg", "image/new_sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries/{diaryId}", 100L)
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        })
+        );
+
+        actions
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(STAMP_NOT_FOUND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(STAMP_NOT_FOUND.getMessage()))
@@ -699,9 +750,6 @@ public class DiaryControllerTest {
                                 .tag("Diary API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        getDiaryFields("")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
@@ -716,11 +764,30 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_수정_실패_작성일_수정_불가() throws Exception {
-        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-08-01", getDiaryContentDto(true), "ALL", 1L, "diary image url");
+        DiaryModifyReq diaryModifyReq = new DiaryModifyReq("2024-08-01", getDiaryContentDto(true), "ALL", 1L);
 
-        doThrow(new CustomException(DIARY_UPDATE_FORBIDDEN)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class));
+        doThrow(new CustomException(DIARY_UPDATE_FORBIDDEN)).when(diaryService).modifyDiary(anyLong(), anyLong(), any(DiaryModifyReq.class), any());
 
-        performPut("/diaries/{diaryId}", diaryModifyReq, 123L)
+        MockMultipartFile file = new MockMultipartFile("file", "new_sample.jpg", "image/jpeg", "image/new_sample.jpg".getBytes());
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
+
+        ResultActions actions = mockMvc.perform(
+                multipart("/diaries/{diaryId}", 100L)
+                        .file(file)
+                        .file(dto)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        })
+        );
+
+        actions
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_UPDATE_FORBIDDEN.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_UPDATE_FORBIDDEN.getMessage()))
@@ -731,9 +798,6 @@ public class DiaryControllerTest {
                                 .tag("Diary API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        getDiaryFields("")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
