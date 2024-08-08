@@ -30,6 +30,8 @@ import static com.youniform.api.global.statuscode.ErrorCode.*;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -476,6 +478,89 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.header.message").value(COMMENT_DELETED.getMessage()))
                 .andDo(document(
                         "Comment 삭제 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Comment API")
+                                .summary("Comment 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").optional().description("없음")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Comment 삭제 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 댓글_삭제_실패_유효하지_않은_댓글_아이디() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        doThrow(new CustomException(COMMENT_NOT_FOUND))
+                .when(commentService).removeComment(anyLong(), anyLong());
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/comments/{commentId}", 10000L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COMMENT_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COMMENT_NOT_FOUND.getMessage()))
+                .andDo(document(
+                        "Comment 삭제 실패 - 유효하지 않은 댓글 ID",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Comment API")
+                                .summary("Comment 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").optional().description("없음")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Comment 삭제 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 댓글_삭제_실패_나의_댓글이_아닌_경우() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        doThrow(new CustomException(COMMENT_DELETE_FORBIDDEN))
+                .when(commentService).removeComment(anyLong(), anyLong());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/comments/{commentId}", 1L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COMMENT_DELETE_FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COMMENT_DELETE_FORBIDDEN.getMessage()))
+                .andDo(document(
+                        "Comment 삭제 실패 - 나의 댓글이 아닌 경우",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
