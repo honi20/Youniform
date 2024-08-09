@@ -313,35 +313,35 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(PASSWORD_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(PASSWORD_MODIFIED.getMessage()))
                 .andDo(document(
-                        "비밀번호 재설정 성공",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("User API")
-                                .summary("비밀번호 재설정 API")
+                                "비밀번호 재설정 성공",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                resource(ResourceSnippetParameters.builder()
+                                                .tag("User API")
+                                                .summary("비밀번호 재설정 API")
 //                                .requestHeaders(
 //                                        headerWithName("Authorization").description("JWT 토큰")
 //                                )
-                                .requestFields(
-                                        fieldWithPath("uuid").type(JsonFieldType.STRING)
-                                                .description("UUID"),
-                                        fieldWithPath("verify").type(JsonFieldType.STRING)
-                                                .description("인증키"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING)
-                                                .description("비밀번호"),
-                                        fieldWithPath("confirmPassword").type(JsonFieldType.STRING)
-                                                .description("비밀번호 확인")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("비밀번호 재설정 Request"))
-                                .responseSchema(Schema.schema("비밀번호 재설정 Response"))
-                                .build()
-                        ))
+                                                .requestFields(
+                                                        fieldWithPath("uuid").type(JsonFieldType.STRING)
+                                                                .description("UUID"),
+                                                        fieldWithPath("verify").type(JsonFieldType.STRING)
+                                                                .description("인증키"),
+                                                        fieldWithPath("password").type(JsonFieldType.STRING)
+                                                                .description("비밀번호"),
+                                                        fieldWithPath("confirmPassword").type(JsonFieldType.STRING)
+                                                                .description("비밀번호 확인")
+                                                )
+                                                .responseFields(
+                                                        getCommonResponseFields(
+                                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                                        .description("내용 없음")
+                                                        )
+                                                )
+                                                .requestSchema(Schema.schema("비밀번호 재설정 Request"))
+                                                .responseSchema(Schema.schema("비밀번호 재설정 Response"))
+                                                .build()
+                                ))
                 );
     }
 
@@ -454,7 +454,13 @@ public class UserControllerTest {
                                                 fieldWithPath("body.pushAlert").type(JsonFieldType.BOOLEAN)
                                                         .description("푸시 알람 여부"),
                                                 fieldWithPath("body.teamImage").type(JsonFieldType.STRING)
-                                                        .description("응원하는 팀 이미지 url")
+                                                        .description("응원하는 팀 이미지 url"),
+                                                fieldWithPath("body.likePostCount").type(JsonFieldType.NUMBER)
+                                                        .optional()
+                                                        .description("회원이 좋아요한 게시글 수"),
+                                                fieldWithPath("body.friendCount").type(JsonFieldType.NUMBER)
+                                                        .optional()
+                                                        .description("친구 수")
                                         )
                                 )
                                 .responseSchema(Schema.schema("내 정보 조회 Response"))
@@ -745,7 +751,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void 로컬_로그인_성공() throws Exception{
+    public void 로컬_로그인_성공() throws Exception {
         //given
         LocalSigninReq content = LocalSigninReq.builder()
                 .email("test@google.com")
@@ -786,7 +792,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void 회원가입_성공() throws Exception{
+    public void 회원가입_성공() throws Exception {
         //given
         List players = new ArrayList();
         players.add(1);
@@ -1012,11 +1018,11 @@ public class UserControllerTest {
 
         List<SearchUserDto> result = new ArrayList<>();
         result.add(SearchUserDto.builder()
-                    .userId(UUID)
-                    .imgUrl("s3 img")
-                    .introduce("한줄 소개")
-                    .nickname("User1")
-                    .teamUrl("team img url")
+                .userId(UUID)
+                .imgUrl("s3 img")
+                .introduce("한줄 소개")
+                .nickname("User1")
+                .teamUrl("team img url")
                 .build());
         result.add(SearchUserDto.builder()
                 .userId(UUID)

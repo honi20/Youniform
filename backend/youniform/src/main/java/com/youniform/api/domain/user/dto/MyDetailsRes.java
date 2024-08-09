@@ -22,7 +22,11 @@ public class MyDetailsRes {
 
     private String teamImage;
 
-    public MyDetailsRes toDto(Users user) {
+    private Long likePostCount;
+
+    private Long friendCount;
+
+    public MyDetailsRes toDto(Users user, Long likePostCount, Long friendCount) {
         return MyDetailsRes.builder()
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
@@ -30,6 +34,8 @@ public class MyDetailsRes {
                 .theme(user.getTheme())
                 .pushAlert(user.getPushAlert())
                 .teamImage(user.getTeam().getImgUrl())
+                .likePostCount(likePostCount)
+                .friendCount(friendCount)
                 .build();
     }
 }
