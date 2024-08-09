@@ -131,29 +131,31 @@ const WritePostView = () => {
   const cleanContent = () => {
     return content.replace(/# \S+/g, "").trim();
   };
+  const logFormData = (formData) => {
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+  };
   const handleSave = async () => {
     const cleanedContent = cleanContent();
 
     console.log("저장할 내용:", cleanedContent);
     console.log("해쉬태그", tags);
-    console.log("Selected file:", filePreview);
-    ///////// 추후 수정 ////////////
+    console.log("Selected file:", selectedFile);
+
     const apiClient = getApiClient();
     const formData = new FormData();
-    formData.append("contents", cleanedContent);
-    tags.forEach((tag) => formData.append("tags", tag));
     const dto = {
-      // diaryDate: date,
-      // contents: json,
-      // tags: "ALL",
-      // stampId: 1,
+      contents: cleanedContent,
+      tags: tags,
     };
+    const imageBlob = await fetch(selectedFile).then((res) => res.blob());
     const dtoBlob = new Blob([JSON.stringify(dto)], {
       type: "application/json",
     });
-    if (selectedFile) {
-      formData.append("file", selectedFile);
-    }
+    formData.append("file", null);
+    formData.append("dto", dtoBlob);
+    logFormData(formData);
     try {
       const res = await apiClient.post("/posts", formData, {
         headers: {

@@ -167,9 +167,9 @@ const ChangeProfile = () => {
     ////////////// 수정 예정 ////////////////
     try {
       const res = await apiClient.patch("/users/profile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        // headers: {
+        //   "Content-Type": "multipart/form-data",
+        // },
       });
       console.log(res.data.header.message);
       console.log(res.data.body);

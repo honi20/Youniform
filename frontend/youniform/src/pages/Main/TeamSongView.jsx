@@ -4,7 +4,6 @@ import VideoIcon from "@assets/Video_duotone_line.svg?react";
 import HeadsetIcon from "@assets/Headphones_fill.svg?react";
 import DownIcon from "@assets/chevron-down.svg?react";
 import UpIcon from "@assets/chevron-up.svg?react";
-import useSongStore from "@stores/songStore";
 import SelectSvg from "@assets/selectedIcon.svg?react";
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
@@ -183,12 +182,6 @@ const LinkContainer = styled.div`
 `;
 
 const TeamSongView = ({ songs, active }) => {
-  // song store
-  const { teamSongs, fetchTeamSongs } = useSongStore();
-  // 나중에 axios 연결하고 쓰기
-  //   useEffect(() => {
-  //     fetchTeamSongs();
-  //   }, [fetchTeamSongs]);
   // toggle 관련
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = (isOn) => {
@@ -215,7 +208,7 @@ const TeamSongView = ({ songs, active }) => {
               {toggle(isOn)}
             </ToggleBtn>
             <ToggleList $isOn={isOn}>
-              {teamSongs.map((song) => (
+              {songs.map((song) => (
                 <ToggleItem
                   $isOn={isOn}
                   $isChecked={selected === song.id}

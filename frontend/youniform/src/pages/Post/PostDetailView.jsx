@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import * as Font from "@/typography";
 import ProfileModal from "@components/Modal/ProfileModal";
-
+import { getApiClient } from "@stores/apiClient";
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
@@ -138,7 +138,7 @@ const PostDetailView = () => {
   const { post, fetchPost, API_URL } = usePostStore();
   const navigate = useNavigate();
   const { postId } = useParams();
-
+  const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
     console.log(tag);
     const encodedQuery = encodeURIComponent(tag.contents);
@@ -150,7 +150,10 @@ const PostDetailView = () => {
     await fetchFriend(post.userId);
     setModalOpen(true);
   };
-
+  useEffect(() => {
+    console.log(post.isLiked);
+    setLike(post.isLiked);
+  }, [setLike]);
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -179,18 +182,21 @@ const PostDetailView = () => {
 
   const handleLike = async () => {
     console.log("좋아요 버튼 클릭");
+    // console.log(like);
+    setLike((prev) => !prev);
+    // console.log(like);
+    const apiClient = getApiClient();
     try {
-      const res = await axios({
-        method: "post",
-        url: `{API_URL}`,
+      const res = await apiClient.post(`/likes/${post.postId}`, {
+        data: {
+          isLiked: like,
+        },
       });
-      const response = await axios.post(`${API_URL}/likes/${postId}`);
-      if (response.status === 200) {
-        // Update the post's like status in the state
-        fetchPost(postId);
-      }
-    } catch (error) {
-      console.error("Error liking the post:", error);
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+      set({ monthlyDiaries: res.data.body.diaryList });
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
     }
   };
   return (
@@ -226,7 +232,7 @@ const PostDetailView = () => {
           </Content>
           <Footer>
             <HeartContainer onClick={handleLike}>
-              <HeartIcon isLiked={post.isLiked} />
+              <HeartIcon isLiked={like} />
             </HeartContainer>
           </Footer>
           <CommentContainer onClick={() => console.log("댓글창")}>
