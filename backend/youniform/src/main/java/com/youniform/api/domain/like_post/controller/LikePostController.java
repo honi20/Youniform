@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import static com.youniform.api.global.statuscode.SuccessCode.LIKES_STATUS_OK;
 
 @RestController
-@RequestMapping("/likes")
+@RequestMapping("/api/likes")
 @RequiredArgsConstructor
 @Validated
 public class LikePostController {
     private final LikePostService postLikeService;
+
     private final JwtService jwtService;
 
     @PostMapping("/{postId}")
@@ -27,6 +28,7 @@ public class LikePostController {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         postLikeService.likePost(userId, postId, postLikeReq);
+
         return new ResponseEntity<>(ResponseDto.success(LIKES_STATUS_OK, null), HttpStatus.OK);
     }
 }

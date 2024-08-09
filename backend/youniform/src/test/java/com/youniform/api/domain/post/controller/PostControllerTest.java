@@ -116,7 +116,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts")
+                multipart("/api/posts")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -196,7 +196,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts")
+                multipart("/api/posts")
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType("multipart/form-data")
@@ -264,7 +264,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts")
+                multipart("/api/posts")
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType("multipart/form-data")
@@ -326,7 +326,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts")
+                multipart("/api/posts")
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType("multipart/form-data")
@@ -412,7 +412,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts")
+                get("/api/posts")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastPostId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -525,7 +525,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts/list")
+                get("/api/posts/list")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastPostId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -638,7 +638,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts/friends/{userId}", UUID)
+                get("/api/posts/friends/{userId}", UUID)
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastPostId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -715,7 +715,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts/friends/{userId}", "dfsdfds0sg-4r43rdsfgdsf-dfsfgvdsgv")
+                get("/api/posts/friends/{userId}", "dfsdfds0sg-4r43rdsfgdsf-dfsfgvdsgv")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -801,7 +801,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts/likes")
+                get("/api/posts/likes")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastPostId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -915,7 +915,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts/tags")
+                get("/api/posts/tags")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastPostId", "")
                         .param("name", "김도영")
@@ -1033,7 +1033,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts/{postId}", 1L)
+                get("/api/posts/{postId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -1113,7 +1113,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/posts/{postId}", 10000L)
+                get("/api/posts/{postId}", 10000L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -1189,7 +1189,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts/{postId}", 1L)
+                multipart("/api/posts/{postId}", 1L)
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -1253,7 +1253,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts/{postId}", 10000L)
+                multipart("/api/posts/{postId}", 10000L)
                         .file(dto)
                         .file(file)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -1316,7 +1316,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts/{postId}", 1L)
+                multipart("/api/posts/{postId}", 1L)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType("multipart/form-data")
@@ -1384,7 +1384,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts/{postId}", 1L)
+                multipart("/api/posts/{postId}", 1L)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType("multipart/form-data")
@@ -1450,7 +1450,7 @@ public class PostControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                multipart("/posts/{postId}", 1L)
+                multipart("/api/posts/{postId}", 1L)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType("multipart/form-data")
@@ -1496,7 +1496,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/posts/{postId}", 1L)
+                delete("/api/posts/{postId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -1539,7 +1539,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/posts/{postId}", 10000L)
+                delete("/api/posts/{postId}", 10000L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -1582,7 +1582,7 @@ public class PostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/posts/{postId}", 2L)
+                delete("/api/posts/{postId}", 2L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())

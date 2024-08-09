@@ -59,9 +59,6 @@ class PlayerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper mapper;
-
     @MockBean
     private JwtService jwtService;
 
@@ -93,7 +90,7 @@ class PlayerControllerTest {
         when(playerService.findPlayers(1L)).thenReturn(new PlayerListRes(playerList));
 
         ResultActions actions = mockMvc.perform(
-                get("/players/{teamId}", 1L)
+                get("/api/players/{teamId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -134,7 +131,7 @@ class PlayerControllerTest {
         when(playerService.findFavoritePlayers(anyLong())).thenReturn(new FavoritePlayerListRes(playerList));
 
         ResultActions actions = mockMvc.perform(
-                get("/players/favorite")
+                get("/api/players/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -185,7 +182,7 @@ class PlayerControllerTest {
         when(playerService.findPlayerSongs(4L)).thenReturn(new PlayerSongListRes(songList));
 
         ResultActions actions = mockMvc.perform(
-                get("/players/song/{playerId}", 4L)
+                get("/api/players/song/{playerId}", 4L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));

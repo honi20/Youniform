@@ -104,7 +104,7 @@ public class ChatControllerTest {
         when(chatService.getChatMessages(anyLong(), anyInt())).thenReturn(messages);
 
         ResultActions actions = mockMvc.perform(
-                get("/chats/rooms/{roomId}", 1L)
+                get("/api/chats/rooms/{roomId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -161,7 +161,7 @@ public class ChatControllerTest {
                 .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
 
         ResultActions actions = mockMvc.perform(
-                get("/chats/rooms/{roomId}", 100L)
+                get("/api/chats/rooms/{roomId}", 100L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -202,7 +202,7 @@ public class ChatControllerTest {
         when(chatService.getChatRoomList(anyLong())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/chats/rooms")
+                get("/api/chats/rooms")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -248,7 +248,7 @@ public class ChatControllerTest {
         when(chatService.getPreviousMessages(anyLong(), anyLong(), anyInt())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/chats/messages/{roomId}/previous", 1L)
+                get("/api/chats/messages/{roomId}/previous", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("messageId", "1")
                         .param("size", "100")
@@ -308,7 +308,7 @@ public class ChatControllerTest {
         when(chatService.getNextMessages(anyLong(), anyLong(), anyInt())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/chats/messages/{roomId}/next", 1L)
+                get("/api/chats/messages/{roomId}/next", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("messageId", "1")
                         .param("size", "100")
@@ -366,7 +366,9 @@ public class ChatControllerTest {
         when(chatService.uploadImage(any(MockMultipartFile.class))).thenReturn(uploadImageRes);
 
         // when
-        ResultActions actions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/chats/messages/upload")
+        ResultActions actions = mockMvc
+                .perform(RestDocumentationRequestBuilders
+                        .multipart("/api/chats/messages/upload")
                 .file(file)
                 .with(csrf())
                 .contentType("multipart/form-data")
@@ -377,9 +379,12 @@ public class ChatControllerTest {
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(IMAGE_UPLOAD_OK.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(IMAGE_UPLOAD_OK.getMessage()))
-                .andExpect(jsonPath("$.body.imageUrl").value("test-upload-url"))
+                .andExpect(jsonPath("$.header.httpStatusCode")
+                        .value(IMAGE_UPLOAD_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message")
+                        .value(IMAGE_UPLOAD_OK.getMessage()))
+                .andExpect(jsonPath("$.body.imageUrl")
+                        .value("test-upload-url"))
                 .andDo(print())
                 .andDo(document(
                         "이미지 업로드 성공",
@@ -390,7 +395,9 @@ public class ChatControllerTest {
                                 .summary("Image Upload API")
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.imageUrl").type(JsonFieldType.STRING).description("업로드된 이미지 URL")
+                                                fieldWithPath("body.imageUrl")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("업로드된 이미지 URL")
                                         )
                                 )
                                 .responseSchema(Schema.schema("Image Upload Response"))
@@ -409,7 +416,7 @@ public class ChatControllerTest {
 
         when(chatService.downloadImage(anyString())).thenReturn(resource);
 
-        mockMvc.perform(get("/chats/messages/download")
+        mockMvc.perform(get("/api/chats/messages/download")
                         .param("imgUrl", "test.jpg")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())

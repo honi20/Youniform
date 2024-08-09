@@ -17,40 +17,46 @@ import org.springframework.web.multipart.MultipartFile;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Validated
 public class UserController {
     private final UserService userService;
+
     private final JwtService jwtService;
 
     @GetMapping("/verify")
     public ResponseEntity<?> nicknameCheck(@RequestParam("nickname") String nickname) {
         userService.verifyNickname(nickname);
+
         return new ResponseEntity<>(ResponseDto.success(USER_NICKNAME_OK, true), HttpStatus.OK);
     }
 
     @PostMapping("/email/send")
     public ResponseEntity<?> emailSend(@RequestBody EmailSendReq emailSendReq) {
         userService.sendEmail(emailSendReq);
+
         return new ResponseEntity<>(ResponseDto.success(VERIFY_CODE_SEND, null), HttpStatus.OK);
     }
 
     @GetMapping("/email/verify")
     public ResponseEntity<?> emailVerify(@ModelAttribute EmailVerifyReq emailVerifyReq) {
         userService.verifyEmail(emailVerifyReq);
+
         return new ResponseEntity<>(ResponseDto.success(EMAIL_VERIFIED, null), HttpStatus.OK);
     }
 
     @PostMapping("/password/send")
     public ResponseEntity<?> passwordResetSend(@RequestBody PasswordResetSendReq passwordResetSendReq) {
         userService.passwordResetSend(passwordResetSendReq);
+
         return new ResponseEntity<>(ResponseDto.success(PASSWORD_RESET_EMAIL_SEND, null), HttpStatus.OK);
     }
 
     @PatchMapping("/password/reset")
     public ResponseEntity<?> passwordReset(@RequestBody PasswordResetReq passwordResetReq) {
         userService.passwordReset(passwordResetReq);
+
         return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.OK);
     }
 
@@ -58,6 +64,7 @@ public class UserController {
     public ResponseEntity<?> passwordModify(@RequestBody PasswordModifyReq passwordModifyReq) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         userService.modifyPassword(passwordModifyReq, userId);
+
         return new ResponseEntity<>(ResponseDto.success(PASSWORD_MODIFIED, null), HttpStatus.OK);
     }
 
@@ -65,6 +72,7 @@ public class UserController {
     public ResponseEntity<?> myDetails() {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         MyDetailsRes result = userService.findMyDetails(userId);
+
         return new ResponseEntity<>(ResponseDto.success(USER_DETAILS_OK, result),
                 HttpStatus.OK);
     }
@@ -73,6 +81,7 @@ public class UserController {
     public ResponseEntity<?> userDetails(@PathVariable("userId") String userId) throws Exception {
         Long myUserId = jwtService.getUserId(SecurityContextHolder.getContext());
         UserDetailsRes result = userService.findUserDetails(myUserId, userId);
+
         return new ResponseEntity<>(ResponseDto.success(USER_DETAILS_OK, result),
                 HttpStatus.OK);
     }
@@ -83,6 +92,7 @@ public class UserController {
             @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         ProfileModifyRes result = userService.modifyProfile(profileModifyReq, file, userId);
+
         return new ResponseEntity<>(ResponseDto.success(PROFILE_MODIFIED, result), HttpStatus.OK);
     }
 
@@ -90,6 +100,7 @@ public class UserController {
     public ResponseEntity<?> themeModify(@RequestBody ThemeModifyReq themeModifyReq) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         userService.modifyTheme(themeModifyReq, userId);
+
         return new ResponseEntity<>(ResponseDto.success(THEME_MODIFIED, null), HttpStatus.OK);
     }
 
@@ -97,6 +108,7 @@ public class UserController {
     public ResponseEntity<?> alertModify(@RequestBody AlertModifyReq alertModifyReq) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         userService.modifyAlert(alertModifyReq, userId);
+
         return new ResponseEntity<>(ResponseDto.success(ALERT_MODIFIED, null), HttpStatus.OK);
     }
 
@@ -104,6 +116,7 @@ public class UserController {
     public ResponseEntity<?> userResign() {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         userService.resignUser(userId);
+
         return new ResponseEntity<>(ResponseDto.success(USER_RESIGNED, null), HttpStatus.OK);
     }
 
@@ -111,13 +124,15 @@ public class UserController {
     public ResponseEntity<?> userSignup(@PathVariable("provider") String provider, @RequestBody SignupReq user) {
         String accessToken = userService.signup(user);
         SignupRes result = SignupRes.builder().accessToken(accessToken).build();
+
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNUP_SUCCESS, result), HttpStatus.OK);
     }
 
     @PostMapping("/signin/local")
-    public ResponseEntity<?> signin(@RequestBody LocalSigninReq user){
+    public ResponseEntity<?> signin(@RequestBody LocalSigninReq user) {
         String accessToken = userService.signin(user);
         SigninRes result = SigninRes.builder().accessToken(accessToken).build();
+
         return new ResponseEntity<>(ResponseDto.success(USER_SIGNIN_SUCCESS, result), HttpStatus.OK);
     }
 
@@ -135,6 +150,7 @@ public class UserController {
     public ResponseEntity<?> userFavoriteModify(@RequestBody UserFavoriteReq userFavoriteReq) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         userService.modifyUserFavorite(userId, userFavoriteReq);
+
         return new ResponseEntity<>(ResponseDto.success(USER_FAVORITE_MODIFIED, null), HttpStatus.OK);
     }
 

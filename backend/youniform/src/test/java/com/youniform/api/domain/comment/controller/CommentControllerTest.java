@@ -79,7 +79,7 @@ public class CommentControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/comments/{postId}", 1L)
+                post("/api/comments/{postId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +143,7 @@ public class CommentControllerTest {
                 .thenThrow(new CustomException(POST_NOT_FOUND));
 
         ResultActions actions = mockMvc.perform(
-                post("/comments/{postId}", 10000L)
+                post("/api/comments/{postId}", 10000L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -198,7 +198,7 @@ public class CommentControllerTest {
                 .thenThrow(new CustomException(INVALID_COMMENT_CONTENTS));
 
         ResultActions actions = mockMvc.perform(
-                post("/comments/{postId}", 1L)
+                post("/api/comments/{postId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -254,7 +254,7 @@ public class CommentControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/comments/{commentId}", 1L)
+                patch("/api/comments/{commentId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -310,7 +310,7 @@ public class CommentControllerTest {
                 .thenThrow(new CustomException(COMMENT_NOT_FOUND));
 
         ResultActions actions = mockMvc.perform(
-                patch("/comments/{commentId}", 10000L)
+                patch("/api/comments/{commentId}", 10000L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -364,7 +364,7 @@ public class CommentControllerTest {
                 .thenThrow(new CustomException(INVALID_COMMENT_CONTENTS));
 
         ResultActions actions = mockMvc.perform(
-                patch("/comments/{commentId}", 1L)
+                patch("/api/comments/{commentId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -418,7 +418,7 @@ public class CommentControllerTest {
                 .thenThrow(new CustomException(COMMENT_UPDATE_FORBIDDEN));
 
         ResultActions actions = mockMvc.perform(
-                patch("/comments/{commentId}", 2L)
+                patch("/api/comments/{commentId}", 2L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -465,7 +465,7 @@ public class CommentControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/comments/{commentId}", 1L)
+                delete("/api/comments/{commentId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -506,7 +506,7 @@ public class CommentControllerTest {
                 .when(commentService).removeComment(anyLong(), anyLong());
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/comments/{commentId}", 10000L)
+                delete("/api/comments/{commentId}", 10000L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -548,7 +548,7 @@ public class CommentControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/comments/{commentId}", 1L)
+                delete("/api/comments/{commentId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
