@@ -6,33 +6,45 @@ import com.youniform.api.domain.photocard.repository.PhotocardRepository;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
+import com.youniform.api.global.s3.S3Service;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
+@RequiredArgsConstructor
 public class PhotocardServiceImpl implements PhotocardService {
 	private final PhotocardRepository photocardRepository;
 
 	private final UserRepository userRepository;
 
-	public PhotocardServiceImpl(UserRepository userRepository, PhotocardRepository photocardRepository) {
-		this.userRepository = userRepository;
-		this.photocardRepository = photocardRepository;
-	}
+	private final S3Service s3Service;
 
 	@Override
-	public PhotocardAddRes addPhotocard(Long userId, PhotocardAddReq photocardAddReq) {
+	public PhotocardAddRes addPhotocard(Long userId, MultipartFile file) throws IOException {
 		Users user = userRepository.findById(userId)
 				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-		Photocard photocard = photocardAddReq.toEntity(user);
+		if (!file.isEmpty()) {
+			String imgUrl = s3Service.upload(file, "photocard");
+			Photocard photocard = Photocard.builder()
+					.user(user)
+					.imgUrl(imgUrl)
+					.createdAt(LocalDateTime.now())
+					.build();
 
-		photocardRepository.save(photocard);
+			photocardRepository.save(photocard);
 
-		return new PhotocardAddRes(photocard.getId());
+			return new PhotocardAddRes(photocard.getId());
+		}
+
+		return new PhotocardAddRes(null);
 	}
 
 	@Override
@@ -60,6 +72,10 @@ public class PhotocardServiceImpl implements PhotocardService {
 
 			if (!photocard.getUser().getId().equals(userId)) {
 				throw new CustomException(PHOTOCARD_ACCESS_FORBIDDEN);
+			}
+
+			if (photocard.getImgUrl() != null) {
+				s3Service.fileDelete(photocard.getImgUrl());
 			}
 		});
 

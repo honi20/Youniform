@@ -35,6 +35,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -130,7 +131,7 @@ class PlayerControllerTest {
         List<PlayerDetailDto> playerList = new ArrayList<>();
         playerList.add(new PlayerDetailDto(1L, "박용택", LocalDate.parse("1979-04-21"), 33, 0.0F, 0, 0, 0, null, null, null, null, "외야수", "우투좌타"));
 
-        when(playerService.findFavoritePlayers(123L)).thenReturn(new FavoritePlayerListRes(playerList));
+        when(playerService.findFavoritePlayers(anyLong())).thenReturn(new FavoritePlayerListRes(playerList));
 
         ResultActions actions = mockMvc.perform(
                 get("/players/favorite")

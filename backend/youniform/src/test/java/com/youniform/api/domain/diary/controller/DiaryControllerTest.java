@@ -636,10 +636,6 @@ public class DiaryControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PUT");
-                            return request;
-                        })
         );
 
         actions
@@ -685,10 +681,6 @@ public class DiaryControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PUT");
-                            return request;
-                        })
         );
 
         actions
@@ -733,10 +725,6 @@ public class DiaryControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PUT");
-                            return request;
-                        })
         );
 
         actions
@@ -781,10 +769,6 @@ public class DiaryControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PUT");
-                            return request;
-                        })
         );
 
         actions

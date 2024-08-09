@@ -554,10 +554,6 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
         );
 
         //then

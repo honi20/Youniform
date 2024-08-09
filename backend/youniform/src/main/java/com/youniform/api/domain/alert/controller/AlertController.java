@@ -29,54 +29,54 @@ public class AlertController {
 
 	@GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public ResponseEntity<SseEmitter> subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) throws IOException {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		SseEmitter response = alertService.subscribe(123L, lastEventId);
+		SseEmitter response = alertService.subscribe(userId, lastEventId);
 
 		return new ResponseEntity<>(response, OK);
 	}
 
 	@GetMapping("/list")
 	public ResponseEntity<?> alertList() {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		AlertListRes response = alertService.findAlerts(123L);
+		AlertListRes response = alertService.findAlerts(userId);
 
 		return new ResponseEntity<>(ResponseDto.success(ALERT_LIST_OK, response), HttpStatus.OK);
 	}
 
 	@PatchMapping("/{alertId}")
 	public ResponseEntity<?> alertReadModify(@PathVariable("alertId") Long alertId) {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		alertService.modifyAlertRead(123L, alertId);
+		alertService.modifyAlertRead(userId, alertId);
 
 		return new ResponseEntity<>(ResponseDto.success(ALERT_READ_MODIFIED, null), HttpStatus.OK);
 	}
 
 	@PatchMapping
 	public ResponseEntity<?> alertAllReadModify() {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		alertService.modifyAlertAllRead(123L);
+		alertService.modifyAlertAllRead(userId);
 
 		return new ResponseEntity<>(ResponseDto.success(ALERT_READ_MODIFIED, null), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{alertId}")
 	public ResponseEntity<?> alertDeletedModify(@PathVariable("alertId") Long alertId) {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		alertService.removeAlert(123L, alertId);
+		alertService.removeAlert(userId, alertId);
 
 		return new ResponseEntity<>(ResponseDto.success(ALERT_DELETED, null), HttpStatus.OK);
 	}
 
 	@DeleteMapping
 	public ResponseEntity<?> alertAllDeletedModify() {
-//		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		alertService.removeAllAlert(123L);
+		alertService.removeAllAlert(userId);
 
 		return new ResponseEntity<>(ResponseDto.success(ALERT_DELETED, null), HttpStatus.OK);
 	}

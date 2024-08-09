@@ -87,13 +87,13 @@ public class DiaryController {
 	}
 
 
-	@PutMapping("/{diaryId}")
+	@PostMapping("/{diaryId}")
 	public ResponseEntity<?> diaryModify(@PathVariable("diaryId") Long diaryId,
 										 @RequestPart(value = "dto") DiaryModifyReq diaryModifyReq,
 										 @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-		diaryService.modifyDiary(123L, diaryId, diaryModifyReq, file);
+		diaryService.modifyDiary(userId, diaryId, diaryModifyReq, file);
 
 		return new ResponseEntity<>(ResponseDto.success(DIARY_MODIFIED, null), HttpStatus.OK);
 	}

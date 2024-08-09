@@ -1,9 +1,12 @@
 package com.youniform.api.domain.photocard.service;
 
 import com.youniform.api.domain.photocard.dto.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface PhotocardService {
-	PhotocardAddRes addPhotocard(Long userId, PhotocardAddReq photocardAddReq);
+	PhotocardAddRes addPhotocard(Long userId, MultipartFile file) throws IOException;
 
 	PhotocardDetailDto findPhotocard(Long userId, Long photocardId);
 

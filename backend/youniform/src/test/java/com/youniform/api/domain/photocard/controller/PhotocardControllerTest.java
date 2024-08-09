@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -89,16 +90,15 @@ class PhotocardControllerTest {
 
     @Test
     public void 포토카드_생성_성공() throws Exception {
-        PhotocardAddReq photocardAddReq = new PhotocardAddReq("photocard.png");
-
-        when(photocardService.addPhotocard(anyLong(), any(PhotocardAddReq.class))).thenReturn(new PhotocardAddRes(1L));
+        when(photocardService.addPhotocard(anyLong(), any())).thenReturn(new PhotocardAddRes(1L));
+        MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
 
         ResultActions actions = mockMvc.perform(
-                post("/photocards")
+                multipart("/photocards")
+                        .file(file)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(photocardAddReq))
                         .with(csrf())
         );
 
@@ -113,9 +113,6 @@ class PhotocardControllerTest {
                                 .summary("Photocard 생성 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        fieldWithPath("imgUrl").type(JsonFieldType.STRING).description("포토카드 이미지 URL")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(

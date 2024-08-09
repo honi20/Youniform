@@ -12,7 +12,10 @@ import com.youniform.api.domain.diary.repository.DiaryCustomRepository;
 import com.youniform.api.domain.diary.repository.DiaryRepository;
 import com.youniform.api.domain.diary.repository.ResourceRepository;
 import com.youniform.api.domain.diary.repository.StampRepository;
+import com.youniform.api.domain.friend.entity.Friend;
+import com.youniform.api.domain.friend.entity.FriendPK;
 import com.youniform.api.domain.friend.entity.Status;
+import com.youniform.api.domain.friend.repository.FriendRepository;
 import com.youniform.api.domain.friend.service.FriendService;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
@@ -36,6 +39,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
+import static com.youniform.api.domain.friend.entity.Status.FRIEND;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
@@ -58,6 +62,8 @@ public class DiaryServiceImpl implements DiaryService {
 	private final S3Service s3Service;
 
 	private final FriendService friendService;
+
+	private final FriendRepository friendRepository;
 
 	@Override
 	@Transactional
@@ -137,11 +143,24 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
+	@Transactional
 	public DiaryListRes findDiaries(Long userId, String friendUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
+		Users user = userRepository.findById(userId)
+				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
 		Users friend = userRepository.findByUuid(friendUuid)
 				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
 
 		Status status = friendService.isFriend(userId, friend.getId());
+
+		if (status == Status.FRIEND) {
+			FriendPK friendPk = new FriendPK(user.getId(), friend.getId());
+			Friend friendRequest = friendRepository.findByFriendPK(friendPk);
+
+			friendRequest.updateLastVisited(LocalDateTime.now());
+
+			friendRepository.save(friendRequest);
+		}
 
 		LocalDate lastDiaryDate = diaryListReq.getLastDiaryDate();
 		int pageSize = pageable.getPageSize();
