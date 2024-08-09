@@ -60,9 +60,6 @@ class TeamControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper mapper;
-
     @MockBean
     private JwtService jwtService;
 
@@ -94,7 +91,7 @@ class TeamControllerTest {
         when(teamService.findTeamSongs(anyLong())).thenReturn(new TeamSongListRes(teamSongList));
 
         ResultActions actions = mockMvc.perform(
-                get("/teams/song")
+                get("/api/teams/song")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));

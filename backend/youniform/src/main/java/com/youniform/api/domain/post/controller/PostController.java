@@ -20,13 +20,11 @@ import java.io.IOException;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
 public class PostController {
-    private final static String UUID = "1604b772-adc0-4212-8a90-81186c57f598";
-
     private final PostService postService;
 
     private final JwtService jwtService;

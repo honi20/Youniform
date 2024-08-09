@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.youniform.api.global.statuscode.SuccessCode.TEAM_SONG_LIST_OK;
 
 @RestController
-@RequestMapping("/teams")
+@RequestMapping("/api/teams")
 @RequiredArgsConstructor
 @Validated
 public class TeamController {
