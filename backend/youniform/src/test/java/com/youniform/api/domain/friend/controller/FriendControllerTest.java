@@ -3,8 +3,7 @@ package com.youniform.api.domain.friend.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
-import com.youniform.api.domain.friend.dto.FriendAcceptReq;
-import com.youniform.api.domain.friend.dto.FriendRequestReq;
+import com.youniform.api.domain.friend.dto.*;
 import com.youniform.api.domain.friend.service.FriendService;
 import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
@@ -22,6 +21,9 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
@@ -280,13 +282,28 @@ public class FriendControllerTest {
     }
 
     @Test
-    public void 친구_목록_조회_성공() throws Exception {
+    public void 마이페이지_친구_목록_조회_성공() throws Exception {
         //given
         String jwtToken = jwtService.createAccessToken(UUID);
 
+        List<FriendMypageDto> friends = new ArrayList<>();
+        friends.add(FriendMypageDto.builder()
+                .friendId("1604b772-adc0-4212-8a90-81186c57f100")
+                .imgUrl("http://example.com/img.jpg")
+                .nickname("유저 1")
+                .introduce("안녕하세요")
+                .teamUrl("http://example.com/team.jpg")
+                .build());
+
+        FriendMypageRes friendMypageRes = FriendMypageRes.builder()
+                .friendMypageList(friends)
+                .build();
+
+        when(friendService.findMypageFriends(any())).thenReturn(friendMypageRes);
+
         //when
         ResultActions actions = mockMvc.perform(
-                get("/friends", 1L)
+                get("/friends/mypage")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -296,31 +313,99 @@ public class FriendControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_LIST_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(FRIEND_LIST_OK.getMessage()))
+                .andExpect(jsonPath("$.body.friendMypageList[0].friendId").value("1604b772-adc0-4212-8a90-81186c57f100"))
+                .andExpect(jsonPath("$.body.friendMypageList[0].imgUrl").value("http://example.com/img.jpg"))
+                .andExpect(jsonPath("$.body.friendMypageList[0].nickname").value("유저 1"))
+                .andExpect(jsonPath("$.body.friendMypageList[0].introduce").value("안녕하세요"))
+                .andExpect(jsonPath("$.body.friendMypageList[0].teamUrl").value("http://example.com/team.jpg"))
                 .andDo(document(
-                        "Friend 리스트 조회 성공",
+                        "Mypage Friend 리스트 조회 성공",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
-                                .summary("Friend 리스트 조회 API")
+                                .summary("Mypage Friend 리스트 조회 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .responseFields(
                                         getCommonResponseFields(
-                                                fieldWithPath("body.friendList[].friendId").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.friendMypageList[].friendId").type(JsonFieldType.STRING)
                                                         .description("친구 아이디(UUID)"),
-                                                fieldWithPath("body.friendList[].imgUrl").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.friendMypageList[].imgUrl").type(JsonFieldType.STRING)
                                                         .description("친구 프로필 사진 URL"),
-                                                fieldWithPath("body.friendList[].nickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.friendMypageList[].nickname").type(JsonFieldType.STRING)
                                                         .description("친구 닉네임"),
-                                                fieldWithPath("body.friendList[].introduce").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.friendMypageList[].introduce").type(JsonFieldType.STRING)
                                                         .description("친구 한줄소개"),
-                                                fieldWithPath("body.friendList[].teamUrl").type(JsonFieldType.STRING)
-                                                        .description("응원 team image url")
+                                                fieldWithPath("body.friendMypageList[].teamUrl").type(JsonFieldType.STRING)
+                                                        .description("응원 팀 이미지 URL")
                                         )
                                 )
-                                .responseSchema(Schema.schema("Friend 리스트 조회 Response"))
+                                .responseSchema(Schema.schema("Mypage Friend 리스트 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 다이어리_친구_목록_조회_성공() throws Exception {
+        //given
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        List<FriendDiaryDto> friends = new ArrayList<>();
+        friends.add(FriendDiaryDto.builder()
+                .friendId("1604b772-adc0-4212-8a90-81186c57f100")
+                .imgUrl("http://example.com/img.jpg")
+                .nickname("유저 1")
+                .isDiaryUpdated(true)
+                .build());
+
+        FriendDiaryRes friendDiaryeRes = FriendDiaryRes.builder()
+                .friendDiaryList(friends)
+                .build();
+
+        when(friendService.findDiaryFriends(any())).thenReturn(friendDiaryeRes);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/friends/diary")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_LIST_OK.getMessage()))
+                .andExpect(jsonPath("$.body.friendDiaryList[0].friendId").value("1604b772-adc0-4212-8a90-81186c57f100"))
+                .andExpect(jsonPath("$.body.friendDiaryList[0].imgUrl").value("http://example.com/img.jpg"))
+                .andExpect(jsonPath("$.body.friendDiaryList[0].nickname").value("유저 1"))
+                .andExpect(jsonPath("$.body.friendDiaryList[0].diaryUpdated").value("true"))
+                .andDo(document(
+                        "Diary Friend 리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("Diary Friend 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.friendDiaryList[].friendId").type(JsonFieldType.STRING)
+                                                        .description("친구 아이디(UUID)"),
+                                                fieldWithPath("body.friendDiaryList[].imgUrl").type(JsonFieldType.STRING)
+                                                        .description("친구 프로필 사진 URL"),
+                                                fieldWithPath("body.friendDiaryList[].nickname").type(JsonFieldType.STRING)
+                                                        .description("친구 닉네임"),
+                                                fieldWithPath("body.friendDiaryList[].diaryUpdated").type(JsonFieldType.BOOLEAN)
+                                                        .description("다이어리 업데이트 여부")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Diary Friend 리스트 조회 Response"))
                                 .build()
                         ))
                 );

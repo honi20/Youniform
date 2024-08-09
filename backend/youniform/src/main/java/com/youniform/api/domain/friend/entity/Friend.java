@@ -40,4 +40,14 @@ public class Friend {
     public void updateLastVisited(LocalDateTime lastVisited) {
         this.lastVisited = lastVisited;
     }
+
+    public static Friend toEntity(FriendPK friendPK, Users user, Users friend, Status status, LocalDateTime lastVisited) {
+        return Friend.builder()
+                .friendPK(friendPK)
+                .user(user)
+                .friend(friend)
+                .status(status)
+                .lastVisited(lastVisited)
+                .build();
+    }
 }
