@@ -3,16 +3,16 @@ import axios from "axios";
 const API_URL = "http://i11a308.p.ssafy.io:8080";
 
 export const createApiClient = (accessToken) => {
-  console.log("createApiClient 실행 중");
-  if (accessToken) {
-    console.log("createApiClient: accesToken이 존재합니다.");
-  } else {
-    console.log("createApiClient: accessToken이 없습니다.");
+  if (!accessToken) {
+    console.error("createApiClient: accessToken이 제공되지 않았습니다.");
+    throw new Error("Access token is required to create an API client.");
   }
+
+  console.log("createApiClient: API 클라이언트를 생성합니다.");
   return axios.create({
     baseURL: API_URL,
     headers: {
-      Authorization: accessToken ? `Bearer ${accessToken}` : "",
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };
@@ -21,6 +21,9 @@ const getAccessToken = () => {
   return (
     localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
   );
+};
+export const clearAccessToken = () => {
+  return localStorage.removeItem("accessToken");
 };
 const setAccessToken = (token) => {
   if (token) {
@@ -34,7 +37,7 @@ const setAccessToken = (token) => {
 export const getApiClient = () => {
   const accessToken = getAccessToken();
   if (accessToken) {
-    // console.log("getApiClient: accesToken이 존재합니다.");
+    console.log("getApiClient: accesToken이 존재합니다.", accessToken);
   }
   const apiClient = createApiClient(accessToken);
 
@@ -44,7 +47,7 @@ export const getApiClient = () => {
     },
     async (error) => {
       const originalRequest = error.config;
-      console.log(error);
+      console.log(error.message);
 
       if (error.response.status === 403 && !originalRequest._retry) {
         console.log("토큰이 재발급 되었습니다.");

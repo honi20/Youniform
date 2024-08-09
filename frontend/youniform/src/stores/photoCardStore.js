@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import useUserStore from '@stores/userStore';
-import axios from 'axios';
+import { create } from "zustand";
+import useUserStore from "@stores/userStore";
+import axios from "axios";
 import { getApiClient } from "@stores/apiClient";
 
 const usePhotoCardStore = create((set, get) => ({
@@ -15,8 +15,8 @@ const usePhotoCardStore = create((set, get) => ({
   selectedImage: null,
   setSelectedImage: (image) => set({ selectedImage: image }),
   fetchPhotoCardList: async () => {
-    const { accessToken } = get();
-    const apiClient = getApiClient(accessToken);
+    // const { accessToken } = get();
+    const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/photocards`);
       console.log(res);
@@ -27,13 +27,13 @@ const usePhotoCardStore = create((set, get) => ({
     }
   },
   createPhotoCard: async (imageBlob) => {
-    const { accessToken } = get();
-    const apiClient = getApiClient(accessToken);
+    // const { accessToken } = get();
+    const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/photocards`, {
         data: {
-          imgUrl: imageBlob
-        }
+          imgUrl: imageBlob,
+        },
       });
       console.log(res.data);
     } catch (error) {
@@ -42,13 +42,13 @@ const usePhotoCardStore = create((set, get) => ({
   },
   // 포토카드 다중 삭재
   deletePhotocards: async (list) => {
-    const { accessToken } = get();
-    const apiClient = getApiClient(accessToken);
+    // const { accessToken } = get();
+    const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/photocards`, {
         params: {
-          photocardIdList: list
-        }
+          photocardIdList: list,
+        },
       });
       console.log(res.data);
     } catch (error) {
@@ -57,24 +57,21 @@ const usePhotoCardStore = create((set, get) => ({
   },
   // 포토카드 단일 삭제
   deletePhotocard: async (id) => {
-    const { accessToken } = get();
-    const apiClient = getApiClient(accessToken);
+    // const { accessToken } = get();
+    const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/photocards/${id}`, {
         params: {
-          photocardId: id
-        }
+          photocardId: id,
+        },
       });
       console.log(res.data);
     } catch (error) {
       console.log("Failed to createPhotoCard", err);
     }
   },
-  
-  fetchPhotocardDetail: async () => {
 
-  },
-  
+  fetchPhotocardDetail: async () => {},
 }));
 
 export default usePhotoCardStore;
