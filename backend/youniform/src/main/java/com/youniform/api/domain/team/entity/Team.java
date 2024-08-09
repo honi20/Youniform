@@ -29,9 +29,11 @@ public class Team {
 
     private Integer rank;
 
-    private Integer match;
+    private Integer matchCount;
 
     private Float winningRate;
 
     private Integer win;
+
+    private String imgUrl;
 }

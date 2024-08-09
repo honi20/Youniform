@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiaryAddRes {
-    private Long diaryId;
+	private Long diaryId;
 }

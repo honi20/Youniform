@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    private Team teamId;
+    private Team team;
 
-    private String nickName;
+    private String nickname;
 
     private String introduce;
 
@@ -36,13 +36,39 @@ public class Users {
 
     private String profileUrl;
 
-    private Integer theme;
+    private Theme theme;
 
-    private Boolean pushAlert;
+    private Boolean pushAlert = Boolean.TRUE;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private Boolean isDeleted;
+    private Boolean isDeleted = Boolean.FALSE;
 
     private LocalDateTime lastWriteDiary;
+
+    private String uuid;
+
+    public void updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public void updateTeam(Team team) {
+        this.team = team;
+    }
+
+    public void updateLastWriteDiary(LocalDateTime lastWriteDiary) {
+        this.lastWriteDiary = lastWriteDiary;
+    }
 }

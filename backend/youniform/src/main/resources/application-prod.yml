@@ -1,0 +1,34 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:sql/data_prod.sql
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MariaDBDialect
+    defer-datasource-initialization: true
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URL}
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+
+    redis:
+      port: 6379
+      host: ${REDIS_HOST}

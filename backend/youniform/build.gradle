@@ -2,106 +2,177 @@ import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 buildscript {
-	ext {
-		restdocsApiSpecVersion = '0.17.1'
-	}
+    ext {
+        restdocsApiSpecVersion = '0.19.2'
+    }
 }
 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.2'
-	id 'io.spring.dependency-management' version '1.1.6'
-	id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
-	id 'org.hidetake.swagger.generator' version '2.18.2'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
+    id 'org.hidetake.swagger.generator' version '2.18.2'
+    id "org.sonarqube" version "3.5.0.2730"
+}
+
+ext {
+    serverUrl = project.findProperty('serverUrl')
 }
 
 group = 'com.youniform'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "S11P12A308"
+    }
 }
 
 swaggerSources {
-	sample {
-		setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
-	}
+    sample {
+        setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
+    }
 }
 
 openapi3 {
-	servers = [
-			{ url = "http://localhost:8080" }
-	]
-	title = "Youniform API 문서"
-	description = "RestDocsWithSwagger Docs"
-	version = "0.0.1"
-	format = "yaml"
+    servers = [
+            {
+                url = "http://localhost:8080"
+            },
+            {
+                url = "$serverUrl"
+            }
+    ]
+    title = "Youniform API 문서"
+    description = "RestDocsWithSwagger Docs"
+    version = "0.0.1"
+    format = "yaml"
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.1'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation "org.testcontainers:testcontainers:1.19.3"
-	testImplementation "org.testcontainers:junit-jupiter:1.19.3"
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
-	swaggerUI 'org.webjars:swagger-ui:4.11.1'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.1'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'commons-codec:commons-codec:1.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'com.auth0:java-jwt:3.13.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'io.github.cdimascio:dotenv-java:2.2.0'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.3.3'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation "org.testcontainers:testcontainers:1.19.3"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.3"
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
+    testImplementation 'org.testcontainers:mongodb:1.17.6'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
+    compileOnly 'org.projectlombok:lombok'
 }
 
 tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
-	doFirst {
-		def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
+    dependsOn 'openapi3'
+    doFirst {
+        def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
 
-		def securitySchemesContent =  "  securitySchemes:\n" +  \
-                                      "    APIKey:\n" +  \
-                                      "      type: apiKey\n" +  \
-                                      "      name: Authorization\n" +  \
-                                      "      in: header\n" + \
-                                      "security:\n" +
-				"  - APIKey: []  # Apply the security scheme here"
+        def securitySchemesContent = "  securitySchemes:\n" +
+                "    APIKey:\n" +
+                "      type: apiKey\n" +
+                "      name: Authorization\n" +
+                "      in: header\n" +
+                "security:\n" +
+                "  - APIKey: []  # Apply the security scheme here"
 
-		swaggerUIFile.append securitySchemesContent
-	}
+        swaggerUIFile.append securitySchemesContent
+    }
 }
 
 tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
+    dependsOn 'openapi3'
 }
 
 tasks.register('copySwaggerUI', Copy) {
-	dependsOn 'generateSwaggerUISample'
-	def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
-	from("${generateSwaggerUISampleTask.outputDir}")
-	into("${project.buildDir}/resources/main/static/docs")
+    dependsOn 'generateSwaggerUISample'
+    def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+    from("${generateSwaggerUISampleTask.outputDir}")
+    into("${project.buildDir}/resources/main/static/docs")
 }
 
 tasks.withType(BootJar) {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.named('jar') {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
 }
 
 tasks.named('resolveMainClassName') {
-	dependsOn 'copySwaggerUI'
+    dependsOn 'copySwaggerUI'
+}
+
+
+// QueryDsl Build Option
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
+sourceSets {
+    main.java.srcDirs += [querydslDir]
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
+}
+
+clean {
+    delete file('src/main/generated')
+}
+
+test {
+    systemProperty 'testcontainers.ryuk.disabled', 'true'
+    systemProperty 'docker.host', 'unix:///var/run/docker.sock'
+    environment 'DOCKER_HOST', 'unix:///var/run/docker.sock'
+    environment 'DOCKER_TLS_VERIFY', '0'
+    environment 'DOCKER_CERT_PATH', ''
+    systemProperty 'testcontainers.network.mode', 'bridge'
+    systemProperty 'testcontainers.reuse.enable', 'true'
+    systemProperty 'testcontainers.ryuk.disabled', 'true'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }

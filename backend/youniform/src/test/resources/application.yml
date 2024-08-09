@@ -1,0 +1,65 @@
+spring:
+  profiles:
+    active: test
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        default_batch_fetch_size: 100
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:sql/data.sql
+
+  web:
+    resources:
+      add-mappings: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+logging:
+  level:
+    io.lettuce.core.protocol: ERROR
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET}
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: ${S3_ACCESSKEY}
+      secretKey: ${S3_SECRETKEY}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access:
+    expiration: 300 # 5분
+  refresh:
+    expiration: 1209600 # 2주
+
+testcontainers:
+  ryuk:
+    disabled: true

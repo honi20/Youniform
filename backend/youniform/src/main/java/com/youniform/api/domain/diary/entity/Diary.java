@@ -22,10 +22,28 @@ public class Diary {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users userId;
+    private Users user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stamp_id")
+    private DiaryStamp stamp;
 
     private LocalDate diaryDate;
 
     @Enumerated(EnumType.STRING)
     private Scope scope;
+
+    private String imgUrl;
+
+    public void updateStamp(DiaryStamp stamp) {
+        this.stamp = stamp;
+    }
+
+    public void updateScope(Scope scope) {
+        this.scope = scope;
+    }
+
+    public void updateImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 }
