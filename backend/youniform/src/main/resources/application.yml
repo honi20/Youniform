@@ -22,7 +22,6 @@ spring:
           timeout: 5000
           starttls:
             enable: true
-
 cloud:
   aws:
     s3:
@@ -35,3 +34,6 @@ cloud:
       accessKey: ${S3_ACCESSKEY}
       secretKey: ${S3_SECRETKEY}
 
+server:
+  tomcat:
+    max-http-form-post-size: 20MB

@@ -10,9 +10,9 @@ VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@google.com', '
        (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', 'dubebedu', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
         'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100'),
        (125, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', 'bebebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100'),
+        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f101'),
        (126, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', '123bebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100');
+        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f102');
 
 -- stamp
 INSERT INTO DIARY_STAMP (stamp_id, img_url)
@@ -143,4 +143,4 @@ VALUES (1, 1, '승리하라 몬스터즈여', '몬!스!터!즈! 승!리!하!리!
 
 -- user favorite player
 INSERT INTO USER_PLAYER(user_id, player_id)
-VALUES (123, 3), (123, 4), (123, 9);
+VALUES (123, 3), (123, 4), (123, 9), (124, 4), (125, 3), (125, 4);

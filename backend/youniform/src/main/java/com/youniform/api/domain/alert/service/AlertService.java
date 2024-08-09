@@ -20,6 +20,8 @@ public interface AlertService {
 
     void removeAllAlert(Long userId);
 
+    void sendPlayerAppearance(Long playerId);
+    
     void send(String receiverUuid, Long senderId, AlertType type, String content, String link);
 
     void testAlert();
