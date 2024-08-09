@@ -14,12 +14,6 @@ const useUserStore = create((set, get) => ({
 
   fetchUser: async () => {
     set({ loading: true, error: null });
-    // const { accessToken } = get();
-    // if (!accessToken) {
-    //   console.error("No access token found");
-    //   return;
-    // }
-    // console.log(accessToken);
     const apiClient = getApiClient();
     console.log("API Client:", apiClient);
     try {
@@ -33,11 +27,11 @@ const useUserStore = create((set, get) => ({
     }
   },
   clearUser: () => set({ user: null, error: null }),
-  
+
   fetchFriend: async (userId) => {
     set({ loading: true, error: null });
-    const { accessToken } = get();
-    const apiClient = getApiClient(accessToken);
+    // const { accessToken } = get();
+    const apiClient = getApiClient();
     console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users/${userId}`);
