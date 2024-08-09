@@ -1,0 +1,78 @@
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
+
+export const createApiClient = (accessToken) => {
+  if (!accessToken) {
+    console.error("createApiClient: accessToken이 제공되지 않았습니다.");
+    throw new Error("Access token is required to create an API client.");
+  }
+
+  console.log("createApiClient: API 클라이언트를 생성합니다.");
+  console.log(API_URL);
+  return axios.create({
+    baseURL: API_URL,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+const getAccessToken = () => {
+  return (
+    localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
+  );
+};
+export const clearAccessToken = () => {
+  return localStorage.removeItem("accessToken");
+};
+const setAccessToken = (token) => {
+  if (token) {
+    localStorage.setItem("accessToken", token);
+    sessionStorage.setItem("accessToken", token);
+  } else {
+    localStorage.removeItem("accessToken");
+    sessionStorage.removeItem("accessToken");
+  }
+};
+export const getApiClient = () => {
+  const accessToken = getAccessToken();
+  if (accessToken) {
+    console.log("getApiClient: accesToken이 존재합니다.", accessToken);
+  }
+  const apiClient = createApiClient(accessToken);
+
+  apiClient.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async (error) => {
+      const originalRequest = error.config;
+      console.log(error.message);
+
+      if (error.response.status === 403 && !originalRequest._retry) {
+        console.log("토큰이 재발급 되었습니다.");
+        originalRequest._retry = true;
+        console.log(error.response.data.body);
+        try {
+          setAccessToken(error.response.data.body);
+
+          apiClient.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${error.response.data.body}`;
+          originalRequest.headers[
+            "Authorization"
+          ] = `Bearer ${error.response.data.body}`;
+
+          return apiClient(originalRequest); // 수정된 인스턴스 사용
+        } catch (err) {
+          console.error("토큰 재발급 실패:", err);
+          return Promise.reject(err);
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
+  return apiClient;
+};
