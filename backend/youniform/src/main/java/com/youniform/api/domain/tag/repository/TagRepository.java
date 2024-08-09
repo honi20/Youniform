@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT t FROM Tag t " +
-            "WHERE t.contents IN :names")
-    List<Tag> findByContentsIn(List<String> names);
+            "WHERE t.contents IN :tags")
+    List<Tag> findByContentsIn(@Param("tags") List<String> tags);
 
     @Query("SELECT t FROM Tag t " +
             "JOIN PostTag pt ON t.id = pt.tag.id " +

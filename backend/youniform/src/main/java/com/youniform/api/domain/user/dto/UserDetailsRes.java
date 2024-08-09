@@ -26,7 +26,7 @@ public class UserDetailsRes {
                 .userId(user.getUuid())
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
-                .profileUrl(user.getProfileUrl())
+                .profileUrl(user.getProfileUrl() != null ? user.getProfileUrl() : null)
                 .teamImage(user.getTeam().getImgUrl())
                 .isFriend(isFriend)
                 .build();

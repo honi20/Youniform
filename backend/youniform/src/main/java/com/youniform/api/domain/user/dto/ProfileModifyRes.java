@@ -21,7 +21,7 @@ public class ProfileModifyRes {
         return ProfileModifyRes.builder()
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
-                .profileUrl(user.getProfileUrl())
+                .profileUrl(user.getProfileUrl() != null ? user.getProfileUrl() : null)
                 .build();
     }
 }
