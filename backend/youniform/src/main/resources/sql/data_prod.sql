@@ -41,7 +41,7 @@ INSERT INTO FRIEND (user_id, friend_id, status, last_visited) VALUES (123, 124, 
 INSERT INTO FRIEND (user_id, friend_id, status, last_visited) VALUES (124, 123, 'FRIEND', CURRENT_DATE);
 
 -- diary resource
-INSERT INTO DIARY_RESOURCE (resource_id, img_url, type, category)
+INSERT INTO DIARY_RESOURCE (img_url, type, category)
 VALUES ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/white/white.png', 'BACKGROUND', 'WHITE'),
        ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/white/grid_white.png', 'BACKGROUND', 'WHITE'),
        ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/white/paper_white.png', 'BACKGROUND', 'WHITE'),
@@ -96,12 +96,12 @@ VALUES ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/white/wh
        ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/black/daily_black.png', 'BACKGROUND', 'BLACK'),
        ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/black/baseball_black.png', 'BACKGROUND', 'BLACK'),
        ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/black/retro_black.png', 'BACKGROUND', 'BLACK'),
-       (3, 'sticker_baseball.png', 'STICKER', 'BASEBALL'),
-       (4, 'sticker_retro.png', 'STICKER', 'RETRO'),
-       (5, 'sticker_cute.png', 'STICKER', 'CUTE'),
-       (6, 'sticker_letter.png', 'STICKER', 'LETTER'),
-       (7, 'theme_1.png', 'THEME', 'NONE'),
-       (8, 'theme_2.png', 'THEME', 'NONE');
+       ('sticker_baseball.png', 'STICKER', 'BASEBALL'),
+       ('sticker_retro.png', 'STICKER', 'RETRO'),
+       ('sticker_cute.png', 'STICKER', 'CUTE'),
+       ('sticker_letter.png', 'STICKER', 'LETTER'),
+       ('theme_1.png', 'THEME', 'NONE'),
+       ('theme_2.png', 'THEME', 'NONE');
 
 -- chat_room
 INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1, '1번 방', TRUE);
