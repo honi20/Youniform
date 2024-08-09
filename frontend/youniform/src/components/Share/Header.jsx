@@ -6,7 +6,7 @@ import SettingIcon from "@assets/Header/setting.svg?react";
 import useUserStore from "@stores/userStore";
 import * as Font from "@/typography";
 import ColorBtn from "../Common/ColorBtn";
-
+import { clearAccessToken } from "@stores/apiClient";
 const Head = styled.div`
   background-color: #f8f8f8;
   position: fixed;
@@ -95,7 +95,7 @@ const Header = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const accessToken = localStorage.getItem("accessToken");
+  const [isToken, setIsToken] = useState(localStorage.getItem("accessToken"));
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const [isAlarm, setIsAlarm] = useState(null); // 알람 유무에 따라 색 변경
 
@@ -104,22 +104,26 @@ const Header = () => {
   };
 
   const handleLoginClick = () => {
-    console.log(accessToken);
     navigate("/login");
   };
 
   const handleLogoutClick = () => {
     clearAccessToken();
-    console.log(accessToken);
+    setIsToken(null);
   };
 
   const checkToken = () => {
-    console.log(accessToken);
+    console.log(isToken);
   };
 
   useEffect(() => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    setIsToken(accessToken);
+  }, [setIsToken]);
 
   const renderContent = () => {
     switch (currentPath) {
@@ -134,7 +138,7 @@ const Header = () => {
               <strong>Youniform</strong>
             </Logo>
             <ColorBtn onClick={checkToken}>토큰확인</ColorBtn>
-            {accessToken ? (
+            {isToken ? (
               <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
             ) : (
               <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
