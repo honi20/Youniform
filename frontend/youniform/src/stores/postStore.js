@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
-const API_URL = "http://i11a308.p.ssafy.io:8080";
 const usePostStore = create((set) => ({
   posts: [],
   post: [],
@@ -11,7 +10,7 @@ const usePostStore = create((set) => ({
     try {
       const res = await apiClient({
         method: "get",
-        url: `${API_URL}/posts/${postId}`,
+        url: `/posts/${postId}`,
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
@@ -27,14 +26,14 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/posts`);
-      console.log(res.data.header.message);
+      console.log(res.data.header);
       console.log(res.data.body);
 
       set({
         posts: res.data.body.postList.content,
       });
     } catch (err) {
-      console.error(err.response ? err.response.data : err.message);
+      console.error(err.response ? err.response.data : err);
     }
   },
   addPost: async (post) => {
@@ -55,14 +54,9 @@ const usePostStore = create((set) => ({
   },
   likePosts: [],
   fetchLikePosts: async () => {
+    const apiClient = getApiClient();
     try {
-      const res = await axios({
-        method: "get",
-        url: `${API_URL}/posts/likes`,
-        // headers: {
-        //   Authorization: "Bearer your_token_here",
-        // },
-      });
+      const res = await apiClient.get(`/posts/likes`);
       console.log(res.data.header.message);
       console.log(res.data.body.postList.content);
 
@@ -75,11 +69,9 @@ const usePostStore = create((set) => ({
   },
   myPosts: [],
   fetchMyPosts: async () => {
+    const apiClient = getApiClient();
     try {
-      const res = await axios({
-        method: "get",
-        url: `${API_URL}/posts/list`,
-      });
+      const res = await apiClient.get(`/posts/list`);
       console.log(res.data.header.message);
       console.log(res.data.body.postList.content);
 

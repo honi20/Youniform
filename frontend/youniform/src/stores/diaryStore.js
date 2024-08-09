@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import axios from "axios";
-import useUserStore from "@stores/userStore";
 import { getApiClient } from "@stores/apiClient";
 
 const logFormData = (formData) => {
@@ -100,9 +99,9 @@ const useDiaryStore = create((set) => ({
   },
   updateDiary: async (diaryId, updatedDiary) => {
     const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
+    console.log("updateDiary - API Client:", apiClient);
     try {
-      const res = await apiClient.put(`/diaries/${diaryId}`, updatedDiary, {
+      const res = await apiClient.post(`/diaries/${diaryId}`, updatedDiary, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -126,6 +125,25 @@ const useDiaryStore = create((set) => ({
       }));
     } catch (error) {
       console.error("Failed to delete diary", error);
+    }
+  },
+  initializeDiary: () => {
+    set({ diary: [] });
+  },
+  mydiary: [],
+  fetchMyDiary: async () => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.get(`/diaries/list`, {
+        params: {
+          lastDiaryDate: "2024-08-09",
+          sort: "diaryDate",
+        },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
     }
   },
 }));

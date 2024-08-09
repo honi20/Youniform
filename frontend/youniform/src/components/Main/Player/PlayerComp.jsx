@@ -19,7 +19,7 @@ import {
 } from "./PlayerCompStyle";
 import { useNavigate } from "react-router-dom";
 
-export default function PlayerContainer({ onSelectPlayer }) {
+export default function PlayerContainer({ onSelectPlayer, player }) {
   const [selectedFolder, setSelectedFolder] = useState(0);
   const navigate = useNavigate();
   const playerCount = 3;
@@ -52,8 +52,8 @@ export default function PlayerContainer({ onSelectPlayer }) {
       <Folder>
         {folderTop(playerCount)}
         <Player>
-          <CharacterComp />
-          <InfoComp />
+          <CharacterComp player={player} />
+          <InfoComp player={player} />
         </Player>
       </Folder>
 
@@ -77,7 +77,9 @@ export default function PlayerContainer({ onSelectPlayer }) {
           <Title>응원가 & 등장곡</Title>
           <Description>최애의 응원가와 등장곡을 들어봅시다!</Description>
         </TextContainer>
-        <BtnContainer onClick={() => navigate("/total-song")}>
+        <BtnContainer
+          onClick={() => navigate(`/song/player/${player.playerId}`)}
+        >
           <PlayBtn />
         </BtnContainer>
       </Container>

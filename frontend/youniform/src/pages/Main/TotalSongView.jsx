@@ -5,7 +5,8 @@ import DownIcon from "@assets/chevron-down.svg?react";
 import UpIcon from "@assets/chevron-up.svg?react";
 import PlayerSongView from "./PlayerSongView";
 import TeamSongComp from "@components/Main/Player/TeamSongComp";
-import useSongStore from "../../stores/songStore";
+import { useParams } from "react-router-dom";
+import usePlayerStore from "../../stores/playerStore";
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -140,23 +141,40 @@ const Btn = styled.div`
 
 const TotalSongView = () => {
   // store에서 꺼내야함
-  const selectedList = [
-    { id: 0, class: "team", name: "Monsters" },
-    { id: 1, class: "player", name: "이대호" },
-    { id: 2, class: "player", name: "김문호" },
-    { id: 3, class: "player", name: "정성훈" },
-  ];
+  const {
+    playerList,
+    fetchPlayerList,
+    teamSongs,
+    fetchTeamSongs,
+    playerSongs,
+    fetchPlayerSongs,
+  } = usePlayerStore();
+  const { playerId } = useParams();
+  const { teamId } = useParams();
+  // fetch song
+  useEffect(() => {
+    if (!teamSongs) {
+      fetchTeamSongs();
+    }
+  }, [fetchTeamSongs]);
+  useEffect(
+    (playerId) => {
+      if (!playerSongs) {
+        fetchPlayerSongs(playerId);
+      }
+    },
+    [fetchPlayerSongs]
+  );
+  useEffect(() => {
+    console.log(playerList);
+    if (!playerList) {
+      fetchPlayerList();
+    }
+  }, [fetchPlayerList]);
 
-  const { teamSongs, fetchTeamSongs } = useSongStore();
-
-  // 나중에 api 요청할때 쓰세요
-  // useEffect(() => {
-  //   fetchTeamSongs();
-  // }, [fetchTeamSongs])
-  // toggle 관련
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
-  const [selected, setSelected] = useState(0); // 들어온 선수 id를 null 값 대신에 넣어야함
+
   const handleToggleBtn = (btnIndex) => {
     setIsOn(false);
     setSelected(btnIndex);
@@ -168,7 +186,7 @@ const TotalSongView = () => {
     setActiveBtn(btnIndex);
   };
   const switchChange = () => {
-    const isTeamClass = selectedList[selected].class === "team";
+    const isTeamClass = !!teamId;
     const buttonLabels = isTeamClass
       ? ["공식", "비공식"]
       : ["등장곡", "응원가"];
@@ -194,19 +212,20 @@ const TotalSongView = () => {
         <ContentWrapper>
           <NavToggle>
             <ToggleBtn onClick={() => handleToggle(isOn)}>
-              {selectedList[selected].name}
+              {playerList.find((p) => p.playerId === playerId)}
               {toggle(isOn)}
             </ToggleBtn>
             <ToggleList $isOn={isOn}>
-              {selectedList.map((player) => (
+              {playerList.map((player) => (
+                // <div>{player}</div>
                 <ToggleItem
                   $isOn={isOn}
-                  $isChecked={selected === player.id}
-                  key={player.id}
+                  //   $isChecked={selected === player.id}
+                  key={player.playerId}
                   onClick={() => handleToggleBtn(player.id)}
                 >
                   {player.name}
-                  <SelectIcon $isChecked={selected === player.id} />
+                  {/* //   <SelectIcon $isChecked={selected === player.id} /> */}
                 </ToggleItem>
               ))}
             </ToggleList>
@@ -214,7 +233,7 @@ const TotalSongView = () => {
           <TabSwitcher>
             <Switcher>{switchChange()}</Switcher>
           </TabSwitcher>
-          {selectedList[selected].class === "team" ? (
+          {teamId ? (
             <TeamSongComp songs={teamSongs} />
           ) : (
             <PlayerSongView active={activeBtn} />

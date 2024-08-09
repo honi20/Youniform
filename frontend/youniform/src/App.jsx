@@ -47,8 +47,8 @@ import PostDetailView from "@pages/Post/PostDetailView";
 import SearchView from "./pages/Post/SearchView";
 import WritePostView from "./pages/Post/WritePostView";
 import MyPost from "@pages/MyPage/MyPost";
-import ChangeProfile from "./pages/MyPage/ChangeProfile";
-
+import ChangeProfile from "@pages/MyPage/ChangeProfile";
+import MyDiaryView from "@pages/Diary/MyDiaryView";
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -136,6 +136,7 @@ function App() {
                   <Route path="friend-list" element={<FriendView />} />
                   <Route path="like-post" element={<LikePostView />} />
                   <Route path="my-post" element={<MyPost />} />
+                  <Route path="my-diary" element={<MyDiaryView />} />
                   <Route path="change-profile" element={<ChangeProfile />} />
                 </Route>
 
@@ -150,9 +151,10 @@ function App() {
                 <Route path="/select-player" element={<SelectPlayerView />} />
                 <Route path="/news" element={<NewsView />} />
                 {/* 노래 관련 */}
-                <Route path="/total-song" element={<TotalSongView />} />
-                <Route path="/team-song/:id" element={<TeamSongView />} />
-                <Route path="/player-song/:id" element={<PlayerSongView />} />
+                <Route path="/song" element={<TotalSongView />}>
+                  <Route path="player/:playerId" element={<PlayerSongView />} />
+                  <Route path="team/:teamId" element={<TeamSongView />} />
+                </Route>
                 {/* 채팅 관련 */}
                 <Route path="/chat/:roomId" element={<ChatView />} />
                 <Route path="/setting/*">

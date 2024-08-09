@@ -11,16 +11,40 @@ const Div = styled.div`
   align-items: center;
   height: auto;
 `;
-
-const DiaryDetailView = () => {
+const Container = styled.div`
+  /* border: 1px solid black; */
+`;
+const ScrollableDiaryView = styled.div`
+  flex: 1 1 auto;
+  overflow-y: auto;
+`;
+const DiaryDetailView = ({ diaries }) => {
   const { diaryId } = useParams();
   const { diary, fetchDiary } = useDiaryStore();
+
   useEffect(() => {
-    fetchDiary(diaryId);
+    if (diaryId) {
+      fetchDiary(diaryId);
+    }
   }, [fetchDiary]);
+
+  const handleScroll = (event) => {
+    if (event.target.scrollTop > 0) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
   return (
     <Div>
-      <DiaryComp diary={diary} />
+      <ScrollableDiaryView onScroll={handleScroll}>
+        <Container>
+          {diaries &&
+            diaries.map((diary) => {
+              return <DiaryComp key={diary.diaryId} diary={diary} />;
+            })}
+        </Container>
+      </ScrollableDiaryView>
     </Div>
   );
 };

@@ -29,14 +29,18 @@ const WriteDiaryView = () => {
   const [date, setDate] = useState(null);
   const [update, setUpdate] = useState(false);
   const { diaryId } = useParams();
-  const { diary, fetchDiary, addDiary, updateDiary } = useDiaryStore();
+  const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
+    useDiaryStore();
 
   useEffect(() => {
     if (diaryId) {
       fetchDiary(diaryId);
       setUpdate(true);
+    } else {
+      initializeDiary();
+      setUpdate(false);
     }
-  }, [fetchDiary]);
+  }, [diaryId, fetchDiary]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -170,14 +174,14 @@ const WriteDiaryView = () => {
 
   const handleAfterSave = async () => {
     try {
-      // saveCanvas();
       const formData = await saveDiaryObject();
-      // const diaryId = await addDiary(formData);
       let newId = "";
-      ///// 수정 /////
+
       if (diaryId) {
+        console.log("다이어리 수정");
         await updateDiary(diaryId, formData);
       } else {
+        console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
       console.log("Diary ID:", diaryId);

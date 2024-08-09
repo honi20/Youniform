@@ -1,11 +1,12 @@
 // 최애선수 서비스 메인홈
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import PlayerComp from "@components/Main/Player/PlayerComp";
 import MessageIcon from "@assets/mainview/Message_light.svg?react";
 import ChatIcon from "@assets/mainview/Chat_alt_2_light.svg?react";
 import HeartIcon from "@assets/mainview/Add_ring_light.svg?react";
 import { useNavigate } from "react-router-dom";
+import usePlayerStore from "@stores/playerStore";
 
 const Div = styled.div`
   display: flex;
@@ -54,31 +55,46 @@ const TextContainer = styled.div`
   line-height: normal;
 `;
 const MainView = () => {
-  
-  const [selectedPlayer, setSelectedPlayer] = useState(1);
+  const [selectedPlayer, setSelectedPlayer] = useState(0);
   const navigate = useNavigate();
+  const { playerList, fetchPlayerList } = usePlayerStore();
+
+  useEffect(() => {
+    fetchPlayerList();
+  }, [fetchPlayerList]);
 
   const handleSelectPlayer = (playerId) => {
     setSelectedPlayer(playerId);
-    // playerId == chatRoomId, 채팅방 설정함
     console.log(playerId);
   };
   return (
     <Div>
-      <PlayerComp onSelectPlayer={handleSelectPlayer} />
+      <PlayerComp
+        onSelectPlayer={handleSelectPlayer}
+        player={playerList[selectedPlayer]}
+      />
       <Container>
-        <Btn onClick={() => navigate("/news")}>
+        <Btn
+          onClick={() =>
+            navigate(`/news/${playerList[selectedPlayer].playerId}`)
+          }
+        >
           <IconWrapper>
             <MessageIcon />
           </IconWrapper>
           <TextContainer>야구 뉴스</TextContainer>
         </Btn>
-        <Btn onClick={() => navigate(`/chat/${selectedPlayer}`)}>
+        <Btn
+          onClick={() =>
+            navigate(`/chat/${playerList[selectedPlayer].playerId}`)
+          }
+        >
           <IconWrapper>
             <ChatIcon />
           </IconWrapper>
           <TextContainer>응원 채팅</TextContainer>
         </Btn>
+        {/* 선수 설정 반영되게 바꾸어야함 */}
         <Btn onClick={() => navigate("/select-player")}>
           <IconWrapper>
             <HeartIcon />

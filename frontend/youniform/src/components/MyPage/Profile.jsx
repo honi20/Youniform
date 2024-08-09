@@ -67,7 +67,8 @@ const Introduce = styled.div`
 `;
 
 const ProfileComp = () => {
-  const { user, fetchUser, clearUser, loading, error, accessToken } = useUserStore();
+  const { user, fetchUser, clearUser, loading, error, accessToken } =
+    useUserStore();
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -157,7 +158,7 @@ const UserComp = () => {
         <UserItem
           icon={NotebookIcon}
           text="나의 다이어리"
-          onClick={() => console.log("나의 다이어리")}
+          onClick={() => navigate("./my-diary")}
         />
         <DotLine />
         <UserItem
