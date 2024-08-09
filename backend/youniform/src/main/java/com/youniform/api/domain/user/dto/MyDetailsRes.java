@@ -30,7 +30,7 @@ public class MyDetailsRes {
         return MyDetailsRes.builder()
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
-                .profileUrl(user.getProfileUrl())
+                .profileUrl(user.getProfileUrl() != null ? user.getProfileUrl() : null)
                 .theme(user.getTheme())
                 .pushAlert(user.getPushAlert())
                 .teamImage(user.getTeam().getImgUrl())

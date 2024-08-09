@@ -67,7 +67,7 @@ public class PostController {
     @GetMapping("/friends/{friendId}")
     public ResponseEntity<?> friendPostList(
             @ModelAttribute FriendPostListReq friendPostReq,
-            @PathVariable String friendId,
+            @PathVariable("friendId") String friendId,
             @PageableDefault(size = 10) Pageable pageable) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
@@ -99,7 +99,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> postDetails(@PathVariable Long postId) {
+    public ResponseEntity<?> postDetails(@PathVariable("postId") Long postId) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         PostDetailsRes result = postService.findPost(postId, userId);
@@ -109,7 +109,7 @@ public class PostController {
 
     @PostMapping("/{postId}")
     public ResponseEntity<?> postModify(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @RequestPart(value = "dto") PostModifyReq postModifyReq,
             @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
@@ -121,7 +121,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> postDelete(@PathVariable Long postId) throws IOException {
+    public ResponseEntity<?> postDelete(@PathVariable("postId") Long postId) throws IOException {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         postService.removePost(postId, userId);
