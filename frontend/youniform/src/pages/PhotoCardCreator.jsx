@@ -186,8 +186,11 @@ const PhotoCardCreator = () => {
       // saveCanvas();
       // saveCanvasAtLocalStorage();
       const photocardImgUrl = selectCanvas.toDataURL({ format: "png" });
+      console.log(photocardImgUrl);
+      const formData = new FormData();       
       const imageBlob = await fetch(photocardImgUrl).then((res) => res.blob());
-      await createPhotoCard(imageBlob);
+      formData.append("file", imageBlob);
+      await createPhotoCard(formData);
       await fetchPhotoCardList();
 
       setIsConfirmModalOpen(true);

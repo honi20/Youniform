@@ -129,7 +129,7 @@ const ColorBtn = muiStyled(Button)(() => ({
 
 const LoginView = () => {
   const { fetchLogin, accessToken, clearAccessToken } = useUserStore();
-  const { photoCards, fetchPhotoCardList } = usePhotoCardStore();
+  const { photoCards, setTotalPages, fetchPhotoCardList } = usePhotoCardStore();
   const [emailInput, setEmailInput] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [currency, setCurrency] = useState("");
@@ -204,6 +204,7 @@ const LoginView = () => {
       alert("로그인에 실패하였습니다.");
     } else if (result === "$OK") {
       await fetchPhotoCardList();
+      await setTotalPages(photoCards / 4 + 1);
       console.log(`로그인 성공`);
       navigate("/");
     }

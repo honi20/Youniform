@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
+const API_URL = "http://i11a308.p.ssafy.io:8080/api";
 
 export const createApiClient = (accessToken) => {
   if (!accessToken) {

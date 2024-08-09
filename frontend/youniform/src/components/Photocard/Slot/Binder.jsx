@@ -128,14 +128,14 @@ const PhotoGroup = styled.div`
 
 const SelectButton = styled.div`
   position: absolute;
-  top: 6px;  /* 원하는 위치로 조정 */
-  left: 6px;  /* 원하는 위치로 조정 */
+  top: 6px;
+  left: 6px;
   width: 30px;
   height: 30px;
-  background-color: #ffffff; /* 약간의 투명도 */
+  background-color: ${(props) => (props.selected ? '#00006e' : '#ffffff')}; /* 남색 or 흰색 */
   border-radius: 50%;
-  border: 2px solid #b4b4b4;
-  z-index: 20; /* img 위에 오도록 설정 */
+  border: 2px solid ${(props) => (props.selected ? '#969696' : '#b4b4b4')};;
+  z-index: 20;
   cursor: pointer;
 `;
 
@@ -148,7 +148,7 @@ const PhotoFrame = styled.div`
   border: 2px solid #ccc;
   border-radius: 10px;
   overflow: hidden;
-  cursor: pointer;
+  cursor: ${(props) => (props.$isSelectMode ? 'default' : 'pointer')};
 
   img {
     position: absolute;
@@ -181,7 +181,8 @@ const Binder = () => {
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
 
-  const { photocards, page, nextPage, prevPage, setSelectedImage } = usePhotoCardStore();
+  const { photocards, page, nextPage, prevPage, setSelectedImage,
+    deletePhotocards } = usePhotoCardStore();
 
   const images = import.meta.glob('/src/assets/photocard/cards/*.png', { eager: true });
   const imageArray = Object.values(images).map((module) => module.default);
@@ -190,13 +191,26 @@ const Binder = () => {
     setAnimate(true);
   }, []);
 
-  const handlePhotoFrameClick = (image) => {
-    setSelectedImage(image);
-    navigate('/photo-card/detail');
+  const handlePhotoFrameClick = (image, photocardId) => {
+    if (!isSelectMode) {
+      setSelectedImage(image);
+      navigate('/photo-card/detail');
+    } else {
+      console.log(`imageUrl: ${image}`);
+      console.log(`photocardId: ${photocardId}`);
+      console.log(`selectedCards: ${selectedCards}`);
+      handleSelectCard(photocardId);
+    }
   };
 
-  const handleSelectCard = () => {
-    // 선택 로직을 여기에 추가합니다.
+  const handleSelectCard = (photocardId) => {
+    setSelectedCards((prevSelectedCards) => {
+      if (prevSelectedCards.includes(photocardId)) {
+        return prevSelectedCards.filter((id) => id !== photocardId);
+      } else {
+        return [...prevSelectedCards, photocardId];
+      }
+    });
   };
 
   const toggleSelectMode = () => {
@@ -205,27 +219,40 @@ const Binder = () => {
 
   const renderPhotoFrames = () => {
     const startIndex = page * 4;
-    return imageArray.slice(startIndex, startIndex + 4).map((image, index) => (
-      <PhotoFrame key={index} onClick={() => handlePhotoFrameClick(image)}>
-        {isSelectMode && (
-          <SelectButton onClick={(e) => { 
-            e.stopPropagation(); 
-            handleSelectCard(); 
-          }}>
-            <CheckIcon style={{ display: "flex", width: "80%", height: "100%", color: "#b4b4b4", margin: "0 auto"}}/>
-          </SelectButton>
-        )}
-        {image && <img src={image} alt={`Photo ${startIndex + index + 1}`} />}
-      </PhotoFrame>
-    ));
+    return imageArray.slice(startIndex, startIndex + 4).map((image, index) => {
+      const photocardId = startIndex + index + 1; // Example of generating a unique photocardId
+      const isSelected = selectedCards.includes(photocardId);
+
+      return (
+        <PhotoFrame 
+          key={index} 
+          $isSelectMode={isSelectMode}
+          onClick={() => handlePhotoFrameClick(image, photocardId)}
+        >
+          {isSelectMode && (
+            <SelectButton 
+              selected={isSelected}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSelectCard(photocardId); 
+              }}
+            >
+              <CheckIcon style={{ color: isSelected ? '#e3e3e3' : '#b4b4b4' }} />
+            </SelectButton>
+          )}
+          {image && <img src={image} alt={`Photo ${photocardId}`} />}
+        </PhotoFrame>
+      );
+    });
   };
 
   const createCard = () => {
     navigate(`/photo-card/create`);
   };
 
-  const deleteCard = () => {
-    // 삭제 로직을 여기에 추가합니다.
+  const deleteCard = async () => {
+    console.log(selectedCards);
+    await deletePhotocards(selectedCards);
   };
 
   return (
@@ -255,8 +282,11 @@ const Binder = () => {
                onClick={createCard}>
                 생성
               </ColorBtn>
-              <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
-               onClick={toggleSelectMode}>
+              <ColorBtn 
+                variant="contained" 
+                style={{ borderRadius: '20px' }}
+                onClick={toggleSelectMode}
+              >
                 선택
               </ColorBtn>
               <ColorBtn variant="contained" style={{ borderRadius: '20px' }}

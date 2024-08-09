@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
+const API_URL = "http://i11a308.p.ssafy.io:8080/api";
 const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
