@@ -37,9 +37,9 @@ public class PlayerController {
 
     @GetMapping("/favorite")
     public ResponseEntity<?> favoritePlayerList() {
-//        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        FavoritePlayerListRes response = playerService.findFavoritePlayers(123L);
+        FavoritePlayerListRes response = playerService.findFavoritePlayers(userId);
 
         return new ResponseEntity<>(ResponseDto.success(SuccessCode.FAVORITE_PLAYER_LIST_OK, response), HttpStatus.OK);
     }

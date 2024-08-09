@@ -1197,10 +1197,6 @@ public class PostControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
         );
 
         //then
@@ -1265,10 +1261,6 @@ public class PostControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
         );
 
         //then
@@ -1331,10 +1323,6 @@ public class PostControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
         );
 
         //then
@@ -1403,10 +1391,6 @@ public class PostControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
         );
 
         //then
@@ -1473,10 +1457,6 @@ public class PostControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .with(csrf())
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
         );
 
         //then

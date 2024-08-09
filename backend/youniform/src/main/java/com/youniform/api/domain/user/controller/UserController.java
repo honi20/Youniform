@@ -77,7 +77,7 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    @PatchMapping("/profile")
+    @PostMapping("/profile")
     public ResponseEntity<?> profileModify(
             @RequestPart(value = "dto") ProfileModifyReq profileModifyReq,
             @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
@@ -124,7 +124,7 @@ public class UserController {
     @GetMapping("/lists")
     public ResponseEntity<?> searchUserList(@RequestParam(value = "lastUserId", required = false) Long lastUserId,
                                             @PageableDefault(size = 20) Pageable pageable) {
-        Long userId = 123L;
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         SearchUserRes result = userService.searchUser(userId, lastUserId, pageable);
 

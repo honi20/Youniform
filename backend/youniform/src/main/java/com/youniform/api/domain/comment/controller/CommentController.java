@@ -6,11 +6,13 @@ import com.youniform.api.domain.comment.dto.CommentModifyReq;
 import com.youniform.api.domain.comment.dto.CommentModifyRes;
 import com.youniform.api.domain.comment.service.CommentService;
 import com.youniform.api.global.dto.ResponseDto;
+import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.statuscode.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +23,11 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     private final CommentService commentService;
 
+    private final JwtService jwtService;
+
     @PostMapping("/{postId}")
     public ResponseEntity<?> commentAdd(@PathVariable Long postId, @RequestBody @Valid CommentAddReq commentAddReq) {
-        Long userId = 123L;
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         CommentAddRes result = commentService.addComment(postId, userId, commentAddReq);
 
@@ -32,7 +36,7 @@ public class CommentController {
 
     @PatchMapping("/{commentId}")
     public ResponseEntity<?> commentModify(@PathVariable Long commentId, @RequestBody CommentModifyReq commentModifyReq) {
-        Long userId = 123L;
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         CommentModifyRes result = commentService.modifyComment(userId, commentId, commentModifyReq);
 
@@ -41,7 +45,7 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<?> commentDelete(@PathVariable Long commentId) {
-        Long userId = 123L;
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         commentService.removeComment(userId, commentId);
 

@@ -36,6 +36,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.SuccessCode.PLAYER_LIST_OK;
 import static com.youniform.api.global.statuscode.SuccessCode.TEAM_SONG_LIST_OK;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -90,7 +91,7 @@ class TeamControllerTest {
         teamSongList.add(new TeamSongDto(1L, "song1", "lyrics1", "OFFICIAL", "link1"));
         teamSongList.add(new TeamSongDto(2L, "song2", "lyrics2", "OFFICIAL", "link2"));
 
-        when(teamService.findTeamSongs(123L)).thenReturn(new TeamSongListRes(teamSongList));
+        when(teamService.findTeamSongs(anyLong())).thenReturn(new TeamSongListRes(teamSongList));
 
         ResultActions actions = mockMvc.perform(
                 get("/teams/song")

@@ -26,9 +26,9 @@ public class TeamController {
 
     @GetMapping("/song")
     public ResponseEntity<?> teamSongList() {
-//        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        TeamSongListRes response = teamService.findTeamSongs(123L);
+        TeamSongListRes response = teamService.findTeamSongs(userId);
 
         return new ResponseEntity<>(ResponseDto.success(TEAM_SONG_LIST_OK, response), HttpStatus.OK);
     }
