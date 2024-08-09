@@ -13,9 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.youniform.api.domain.alert.entity.AlertType.FRIEND_REQUEST;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
@@ -52,25 +49,22 @@ public class FriendController {
         return new ResponseEntity<>(ResponseDto.success(FRIEND_ACCEPT_OK, null), HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<?> friendList() {
-        List<FriendDto> friendList = new ArrayList<>();
+    @GetMapping("/mypage")
+    public ResponseEntity<?> friendMypage() {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
-        for (int i = 0; i < 30; i++) {
-            friendList.add(FriendDto.builder()
-                    .friendId("ewgrg0fgfdg0dfgfdg-sg43543gdf-bdfsdbgsdsd" + i)
-                    .imgUrl("친구 프사 s3 url")
-                    .nickname("친구 닉네임" + i)
-                    .introduce("친구 자기소개" + i)
-                    .teamUrl("응원 구단 image url")
-                    .build());
-        }
+        FriendMypageRes friendList = friendService.findMypageFriends(userId);
 
-        FriendListRes result = FriendListRes.builder()
-                .friendList(friendList)
-                .build();
+        return new ResponseEntity<>(ResponseDto.success(FRIEND_LIST_OK, friendList), HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(ResponseDto.success(FRIEND_LIST_OK, result), HttpStatus.OK);
+    @GetMapping("/diary")
+    public ResponseEntity<?> friendDiary() {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+        FriendDiaryRes friendList = friendService.findDiaryFriends(userId);
+
+        return new ResponseEntity<>(ResponseDto.success(FRIEND_LIST_OK, friendList), HttpStatus.OK);
     }
 
     @DeleteMapping

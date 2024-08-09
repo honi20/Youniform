@@ -78,8 +78,8 @@ public class ChatController {
         InputStreamResource resource = chatService.downloadImage(imgUrl);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);  // 파일 타입을 동적으로 설정하려면 적절한 방식으로 변경
-        headers.setContentDispositionFormData("attachment", imgUrl);  // 파일 이름을 동적으로 설정
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentDispositionFormData("attachment", imgUrl);
 
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }

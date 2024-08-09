@@ -1,6 +1,7 @@
 package com.youniform.api.domain.friend.service;
 
-import com.youniform.api.domain.friend.dto.FriendListRes;
+import com.youniform.api.domain.friend.dto.FriendDiaryRes;
+import com.youniform.api.domain.friend.dto.FriendMypageRes;
 import com.youniform.api.domain.friend.dto.FriendRequestReq;
 import com.youniform.api.domain.friend.entity.Status;
 
@@ -11,7 +12,9 @@ public interface FriendService {
 
     void acceptFriend(Long userId, String friendUuid);
 
-    FriendListRes getFriendList(Long userId);
+    FriendMypageRes findMypageFriends(Long userId);
+
+    FriendDiaryRes findDiaryFriends(Long userId);
 
     void removeFriend(Long userId, String friendUuid);
 }
