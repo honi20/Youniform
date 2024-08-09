@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import * as Stomp from "@stomp/stompjs";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
+const API_URL = "http://i11a308.p.ssafy.io:8080/api";
 const useChatStore = create((set, get) => ({
   messages: [],
   content: "",

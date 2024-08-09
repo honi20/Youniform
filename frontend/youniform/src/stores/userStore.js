@@ -44,9 +44,8 @@ const useUserStore = create((set, get) => ({
   clearFriend: () => set({ friend: null, error: null }),
 
   fetchLogin: async (email, password) => {
-    const apiClient = getApiClient();
     try {
-      const response = await axios.post(`${API_URL}/users/signin/local`, {
+      const response = await axios.post(`${API_URL}/api/users/signin/local`, {
         email,
         password,
       });

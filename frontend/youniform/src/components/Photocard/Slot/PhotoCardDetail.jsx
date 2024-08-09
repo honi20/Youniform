@@ -57,9 +57,13 @@ const PhotoCardDetail = () => {
 
   const handleDelete = () => {
     // 포토카드 삭제 로직 구현
-    closeWarningModal();
+    openWarningModal();
     openConfirmModal();
   };
+
+  const savePhotocard = () => {
+    console.log("save photocard");
+  }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
@@ -76,7 +80,11 @@ const PhotoCardDetail = () => {
           label="삭제"
           openModal={openWarningModal}
         />
-        <DetailControlButton icon={SaveIcon} label="저장" />
+        <DetailControlButton
+          icon={SaveIcon}
+          label="저장"
+          savePhotocard={savePhotocard}
+        />
         <NextIcon />
       </PhotoCardControls>
       <BasicModal
