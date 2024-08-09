@@ -45,15 +45,25 @@ import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
     private final RedisUtils redisUtils;
+
     private final JwtService jwtService;
+
     private final JPAQueryFactory queryFactory;
+
     private final PasswordEncoder passwordEncoder;
+
     private final FriendService friendService;
+
     private final S3Service s3Service;
+
     private final MailService mailService;
+
     private final PlayerRepository playerRepository;
+
     private final TeamRepository teamRepository;
+
     private final UserPlayerRepository userPlayerRepository;
 
     @Transactional
@@ -68,9 +78,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public String signin(LocalSigninReq user) {
         Users users = userRepository.findByEmail(user.getEmail());
-        if(users != null && passwordEncoder.matches(user.getPassword(), users.getPassword())) {
+
+        if (users != null && passwordEncoder.matches(user.getPassword(), users.getPassword())) {
             return jwtService.createAccessToken(users.getUuid());
         }
+
         throw new CustomException(USER_NOT_FOUND);
     }
 
@@ -79,7 +91,7 @@ public class UserServiceImpl implements UserService {
     public String signup(SignupReq user) {
         String uuid = UUID.randomUUID().toString();
 
-        if(user.getProviderType().equals("local")) {
+        if (user.getProviderType().equals("local")) {
             String password = passwordEncoder.encode(user.getPassword());
             user.setPassword(password);
         }
@@ -131,45 +143,51 @@ public class UserServiceImpl implements UserService {
         user.updateIntroduce(req.getIntroduce());
         user.updateNickname(req.getNickname());
 
-        if(!file.isEmpty()) {
-            if(!user.getProfileUrl().isEmpty()) {
+        if (!file.isEmpty()) {
+            if (!user.getProfileUrl().isEmpty()) {
                 s3Service.fileDelete(user.getProfileUrl());
             }
             String imgUrl = s3Service.upload(file, "profile");
             user.updateProfileUrl(imgUrl);
         }
+
         userRepository.save(user);
         ProfileModifyRes res = ProfileModifyRes.builder().build();
+
         return res.toDto(user);
     }
 
     @Override
-    public UserDetailsRes findUserDetails(Long myUserId, String uuid){
+    public UserDetailsRes findUserDetails(Long myUserId, String uuid) {
         Users user = userRepository.findByUuid(uuid).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        if(user == null) throw new CustomException(PROFILE_NOT_FOUND);
+
+        if (user == null) throw new CustomException(PROFILE_NOT_FOUND);
         String isFriend = friendService.isFriend(myUserId, user.getId()).toString();
-        if(isFriend == null) isFriend = "NOT_FRIEND";
+
+        if (isFriend == null) isFriend = "NOT_FRIEND";
         UserDetailsRes userDetail = UserDetailsRes.builder().build();
+
         return userDetail.toDto(user, isFriend);
     }
 
     @Override
     public MyDetailsRes findMyDetails(Long userId) {
-        Users myDetail = userRepository.findById(userId).orElseThrow();
-        MyDetailsRes myDetails = MyDetailsRes.builder().build();
-        return myDetails.toDto(myDetail);
+        return userRepository.findUserDetailsWithCounts(userId);
     }
 
     @Override
     public void passwordReset(PasswordResetReq req) {
         JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(req.getUuid());
-        if(jwtRedis == null) {
+
+        if (jwtRedis == null) {
             throw new CustomException(TEMP_PASSWORD_TIMEOUT);
         }
-        if(!req.getPassword().equals(req.getConfirmPassword())){
+
+        if (!req.getPassword().equals(req.getConfirmPassword())) {
             throw new CustomException(PASSWORD_NOT_MATCH);
         }
-        if(jwtRedis.getVerify().equals(req.getVerify())){
+
+        if (jwtRedis.getVerify().equals(req.getVerify())) {
             Users user = userRepository.findByUuid(req.getUuid())
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
             user.updatePassword(passwordEncoder.encode(req.getPassword()));
@@ -177,6 +195,7 @@ public class UserServiceImpl implements UserService {
             redisUtils.deleteData(user.getUuid());
             return;
         }
+
         throw new CustomException(VERIFY_NOT_MATCH);
     }
 
@@ -184,20 +203,23 @@ public class UserServiceImpl implements UserService {
     public void modifyPassword(PasswordModifyReq req, Long userId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if(req.getNewPassword().equals(req.getConfirmPassword())
+        if (req.getNewPassword().equals(req.getConfirmPassword())
                 && passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
             user.updatePassword(passwordEncoder.encode(req.getNewPassword()));
         }
+
         userRepository.save(user);
     }
 
     @Override
     public void passwordResetSend(PasswordResetSendReq req) {
         Users user = userRepository.findByEmail(req.getEmail());
-        if(user == null){
+
+        if (user == null) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        if(!mailService.isValidEmail(req.getEmail())){
+
+        if (!mailService.isValidEmail(req.getEmail())) {
             throw new CustomException(INVALID_EMAIL);
         }
         //email로 비밀번호 재설정 email 전송
@@ -265,7 +287,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void verifyNickname(String nickname) {
         Users user = userRepository.findByNickname(nickname);
-        if(user == null) return;
+
+        if (user == null) return;
+
         throw new CustomException(ALREADY_EXIST_NICKNAME);
     }
 
@@ -273,22 +297,24 @@ public class UserServiceImpl implements UserService {
     public void sendEmail(EmailSendReq req) {
         Users user = userRepository.findByEmail(req.getEmail());
 
-        if(user == null) {
+        if (user == null) {
             String verify = mailService.sendVerifyEmail(req.getEmail());
-            redisUtils.setDataWithExpiration(req.getEmail()+"_verify", verify, System.currentTimeMillis() + (600_000));
+            redisUtils.setDataWithExpiration(req.getEmail() + "_verify", verify, System.currentTimeMillis() + (600_000));
             return;
         }
+
         throw new CustomException(ALREADY_EXIST_USER);
     }
 
     @Override
     public void verifyEmail(EmailVerifyReq req) {
-        String verify = (String)redisUtils.getData(req.getEmail()+"_verify");
+        String verify = (String) redisUtils.getData(req.getEmail() + "_verify");
 
-        if(verify == null) {
+        if (verify == null) {
             throw new CustomException(NOT_EXIST_VERIFY);
         }
-        if(!verify.equals(req.getVerifyCode())){
+
+        if (!verify.equals(req.getVerifyCode())) {
             throw new CustomException(VERIFY_NOT_MATCH);
         }
     }
