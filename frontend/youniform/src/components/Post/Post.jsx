@@ -133,9 +133,9 @@ const Post = ({ post }) => {
   const { friend, loading, error, fetchFriend, clearFriend } = useUserStore();
   const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
-    console.log(tag);
+    console.log(tag, "포스트 포함 태그 검색");
     const encodedQuery = encodeURIComponent(tag.contents);
-    navigate(`/search?type=tag&q=${encodedQuery}`);
+    navigate(`/search?tagId=${tag.tagId}&q=${encodedQuery}`);
   };
   const convertBrToNewLine = (htmlString) => {
     return htmlString.split("<br>").join("\n");
@@ -192,7 +192,7 @@ const Post = ({ post }) => {
             ))}
           </div>
           <TagContainer>
-            {post.tags.map((tag) => {
+            {post && post.tags.map((tag) => {
               return (
                 <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
                   # {tag.contents}
