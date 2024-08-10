@@ -26,7 +26,7 @@ public class CommentController {
     private final JwtService jwtService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<?> commentAdd(@PathVariable Long postId, @RequestBody @Valid CommentAddReq commentAddReq) {
+    public ResponseEntity<?> commentAdd(@PathVariable("postId") Long postId, @RequestBody @Valid CommentAddReq commentAddReq) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         CommentAddRes result = commentService.addComment(postId, userId, commentAddReq);
@@ -35,7 +35,7 @@ public class CommentController {
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<?> commentModify(@PathVariable Long commentId, @RequestBody CommentModifyReq commentModifyReq) {
+    public ResponseEntity<?> commentModify(@PathVariable("commentId") Long commentId, @RequestBody CommentModifyReq commentModifyReq) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         CommentModifyRes result = commentService.modifyComment(userId, commentId, commentModifyReq);
@@ -44,7 +44,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<?> commentDelete(@PathVariable Long commentId) {
+    public ResponseEntity<?> commentDelete(@PathVariable("commentId") Long commentId) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         commentService.removeComment(userId, commentId);

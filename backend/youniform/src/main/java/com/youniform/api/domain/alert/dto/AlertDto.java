@@ -1,13 +1,9 @@
 package com.youniform.api.domain.alert.dto;
 
 import com.youniform.api.domain.alert.entity.Alert;
-import com.youniform.api.domain.alert.entity.AlertType;
-import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 import static com.youniform.api.global.dateformat.DateFormatter.calculateTime;
 
@@ -36,9 +32,9 @@ public class AlertDto {
 	public static AlertDto toDto(Alert alert) {
 		return AlertDto.builder()
 				.alertId(alert.getId())
-				.senderUuid(alert.getSender().getUuid())
-				.senderNickname(alert.getSender().getNickname())
-				.senderProfileUrl(alert.getSender().getProfileUrl())
+				.senderUuid(alert.getSender() != null ? alert.getSender().getUuid() : null)
+				.senderNickname(alert.getSender() != null ? alert.getSender().getNickname() : null)
+				.senderProfileUrl(alert.getSender() != null ? alert.getSender().getProfileUrl() : null)
 				.type(String.valueOf(alert.getType()))
 				.content(alert.getContent())
 				.link(alert.getLink())

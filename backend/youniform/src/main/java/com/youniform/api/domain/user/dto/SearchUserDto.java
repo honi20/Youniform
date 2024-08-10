@@ -24,7 +24,7 @@ public class SearchUserDto {
     public static SearchUserDto toDto(Users user) {
         return SearchUserDto.builder()
                 .userId(user.getUuid())
-                .imgUrl(user.getProfileUrl())
+                .imgUrl(user.getProfileUrl() != null ? user.getProfileUrl() : null)
                 .nickname(user.getNickname())
                 .introduce(user.getIntroduce())
                 .teamUrl(user.getTeam().getImgUrl())

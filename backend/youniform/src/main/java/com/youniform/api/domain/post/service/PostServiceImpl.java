@@ -55,8 +55,6 @@ public class PostServiceImpl implements PostService {
             postAddReq.updateEmptyTag();
         }
 
-        List<Tag> tagList = tagService.addTagList(postAddReq.getTags());
-
         Post post;
 
         if(file.isEmpty()) {
@@ -67,6 +65,13 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.save(post);
+
+        List<Tag> tagList = tagService.addTagList(postAddReq.getTags());
+
+        tagList.forEach(tag -> {
+            postTagRepository.save(new PostTag(new PostTagPK(post.getId(), tag.getId()),
+                    post, tag));
+        });
 
         return PostAddRes.toDto(post);
     }
@@ -103,10 +108,6 @@ public class PostServiceImpl implements PostService {
                 postTagRepository.save(new PostTag(new PostTagPK(post.getId(), tag.getId()),
                         post, tag));
             });
-
-            tagDtoList = tagList.stream()
-                    .map(TagDto::toDto)
-                    .toList();
         }
 
         post.updateContents(replaceEnter(postModifyReq.getContents()));

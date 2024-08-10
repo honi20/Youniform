@@ -79,6 +79,7 @@ public enum SuccessCode {
     ALERT_LIST_OK(HttpStatus.OK.value(), "알림함 리스트 조회에 성공했습니다."),
     ALERT_READ_MODIFIED(HttpStatus.OK.value(), "알림 읽음 처리에 성공했습니다."),
     ALERT_DELETED(HttpStatus.OK.value(), "알림 삭제에 성공했습니다."),
+    ALERT_PLAYER_APPEARANCE_OK(HttpStatus.OK.value(), "선수 등장 알림 전송에 성공했습니다."),
 
     // chat success code
     CHATROOM_DETAILS_OK(HttpStatus.OK.value(), "채팅방 조회에 성공했습니다."),
