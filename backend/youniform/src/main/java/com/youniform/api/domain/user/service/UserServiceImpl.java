@@ -21,6 +21,7 @@ import com.youniform.api.global.mail.service.MailService;
 import com.youniform.api.global.redis.RedisUtils;
 import com.youniform.api.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,6 +66,9 @@ public class UserServiceImpl implements UserService {
     private final TeamRepository teamRepository;
 
     private final UserPlayerRepository userPlayerRepository;
+
+    @Value("${BUCKET_URL}")
+    private String bucketURl;
 
     @Transactional
     @Override
@@ -144,11 +148,16 @@ public class UserServiceImpl implements UserService {
         user.updateNickname(req.getNickname());
 
         if (!file.isEmpty()) {
-            if (!user.getProfileUrl().isEmpty()) {
+            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketURl + "profile/no_profile.png")) {
                 s3Service.fileDelete(user.getProfileUrl());
             }
             String imgUrl = s3Service.upload(file, "profile");
             user.updateProfileUrl(imgUrl);
+        } else {
+            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketURl + "profile/no_profile.png")) {
+                s3Service.fileDelete(user.getProfileUrl());
+            }
+            user.updateProfileUrl(bucketURl + "profile/no_profile.png");
         }
 
         userRepository.save(user);
@@ -162,7 +171,7 @@ public class UserServiceImpl implements UserService {
         Users user = userRepository.findByUuid(uuid).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if (user == null) throw new CustomException(PROFILE_NOT_FOUND);
-        String isFriend = friendService.isFriend(myUserId, user.getId()).toString();
+        String isFriend = (friendService.isFriend(myUserId, user.getId()) != null) ? friendService.isFriend(myUserId, user.getId()).toString() : null;
 
         if (isFriend == null) isFriend = "NOT_FRIEND";
         UserDetailsRes userDetail = UserDetailsRes.builder().build();
