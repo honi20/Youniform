@@ -156,6 +156,11 @@ const stateMap = {
     title: "포토카드가 생성되었습니다.",
     btn: [0],
   },
+  PhotoCardSelectWarning: {
+    icon: <AlarmIcon />,
+    title: "삭제할 포토카드를 선택하세요.",
+    btn: [0],
+  },
 };
 // btn 종류
 // 0: 확인 1: 취소(색깔 다름) 2: 변경 3: 삭제 4: 초기화

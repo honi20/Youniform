@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import useDiaryStore from '@stores/diaryStore';
 import styled from 'styled-components';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays } from 'date-fns';
 
@@ -36,6 +37,7 @@ const Cell = styled.div`
 `;
 
 const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
+  const {} = useDiaryStore();
   const navigate = useNavigate();
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);

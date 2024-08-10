@@ -111,15 +111,16 @@ const DiaryHomeView = () => {
   const [selectedUser, setSelectedUser] = useState(0);
   const diaryHomeRef = useRef(null);
   const { diaries, fetchDiaries, monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
-  const { friends, fetchFriends } = useFriendStore();
+  const { friends } = useFriendStore();
 
   useEffect(() => {
-    fetchMonthlyDiaries();
+    const now = new Date();
+    const year = now.getFullYear();
+    // 월은 0부터 시작, padStart(month 두 자릿수 보장)
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const formattedDate = `${year}-${month}`;
+    fetchMonthlyDiaries(formattedDate);
   }, [fetchMonthlyDiaries]);
-
-  useEffect(() => {
-    fetchFriends();
-  }, [fetchFriends]); 
 
   useEffect(() => {
     const updateCalendarHeight = () => {

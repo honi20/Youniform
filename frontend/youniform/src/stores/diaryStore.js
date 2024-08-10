@@ -19,12 +19,12 @@ const useDiaryStore = create((set) => ({
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   },
-  fetchMonthlyDiaries: async (date) => {
+  fetchMonthlyDiaries: async (formattedDate) => {
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries/monthly`, {
         params: {
-          calendarDate: "2024-07",
+          calendarDate: formattedDate,
         },
       });
       console.log(res.data.header.message);

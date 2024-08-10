@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { subMonths, addMonths, subYears, addYears } from 'date-fns';
+import { format, subMonths, addMonths, subYears, addYears } from 'date-fns';
+import useDiaryStore from '@stores/diaryStore';
 import styled from 'styled-components';
 import RenderMonth from './Calendar/RenderMonth';
 import RenderDays from './Calendar/RenderDays';
@@ -23,11 +24,14 @@ const CalendarBox = styled.div`
 `;
 
 const Calendar = ({ stamps }) => {
+  const { fetchMonthlyDiaries } = useDiaryStore();
   const [curMonth, setCurMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const prevMonth = () => {
     setCurMonth(subMonths(curMonth, 1));
+    const formattedDate = `${format(curMonth, 'yyyy')}-${format(curMonth, 'MM')}`;
+    fetchMonthlyDiaries(formattedDate);
   };
 
   const nextMonth = () => {

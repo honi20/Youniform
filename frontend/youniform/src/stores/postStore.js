@@ -26,9 +26,7 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/posts`);
-      console.log(res.data.header);
-      console.log(res.data.body);
-
+      console.log(res);
       set({
         posts: res.data.body.postList.content,
       });
