@@ -145,22 +145,10 @@ public class DiaryServiceImpl implements DiaryService {
 	@Override
 	@Transactional
 	public DiaryListRes findDiaries(Long userId, String friendUuid, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException {
-		Users user = userRepository.findById(userId)
-				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
 		Users friend = userRepository.findByUuid(friendUuid)
 				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
 
 		Status status = friendService.isFriend(userId, friend.getId());
-
-		if (status == Status.FRIEND) {
-			FriendPK friendPk = new FriendPK(user.getId(), friend.getId());
-			Friend friendRequest = friendRepository.findByFriendPK(friendPk);
-
-			friendRequest.updateLastVisited(LocalDateTime.now());
-
-			friendRepository.save(friendRequest);
-		}
 
 		LocalDate lastDiaryDate = diaryListReq.getLastDiaryDate();
 		int pageSize = pageable.getPageSize();
@@ -202,10 +190,22 @@ public class DiaryServiceImpl implements DiaryService {
 	public DiaryMonthlyListRes findMonthlyDiaries(Long userId, String friendUuid, DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
 		isInvalidCalendarDate(diaryMonthlyListReq.getCalendarDate() + "-01");
 
+		Users user = userRepository.findById(userId)
+				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
 		Users friend = userRepository.findByUuid(friendUuid)
 				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
 
 		Status status = friendService.isFriend(userId, friend.getId());
+
+		if (status == Status.FRIEND) {
+			FriendPK friendPk = new FriendPK(user.getId(), friend.getId());
+			Friend friendRequest = friendRepository.findByFriendPK(friendPk);
+
+			friendRequest.updateLastVisited(LocalDateTime.now());
+
+			friendRepository.save(friendRequest);
+		}
 
 		LocalDate date = LocalDate.parse(diaryMonthlyListReq.getCalendarDate() + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
