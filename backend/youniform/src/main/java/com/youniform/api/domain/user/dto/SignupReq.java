@@ -39,16 +39,13 @@ public class SignupReq {
 
     private List<Long> players;
 
-    @Value("${BUCKET_URL}")
-    private String bucketURl;
-
-    public Users toEntity(String uuid){
+    public Users toEntity(String uuid, String bucketUrl){
         return Users.builder()
                 .uuid(uuid)
                 .email(this.email)
                 .password(this.password)
                 .providerType(this.providerType)
-                .profileUrl(this.profileUrl == null ? bucketURl + "profile/no_profile.png" : this.profileUrl)
+                .profileUrl(this.profileUrl == null ? bucketUrl + "profile/no_profile.png" : this.profileUrl)
                 .theme(Theme.MONSTERS)
                 .nickname(this.nickname)
                 .introduce(this.introduce)
