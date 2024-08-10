@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,13 +39,16 @@ public class SignupReq {
 
     private List<Long> players;
 
+    @Value("${BUCKET_URL}")
+    private String bucketURl;
+
     public Users toEntity(String uuid){
         return Users.builder()
                 .uuid(uuid)
                 .email(this.email)
                 .password(this.password)
                 .providerType(this.providerType)
-                .profileUrl(this.profileUrl)
+                .profileUrl(this.profileUrl == null ? bucketURl + "profile/no_profile.png" : this.profileUrl)
                 .theme(Theme.MONSTERS)
                 .nickname(this.nickname)
                 .introduce(this.introduce)

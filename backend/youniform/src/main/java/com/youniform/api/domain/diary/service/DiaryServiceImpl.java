@@ -107,7 +107,7 @@ public class DiaryServiceImpl implements DiaryService {
 		Users writer = diary.getUser();
 
 		Status status = friendService.isFriend(userId, writer.getId());
-		boolean isFriend = (status == Status.FRIEND);
+		boolean isFriend = (status != null && status == Status.FRIEND);
 
 		if (userId != writer.getId()) {
 			isForbiddenDiary(diary.getScope(), isFriend);
