@@ -26,7 +26,9 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/posts`);
-      console.log(res);
+      console.log(res.data.header.message);
+      console.log(res.data.body.postList.content);
+
       set({
         posts: res.data.body.postList.content,
       });
@@ -34,18 +36,17 @@ const usePostStore = create((set) => ({
       console.error(err.response ? err.response.data : err);
     }
   },
-  addPost: async (post) => {
+  addPost: async (formData) => {
     const apiClient = getApiClient();
     try {
-      const res = await apiClient.post(`/posts`, post, {
+      const res = await apiClient.post(`/posts`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       console.log(res.data.header.message);
-      console.log(res.data.body);
-
-      set((state) => ({ posts: [...state.posts, response.data.body] }));
+      console.log(res.data.body.postId);
+      return res.data.body.postId;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }

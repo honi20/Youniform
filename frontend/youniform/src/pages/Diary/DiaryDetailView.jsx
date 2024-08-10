@@ -3,7 +3,7 @@ import styled from "styled-components";
 import DiaryComp from "@components/Diary/Write/DiaryComp";
 import { useParams } from "react-router-dom";
 import useDiaryStore from "@stores/diaryStore";
-
+import Loading from "@components/Share/Loading";
 const Div = styled.div`
   flex-shrink: 0;
   display: flex;
@@ -20,7 +20,7 @@ const ScrollableDiaryView = styled.div`
 `;
 const DiaryDetailView = ({ diaries }) => {
   const { diaryId } = useParams();
-  const { diary, fetchDiary } = useDiaryStore();
+  const { diary, fetchDiary, loading } = useDiaryStore();
 
   useEffect(() => {
     if (diaryId) {
@@ -36,16 +36,23 @@ const DiaryDetailView = ({ diaries }) => {
     }
   };
   return (
-    <Div>
-      <ScrollableDiaryView onScroll={handleScroll}>
-        <Container>
-          {diaries &&
-            diaries.map((diary) => {
-              return <DiaryComp key={diary.diaryId} diary={diary} />;
-            })}
-        </Container>
-      </ScrollableDiaryView>
-    </Div>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Div>
+          <ScrollableDiaryView onScroll={handleScroll}>
+            <Container>
+              {diaries &&
+                diaries.map((diary) => {
+                  return <DiaryComp key={diary.diaryId} diary={diary} />;
+                })}
+            </Container>
+          </ScrollableDiaryView>
+          {diary ? <DiaryComp key={diary.diaryId} diary={diary} /> : <></>}
+        </Div>
+      )}
+    </>
   );
 };
 

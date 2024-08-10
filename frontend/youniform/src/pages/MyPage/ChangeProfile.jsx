@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
 import PencilSvg from "@assets/MyPage/pencil.svg?react";
@@ -8,6 +8,7 @@ import Loading from "@components/Share/Loading";
 import { styled as muiStyled } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import { getApiClient } from "@stores/apiClient";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -105,13 +106,21 @@ const ChangeProfile = () => {
   const [introduce, setIntroduce] = useState("");
   const [isModified, setIsModified] = useState(false);
   const [isNicknameChecked, setIsNicknameChecked] = useState(true);
-
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
   const { user, fetchUser, clearUser, loading, error } = useUserStore();
   const theme = useTheme();
-
-  const handleImageChange = (event) => {
+  const navigate = useNavigate();
+  const logFormData = (formData) => {
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+  };
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result);
@@ -144,38 +153,54 @@ const ChangeProfile = () => {
       console.error("Nickname check failed", error);
     }
   };
+  const createFormData = async () => {
+    const formData = new FormData();
+    const dto = {
+      nickname: nickname ? nickname : user.nickname,
+      introduce: introduce ? introduce : user.introduce,
+    };
+    console.log(dto);
+    const newBlob = new Blob();
+    if (selectedFile) {
+      console.log(selectedFile);
+      formData.append("file", selectedFile, selectedFile.name);
+    } else {
+      formData.append("file", newBlob);
+    }
+    const dtoBlob = new Blob([JSON.stringify(dto)], {
+      type: "application/json",
+    });
+
+    formData.append("dto", dtoBlob);
+    logFormData(formData);
+    return formData;
+  };
+  const changeProfile = async (formData) => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.post("/users/profile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+      navigate("/my-page")
+      // return res.data.body.diaryId;
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  };
 
   const handleClickBtn = async () => {
     if (!isModified || !isNicknameChecked) {
       console.log("Cannot submit, either no changes or nickname not checked");
       return;
     }
-    const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
     console.log("Submitting changes...");
-    const dto = {
-      nickname: nickname,
-      introduce: introduce,
-    };
-    const dtoBlob = new Blob([JSON.stringify(dto)], {
-      type: "application/json",
-    });
-    const formData = new FormData();
-    const imageBlob = await fetch(image).then((res) => res.blob());
-    formData.append("file", imageBlob);
-    formData.append("dto", dtoBlob);
-    ////////////// 수정 예정 ////////////////
     try {
-      const res = await apiClient.patch("/users/profile", formData, {
-        // headers: {
-        //   "Content-Type": "multipart/form-data",
-        // },
-      });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
-      if (res.data.header.message === "사용 가능한 닉네임입니다.") {
-        setIsNicknameChecked(true);
-      }
+      const formData = await createFormData();
+      await changeProfile(formData);
     } catch (error) {
       console.log(error);
     }
@@ -220,8 +245,8 @@ const ChangeProfile = () => {
         <ImageBtn>
           <HiddenInput
             type="file"
-            accept="image/*"
-            onChange={handleImageChange}
+            ref={fileInputRef}
+            onChange={handleFileChange}
           />
           <PencilSvg />
         </ImageBtn>

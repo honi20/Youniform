@@ -10,6 +10,7 @@ const Container = styled.div`
   background-color: white;
   margin: 0 8%;
   overflow-y: auto;
+  /* flex: 1; */
   cursor: pointer;
   &:not(:first-child) {
     margin: 4% 8%;
@@ -29,8 +30,8 @@ const Header = styled.div`
 const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  border: 1px solid pink;
   cursor: pointer;
+  /* border: 1px solid pink; */
 `;
 const DateWrapper = styled(HeaderWrapper)`
   ${Font.Small}
@@ -42,7 +43,7 @@ const ProfileImg = styled.img`
   width: 30px;
   border-radius: 50%;
   margin-right: 5px;
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
 `;
 const Content = styled.div`
   ${Font.Medium};
@@ -139,6 +140,7 @@ const PostDetailView = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const [like, setLike] = useState(false);
+  
   const handleTagClick = (tag) => {
     console.log(tag);
     const encodedQuery = encodeURIComponent(tag.contents);
@@ -150,15 +152,13 @@ const PostDetailView = () => {
     await fetchFriend(post.userId);
     setModalOpen(true);
   };
-  useEffect(() => {
-    console.log(post.isLiked);
-    setLike(post.isLiked);
-  }, [setLike]);
+
   useEffect(() => {
     const fetchPostData = async () => {
       try {
         setLoading(true);
         await fetchPost(postId);
+        setLike(post.isLiked);
       } finally {
         setLoading(false);
       }
@@ -181,20 +181,16 @@ const PostDetailView = () => {
   const htmlContent = convertBrToNewLine(post.contents || "");
 
   const handleLike = async () => {
-    console.log("좋아요 버튼 클릭");
-    // console.log(like);
-    setLike((prev) => !prev);
-    // console.log(like);
+    const newLike = !like;
+    setLike(newLike);
+    console.log(newLike);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
-        data: {
-          isLiked: like,
-        },
+        isLiked: true,
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
-      set({ monthlyDiaries: res.data.body.diaryList });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -205,7 +201,7 @@ const PostDetailView = () => {
         <Container>
           <Header>
             <HeaderWrapper onClick={handleProfileClick}>
-              <ProfileImg src={post.imageUrl} />
+              <ProfileImg src={post.profileImg} />
               {post.nickname}
             </HeaderWrapper>
             <DateWrapper>{post.createdAt}</DateWrapper>

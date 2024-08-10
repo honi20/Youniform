@@ -150,7 +150,7 @@ const Header = () => {
               <SportsBaseballIcon />
               <strong>Youniform</strong>
             </Logo>
-            <ColorBtn onClick={checkToken}>토큰확인</ColorBtn>
+            {/* <ColorBtn onClick={checkToken}>토큰확인</ColorBtn> */}
             {isToken ? (
               <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
             ) : (

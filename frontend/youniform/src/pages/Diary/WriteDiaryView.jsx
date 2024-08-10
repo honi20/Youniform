@@ -4,12 +4,14 @@ import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
 import { wallpapers, stickers, fonts } from "@assets";
-
+import styled from "styled-components";
 import DecoIcon from "@assets/DecoIcon.svg?react";
 import ExampleIcon from "@assets/ExIcon.svg?react";
 import DownloadIcon from "@assets/Img_out-box_Fill.svg?react";
 import InitializeIcon from "@assets/Refresh.svg?react";
 import SaveIcon from "@assets/Save_fill.svg?react";
+import DownIcon from "@assets/chevron-down.svg?react";
+import UpIcon from "@assets/chevron-up.svg?react";
 
 import FontComp from "@components/Diary/Write/FontComp";
 import WallPaperComp from "@components/Diary/Write/WallPaperComp";
@@ -19,7 +21,51 @@ import ColorChipComp from "../../components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
 
 import useDiaryStore from "@stores/diaryStore";
-
+const ToggleBtn = styled.div`
+  /* width: 50%; */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  // typo
+  font-family: "Pretendard";
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid red;
+`;
+const Background = styled.div`
+  display: ${(props) => (props.$isOn ? "flex" : "none")};
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+`;
+const ToggleList = styled.div`
+  display: ${(props) => (props.$isOn ? "flex" : "none")};
+  position: absolute;
+  z-index: 20;
+  bottom: 0px;
+  /* left: 30%; */
+  height: 50vh;
+  width: 100%;
+  border: 1px solid #737373;
+  background-color: white;
+`;
+const toggle = (isOn) => {
+  return (
+    <div style={{ display: "flex" }}>{isOn ? <UpIcon /> : <DownIcon />}</div>
+  );
+};
 const WriteDiaryView = () => {
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
@@ -31,7 +77,13 @@ const WriteDiaryView = () => {
   const { diaryId } = useParams();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
+  const [isOn, setIsOn] = useState(false); // 초기 상태 off
+  const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
+  const handleToggleBtn = (btnIndex) => {
+    setIsOn(false);
+    setSelected(btnIndex);
+  };
   useEffect(() => {
     if (diaryId) {
       fetchDiary(diaryId);
@@ -177,33 +229,22 @@ const WriteDiaryView = () => {
       const formData = await saveDiaryObject();
       let newId = "";
 
+
       if (diaryId) {
+        console.log("다이어리 수정");
         console.log("다이어리 수정");
         await updateDiary(diaryId, formData);
       } else {
         console.log("다이어리 생성");
+        console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
-      console.log("Diary ID:", diaryId);
       await moveToDetailPage(newId ? newId : diaryId);
     } catch (error) {
       console.error("Error saving diary object:", error);
     }
   };
-  // const saveCanvas = () => {
-  //   if (selectCanvas) {
-  //     const json = selectCanvas.toJSON();
-  //     const dataStr =
-  //       "data:text/json;charset=utf-8," +
-  //       encodeURIComponent(JSON.stringify(json));
-  //     const downloadAnchorNode = document.createElement("a");
-  //     downloadAnchorNode.setAttribute("href", dataStr);
-  //     downloadAnchorNode.setAttribute("download", "canvas.json");
-  //     document.body.appendChild(downloadAnchorNode);
-  //     downloadAnchorNode.click();
-  //     downloadAnchorNode.remove();
-  //   }
-  // };
+
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
@@ -278,6 +319,12 @@ const WriteDiaryView = () => {
   };
   return (
     <>
+      <Background $isOn={isOn} />
+      <St.StampContainer>
+        test
+        <ToggleBtn onClick={() => handleToggle(isOn)}>{toggle(isOn)}</ToggleBtn>
+      </St.StampContainer>
+      <ToggleList $isOn={isOn}>tttttttt</ToggleList>
       <St.SaveBtn onClick={openSaveModal}>
         <St.IconContainer>
           <SaveIcon />
