@@ -44,7 +44,7 @@ import PhotoCardDetail from "./components/Photocard/Slot/PhotoCardDetail";
 import LikePostView from "@pages/MyPage/LikePostView";
 import FriendView from "@pages/MyPage/FriendView";
 import PostDetailView from "@pages/Post/PostDetailView";
-import SearchView from "./pages/Post/SearchView";
+import SearchView from "@pages/Post/SearchView";
 import WritePostView from "./pages/Post/WritePostView";
 import MyPost from "@pages/MyPage/MyPost";
 import ChangeProfile from "@pages/MyPage/ChangeProfile";
@@ -130,7 +130,7 @@ function App() {
                   <Route path=":postId" element={<PostDetailView />} />
                   <Route path="write" element={<WritePostView />} />
                 </Route>
-                <Route path="/search" element={<SearchView />} />
+                <Route path="/search" element={<SearchView />}/>
                 <Route path="/my-page/*">
                   <Route index element={<MyPageView />} />
                   <Route path="friend-list" element={<FriendView />} />

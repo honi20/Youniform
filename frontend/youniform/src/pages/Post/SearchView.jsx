@@ -17,31 +17,33 @@ const SearchView = () => {
   const queryParams = useRef(queryString.parse(location.search));
   const [searchType, setSearchType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [tagId, setTagId] = useState("");
   useEffect(() => {
     queryParams.current = queryString.parse(location.search);
     setSearchQuery(queryParams.current.q || "");
     setSearchType(queryParams.current.type || "");
+    setTagId(queryParams.current.tagId || "");
   }, [location]);
 
   const [results, setResults] = useState([]);
   const [type, setType] = useState("tag");
   const [search, setSearch] = useState(false);
-  const API_URL = "http://i11a308.p.ssafy.io:8080";
   useEffect(() => {
+    if (tagId){
     const fetchResult = async () => {
       const apiClient = getApiClient();
       try {
         console.log(`Search Type: ${searchType}`);
         console.log(`Searching for: ${searchQuery}`);
-        const res = await apiClient.get("/tags", {
+        console.log(`Search TagId: ${tagId}`);
+        const res = await apiClient.get("/posts/tags", {
           params: {
-            name: searchQuery,
+            tagId: tagId,
             // lastPostId: "1",
           },
         });
         console.log(res.data.header.message);
-        console.log(res.data.body.postList.content);
+        console.log(res.data.body.postList);
         setResults(res.data.body.postList.content);
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
@@ -51,15 +53,19 @@ const SearchView = () => {
     if (searchQuery) {
       fetchResult();
     }
+  }
   }, [searchQuery]);
 
   const hasSearchParams = Boolean(
     queryParams.current.q || queryParams.current.type
   );
   const renderContent = () => {
+    console.log(hasSearchParams, searchQuery)
     if (hasSearchParams) {
       return queryParams.current.q === searchQuery ? (
+        <>
         <Posts posts={results} />
+        </>
       ) : (
         <SearchBox
           query={searchQuery}
@@ -84,6 +90,7 @@ const SearchView = () => {
     }
   };
   return (
+    <>
     <Container>
       <SearchBar
         searchQuery={searchQuery}
@@ -93,6 +100,7 @@ const SearchView = () => {
       />
       <div>{renderContent()}</div>
     </Container>
+    </>
   );
 };
 

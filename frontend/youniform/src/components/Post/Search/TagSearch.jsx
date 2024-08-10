@@ -32,7 +32,7 @@ const TagSearch = ({ query, search, setSearch }) => {
       console.log("태그 검색 시작");
       const apiClient = getApiClient();
       try {
-        const res = await apiClient.get(`/posts/tags`, {
+        const res = await apiClient.get(`/tags`, {
           params: {
             name: query,
           },
@@ -55,7 +55,7 @@ const TagSearch = ({ query, search, setSearch }) => {
       {results ? (
         results.map((result, index) => (
           <SearchResult key={index} onClick={() => handleClickTag(result)}>
-            # {result.contents} {query}
+            # {result.contents}
           </SearchResult>
         ))
       ) : (
