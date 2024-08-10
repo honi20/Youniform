@@ -165,4 +165,18 @@ export const IconFont = styled.div`
   line-height: normal;
   letter-spacing: -0.01031rem;
 `;
+export const StampContainer = styled.div`
+  position: absolute;
+  z-index: 10;
+  width: 150px;
+  height: 50px;
+  border: 1px solid black;
+  right: calc(50vw - 75px);
+  top: 1px;
+  margin-top: 1px;
+  display: flex;
+  justify-content: center;
+  /* flex-direction: column; */
+  align-items: center;
+`;
 export * from "./WriteDiaryStyle";

@@ -47,6 +47,11 @@ const Content = styled.div`
   font-weight: 400;
   margin: 1% 5%;
   /* border: 1px solid green; */
+  & img {
+    /* height: 100%; */
+    width: 100%;
+    object-fit: cover;
+  }
 `;
 const TagContainer = styled.div`
   flex-wrap: wrap;
@@ -129,7 +134,6 @@ const Post = ({ post }) => {
   const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
     console.log(tag);
-    // setSelectedTag(tag.tagId);
     const encodedQuery = encodeURIComponent(tag.contents);
     navigate(`/search?type=tag&q=${encodedQuery}`);
   };
@@ -154,18 +158,15 @@ const Post = ({ post }) => {
   }, [selectedUser, clearFriend]);
 
   const handleLike = async () => {
-    console.log("좋아요 버튼 클릭");
-    setLike((prev) => !prev);
+    const newLike = !like;
+    setLike(newLike);
+    console.log(newLike);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
-        data: {
-          isLiked: like,
-        },
+        isLiked: newLike,
       });
       console.log(res.data.header.message);
-      console.log(res.data.body);
-      set({ monthlyDiaries: res.data.body.diaryList });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -175,12 +176,13 @@ const Post = ({ post }) => {
       <Container>
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
-            <ProfileImg src={post.imageUrl} />
+            <ProfileImg src={post.profileImg} />
             {post.nickname}
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
         <Content>
+          <img src={post.imageUrl} />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
             {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>

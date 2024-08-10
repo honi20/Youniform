@@ -34,7 +34,7 @@ const usePlayerStore = create((set) => ({
     try {
       const res = await apiClient.get(`/players/song/${playerId}`);
       console.log(res.data.header.message);
-      console.log(res.data.body);
+      console.log(res.data.body.songList);
       set({ playerSongs: res.data.body.songList });
     } catch (error) {
       console.error("Failed to fetch team songs:", error);

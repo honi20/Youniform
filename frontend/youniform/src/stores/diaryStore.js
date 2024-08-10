@@ -9,6 +9,7 @@ const logFormData = (formData) => {
 };
 
 const useDiaryStore = create((set) => ({
+  loading: false,
   diaries: [],
   diary: [],
   monthlyDiaries: [],
@@ -51,6 +52,7 @@ const useDiaryStore = create((set) => ({
     }
   },
   fetchDiaries: async () => {
+    set({ loading: true });
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries`, {
@@ -63,25 +65,25 @@ const useDiaryStore = create((set) => ({
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
-      set({ diaries: res.data.body });
+      set({ diaries: res.data.body, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
   },
   fetchDiary: async (diaryId) => {
+    set({ loading: true });
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries/${diaryId}`);
       console.log(res.data.header.message);
       console.log(res.data.body);
 
-      set({ diary: res.data.body });
+      set({ diary: res.data.body, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
   },
   addDiary: async (formData) => {
-    // logFormData(formData);
     const apiClient = getApiClient();
     console.log("API Client:", apiClient);
     try {
@@ -99,7 +101,7 @@ const useDiaryStore = create((set) => ({
   },
   updateDiary: async (diaryId, updatedDiary) => {
     const apiClient = getApiClient();
-    console.log("updateDiary - API Client:", apiClient);
+    // console.log("updateDiary - API Client:", apiClient);
     try {
       const res = await apiClient.post(`/diaries/${diaryId}`, updatedDiary, {
         headers: {

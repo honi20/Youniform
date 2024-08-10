@@ -34,10 +34,10 @@ const SearchView = () => {
       try {
         console.log(`Search Type: ${searchType}`);
         console.log(`Searching for: ${searchQuery}`);
-        const res = await apiClient.get("/posts/tags", {
+        const res = await apiClient.get("/tags", {
           params: {
             name: searchQuery,
-            lastPostId: "1",
+            // lastPostId: "1",
           },
         });
         console.log(res.data.header.message);

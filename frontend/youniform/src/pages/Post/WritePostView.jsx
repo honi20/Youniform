@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import * as Font from "@/typography";
 import useUserStore from "@stores/userStore";
@@ -6,6 +7,7 @@ import Loading from "@components/Share/Loading";
 import ImgSvg from "@assets/Post/img_box.svg?react";
 import DoneSvg from "@assets/Post/done.svg?react";
 import { getApiClient } from "@stores/apiClient";
+import usePostStore from "../../stores/postStore";
 const Container = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -69,13 +71,6 @@ const ImgBox = styled.img`
   max-width: 50px;
   margin-bottom: 10px;
 `;
-{
-  /* <img
-              src={filePreview}
-              alt="Preview"
-              style={{ maxWidth: "50px", marginBottom: "10px" }}
-            /> */
-}
 const Footer = styled.div`
   height: 70px;
   display: flex;
@@ -100,11 +95,14 @@ const CreateBtn = styled(Btn)`
 `;
 const WritePostView = () => {
   const { user, fetchUser, loading } = useUserStore();
+  const { addPost } = usePostStore();
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
+  const { postId } = useParams();
+  const navigate = useNavigate();
   useEffect(() => {
     if (!user) {
       fetchUser();
@@ -136,7 +134,7 @@ const WritePostView = () => {
       console.log(`${key}:`, value);
     }
   };
-  const handleSave = async () => {
+  const createFormData = async () => {
     const cleanedContent = cleanContent();
 
     console.log("저장할 내용:", cleanedContent);
@@ -149,26 +147,45 @@ const WritePostView = () => {
       contents: cleanedContent,
       tags: tags,
     };
-    const imageBlob = await fetch(selectedFile).then((res) => res.blob());
+
+    const newBlob = new Blob();
+    if (selectedFile) {
+      formData.append("file", selectedFile, selectedFile.name);
+    } else {
+      formData.append("file", newBlob);
+    }
     const dtoBlob = new Blob([JSON.stringify(dto)], {
       type: "application/json",
     });
-    formData.append("file", null);
+
     formData.append("dto", dtoBlob);
     logFormData(formData);
+    return formData;
+  };
+  const handleSave = async () => {
     try {
-      const res = await apiClient.post("/posts", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      const formData = await createFormData();
+      let newPostId = "";
+      if (postId) {
+        console.log("포스트 수정");
+      } else {
+        newPostId = await addPost(formData);
+      }
+      await moveToDetailPage(newPostId ? newPostId : postId);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error saving post object:", error);
     }
   };
-
+  const moveToDetailPage = async (postId) => {
+    try {
+      if (postId) {
+        console.log(postId);
+        navigate(`/post/${postId}`); // 페이지 이동
+      }
+    } catch (error) {
+      console.error("Error moving to detail page:", error);
+    }
+  };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {

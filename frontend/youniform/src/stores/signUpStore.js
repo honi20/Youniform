@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
-import { getApiClient } from "@stores/apiClient";
 
+const API_URL = "http://i11a308.p.ssafy.io:8080/api";
 const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
@@ -43,9 +43,10 @@ const signUpStore = create((set, get) => ({
       set((state) => ({ user: { ...state.user, players } })),
   },
   sendEmail: async (email) => {
-    const apiClient = getApiClient();
     try {
-      const res = await apiClient.post(`/users/email/send`, {
+      const res = await axios({
+        method: "post",
+        url: `${API_URL}/users/email/send`,
         data: { email },
       });
       if (res.status === 200) {
@@ -58,24 +59,23 @@ const signUpStore = create((set, get) => ({
     }
   },
   verifyEmailCode: async (email, authenticCode) => {
-    const apiClient = getApiClient();
     try {
-      const res = await apiClient.get(`/users/email/verify`, {
+      const res = await axios({
+        method: "get",
+        url: `${API_URL}/users/email/verify`,
         params: {
           email: email,
           verifyCode: authenticCode,
         },
       });
-      console.log(res);
-    } catch (error) {
-      console.log(`Failed to 이메일 코드 확인`);
-    }
+    } catch (error) {}
   },
   verifyNickname: async () => {
-    const apiClient = getApiClient();
     try {
       const { user } = get();
-      const res = await apiClient.get(`/users/verify`, {
+      const res = await axios({
+        method: "get",
+        url: `${API_URL}/users/verify`,
         params: {
           nickname: user.nickname,
         },
@@ -88,12 +88,12 @@ const signUpStore = create((set, get) => ({
     }
   },
   fetchLocalSignUp: async () => {
-    const apiClient = getApiClient();
     try {
       const { user } = get();
       console.log(user);
-
-      const res = await apiClient.post(`/users/signup/local`, {
+      const res = await axios({
+        method: "post",
+        url: `${API_URL}/users/signup/local`,
         data: {
           email: user.email,
           password: user.password,
