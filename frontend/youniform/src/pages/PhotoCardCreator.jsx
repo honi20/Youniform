@@ -20,6 +20,8 @@ import BasicModal from "@components/Modal/BasicModal";
 import PhotocardCanvas from "@components/Photocard/Create/PhotocardCanvas";
 
 const PhotoCardCreator = () => {
+  const navigate = useNavigate();
+
   const { createPhotoCard, fetchPhotoCardList } = usePhotoCardStore();
 
   const [selectedBtn, setSelectedBtn] = useState(0);
@@ -42,8 +44,6 @@ const PhotoCardCreator = () => {
   };
 
   const closeConfirmModal = () => setIsConfirmModalOpen(false);
-
-  const navigate = useNavigate();
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -96,7 +96,6 @@ const PhotoCardCreator = () => {
     }
   };
   
-  
   const handleFontClick = async (selectedFont) => {
     const getFontName = (path) => {
       const parts = path.split("/");
@@ -120,9 +119,6 @@ const PhotoCardCreator = () => {
       selectCanvas.renderAll();
     }
   };
-  
-
-  
 
   const handleResetClick = () => {
     if (selectCanvas) {
@@ -133,7 +129,6 @@ const PhotoCardCreator = () => {
       );
     }
   };
-
 
   const renderContent = () => {
     switch (selectedBtn) {
@@ -182,74 +177,22 @@ const PhotoCardCreator = () => {
   };
 
   const handleAfterSave = async (index) => {
+    // 포토카드 저장
     if (index == 5) {
-      // saveCanvas();
-      // saveCanvasAtLocalStorage();
       const photocardImgUrl = selectCanvas.toDataURL({ format: "png" });
       console.log(photocardImgUrl);
       const formData = new FormData();       
       const imageBlob = await fetch(photocardImgUrl).then((res) => res.blob());
-      formData.append("file", imageBlob);
+      formData.append("file", imageBlob, "image.png");
       await createPhotoCard(formData);
       await fetchPhotoCardList();
 
-      setIsConfirmModalOpen(true);
       // 다음 모달 open
-    }
-    // .then(() => {
-    //   return axios({
-    //     method: "post",
-    //     url: "http://i11a308.p.ssafy.io:8080/diaries",
-    //     data: {
-    //       diaryDate: getCurrentDate(),
-    //       contents: diary,
-    //     },
-    //     scope: "ALL",
-    //     stampId: 1,
-    //   });
-    // })
-    // .then((res) => {
-    //   console.log(res.body.diaryId);
-    //   navigate("/diary/detail/${diaryId}");
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
-  };
-
-
-  const saveCanvas = () => {
-    if (selectCanvas) {
-      const json = selectCanvas.toJSON();
-      const dataStr =
-        "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(json));
-      const downloadAnchorNode = document.createElement("a");
-      downloadAnchorNode.setAttribute("href", dataStr);
-      downloadAnchorNode.setAttribute("download", "canvas.json");
-      document.body.appendChild(downloadAnchorNode);
-      downloadAnchorNode.click();
-      downloadAnchorNode.remove();
+      setIsConfirmModalOpen(true);
+      // 바인더로 이동
+      navigate(`/photo-card/binder`);
     }
   };
-
-
-  const saveCanvasAtLocalStorage = () => {
-    return new Promise((resolve, reject) => {
-      try {
-        if (selectCanvas) {
-          const json = selectCanvas.toJSON();
-          const jsonString = JSON.stringify(json);
-          localStorage.setItem("canvasData", jsonString);
-          setDiary(jsonString);
-          resolve();
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
 
   const downloadCanvas = () => {
     if (selectCanvas) {
@@ -262,7 +205,6 @@ const PhotoCardCreator = () => {
       document.body.removeChild(link);
     }
   };
-
 
   const fetchData = async () => {
     try {
@@ -280,7 +222,6 @@ const PhotoCardCreator = () => {
       console.error(error);
     }
   };
-
 
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
@@ -314,7 +255,6 @@ const PhotoCardCreator = () => {
       }
     }
   };
-
 
   const setBackground = () => {
     fileInputRef.current.click();

@@ -116,7 +116,7 @@ function App() {
                   <Route index element={<BinderCover />} />
                   <Route path="cover" element={<BinderCover />} />
                   <Route path="binder" element={<Binder />} />
-                  <Route path="detail" element={<PhotoCardDetail />} />
+                  <Route path="detail/:photocardId" element={<PhotoCardDetail />} />
                   <Route path="create" element={<PhotoCardCreator />} />
                 </Route>
                 <Route path="/diary/*">

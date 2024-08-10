@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import coverimg from "@assets/photocard/cover.png";
 import ArrowRight from "./ArrowRight";
+import { useNavigate } from 'react-router-dom';
 
 const BinderContainer = styled.div`
   display: flex;
@@ -25,6 +26,12 @@ const CoverImage = styled.img`
 `;
 
 const BinderCover = () => {
+  const navigate = useNavigate();
+
+  const goToBinder = () => {
+    navigate('/photo-card/binder', { state: { from: 'BinderCover' } });
+  };
+
   return (
     <BinderContainer>
         <CoverImage src={coverimg} />

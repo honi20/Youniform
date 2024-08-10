@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useUserStore = create((set, get) => ({
   user: null,
   friend: null,
@@ -44,10 +43,11 @@ const useUserStore = create((set, get) => ({
   clearFriend: () => set({ friend: null, error: null }),
 
   fetchLogin: async (email, password) => {
+    const apiClient = getApiClient();
     try {
-      const response = await axios.post(`${API_URL}/api/users/signin/local`, {
-        email,
-        password,
+      const response = await apiClient.post(`/users/signin/local`, {
+        email: email,
+        password: password
       });
       console.log(response.data.body);
       const { accessToken } = response.data.body;

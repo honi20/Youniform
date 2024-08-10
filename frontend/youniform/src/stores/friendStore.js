@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import axios from "axios";
+import { getApiClient } from "@stores/apiClient";
 
 const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useFriendStore = create((set) => ({
   friends: [],
+  diaryFriends: [],
   fetchFriends: async () => {
     try {
       const res = await axios({
@@ -46,6 +48,16 @@ const useFriendStore = create((set) => ({
         "Error deleting friend:",
         err.response ? err.response.data : err.message
       );
+    }
+  },
+  fetchDiaryFriends: async () => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.get(`/friends/diary`);
+      console.log(res.data);
+      set({ diaryFriends: res.data.body.friendDiaryList });
+    } catch (error) {
+      console.log("Failed to fetchDiaryFriends", error);
     }
   },
 }));

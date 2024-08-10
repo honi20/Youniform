@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import useFriendStore from '@stores/friendStore';
+import useDiaryStore from '@stores/diaryStore';
 
 // test
 import User1 from '../../assets/Test/User/user_1.png';
@@ -9,7 +11,6 @@ import User3 from '../../assets/Test/User/user_3.png';
 import User4 from '../../assets/Test/User/user_4.png';
 import User5 from '../../assets/Test/User/user_5.png';
 import User6 from '../../assets/Test/User/user_6.png';
-import useDiaryStore from '../../stores/diaryStore';
 
 const UserInfo = [
   { id: 1, imgSrc: User1, nickName: '하츄핑', updateStatus: false },
@@ -103,12 +104,12 @@ const VerticalBar = styled.div`
 
 const DiaryFriendsList = ({ onUserClick }) => {
   const [selectedUserIndex, setSelectedUserIndex] = useState(null);
-  const { friends } = useFriendStore();
+  const { friends, diaryFriends, fetchDiaryFriends } = useFriendStore();
   const { fetchFriendsDiaries } = useDiaryStore();
 
-  // useEffect(() => {
-  //   fetchFriends();
-  // }, [fetchFriends]);
+  useEffect(() => {
+    fetchDiaryFriends();
+  }, [fetchDiaryFriends]); 
 
   const handleUserClick = async (index) => {
     // UserInfo[index].updateStatus = false;
@@ -129,7 +130,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
         </UserCard>
         <VerticalBar />
         {/* Friends List */}
-        {friends.map((user, index) => (
+        {diaryFriends.map((user, index) => (
           <UserCard
             key={user.friendId}
             $isSelected={index === selectedUserIndex}
@@ -137,10 +138,12 @@ const DiaryFriendsList = ({ onUserClick }) => {
             onClick={() => handleUserClick(index)}
           >
             <UserImage src={user.imgUrl} alt={user.nickname} />
-            <UpdateStatusCircle $updateStatus={user.updateStatus} />
+            {user.diaryUpdated == true && 
+              <UpdateStatusCircle $updateStatus={user.updateStatus} />
+            }
             <UserName>{user.nickname}</UserName>
           </UserCard>
-        ))};
+        ))}
       </FriendsList>
     </ListContainer>
   );

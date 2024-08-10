@@ -7,6 +7,7 @@ import useUserStore from "@stores/userStore";
 import * as Font from "@/typography";
 import ColorBtn from "../Common/ColorBtn";
 import { clearAccessToken } from "@stores/apiClient";
+
 const Head = styled.div`
   background-color: #f8f8f8;
   position: fixed;
@@ -103,6 +104,10 @@ const Header = () => {
     navigate(-1);
   };
 
+  const handleBackPhotocard = () => {
+    navigate(`/photo-card/binder`);
+  };
+
   const handleLoginClick = () => {
     navigate("/login");
   };
@@ -126,11 +131,19 @@ const Header = () => {
   }, [setIsToken]);
 
   const renderContent = () => {
-    switch (currentPath) {
-      case "/":
-      case "/photo-card":
-      case "/diary":
-      case "/post":
+    switch (true) {
+      case currentPath.startsWith("/photo-card/detail/"):
+        return (
+          <InnerHead>
+            <div onClick={handleBackPhotocard}>{backSvg(theme)}</div>
+          </InnerHead>
+        );
+      case currentPath === "/photo-card/binder":
+      return (
+        <InnerHead>
+        </InnerHead>
+      );
+      case ["/", "/photo-card", "/diary", "/post"].includes(currentPath):
         return (
           <InnerHead>
             <Logo>
@@ -145,31 +158,20 @@ const Header = () => {
             )}
           </InnerHead>
         );
-      case "/my-page":
+      case currentPath === "/my-page":
         return (
           <InnerHead>
-            <Logo>
-              <SportsBaseballIcon />
-              <strong>Youniform</strong>
-            </Logo>
             <IconContainer>
               {alarmSvg(isAlarm)}
               <SettingIcon onClick={() => navigate("/setting")} />
             </IconContainer>
           </InnerHead>
         );
-      case "/setting":
+      case currentPath === "/setting":
         return (
           <InnerHead>
             <div onClick={handleBack}>{backSvg(theme)}</div>
-            <div
-              style={{
-                position: "absolute",
-                right: "50%",
-              }}
-            >
-              설정
-            </div>
+            <div style={{ position: "absolute", right: "50%" }}>설정</div>
           </InnerHead>
         );
       default:
