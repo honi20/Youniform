@@ -2,6 +2,8 @@ package com.youniform.api.domain.user.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.youniform.api.domain.player.entity.Player;
+import com.youniform.api.domain.user.entity.QUsers;
+import com.youniform.api.domain.user.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +11,7 @@ import java.util.List;
 
 import static com.youniform.api.domain.player.entity.QPlayer.player;
 import static com.youniform.api.domain.user.entity.QUserPlayer.userPlayer;
+import static com.youniform.api.domain.user.entity.QUsers.users;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,6 +24,15 @@ public class UserPlayerCustomRepositoryImpl implements UserPlayerCustomRepositor
 				.from(userPlayer)
 				.join(userPlayer.player, player)
 				.where(userPlayer.user.id.eq(userId))
+				.fetch();
+	}
+
+	@Override
+	public List<Users> findUserByPlayerId(Long playerId) {
+		return queryFactory.select(users)
+				.from(userPlayer)
+				.join(userPlayer.user, users)
+				.where(userPlayer.player.id.eq(playerId))
 				.fetch();
 	}
 }

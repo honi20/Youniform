@@ -23,7 +23,7 @@ public class LikePostController {
     private final JwtService jwtService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<?> postLike(@PathVariable Long postId,
+    public ResponseEntity<?> postLike(@PathVariable("postId") Long postId,
                                       @RequestBody PostLikeReq postLikeReq) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 

@@ -7,7 +7,10 @@ import com.youniform.api.domain.alert.entity.Alert;
 import com.youniform.api.domain.alert.entity.AlertType;
 import com.youniform.api.domain.alert.repository.AlertRepository;
 import com.youniform.api.domain.alert.repository.SseRepository;
+import com.youniform.api.domain.player.entity.Player;
+import com.youniform.api.domain.player.repository.PlayerRepository;
 import com.youniform.api.domain.user.entity.Users;
+import com.youniform.api.domain.user.repository.UserPlayerCustomRepository;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.youniform.api.domain.alert.entity.AlertType.PLAYER_APPEARANCE;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
@@ -31,10 +35,12 @@ public class AlertServiceImpl implements AlertService {
 	private static final Logger log = LoggerFactory.getLogger(AlertServiceImpl.class);
 	private final SseRepository sseRepository;
 	private final AlertRepository alertRepository;
+	private final UserRepository userRepository;
+	private final PlayerRepository playerRepository;
+	private final UserPlayerCustomRepository UserPlayerCustomRepository;
 
 	// 연결 지속 시간 : 1시간
 	private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-	private final UserRepository userRepository;
 
 	@Override
 	public SseEmitter subscribe(Long userId, String lastEventId) throws IOException {
@@ -108,6 +114,18 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	public void sendPlayerAppearance(Long playerId) {
+		Player player = playerRepository.findById(playerId)
+				.orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
+
+		List<Users> users = UserPlayerCustomRepository.findUserByPlayerId(playerId);
+
+		users.forEach(user -> {
+			send(user.getUuid(), null, PLAYER_APPEARANCE, player.getName()+" 선수가 등장했습니다.", null);
+		});
+	}
+
+	@Override
 	public void testAlert() {
 		send("1604b772-adc0-4212-8a90-81186c57f598", 124L, AlertType.POST_COMMENT, "최강 몬스터즈 우승", "http://youniform.com");
 	}
@@ -117,8 +135,11 @@ public class AlertServiceImpl implements AlertService {
 		Users receiver = userRepository.findByUuid(receiverUuid)
 				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
 
-		Users sender = userRepository.findById(senderId)
-				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+		Users sender = null;
+		if (senderId != null) {
+			 sender = userRepository.findById(senderId)
+					.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+		}
 
 		AlertReq alertReq = AlertReq.builder()
 				.receiver(receiver)
@@ -132,7 +153,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	private void send(AlertReq alertReq) {
-		Alert alert = alertRepository.save(alertReq.toEntity());
+		Alert alert = alertRepository.save(alertReq.toEntity(alertReq.getSender()));
 		AlertDto alertDto = AlertDto.toDto(alert);
 		String userId = String.valueOf(alertReq.getReceiver().getId());
 
