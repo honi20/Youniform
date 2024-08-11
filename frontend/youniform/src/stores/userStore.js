@@ -64,6 +64,20 @@ const useUserStore = create((set, get) => ({
       return "$FAIL";
     }
   },
+
+  findPassword: async (email) => {
+    try {
+      const response = await axios.post(`${API_URL}/users/email/send`, {
+        email
+      });
+      console.log(response.data.header.message);
+      console.log(response.data.body);
+      return "$OK";
+    } catch (err) {
+      console.log("Failed to fetchLogin", err);
+      return "$FAIL";
+    }
+  },
 }));
 
 export default useUserStore;

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled, { useTheme } from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import SettingIcon from "@assets/Header/setting.svg?react";
 import useUserStore from "@stores/userStore";
@@ -53,7 +53,7 @@ const backSvg = (theme) => {
   );
 };
 
-const alarmSvg = (isAlarm) => {
+const alarmSvg = (isAlarm, onClick) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -61,6 +61,8 @@ const alarmSvg = (isAlarm) => {
       height="30"
       viewBox="0 0 30 30"
       fill="none"
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
     >
       <path
         fillRule="evenodd"
@@ -162,7 +164,7 @@ const Header = () => {
         return (
           <InnerHead>
             <IconContainer>
-              {alarmSvg(isAlarm)}
+              {alarmSvg(isAlarm, () => navigate("/alert"))}
               <SettingIcon onClick={() => navigate("/setting")} />
             </IconContainer>
           </InnerHead>
@@ -172,6 +174,13 @@ const Header = () => {
           <InnerHead>
             <div onClick={handleBack}>{backSvg(theme)}</div>
             <div style={{ position: "absolute", right: "50%" }}>설정</div>
+          </InnerHead>
+        );
+      case currentPath === "/alert":
+        return (
+          <InnerHead>
+            <div onClick={handleBack}>{backSvg(theme)}</div>
+            <div style={{ position: "absolute", right: "45%" }}>알림함</div>
           </InnerHead>
         );
       default:

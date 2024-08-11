@@ -60,6 +60,18 @@ const useFriendStore = create((set) => ({
       console.log("Failed to fetchDiaryFriends", error);
     }
   },
+  acceptFriendRequest: async (uuid) => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.post(`/friends/accept`, {
+        friendUuid: uuid
+      });
+      console.log(res.data);
+      return "$SUCCESS"
+    } catch (error) {
+      console.log("Failed to fetchDiaryFriends", error);
+    }
+  },
 }));
 
 export default useFriendStore;

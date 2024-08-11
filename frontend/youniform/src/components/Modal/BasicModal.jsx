@@ -161,6 +161,17 @@ const stateMap = {
     title: "삭제할 포토카드를 선택하세요.",
     btn: [0],
   },
+  CheckFriendRequest: {
+    icon: <AlarmIcon />,
+    title: "친구 요청을 수락하시겠습니까?",
+    subtitle: "다이어리 '친구 공개'를 통해 공유가 가능합니다.",
+    btn: [1, 0],
+  },
+  ConfirmFriendRequest: {
+    icon: <CheckIcon />,
+    title: "친구 요청이 수락되었습니다.",
+    btn: [0],
+  },
 };
 // btn 종류
 // 0: 확인 1: 취소(색깔 다름) 2: 변경 3: 삭제 4: 초기화
@@ -170,7 +181,6 @@ const buttonMap = {
   2: { bgcolor: "#262F66", color: "white", label: "변경" },
   3: { bgcolor: "#262F66", color: "white", label: "삭제" },
   4: { bgcolor: "#262F66", color: "white", label: "초기화" },
-  5: { bgcolor: "#262F66", color: "white", label: "생성" },
   5: { bgcolor: "#262F66", color: "white", label: "생성" },
 };
 

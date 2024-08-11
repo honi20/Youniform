@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
 import LoginView from "./pages/LoginView";
 import FindEmailView from "./pages/Setting/FindEmailView";
-import FindPasswordView from "./pages/Setting/FindPasswordView";
+import FindPasswordView from "./pages/FindPasswordView";
 import DiaryDetailView from "@pages/Diary/DiaryDetailView";
 import WriteDiaryView from "@pages/Diary/WriteDiaryView";
 import SignUpView from "./pages/SignUpView";
@@ -49,6 +49,7 @@ import WritePostView from "./pages/Post/WritePostView";
 import MyPost from "@pages/MyPage/MyPost";
 import ChangeProfile from "@pages/MyPage/ChangeProfile";
 import MyDiaryView from "@pages/Diary/MyDiaryView";
+import AlertView from "./pages/AlertView";
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -141,7 +142,6 @@ function App() {
                   <Route path="my-diary" element={<MyDiaryView />} />
                   <Route path="change-profile" element={<ChangeProfile />} />
                 </Route>
-
                 {/* SignUp */}
                 <Route path="/sign-up/*" element={<SignUpView />}>
                   <Route index element={<StepOneForm />} />
@@ -175,6 +175,7 @@ function App() {
                   <Route path="find-email" element={<FindEmailView />} />
                   <Route path="find-password" element={<FindPasswordView />} />
                 </Route>
+                <Route path="alert" element={<AlertView />} />
               </Routes>
             </ContentContainer>
             <div ref={navBarRef}>
