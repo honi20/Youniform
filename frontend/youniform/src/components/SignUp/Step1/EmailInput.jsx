@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { TextField, MenuItem, Button } from '@mui/material';
 import styled from 'styled-components';
 import CheckIcon from '@mui/icons-material/Check';
@@ -117,10 +117,10 @@ const EmailInput = () => {
   };
   
   const confirmCode = async () => {
-    // const result = await verifyEmailCode(fullEmail, authenticCode);
-    
+    fullEmail = isCustomDomain ? `${emailInput}@${currency}` : `${emailInput}@${currency}`;
+    const result = await verifyEmailCode(fullEmail, authenticCode);
     // 코드 수정 필요 (임시)
-    if (authenticCode === 'ABCD') {
+    if (result === '$SUCCESS') {
       setIsVerified(true);
       setExpiryTime(null); // 인증이 완료되면 타이머 중지
     } else {
