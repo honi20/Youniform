@@ -1,5 +1,6 @@
 package com.youniform.api.domain.user.repository;
 
+import com.youniform.api.domain.user.dto.MyDetailsRes;
 import com.youniform.api.domain.user.dto.SearchUserDto;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Pageable;
@@ -10,4 +11,5 @@ public interface UserCustomRepository {
                                           @Param("lastUserId") Long lastUserId,
                                           @Param("pageable") Pageable pageable);
 
+    MyDetailsRes findUserDetailsWithCounts(Long userId);
 }

@@ -4,6 +4,8 @@ package com.youniform.api.domain.user.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.youniform.api.domain.friend.entity.Status;
+import com.youniform.api.domain.user.dto.MyDetailsRes;
 import com.youniform.api.domain.user.dto.SearchUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.youniform.api.domain.like_post.entity.QLikePost.likePost;
 import static com.youniform.api.domain.user.entity.QUsers.users;
+import static com.youniform.api.domain.friend.entity.QFriend.friend1;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,6 +46,27 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 		}
 
 		return new SliceImpl<>(userList, pageable, hasNext);
+	}
+
+	@Override
+	public MyDetailsRes findUserDetailsWithCounts(Long userId) {
+		return queryFactory.select(Projections.constructor(
+						MyDetailsRes.class,
+						users.nickname,
+						users.introduce,
+						users.profileUrl,
+						users.theme,
+						users.pushAlert,
+						users.team.imgUrl,
+						likePost.likePostPK.postId.countDistinct(),
+						friend1.friendPK.friendId.countDistinct()
+				))
+				.from(users)
+				.leftJoin(likePost).on(users.id.eq(likePost.user.id))
+				.leftJoin(friend1).on(users.id.eq(friend1.user.id).and(friend1.status.eq(Status.FRIEND)))
+				.where(users.id.eq(userId))
+				.groupBy(users)
+				.fetchOne();
 	}
 
 	private BooleanExpression conditionUserId(Long lastUserId) {
