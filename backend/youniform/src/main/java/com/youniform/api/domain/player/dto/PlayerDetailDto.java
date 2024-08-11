@@ -41,7 +41,9 @@ public class PlayerDetailDto {
 
 	private String twoWay;
 
-	public static PlayerDetailDto toDto(Player player) {
+	private Boolean pushAlert;
+
+	public static PlayerDetailDto toDto(Player player, boolean isAlert) {
 		return PlayerDetailDto.builder()
 				.playerId(player.getId())
 				.name(player.getName())
@@ -57,6 +59,7 @@ public class PlayerDetailDto {
 				.struck(player.getStruck())
 				.position(player.getPosition())
 				.twoWay(player.getTwoWay())
+				.pushAlert(isAlert)
 				.build();
 	}
 }

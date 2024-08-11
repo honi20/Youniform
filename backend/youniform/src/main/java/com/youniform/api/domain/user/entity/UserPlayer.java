@@ -25,4 +25,10 @@ public class UserPlayer {
     @MapsId("playerId")
     @JoinColumn(name = "player_id")
     private Player player;
+
+    private Boolean pushAlert;
+
+    public void updatePushAlert(Boolean pushAlert) {
+        this.pushAlert = pushAlert;
+    }
 }

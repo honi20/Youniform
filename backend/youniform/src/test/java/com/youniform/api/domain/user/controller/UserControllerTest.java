@@ -414,6 +414,7 @@ public class UserControllerTest {
                         .nickname("닉네임")
                         .theme(Theme.MONSTERS)
                         .pushAlert(true)
+                        .playPushAlert(true)
                         .teamImage("최애 팀 이미지 url")
                         .introduce("자기소개")
                         .profileUrl("프로필 이미지 url")
@@ -452,7 +453,9 @@ public class UserControllerTest {
                                                 fieldWithPath("body.theme").type(JsonFieldType.STRING)
                                                         .description("현재 테마"),
                                                 fieldWithPath("body.pushAlert").type(JsonFieldType.BOOLEAN)
-                                                        .description("푸시 알람 여부"),
+                                                        .description("서비스 관련 푸시 알람 여부"),
+                                                fieldWithPath("body.playPushAlert").type(JsonFieldType.BOOLEAN)
+                                                        .description("방송(경기) 시작 푸시 알람 여부"),
                                                 fieldWithPath("body.teamImage").type(JsonFieldType.STRING)
                                                         .description("응원하는 팀 이미지 url"),
                                                 fieldWithPath("body.likePostCount").type(JsonFieldType.NUMBER)
@@ -673,12 +676,12 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(ALERT_MODIFIED.getMessage()))
                 .andDo(document(
-                        "푸시 알림 변경 성공",
+                        "게시글 푸시 알림 변경 성공",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("User API")
-                                .summary("푸시 알림 변경 API")
+                                .summary("게시글 푸시 알림 변경 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
@@ -692,14 +695,66 @@ public class UserControllerTest {
                                                         .description("내용 없음")
                                         )
                                 )
-                                .requestSchema(Schema.schema("푸시 알림 변경 Request"))
-                                .responseSchema(Schema.schema("푸시 알림 변경 Response"))
+                                .requestSchema(Schema.schema("게시글 푸시 알림 변경 Request"))
+                                .responseSchema(Schema.schema("게시글 푸시 알림 변경 Response"))
                                 .build()
                         ))
                 );
     }
 
     @Test
+    public void 경기_시작_알림_변경_성공() throws Exception {
+        //given
+        AlertModifyReq alertModifyReq = new AlertModifyReq();
+        alertModifyReq.setPushAlert(false);
+
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        String content = gson.toJson(alertModifyReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/api/users/play/alert")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf())
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ALERT_MODIFIED.getMessage()))
+                .andDo(document(
+                        "경기 시작 푸시 알림 변경 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("User API")
+                                .summary("경기 시작 푸시 알림 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("pushAlert").type(JsonFieldType.BOOLEAN)
+                                                .description("변경 값")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("경기 시작 푸시 알림 변경 Request"))
+                                .responseSchema(Schema.schema("경기 시작 푸시 알림 변경 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+        @Test
     public void 회원_탈퇴_성공() throws Exception {
         String jwtToken = jwtService.createAccessToken(UUID);
         //given
