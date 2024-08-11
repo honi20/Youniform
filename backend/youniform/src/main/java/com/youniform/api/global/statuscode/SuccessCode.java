@@ -94,6 +94,7 @@ public enum SuccessCode {
 
     // team success code
     TEAM_SONG_LIST_OK(HttpStatus.OK.value(), "최애 구단 응원가 리스트 조회에 성공했습니다."),
+    TEAM_DETAILS_OK(HttpStatus.OK.value(), "최애 구단 정보 조회에 성공했습니다."),
     ;
 
     private final int httpStatusCode;

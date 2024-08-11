@@ -1,5 +1,6 @@
 package com.youniform.api.domain.team.controller;
 
+import com.youniform.api.domain.team.dto.TeamDetailsRes;
 import com.youniform.api.domain.team.dto.TeamSongListRes;
 import com.youniform.api.domain.team.service.TeamService;
 import com.youniform.api.global.dto.ResponseDto;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.youniform.api.global.statuscode.SuccessCode.TEAM_DETAILS_OK;
 import static com.youniform.api.global.statuscode.SuccessCode.TEAM_SONG_LIST_OK;
 
 @RestController
@@ -31,5 +33,14 @@ public class TeamController {
         TeamSongListRes response = teamService.findTeamSongs(userId);
 
         return new ResponseEntity<>(ResponseDto.success(TEAM_SONG_LIST_OK, response), HttpStatus.OK);
+    }
+
+    @GetMapping("/favorite")
+    public ResponseEntity<?> favoriteTeamDetails() {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+
+        TeamDetailsRes response = teamService.findTeamDetail(userId);
+
+        return new ResponseEntity<>(ResponseDto.success(TEAM_DETAILS_OK, response), HttpStatus.OK);
     }
 }
