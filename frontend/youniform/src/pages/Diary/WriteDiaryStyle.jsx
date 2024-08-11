@@ -168,9 +168,8 @@ export const IconFont = styled.div`
 export const StampContainer = styled.div`
   position: absolute;
   z-index: 10;
-  width: 150px;
+  width: auto;
   height: 50px;
-  border: 1px solid black;
   right: calc(50vw - 75px);
   top: 1px;
   margin-top: 1px;

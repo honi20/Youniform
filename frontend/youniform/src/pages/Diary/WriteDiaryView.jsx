@@ -19,8 +19,9 @@ import StickerComp from "@components/Diary/Write/StickerComp";
 import CanvasComp from "@components/Diary/Write/CanvasComp";
 import ColorChipComp from "../../components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
-
+import DiaryModal from "@components/Diary/DiaryModal";
 import useDiaryStore from "@stores/diaryStore";
+import useResourceStore from "../../stores/resoureStore";
 const ToggleBtn = styled.div`
   /* width: 50%; */
   height: 100%;
@@ -50,17 +51,7 @@ const Background = styled.div`
   align-items: center;
   z-index: 5;
 `;
-const ToggleList = styled.div`
-  display: ${(props) => (props.$isOn ? "flex" : "none")};
-  position: absolute;
-  z-index: 20;
-  bottom: 0px;
-  /* left: 30%; */
-  height: 50vh;
-  width: 100%;
-  border: 1px solid #737373;
-  background-color: white;
-`;
+
 const toggle = (isOn) => {
   return (
     <div style={{ display: "flex" }}>{isOn ? <UpIcon /> : <DownIcon />}</div>
@@ -78,6 +69,7 @@ const WriteDiaryView = () => {
   const navigate = useNavigate();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
+  const { stampList, fetchStampList } = useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
@@ -91,7 +83,14 @@ const WriteDiaryView = () => {
     }
   }, [diaryId, fetchDiary]);
 
-  
+  useEffect(() => {
+    const fetchStamp = () => {
+      if (stampList.length == 0){
+        fetchStampList();
+      }
+    }
+    fetchStamp();
+  }, fetchStampList, stampList)
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -237,14 +236,13 @@ const WriteDiaryView = () => {
       console.log(`${key}:`, value);
     }
   };
+  const [scope, setScope] = useState("ALL");
+  const [stampId, setStampId] = useState(1);
+
   const saveDiaryObject = async () => {
     try {
       if (selectCanvas) {
         const json = selectCanvas.toJSON();
-        // const jsonBlob = await fetch(json).then((res) => res.blob());
-        const jsonBlob = new Blob([JSON.stringify(json)], {
-          type: "application/json",
-        });
 
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
@@ -253,8 +251,8 @@ const WriteDiaryView = () => {
         const dto = {
           diaryDate: date,
           contents: json,
-          scope: "ALL",
-          stampId: 1,
+          scope: scope,
+          stampId: stampId,
         };
 
         const dtoBlob = new Blob([JSON.stringify(dto)], {
@@ -306,12 +304,21 @@ const WriteDiaryView = () => {
   };
   return (
     <>
-      <Background $isOn={isOn} />
       <St.StampContainer>
+        {stampId.length > 0 && <img 
+        style={{ width: "54px",
+          height: "54px",}}
+        src={stampList[stampId].imgUrl
+        }></img>}
         {diaryId ? diary.diaryDate : diaryDate}
         <ToggleBtn onClick={() => handleToggle(isOn)}>{toggle(isOn)}</ToggleBtn>
       </St.StampContainer>
-      <ToggleList $isOn={isOn}>tttttttt</ToggleList>
+      <DiaryModal 
+      isOn={isOn}
+      setIsOn={setIsOn}
+      setScope={setScope}
+      setStampId={setStampId}
+      />
       <St.SaveBtn onClick={() => setIsSaveModalOpen(true)}>
         <St.IconContainer>
           <SaveIcon />
