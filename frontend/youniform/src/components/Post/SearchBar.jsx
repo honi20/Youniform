@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import SearchIcon from "@assets/Post/search.svg?react";
-
+import * as Font from "@/typography";
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 40px;
@@ -22,8 +22,10 @@ const Input = styled.input`
   border: none;
   outline: none;
   flex: 1;
+  display: flex;
+  align-items: center;
   padding: 0 8px;
-  font-size: 16px;
+  font-size: 15px;
   ${(props) =>
     props.$hasSearchQuery
       ? css``
@@ -35,6 +37,19 @@ const Input = styled.input`
         `}
 `;
 
+const Type = styled.div`
+${Font.XSmall};
+  border: 1px solid #F5F5F5;
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  width: 25px;
+  padding: 2px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+`
 const SearchBar = ({ searchQuery, setSearchQuery, type, setSearch }) => {
   const [placeholder, setPlaceholder] = useState("검색어를 입력하세요");
   // console.log("search Bar - type: ", type);
@@ -73,6 +88,8 @@ const SearchBar = ({ searchQuery, setSearchQuery, type, setSearch }) => {
   return (
     <Container>
       <SearchIcon />
+      { type && <Type>{type}</Type>}
+      
       <Input
         type="text"
         $hasSearchQuery={searchQuery ? true : false}

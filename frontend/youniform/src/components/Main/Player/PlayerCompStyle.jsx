@@ -30,7 +30,7 @@ const FolderHeader = styled.div`
   justify-content: start;
 `;
 const FolderIcon = styled.svg`
-  width: 98px;
+  width: 85px;
   height: 16px;
 `;
 const FolderComponent = ({ isClick, onClick }) => {

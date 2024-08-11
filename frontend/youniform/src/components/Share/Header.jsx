@@ -119,10 +119,6 @@ const Header = () => {
     setIsToken(null);
   };
 
-  const checkToken = () => {
-    console.log(isToken);
-  };
-
   useEffect(() => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
@@ -152,7 +148,7 @@ const Header = () => {
               <SportsBaseballIcon />
               <strong>Youniform</strong>
             </Logo>
-            {/* <ColorBtn onClick={checkToken}>토큰확인</ColorBtn> */}
+            {/* <ColorBtn onClick={checkToken}>테스트</ColorBtn> */}
             {isToken ? (
               <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
             ) : (

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import CheckIcon from "../assets/Done_round_light.svg?react";
 import BasicModal from "../components/Modal/BasicModal";
 import useSignUpStore from "../stores/signUpStore";
+import { getApiClient } from "@stores/apiClient";
 
 const Div = styled.div`
   width: 100%;
@@ -57,22 +58,22 @@ const Content = styled.div`
   gap: 10px;
   overflow-y: auto;
   padding: 1% 0;
-  /* border: 1px solid blue; */
 `;
 
 const BtnWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  /* border: 1px solid red; */
+  justify-content: flex-start;
+  border: 1px solid red;
+  padding-left: 4%;
 `;
 
 const BtnItem = styled.div`
   width: 30%;
   aspect-ratio: 1/1;
   margin: 1%;
-  /* border: 1px solid black; */
+  align-items: flex-start;
 `;
 
 const Btn = styled.div`
@@ -188,21 +189,33 @@ const ConfirmBtn = styled.div`
   font-size: 1.25rem;
 `;
 
-const SelectPlayerView = () => {
-  const playersInfo = [
-    { id: 0, name: "없음" },
-    { id: 1, number: "1", position: "내야수", name: "유태웅" },
-    { id: 2, number: "2", position: "외야수", name: "최수현" },
-    { id: 3, number: "4", position: "내야수", name: "서동욱" },
-    { id: 4, number: "5", position: "내야수", name: "문교원" },
-    { id: 6, number: "8", position: "내야수", name: "정근우" },
-    { id: 7, number: "10", position: "내야수", name: "이대호" },
-    { id: 8, number: "11", position: "투수", name: "이대은" },
-    { id: 9, number: "12", position: "포수", name: "박재욱" },
-    { id: 10, number: "13", position: "투수", name: "장원삼" },
-    { id: 11, number: "15", position: "외야수", name: "국해성" },
-    { id: 12, number: "16", position: "내야수", name: "정성훈" },
-  ];
+const SelectPlayerView = (teamId) => {
+  const [playerList, setPlayerList] = useState([{playerId: 0, name: "없음"}]);
+  useEffect(() => {
+    const fetchPlayerInfo = async(teamId) => {
+      const apiClient = getApiClient();
+      try {
+        const res = await apiClient.get(`/players/1`)
+        const { body, header } = res.data;
+
+        console.log(body);
+        console.log(header.message);
+        setPlayerList((prevList) => {
+          // 이전 리스트가 "없음"이면 새로운 리스트로 교체
+          if (prevList.length === 1) {
+            return [...prevList, ...body.playerList];
+          } else {
+            const newList = [{playerId: 0, name: "없음"}]
+          return [...newList, ...body.playerList];
+          }
+        })
+      } catch (err) {
+        handleApiError(err)
+      }
+    }
+    fetchPlayerInfo()
+  }, [])
+  
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalState, setModalState] = useState("");
@@ -236,20 +249,52 @@ const SelectPlayerView = () => {
   };
 
   const handleConfirmClick = () => {
-    console.log(selectedPlayers);
-    if (selectedPlayers.length == 0) {
-      setModalState("PlayerChangeWarning");
-    } else {
-      setModalState("FavoriteChanged");
-    }
+    setModalState(selectedPlayers.length === 0 ? "PlayerChangeWarning" : "FavoriteChanged");
     setIsModalOpen(true);
   };
 
   const handleModalButtonClick = (buttonType) => {
     console.log("Button clicked:", buttonType);
+    if (buttonType == 2){
+      console.log("변경 요청 보내기", selectedPlayers)
+      changePlayer()
+    }
     setIsModalOpen(false);
   };
+  const changePlayer = async () => {
+    const apiClient = getApiClient();
+//     console.log(selectedPlayers)
+//     const result = checkTypes(selectedPlayers);
+// console.log(result);
+    try {
+      const res = await apiClient.patch(`users/favorite`, {
+        teamId: 1,
+        players: selectedPlayers,
+      })
+      console.log(res.data)
+      const { body, header } = res.data;
 
+      console.log(body);
+      console.log(header.message);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  }
+  function checkTypes(arr) {
+    if (!Array.isArray(arr)) {
+      throw new TypeError("Input must be an array");
+    }
+  
+    return arr.map(value => {
+      if (typeof value === 'string') {
+        return `${value} is a string`;
+      } else if (typeof value === 'number') {
+        return `${value} is a number`;
+      } else {
+        return `${value} is neither a string nor a number`;
+      }
+    });
+  }
   return (
     <Div>
       <Header>
@@ -259,12 +304,12 @@ const SelectPlayerView = () => {
       </Header>
       <Content>
         <BtnWrapper>
-          {playersInfo.map((info) => (
+          {playerList && playerList.map((player) => (
             <PlayerButton
-              key={info.id}
-              player={info}
-              selected={selectedPlayers.includes(info.id)}
-              onClick={() => handleClick(info.id)}
+              key={player.playerId}
+              player={player}
+              selected={selectedPlayers.includes(player.playerId)}
+              onClick={() => handleClick(player.playerId)}
             />
           ))}
         </BtnWrapper>

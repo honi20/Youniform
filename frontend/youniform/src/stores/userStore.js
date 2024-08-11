@@ -15,11 +15,11 @@ const useUserStore = create((set, get) => ({
   fetchUser: async () => {
     set({ loading: true, error: null });
     const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
+    // console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users`);
-      console.log(response.data.header.message);
-      console.log(response.data.body);
+      // console.log(response.data.header.message);
+      // console.log(response.data.body);
       set({ user: response.data.body, loading: false });
     } catch (error) {
       console.log("Failed to fetch user", error);

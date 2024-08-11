@@ -19,10 +19,10 @@ import {
 } from "./PlayerCompStyle";
 import { useNavigate } from "react-router-dom";
 
-export default function PlayerContainer({ onSelectPlayer, player }) {
+export default function PlayerContainer({ onSelectPlayer, player, count }) {
   const [selectedFolder, setSelectedFolder] = useState(0);
   const navigate = useNavigate();
-  const playerCount = 3;
+  // const playerCount = 3;
 
   const handleFolderClick = (index) => {
     console.log(index);
@@ -50,7 +50,7 @@ export default function PlayerContainer({ onSelectPlayer, player }) {
   return (
     <Card>
       <Folder>
-        {folderTop(playerCount)}
+        {folderTop(count)}
         <Player>
           <CharacterComp player={player} />
           <InfoComp player={player} />

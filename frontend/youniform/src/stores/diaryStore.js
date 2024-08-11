@@ -143,14 +143,17 @@ const useDiaryStore = create((set) => ({
       console.error(err.response ? err.response.data : err.message);
     }
   },
-  deleteDiary: async (id) => {
+  deleteDiary: async (diaryId) => {
+    const apiClient = getApiClient();
     try {
-      await axios.delete(`${API_URL}/diaries/${id}`);
+      const res = await apiClient.delete(`/diaries/${diaryId}`);
+      console.log(res.data.header.message);
+      console.log(res.data.body);
       set((state) => ({
-        diaries: state.diaries.filter((diary) => diary.id !== id),
+        diaries: state.diaries.filter((diary) => diary.id !== diaryId),
       }));
-    } catch (error) {
-      console.error("Failed to delete diary", error);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
     }
   },
   initializeDiary: () => {

@@ -172,6 +172,11 @@ const stateMap = {
     title: "친구 요청이 수락되었습니다.",
     btn: [0],
   },
+  AddFriend: {
+    icon: <CheckIcon />,
+    title: "친구 신청이 완료되었습니다.",
+    btn: [0],
+  },
 };
 // btn 종류
 // 0: 확인 1: 취소(색깔 다름) 2: 변경 3: 삭제 4: 초기화

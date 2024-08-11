@@ -38,6 +38,7 @@ const TagSearch = ({ query, search, setSearch }) => {
           },
         });
         console.log(res.data.header.message);
+        console.log(res.data.body.tags)
         setResults(res.data.body.tags);
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
@@ -52,14 +53,14 @@ const TagSearch = ({ query, search, setSearch }) => {
   };
   return (
     <div>
-      {results ? (
+      {results.length > 0 ? (
         results.map((result, index) => (
           <SearchResult key={index} onClick={() => handleClickTag(result)}>
             # {result.contents}
           </SearchResult>
         ))
       ) : (
-        <>검색 결과 없음</>
+        <SearchResult>검색 결과 없음</SearchResult>
       )}
     </div>
   );
