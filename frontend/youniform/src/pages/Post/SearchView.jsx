@@ -30,6 +30,7 @@ const SearchView = () => {
   const [search, setSearch] = useState(false);
   useEffect(() => {
     if (tagId){
+      console.log("태그가 포함된 게시물 조회를 시작합니다.")
     const fetchResult = async () => {
       const apiClient = getApiClient();
       try {
@@ -54,7 +55,7 @@ const SearchView = () => {
       fetchResult();
     }
   }
-  }, [searchQuery]);
+  }, [searchQuery, tagId]);
 
   const hasSearchParams = Boolean(
     queryParams.current.q || queryParams.current.type

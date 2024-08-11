@@ -6,7 +6,6 @@ const Container = styled.div`
   /* border: 1px solid black; */
 `;
 const Posts = ({ posts }) => {
-  console.log(posts);
   return (
     <div>
       <Container>

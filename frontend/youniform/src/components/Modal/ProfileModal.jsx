@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
 import UserItem from "@components/MyPage/UserItem";
-
+import { getApiClient } from "@stores/apiClient";
 const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;
@@ -103,6 +103,7 @@ const UserSection = styled.div`
 `;
 
 const ItemWrapper = styled.div`
+${Font.Tiny};
   width: 95%;
   height: 100%;
   background-color: white;
@@ -122,12 +123,39 @@ const DotLine = styled.div`
 import OrderIcon from "@assets/MyPage/order.svg?react";
 import NotebookIcon from "@assets/MyPage/notebook.svg?react";
 import GroupIcon from "@assets/Post/Group_light.svg?react";
-
-const ProfileModal = ({ user, isOpen, onClose }) => {
+import useUserStore from "../../stores/userStore";
+import { useNavigate } from "react-router-dom";
+import usePostStore
+ from "@stores/postStore";
+ import useDiaryStore from "../../stores/diaryStore";
+const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const theme = useTheme();
-  // console.log(user);
+  const navigate = useNavigate();
+  const { fetchFriendPosts } = usePostStore();
+const { fetchFriendDiary} = useDiaryStore();
   if (!isOpen) return null;
-
+  if (user.nickname === friend.nickname){
+    navigate("/my-page")
+    return;
+  }
+  const friendPost = async (friend) => {
+    try {
+      await fetchFriendPosts(friend.userId);
+      navigate(`/post/friend/${friend.nickname}`);
+    } catch (error) {
+      console.log("Failed to fetch friend", error);
+      set({ loading: false, error: error.message });
+    }
+  }
+  const friendDiary = async (friend) => {
+    try {
+      await fetchFriendDiary(friend.userId)
+      navigate(`/diary/friend/${friend.nickname}`);
+    } catch (error) {
+      console.log("Failed to fetch friend", error);
+      set({ loading: false, error: error.message });
+    }
+  }
   return (
     <ModalBackdrop>
       <Container>
@@ -136,10 +164,10 @@ const ProfileModal = ({ user, isOpen, onClose }) => {
           <BtnContainer onClick={onClose}>{CloseSvg(theme)}</BtnContainer>
         </Header>
         <Profile>
-          <ProfileImg src={user.profileUrl} />
+          <ProfileImg src={friend.profileUrl} />
           <ProfileInfo>
-            <Nickname>{user.nickname}</Nickname>
-            <Introduce>{user.introduce}</Introduce>
+            <Nickname>{friend.nickname}</Nickname>
+            <Introduce>{friend.introduce}</Introduce>
           </ProfileInfo>
         </Profile>
         <UserSection>
@@ -147,14 +175,14 @@ const ProfileModal = ({ user, isOpen, onClose }) => {
             <UserItem
               icon={NotebookIcon}
               text="친구 다이어리"
-              onClick={() => console.log("친구 다이어리")}
+              onClick={() => friendDiary(friend)}
             />
             <DotLine />
             <UserItem
               icon={OrderIcon}
               text="친구 포스트"
-              onClick={() => console.log("친구 포스트")}
-            />
+              onClick={() => friendPost(friend)}
+           />
             <DotLine />
             <UserItem
               icon={GroupIcon}

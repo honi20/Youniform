@@ -172,6 +172,19 @@ const useDiaryStore = create((set) => ({
       console.error(err.response ? err.response.data : err.message);
     }
   },
+  friendDiary: [],
+  fetchFriendDiary: async (userId) => {
+    const apiClient = getApiClient();
+    try {
+      const response = await apiClient.get(`/diaries/list/${userId}`);
+      console.log(response.data.header.message);
+      console.log(response.data.body.diaryList.content);
+      set({ friendDiary: response.data.body.diaryList.content });
+    } catch (error) {
+      console.log("Failed to fetch friend", error);
+      set({ loading: false, error: error.message });
+    }
+  }
 }));
 
 export default useDiaryStore;

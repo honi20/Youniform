@@ -13,6 +13,7 @@ const Section = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2%;
+  /* width: */
 `;
 const Container = styled.div`
   padding: 5%;
@@ -27,11 +28,12 @@ const FlexBox = styled.div`
 `;
 const ProfileSection = styled(Section)`
   height: 100px;
+  width: 90%;
 `;
 const ProfileImage = styled.div`
   box-sizing: border-box;
-  height: 100px;
-  width: 100px;
+  height: 85px;
+  width: 85px;
   border-radius: 50px;
   display: flex;
   justify-content: center;

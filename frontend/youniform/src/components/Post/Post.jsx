@@ -8,12 +8,14 @@ const Container = styled.div`
   border-radius: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
-  margin: 0 8%;
+  margin: 0 5%;
   overflow-y: auto;
   cursor: pointer;
   &:not(:first-child) {
-    margin: 4% 8%;
+    margin: 4% 5%;
   }
+  /* height: calc(100vh - 120px); */
+
 `;
 const Header = styled.div`
   ${Font.Medium};
@@ -130,7 +132,7 @@ const Post = ({ post }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
-  const { friend, loading, error, fetchFriend, clearFriend } = useUserStore();
+  const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } = useUserStore();
   const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
     console.log(tag, "포스트 포함 태그 검색");
@@ -142,10 +144,11 @@ const Post = ({ post }) => {
   };
 
   const htmlContent = convertBrToNewLine(post.contents);
+
   useEffect(() => {
-    console.log(post.isLiked);
     setLike(post.isLiked);
   }, [setLike]);
+
   const handleProfileClick = async () => {
     setSelectedUser(post.userId);
     await fetchFriend(post.userId);
@@ -156,7 +159,19 @@ const Post = ({ post }) => {
       return () => clearFriend();
     }
   }, [selectedUser, clearFriend]);
-
+// useEffect(() => {
+//   if (!user){
+//     fetchUser();
+//   }
+// }, [user, fetchUser]);
+useEffect(() => {
+  const loadUser = async () => {
+    await fetchUser();
+  };
+  if (!user) {
+    loadUser();
+  }
+}, [user, fetchUser]);
   const handleLike = async () => {
     const newLike = !like;
     setLike(newLike);
@@ -215,7 +230,6 @@ const Post = ({ post }) => {
               display: "flex",
               gap: "10%",
               justifyContent: "center",
-              // border: "1px solid black",
             }}
           >
             <HeartContainer onClick={handleLike}>
@@ -225,7 +239,8 @@ const Post = ({ post }) => {
         </Footer>
       </Container>
       <ProfileModal
-        user={friend}
+        friend={friend}
+        user={user}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       />

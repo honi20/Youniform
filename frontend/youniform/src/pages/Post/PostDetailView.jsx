@@ -3,19 +3,22 @@ import styled from "styled-components";
 import * as Font from "@/typography";
 import ProfileModal from "@components/Modal/ProfileModal";
 import { getApiClient } from "@stores/apiClient";
+import Loading from "@components/Share/Loading"
+
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
   margin: 0 8%;
-  overflow-y: auto;
   /* flex: 1; */
   cursor: pointer;
   &:not(:first-child) {
     margin: 4% 8%;
   }
-  height: auto;
+  /* height: auto; */
+  /* max-height: calc(100vh - 120px); */
+  margin-bottom: 80px;
 `;
 
 const Header = styled.div`
@@ -49,6 +52,10 @@ const Content = styled.div`
   ${Font.Medium};
   font-weight: 400;
   margin: 1% 5%;
+  & img {
+    object-fit: cover;
+    width: 100%;
+  }
   /* border: 1px solid green; */
 `;
 const TagContainer = styled.div`
@@ -80,21 +87,7 @@ const Footer = styled.div`
   border-bottom: 1px solid #9c9c9c;
   /* border: 1px solid black; */
 `;
-const CommentContainer = styled.div`
-  margin: 1% 3%;
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
-  flex: 1;
-  /* border: 1px solid black; */
-`;
-const Comment = styled.div`
-  border: 1px solid black;
-`;
-const CommentInfo = styled.div`
-  display: flex;
-  align-items: center;
-`;
+
 import Chatsvg from "@assets/Post/chat.svg?react";
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
@@ -130,16 +123,25 @@ const HeartIcon = styled(HeartSvg)`
 import useUserStore from "@stores/userStore";
 import usePostStore from "@stores/postStore";
 import { useParams, useNavigate } from "react-router-dom";
+import CommentContainer from "../../components/Post/Comment/CommentContainer";
 
 const PostDetailView = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { friend, fetchFriend } = useUserStore();
-  const { post, fetchPost, API_URL } = usePostStore();
+  const { user, fetchUser, friend, fetchFriend } = useUserStore();
+  const { post, fetchPost } = usePostStore();
   const navigate = useNavigate();
   const { postId } = useParams();
-  const [like, setLike] = useState(false);
+  const [like, setLike] = useState(null);
+  useEffect(() => {
+    const loadUser = async () => {
+      await fetchUser();
+    };
+    if (!user) {
+      loadUser();
+    }
+  }, [user, fetchUser]);
   
   const handleTagClick = (tag) => {
     console.log(tag);
@@ -154,24 +156,29 @@ const PostDetailView = () => {
   };
 
   useEffect(() => {
-    const fetchPostData = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         await fetchPost(postId);
-        setLike(post.isLiked);
+        if (post) {
+          setLike(post.isLiked || false);
+        }
+      } catch (error) {
+        console.error('Failed to fetch post:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPostData();
+    fetchData();
   }, [fetchPost, postId]);
+
   if (loading) {
-    return <div>Loading...</div>; // Display a loading indicator
+    return <Loading />;
   }
 
   if (!post) {
-    return <div>No Post Found</div>; // Handle case where no post is found
+    return <div>No Post Found</div>;
   }
 
   const convertBrToNewLine = (htmlString = "") => {
@@ -208,6 +215,7 @@ const PostDetailView = () => {
           </Header>
           <Content>
             <div>
+            { post.imageUrl && <img src={post.imageUrl} alt={post.postId}></img>}
               {htmlContent.split("\n").map((line, index) => (
                 <React.Fragment key={index}>
                   {line}
@@ -228,23 +236,17 @@ const PostDetailView = () => {
           </Content>
           <Footer>
             <HeartContainer onClick={handleLike}>
-              <HeartIcon isLiked={like} />
+              <HeartIcon isLiked={like !== null ? like : post.isLiked} />
             </HeartContainer>
           </Footer>
-          <CommentContainer onClick={() => console.log("댓글창")}>
-            {post.commentList &&
-              post.commentList.map((comment) => {
-                return (
-                  <Comment key={comment.commentId}>{comment.contents}</Comment>
-                );
-              })}
-          </CommentContainer>
+          <CommentContainer postId={post.postId}/>
         </Container>
       ) : (
         <>엥</>
       )}
       <ProfileModal
-        user={friend}
+        user={user}
+        friend={friend}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       />

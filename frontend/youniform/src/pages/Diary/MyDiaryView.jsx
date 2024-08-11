@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Post from "@components/Post/Post";
 import useDiaryStore from "../../stores/diaryStore";
 import DiaryDetailView from "./DiaryDetailView";
+import { useParams } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -16,9 +17,14 @@ const ScrollableDiaryView = styled.div`
 `;
 const MyDiaryView = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { myDiary, fetchMyDiary } = useDiaryStore();
+  const { myDiary, fetchMyDiary, friendDiary } = useDiaryStore();
+  const { nickname } = useParams();
   useEffect(() => {
+    if (nickname) {
+console.log(nickname)
+    } else {
     fetchMyDiary();
+    }
   }, [fetchMyDiary]);
 
   const handleScroll = (event) => {
@@ -28,11 +34,12 @@ const MyDiaryView = () => {
       setIsScrolled(false);
     }
   };
+  const diariesToShow = nickname ? friendDiary : myDiary;
   return (
     <div>
       <Container>
         <ScrollableDiaryView onScroll={handleScroll}>
-          <DiaryDetailView diaries={myDiary} />
+          <DiaryDetailView diaries={diariesToShow} />
         </ScrollableDiaryView>
       </Container>
     </div>
