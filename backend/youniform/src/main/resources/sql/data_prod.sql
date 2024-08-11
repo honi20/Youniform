@@ -235,7 +235,7 @@ VALUES (1, 1, '승리하라 몬스터즈여',
         'OFFICIAL', 'https://youtu.be/cEHB2nsqFTw?si=iCq-PBbtt9JyYgnd');
 
 -- user favorite player
-INSERT INTO USER_PLAYER(user_id, player_id)
-VALUES (123, 3),
-       (123, 4),
-       (123, 9);
+INSERT INTO USER_PLAYER(user_id, player_id, push_alert)
+VALUES (123, 3, true),
+       (123, 4, true),
+       (123, 9, true);
