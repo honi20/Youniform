@@ -111,6 +111,7 @@ public class UserServiceImpl implements UserService {
                     .userPlayerPK(new UserPlayerPK(users.getId(), playerId))
                     .user(users)
                     .player(player)
+                    .pushAlert(true)
                     .build();
 
             userPlayerRepository.save(userPlayer);
@@ -288,6 +289,7 @@ public class UserServiceImpl implements UserService {
                     .userPlayerPK(userPlayerPK)
                     .user(user)
                     .player(player)
+                    .pushAlert(true)
                     .build();
             userPlayerRepository.save(userPlayer);
         });
@@ -337,5 +339,16 @@ public class UserServiceImpl implements UserService {
                 .toList();
 
         return SearchNicknameRes.toDto(userList);
+    }
+
+    @Override
+    @Transactional
+    public void modifyPlayAlert(AlertModifyReq alertModifyReq, Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        user.updatePlayPushAlert(alertModifyReq.isPushAlert());
+
+        userRepository.save(user);
     }
 }

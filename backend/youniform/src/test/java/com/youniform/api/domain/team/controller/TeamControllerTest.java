@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.player.dto.PlayerListDto;
 import com.youniform.api.domain.player.dto.PlayerListRes;
+import com.youniform.api.domain.team.dto.TeamDetailsRes;
 import com.youniform.api.domain.team.dto.TeamSongDto;
 import com.youniform.api.domain.team.dto.TeamSongListRes;
 import com.youniform.api.domain.team.service.TeamService;
@@ -29,12 +30,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.youniform.api.global.statuscode.SuccessCode.PLAYER_LIST_OK;
-import static com.youniform.api.global.statuscode.SuccessCode.TEAM_SONG_LIST_OK;
+import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -121,6 +122,49 @@ class TeamControllerTest {
                                         )
                                 )
                                 .responseSchema(Schema.schema("최애 구단 응원가 리스트 조회 Response"))
+                                .build()
+                        )));
+    }
+
+    @Test
+    public void 최애_구단_정보_조회_성공() throws Exception {
+        TeamDetailsRes response = new TeamDetailsRes("최강 몬스터즈", "서울특별시", "고척 스카이돔", LocalDate.parse("2000-01-01"), 1, 11, 0.999F, 10, "imgUrl");
+        when(teamService.findTeamDetail(anyLong())).thenReturn(response);
+
+        ResultActions actions = mockMvc.perform(
+                get("/api/teams/favorite")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TEAM_DETAILS_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TEAM_DETAILS_OK.getMessage()))
+                .andDo(document(
+                        "최애 구단 정보 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Team API")
+                                .summary("최애 구단 정보 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.name").description("구단명").type(JsonFieldType.STRING),
+                                                fieldWithPath("body.hometown").description("연고지").type(JsonFieldType.STRING),
+                                                fieldWithPath("body.homeGround").description("홈구장").type(JsonFieldType.STRING),
+                                                fieldWithPath("body.foundation").description("창단날").type(JsonFieldType.STRING),
+                                                fieldWithPath("body.rank").description("순위").type(JsonFieldType.NUMBER),
+                                                fieldWithPath("body.matchCount").description("경기 횟수").type(JsonFieldType.NUMBER),
+                                                fieldWithPath("body.winningRate").description("승률").type(JsonFieldType.NUMBER),
+                                                fieldWithPath("body.win").description("승 횟수").type(JsonFieldType.NUMBER),
+                                                fieldWithPath("body.imgUrl").description("이미지 url").type(JsonFieldType.STRING)
+                                        )
+                                )
+                                .responseSchema(Schema.schema("최애 구단 정보 조회 Response"))
                                 .build()
                         )));
     }
