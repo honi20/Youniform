@@ -287,7 +287,8 @@ const Binder = () => {
     if (selectedCards.length == 0) {
       setIsWarningModalOpen(true);
     } else {
-      await deletePhotocards(selectedCards);
+      const listStr = selectedCards.join();
+      await deletePhotocards(listStr);
       await fetchPhotoCardList();
     }
   };

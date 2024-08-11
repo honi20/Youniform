@@ -68,7 +68,12 @@ const signUpStore = create((set, get) => ({
           verifyCode: authenticCode,
         },
       });
-    } catch (error) {}
+      console.log("이메일 인증코드 발송 성공");
+      console.log(res.data);
+    } catch (error) {
+      console.error("이메일 인증코드 처리 중 오류 발생:", error);
+      return "$FAIL";
+    }
   },
   verifyNickname: async () => {
     try {
