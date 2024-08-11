@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setTeam("MONSTERS");
-        Users users = userRepository.save(user.toEntity(uuid));
+        Users users = userRepository.save(user.toEntity(uuid, bucketURl));
 
         user.getPlayers().forEach(playerId -> {
             Player player = playerRepository.findById(playerId)
