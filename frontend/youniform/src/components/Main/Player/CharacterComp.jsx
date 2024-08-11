@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 const MainContainer = styled.div`
-  width: 45%;
-  height: 90%;
-  flex-shrink: 0;
+  width: 8.3125rem;
+height: 14.75rem;
+flex-shrink: 0;
   border: 1px solid #262f66;
   display: flex;
   flex-direction: column;
@@ -12,7 +12,7 @@ const MainContainer = styled.div`
 const CharacterContainer = styled.div`
   flex: 1; // 남는 공간에 모두 할당
   margin-top: 20%;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 `;
 const PlayerNameContainer = styled.div`
   display: flex;
@@ -26,10 +26,9 @@ const PlayerNameContainer = styled.div`
   font-weight: 700;
   line-height: normal;
 
-  border: 1px solid black;
+  /* border: 1px solid black; */
 `;
 const CharacterComp = ({ player }) => {
-  console.log(player);
   return (
     <MainContainer>
       <CharacterContainer></CharacterContainer>

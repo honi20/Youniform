@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Icon, SvgIcon } from "@mui/material";
-
+import { format } from 'date-fns';
 import { styled as muiStyled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -60,7 +60,10 @@ const NavBar = () => {
   useEffect(() => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
-
+  
+  const formatDate = (day) => format(day, 'yyyy-MM-dd');
+  const formattedDate = formatDate(new Date());
+  
   return (
     <Nav>
       <LinkDiv>
@@ -77,7 +80,7 @@ const NavBar = () => {
       </LinkDiv>
       <LinkDiv>
         {currentPath === "/diary" ? (
-          <StyledLink to="/diary/write">
+          <StyledLink to={`/diary/write/${formattedDate}`}>
             <CustomBtn>
               <AddCircleIcon />
             </CustomBtn>
