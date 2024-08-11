@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { getApiClient } from "@stores/apiClient";
-import axios from "axios";
+
 const usePostStore = create((set) => ({
   posts: [],
   post: [],

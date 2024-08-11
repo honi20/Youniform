@@ -54,14 +54,11 @@ const usePhotoCardStore = create((set, get) => ({
   },
   // 포토카드 삭제
   deletePhotocards: async (list) => {
-    console.log("-------");
-    console.log(list);
-    const listStr = list.join();
     const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/photocards`, {
         params: {
-          photocardIdList: listStr,
+          photocardIdList: list,
         },
       });
       console.log(res.data.header);

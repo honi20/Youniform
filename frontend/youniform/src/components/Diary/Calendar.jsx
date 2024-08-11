@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, subMonths, addMonths, subYears, addYears } from 'date-fns';
 import useDiaryStore from '@stores/diaryStore';
 import styled from 'styled-components';
@@ -23,27 +23,39 @@ const CalendarBox = styled.div`
   overflow: hidden;
 `;
 
-const Calendar = ({ stamps }) => {
-  const { fetchMonthlyDiaries } = useDiaryStore();
-  const [curMonth, setCurMonth] = useState(new Date());
+const Calendar = ({ user, currentMonth, setCurrentMonth }) => {
+  const { selectedUser, fetchFriendsDiaries, fetchMonthlyDiaries } = useDiaryStore();
+  // const [curMonth, setCurMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  useEffect(() => {
+    const formattedDate = `${format(currentMonth, 'yyyy')}-${format(currentMonth, 'MM')}`;
+    
+    if (selectedUser !== null) {
+      console.log(`selectedUser: ${selectedUser}`);
+      console.log(`formattedDate: ${formattedDate}`);
+      fetchFriendsDiaries(selectedUser, formattedDate);
+    } else if (selectedUser === null) {
+      console.log(`formattedDate: ${formattedDate}`);
+      fetchMonthlyDiaries(formattedDate);
+    }
+  }, [currentMonth, selectedUser]);
+
   const prevMonth = () => {
-    setCurMonth(subMonths(curMonth, 1));
-    const formattedDate = `${format(curMonth, 'yyyy')}-${format(curMonth, 'MM')}`;
-    fetchMonthlyDiaries(formattedDate);
+    console.log(`before month: ${currentMonth}`);
+    setCurrentMonth(subMonths(currentMonth, 1));
   };
 
   const nextMonth = () => {
-    setCurMonth(addMonths(curMonth, 1));
+    setCurrentMonth(addMonths(currentMonth, 1));
   };
 
   const handleYearSelect = (newDate) => {
-    setCurMonth(new Date(newDate.getFullYear(), curMonth.getMonth()));
+    setCurrentMonth(new Date(newDate.getFullYear(), currentMonth.getMonth()));
   };
 
   const handleMonthSelect = (month) => {
-    setCurMonth(new Date(curMonth.getFullYear(), month - 1));
+    setCurrentMonth(new Date(currentMonth.getFullYear(), month - 1));
   };
 
   const onDateClick = (day) => {
@@ -54,7 +66,7 @@ const Calendar = ({ stamps }) => {
     <CalendarContainer>
       <CalendarBox>
         <RenderMonth
-          curMonth={curMonth}
+          curMonth={currentMonth}
           prevMonth={prevMonth}
           nextMonth={nextMonth}
           onYearSelect={handleYearSelect}
@@ -62,10 +74,10 @@ const Calendar = ({ stamps }) => {
         />
         <RenderDays />
         <RenderCells
-          currentMonth={curMonth}
+          currentMonth={currentMonth}
           selectedDate={selectedDate}
           onDateClick={onDateClick}
-          stamps={stamps}
+          user={user}
         />
       </CalendarBox>
     </CalendarContainer>

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
+const API_URL = import.meta.env.VITE_API_URL;
 const useUserStore = create((set, get) => ({
   user: null,
   friend: null,
@@ -35,7 +35,8 @@ const useUserStore = create((set, get) => ({
     console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users/${userId}`);
-      console.log(response)
+      console.log("유저 정보 조회에 성공했습니다.")
+      console.log(response.data.body)
       set({ friend: response.data.body, loading: false });
     } catch (error) {
       console.log("Failed to fetch friend", error);
@@ -46,7 +47,7 @@ const useUserStore = create((set, get) => ({
 
   fetchLogin: async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/api/users/signin/local`, {
+      const response = await axios.post(`${API_URL}/users/signin/local`, {
         email,
         password,
       });

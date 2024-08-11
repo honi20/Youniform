@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useDiaryStore from '@stores/diaryStore';
 import styled from 'styled-components';
@@ -36,13 +36,23 @@ const Cell = styled.div`
   }
 `;
 
-const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
-  const {} = useDiaryStore();
+const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
+  const { fetchDiary, monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
   const navigate = useNavigate();
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
+
+  const now = new Date();
+  const year = now.getFullYear();
+  // 월은 0부터 시작, padStart(month 두 자릿수 보장)
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const formatDate = `${year}-${month}`;  // yyyy-MM
+
+  useEffect(() => {
+    fetchMonthlyDiaries(formatDate);
+  }, []);
 
   const rows = [];
   let days = [];
@@ -53,9 +63,9 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
   const getStampSrcForDate = (day, date) => {
     if (day > monthEnd || day < monthStart) return null;
 
-    for (const stamp of stamps) {
-      if (stamp.date === date) {
-        return stamp.stampSrc;
+    for (const diary of monthlyDiaries) {
+      if (diary.diaryDate === date) {
+        return diary;
       }
     }
     return null;
@@ -70,11 +80,16 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
     }
   };
 
+  const loadDiaryDetail = async (diaryId) => {
+    navigate(`/diary/${diaryId}`);
+  };
+
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, 'd');
       stampDate = format(day, 'yyyy-MM-dd');
-      const stampSrc = getStampSrcForDate(day, stampDate);
+      const diaryInfo = getStampSrcForDate(day, stampDate);
+      const stampSrc = diaryInfo !== null ? diaryInfo.stampImgUrl : null;
       const cloneDay = new Date(day);
       days.push(
         <Cell
@@ -88,7 +103,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
               : 'valid'
           }`}
           key={day}
-          onClick={() => handleDateClick(cloneDay, stampSrc)}
+          onClick={stampSrc ? () => loadDiaryDetail(diaryInfo.diaryId): () => handleDateClick(cloneDay, stampSrc)}
         >
           <p
             className={
@@ -108,6 +123,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
                 width: '40px',
                 height: '40px',
               }}
+              // onClick={() => {loadDiaryDetail(diaryInfo.diaryId)}}
             />
           )}
           {!stampSrc && (
