@@ -80,11 +80,11 @@ class AlertControllerTest {
     void 알림_리스트_조회_성공() throws Exception {
         List<AlertDto> alertList = new ArrayList<>();
         AlertDto dto1 = new AlertDto(123L, "'1604b772-adc0-4212-8a90-81186c57f100", "User2", "s3 url",
-                "FRIEND_REQUEST", "", "friend link", false, "2024-07-31");
+                "FRIEND_REQUEST", "", null, false, "2024-07-31");
         AlertDto dto2 = new AlertDto(124L, "'1604b772-adc0-4212-8a90-81186c57f100", "User2", "s3 url",
-                "POST_COMMENT", "최강 몬스터즈 우승", "friend link", false, "2024-07-31");
+                "POST_COMMENT", "최강 몬스터즈 우승", 1L, false, "2024-07-31");
         AlertDto dto3 = new AlertDto(125L, "'1604b772-adc0-4212-8a90-81186c57f100", "User2", "s3 url",
-                "FRIEND_REQUEST", "", "friend link", false, "1시간 전");
+                "FRIEND_REQUEST", "", null, false, "1시간 전");
         alertList.add(dto1);
         alertList.add(dto2);
         alertList.add(dto3);
@@ -120,7 +120,7 @@ class AlertControllerTest {
                                                 fieldWithPath("body.alertList[].senderProfileUrl").type(JsonFieldType.STRING).description("알림 전송자 프로필 url"),
                                                 fieldWithPath("body.alertList[].type").type(JsonFieldType.STRING).description("알림 타입 (ANNOUNCEMENT, FRIEND_REQUEST, POST_COMMENT)"),
                                                 fieldWithPath("body.alertList[].content").type(JsonFieldType.STRING).description("알림 내용 (댓글 내용)"),
-                                                fieldWithPath("body.alertList[].link").type(JsonFieldType.STRING).description("알림 연결 링크"),
+                                                fieldWithPath("body.alertList[].pk").type(JsonFieldType.NUMBER).description("알림 연결 링크(Post인 경우 PK)").optional(),
                                                 fieldWithPath("body.alertList[].isRead").type(JsonFieldType.BOOLEAN).description("일림 읽음 여부"),
                                                 fieldWithPath("body.alertList[].createdAt").type(JsonFieldType.STRING).description("알림 생성일")
                                         )

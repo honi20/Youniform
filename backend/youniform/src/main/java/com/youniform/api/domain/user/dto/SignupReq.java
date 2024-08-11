@@ -51,6 +51,7 @@ public class SignupReq {
                 .introduce(this.introduce)
                 .isDeleted(false)
                 .pushAlert(true)
+                .playPushAlert(true)
                 .createdAt(LocalDateTime.now())
                 .lastWriteDiary(LocalDateTime.now())
                 .team(Team.builder().id(1L).build())

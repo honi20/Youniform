@@ -26,14 +26,4 @@ public interface UserRepository extends JpaRepository<Users, Long>, UserCustomRe
             "WHERE u.nickname LIKE %:nickname% " +
             "ORDER BY CASE WHEN u.nickname = :nickname THEN 1 ELSE 2 END, u.nickname")
     List<Users> findUsersByNickname(@Param("nickname") String nickname);
-
-    @Query("SELECT new com.youniform.api.domain.user.dto.MyDetailsRes(" +
-            "u.nickname, u.introduce, u.profileUrl, u.theme, u.pushAlert, u.team.imgUrl, " +
-            "COUNT(DISTINCT lp.likePostPK.postId), COUNT(DISTINCT f.friendPK.friendId)) " +
-            "FROM Users u " +
-            "LEFT JOIN LikePost lp ON u.id = lp.user.id " +
-            "LEFT JOIN Friend f ON u.id = f.user.id " +
-            "WHERE u.id = :userId " +
-            "GROUP BY u")
-    MyDetailsRes findUserDetailsWithCounts(@Param("userId") Long userId);
 }

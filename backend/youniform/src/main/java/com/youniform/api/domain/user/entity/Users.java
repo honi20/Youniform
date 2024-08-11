@@ -40,6 +40,8 @@ public class Users {
 
     private Boolean pushAlert = Boolean.TRUE;
 
+    private Boolean playPushAlert = Boolean.TRUE;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private Boolean isDeleted = Boolean.FALSE;
@@ -70,5 +72,9 @@ public class Users {
 
     public void updateLastWriteDiary(LocalDateTime lastWriteDiary) {
         this.lastWriteDiary = lastWriteDiary;
+    }
+
+    public void updatePlayPushAlert(boolean pushAlert) {
+        this.playPushAlert = pushAlert;
     }
 }

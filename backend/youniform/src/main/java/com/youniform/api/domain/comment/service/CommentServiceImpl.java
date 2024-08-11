@@ -13,7 +13,6 @@ import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +29,6 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final AlertService alertService;
 
-    @Value("${POST_FRONT_URL}")
-    private String url;
-
     @Override
     @Transactional
     public CommentAddRes addComment(Long postId, Long userId, CommentAddReq commentAddReq) {
@@ -48,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         alertService.send(post.getUser().getUuid(), userId, POST_COMMENT,
-                comment.getContent(), url+postId);
+                comment.getContent(), postId);
 
         return CommentAddRes.toDto(comment);
     }

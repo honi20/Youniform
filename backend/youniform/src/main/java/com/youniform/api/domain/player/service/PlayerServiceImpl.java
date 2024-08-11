@@ -5,7 +5,10 @@ import com.youniform.api.domain.player.entity.CheeringSong;
 import com.youniform.api.domain.player.entity.Player;
 import com.youniform.api.domain.player.repository.CheeringSongRepository;
 import com.youniform.api.domain.player.repository.PlayerRepository;
+import com.youniform.api.domain.user.entity.UserPlayer;
 import com.youniform.api.domain.user.repository.UserPlayerCustomRepository;
+import com.youniform.api.domain.user.repository.UserPlayerRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     private final CheeringSongRepository cheeringSongRepository;
 
+    private final UserPlayerRepository userPlayerRepository;
+
     @Override
     public PlayerListRes findPlayers(Long teamId) {
         List<Player> players = playerRepository.findByTeamId(teamId);
@@ -33,10 +38,10 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public FavoritePlayerListRes findFavoritePlayers(Long userId) {
-        List<Player> players = userPlayerCustomRepository.findPlayerByUserId(userId);
+        List<UserPlayer> userPlayers = userPlayerCustomRepository.findPlayerByUserId(userId);
 
-        List<PlayerDetailDto> playerList = players.stream()
-                .map(PlayerDetailDto::toDto)
+        List<PlayerDetailDto> playerList = userPlayers.stream()
+                .map(userPlayer -> PlayerDetailDto.toDto(userPlayer.getPlayer(), userPlayer.getPushAlert()))
                 .toList();
 
         return new FavoritePlayerListRes(playerList);
@@ -52,4 +57,15 @@ public class PlayerServiceImpl implements PlayerService {
 
         return new PlayerSongListRes(songList);
     }
+
+    @Override
+    @Transactional
+    public void modifyPlayerAlert(Long userId, Long playerId, PlayerAlertModifyReq modifyReq) {
+        UserPlayer userPlayer = userPlayerRepository.findByUserPlayerPK(userId, playerId);
+
+        userPlayer.updatePushAlert(modifyReq.isPushAlert());
+
+        userPlayerRepository.save(userPlayer);
+    }
+
 }

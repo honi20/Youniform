@@ -1,5 +1,6 @@
 package com.youniform.api.domain.user.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserFavoriteReq {
+    @NotNull
     private Long teamId;
 
     private List<Long> players;

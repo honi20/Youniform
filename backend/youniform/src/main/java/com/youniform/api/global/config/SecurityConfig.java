@@ -19,8 +19,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -30,7 +28,9 @@ import java.util.List;
 @Profile({"local", "prod"})
 public class SecurityConfig {
     private final JwtBearerAuthenticationFilter jwtBearerAuthenticationFilter;
+
     private final PrincipalOauth2UserService oAuth2UserService;
+
     private final Oauth2SuccessHandler oauth2SuccessHandler;
 
     @Bean
@@ -40,22 +40,22 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/users/*/check-duplication",
-                                "/users/signup/**",
-                                "/users/find/password", "/users/check/email",
-                                "/users/password/reset", "/users/password/send",
-                                "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/users/*/check-duplication",
+                                        "/api/users/signup/**",
+                                        "/api/users/find/password", "/api/users/check/email",
+                                        "/api/users/password/reset", "/api/users/password/send",
+                                        "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
+//                        .requestMatchers("/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService))
                         .successHandler(oauth2SuccessHandler)
                         .authorizationEndpoint(authEndPoint -> authEndPoint
-                                .baseUri("/users/signin/social")))
+                                .baseUri("/api/users/signin/social")))
         ;
 
         http.addFilterBefore(jwtBearerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -64,24 +64,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOriginPatterns("*") // allowedOrigins 대신 allowedOriginPatterns 사용
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
-    }
-
-    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("*")); // allowedOrigins 대신 allowedOriginPatterns 사용
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "HEAD"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "HEAD", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 

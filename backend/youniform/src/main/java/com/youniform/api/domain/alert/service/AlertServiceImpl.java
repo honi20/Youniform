@@ -127,11 +127,11 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public void testAlert() {
-		send("1604b772-adc0-4212-8a90-81186c57f598", 124L, AlertType.POST_COMMENT, "최강 몬스터즈 우승", "http://youniform.com");
+		send("1604b772-adc0-4212-8a90-81186c57f598", 124L, AlertType.POST_COMMENT, "최강 몬스터즈 우승", 1L);
 	}
 
 	@Override
-	public void send(String receiverUuid, Long senderId, AlertType type, String content, String link) {
+	public void send(String receiverUuid, Long senderId, AlertType type, String content, Long pk) {
 		Users receiver = userRepository.findByUuid(receiverUuid)
 				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
 
@@ -146,7 +146,7 @@ public class AlertServiceImpl implements AlertService {
 				.sender(sender)
 				.type(type)
 				.content(content)
-				.link(link)
+				.pk(pk)
 				.build();
 
 		send(alertReq);

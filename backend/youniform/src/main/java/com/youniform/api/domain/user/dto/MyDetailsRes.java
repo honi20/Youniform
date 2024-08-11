@@ -20,6 +20,8 @@ public class MyDetailsRes {
 
     private Boolean pushAlert;//알림 상태
 
+    private Boolean playPushAlert;
+
     private String teamImage;
 
     private Long likePostCount;
@@ -33,6 +35,7 @@ public class MyDetailsRes {
                 .profileUrl(user.getProfileUrl() != null ? user.getProfileUrl() : null)
                 .theme(user.getTheme())
                 .pushAlert(user.getPushAlert())
+                .playPushAlert(user.getPlayPushAlert())
                 .teamImage(user.getTeam().getImgUrl())
                 .likePostCount(likePostCount)
                 .friendCount(friendCount)

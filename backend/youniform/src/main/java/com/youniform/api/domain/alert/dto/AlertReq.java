@@ -4,6 +4,7 @@ import com.mongodb.lang.Nullable;
 import com.youniform.api.domain.alert.entity.Alert;
 import com.youniform.api.domain.alert.entity.AlertType;
 import com.youniform.api.domain.user.entity.Users;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,16 +17,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class AlertReq {
+	@NotNull
 	private Users receiver;
 
 	@Nullable
 	private Users sender;
 
+	@NotNull
 	private AlertType type;
 
 	private String content;
 
-	private String link;
+	private Long pk;
 
 	public Alert toEntity(Users sender) {
 		return Alert.builder()
@@ -33,7 +36,7 @@ public class AlertReq {
 				.sender(sender)
 				.type(this.type)
 				.content(this.content)
-				.link(this.link)
+				.pk(this.pk)
 				.isRead(false)
 				.createdAt(LocalDateTime.now())
 				.build();
