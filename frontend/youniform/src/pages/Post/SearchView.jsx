@@ -17,31 +17,34 @@ const SearchView = () => {
   const queryParams = useRef(queryString.parse(location.search));
   const [searchType, setSearchType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [tagId, setTagId] = useState("");
   useEffect(() => {
     queryParams.current = queryString.parse(location.search);
     setSearchQuery(queryParams.current.q || "");
     setSearchType(queryParams.current.type || "");
+    setTagId(queryParams.current.tagId || "");
   }, [location]);
 
   const [results, setResults] = useState([]);
-  const [type, setType] = useState("tag");
+  const [type, setType] = useState("");
   const [search, setSearch] = useState(false);
-  const API_URL = "http://i11a308.p.ssafy.io:8080";
   useEffect(() => {
+    if (tagId){
+      console.log("태그가 포함된 게시물 조회를 시작합니다.")
     const fetchResult = async () => {
       const apiClient = getApiClient();
       try {
         console.log(`Search Type: ${searchType}`);
         console.log(`Searching for: ${searchQuery}`);
+        console.log(`Search TagId: ${tagId}`);
         const res = await apiClient.get("/posts/tags", {
           params: {
-            name: searchQuery,
-            lastPostId: "1",
+            tagId: tagId,
+            // lastPostId: "1",
           },
         });
         console.log(res.data.header.message);
-        console.log(res.data.body.postList.content);
+        console.log(res.data.body.postList);
         setResults(res.data.body.postList.content);
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
@@ -51,15 +54,19 @@ const SearchView = () => {
     if (searchQuery) {
       fetchResult();
     }
-  }, [searchQuery]);
+  }
+  }, [searchQuery, tagId]);
 
   const hasSearchParams = Boolean(
     queryParams.current.q || queryParams.current.type
   );
   const renderContent = () => {
+    console.log(hasSearchParams, searchQuery)
     if (hasSearchParams) {
       return queryParams.current.q === searchQuery ? (
+        <>
         <Posts posts={results} />
+        </>
       ) : (
         <SearchBox
           query={searchQuery}
@@ -84,6 +91,7 @@ const SearchView = () => {
     }
   };
   return (
+    <>
     <Container>
       <SearchBar
         searchQuery={searchQuery}
@@ -91,8 +99,10 @@ const SearchView = () => {
         type={type}
         setSearch={setSearch}
       />
+      {/* {type} */}
       <div>{renderContent()}</div>
     </Container>
+    </>
   );
 };
 

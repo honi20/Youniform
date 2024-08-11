@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import InfoComp from "./InfoComp";
 import CharacterComp from "./CharacterComp";
+import Star1 from "@assets/mainview/Star1.svg?react";
 import {
   Card,
   Folder,
-  FolderComponent,
+  FolderComponent,FolderHeader,
   Player,
   DotLine,
   StarLine,
@@ -19,11 +20,30 @@ import {
 } from "./PlayerCompStyle";
 import { useNavigate } from "react-router-dom";
 
-export default function PlayerContainer({ onSelectPlayer }) {
+export default function PlayerContainer({ onSelectPlayer, 
+  // count,
+  // player
+ }) {
   const [selectedFolder, setSelectedFolder] = useState(0);
   const navigate = useNavigate();
-  const playerCount = 3;
-
+  // 나중에 삭제
+  const count = 2;
+  const player = {
+    "playerId": 1,
+    "name": "박용택",
+    "age": "1979-04-21",
+    "backNum": 33,
+    "battingAverage": 0,
+    "hit": 0,
+    "homerun": 0,
+    "steal": 0,
+    "era": null,
+    "whip": null,
+    "win": null,
+    "struck": null,
+    "position": "외야수",
+    "twoWay": "우투좌타"
+  }
   const handleFolderClick = (index) => {
     console.log(index);
     setSelectedFolder(index);
@@ -35,7 +55,7 @@ export default function PlayerContainer({ onSelectPlayer }) {
   // 선정한 플레이어 개수에 따라서 folder 개수 달라져야함
   const folderTop = (count) => {
     return (
-      <div style={{ display: "flex", width: "100%" }}>
+      <FolderHeader style={{  }}>
         {Array.from({ length: count }, (_, index) => (
           <FolderComponent
             key={index}
@@ -43,17 +63,24 @@ export default function PlayerContainer({ onSelectPlayer }) {
             isClick={selectedFolder === index} // 선택된 폴더 상태
           ></FolderComponent>
         ))}
-      </div>
+      </FolderHeader>
     );
   };
-
+  
   return (
     <Card>
+      <Star1
+      style={{
+        position: "absolute",
+        bottom: "5rem",
+        zIndex: 5,
+      }}
+      />
       <Folder>
-        {folderTop(playerCount)}
+        {folderTop(count)}
         <Player>
-          <CharacterComp />
-          <InfoComp />
+          <CharacterComp player={player} />
+          <InfoComp player={player} />
         </Player>
       </Folder>
 
@@ -77,7 +104,9 @@ export default function PlayerContainer({ onSelectPlayer }) {
           <Title>응원가 & 등장곡</Title>
           <Description>최애의 응원가와 등장곡을 들어봅시다!</Description>
         </TextContainer>
-        <BtnContainer onClick={() => navigate("/total-song")}>
+        <BtnContainer
+          onClick={() => navigate(`/song/player/${player.playerId}`)}
+        >
           <PlayBtn />
         </BtnContainer>
       </Container>

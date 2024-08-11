@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { format, subYears, addYears } from 'date-fns';
 import styled from 'styled-components';
-
 import SvgIcon from "@mui/material/SvgIcon";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -82,6 +81,7 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSele
   };
 
   const handleMonthSelect = (month) => {
+    const formattedDate = format(new Date(curMonth.getFullYear(), month - 1), 'yyyy-MM');
     onMonthSelect(month);
     setShowDropdown(false);
   };

@@ -91,10 +91,9 @@ const ChatView = () => {
       if (roomId) {
         console.log(roomId);
         setSelectedRoom(roomId);
-        connect(selectedRoom); // 사용자 ID 또는 필요한 파라미터를 connect에 전달
+        connect(selectedRoom); 
       }
     };
-
     initChat();
     return () => {
       disconnect();
@@ -122,6 +121,9 @@ const ChatView = () => {
     console.log(btnIndex);
     setSelected(btnIndex);
   };
+  useEffect(() => {
+    console.log(messages)
+  }, [messages])
   return (
     <St.Wrapper>
       <St.ChatToggleSection>
@@ -143,7 +145,7 @@ const ChatView = () => {
         </ToggleList>
       </St.ChatToggleSection>
       <St.ChatSection ref={chatBoxRef}>
-        {messages.map((msg, index) => {
+        {messages.length > 0 && messages.map((msg, index) => {
           return (
             <St.ChatContainer
               key={index}
@@ -162,12 +164,10 @@ const ChatView = () => {
             onKeyDown={handleKeyDown}
           />
           <St.IconWrapper>
-            <button
-              type="button"
+            <St.SubmitBtn
               onClick={() => sendMessage(user.nickname, imageUrl)}
             >
-              Submit
-            </button>
+            </St.SubmitBtn>
           </St.IconWrapper>
         </St.InputContaier>
       </St.InputSection>

@@ -3,9 +3,10 @@ import StarIcon from "@assets/star.svg?react";
 
 const Card = styled.div`
   box-sizing: border-box;
-  width: 90%;
-  height: 60vh;
-  padding: 3% 3%;
+  width: 25rem;
+  height: 31rem;
+  max-width: 95%;
+  flex-shrink: 0;
 
   display: flex;
   justify-content: center;
@@ -16,8 +17,9 @@ const Card = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 const Folder = styled.div`
-  width: 90%;
-  height: 70%;
+  width: 95%;
+  /* height: 70%; */
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -26,11 +28,14 @@ const Folder = styled.div`
 const FolderHeader = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
+  width: 20rem;
+  max-width: 100%;
   justify-content: start;
+  /* margin-left: 2.5rem; */
+  border: 1px solid black;
 `;
 const FolderIcon = styled.svg`
-  width: 98px;
+  width: 100px;
   height: 16px;
 `;
 const FolderComponent = ({ isClick, onClick }) => {
@@ -51,19 +56,30 @@ const FolderComponent = ({ isClick, onClick }) => {
 };
 // 선수 카드
 const Player = styled.div`
-  width: 100%;
-  height: 90%;
+  width: 20rem;
+  max-width: 100%;
+  height: 17rem;
   flex-shrink: 0;
   border: 0.5px solid rgba(38, 47, 102, 0.3);
+  border-color: ${(props) => props.theme.secondary};
   border-radius: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: 
+  ${(props) => 
+    `linear-gradient(to right, ${props.theme.secondary} 1px, transparent 1px),
+    linear-gradient(to bottom, ${props.theme.secondary} 1px, transparent 1px)`
+  };
+  background-size: 20px 20px;
 `;
 // dot line
 const DotLine = styled.div`
-  border-bottom: 1px dotted #000;
-  width: 90%;
+  border-top: 1px dotted #000;
+  width: 20rem;
+  max-width: 95%;
+  margin-top: 0.5rem;
+  height: 0.5rem;
   text-align: right;
 `;
 // star line
@@ -73,13 +89,14 @@ const Star = styled(StarIcon)`
   flex-shrink: 0;
   fill: none;
   stroke: #000;
-  stroke-width: 1px;
+  /* stroke-width: 1px; */
 `;
 const StarLine = styled.div`
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  width: 95%;
+  /* align-items: center; */
+  width: 20rem;
+  max-width: 95%;
 `;
 // alarm
 const Container = styled.div`

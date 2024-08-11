@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080/api";
+const API_URL = "http://i11a308.p.ssafy.io/api";
 const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
@@ -59,8 +59,11 @@ const signUpStore = create((set, get) => ({
     }
   },
   verifyEmailCode: async (email, authenticCode) => {
+    console.log(email);
+    console.log(authenticCode);
     try {
       const res = await axios({
+        
         method: "get",
         url: `${API_URL}/users/email/verify`,
         params: {
@@ -68,7 +71,15 @@ const signUpStore = create((set, get) => ({
           verifyCode: authenticCode,
         },
       });
-    } catch (error) {}
+      if (res.data.header.httpStatusCode === 200) {
+        console.log("이메일 인증번호 확인 성공");
+        console.log(res.data);
+        return "$SUCCESS"
+      }
+    } catch (error) {
+      console.log("Failed to verifyEmailCode", error);
+      return "$FAIL";
+    }
   },
   verifyNickname: async () => {
     try {

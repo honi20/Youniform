@@ -2,18 +2,20 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import * as Font from "@/typography";
 import ProfileModal from "../Modal/ProfileModal";
-
+import { getApiClient } from "@stores/apiClient";
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
-  margin: 0 8%;
+  margin: 0 5%;
   overflow-y: auto;
   cursor: pointer;
   &:not(:first-child) {
-    margin: 4% 8%;
+    margin: 4% 5%;
   }
+  /* height: calc(100vh - 120px); */
+
 `;
 const Header = styled.div`
   ${Font.Medium};
@@ -47,6 +49,11 @@ const Content = styled.div`
   font-weight: 400;
   margin: 1% 5%;
   /* border: 1px solid green; */
+  & img {
+    /* height: 100%; */
+    width: 100%;
+    object-fit: cover;
+  }
 `;
 const TagContainer = styled.div`
   flex-wrap: wrap;
@@ -92,13 +99,29 @@ const ChatIcon = styled(Chatsvg)`
   width: 24px;
   height: 24px;
 `;
-import HeartSvg from "@assets/Post/heart.svg?react";
-const HeartIcon = styled(HeartSvg)`
-  width: 24px;
-  height: 24px;
+const HeartSvg = ({ isLiked }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="25"
+      viewBox="0 0 24 25"
+      fill={isLiked ? "#d31818" : "none"}
+    >
+      <path
+        d="M4.45067 14.4082L11.4033 20.9395C11.6428 21.1644 11.7625 21.2769 11.9037 21.3046C11.9673 21.3171 12.0327 21.3171 12.0963 21.3046C12.2375 21.2769 12.3572 21.1644 12.5967 20.9395L19.5493 14.4082C21.5055 12.5706 21.743 9.5466 20.0978 7.42607L19.7885 7.02734C17.8203 4.49058 13.8696 4.91601 12.4867 7.81365C12.2913 8.22296 11.7087 8.22296 11.5133 7.81365C10.1304 4.91601 6.17972 4.49058 4.21154 7.02735L3.90219 7.42607C2.25695 9.5466 2.4945 12.5706 4.45067 14.4082Z"
+        stroke="#222222"
+      />
+    </svg>
+  );
+};
+const HeartContainer = styled.div`
+  /* border: 1px solid red; */
+  display: flex;
+  gap: 10%;
+  justify-content: end;
 `;
-import BellSvg from "@assets/Post/bell.svg?react";
-const BellIcon = styled(BellSvg)`
+const HeartIcon = styled(HeartSvg)`
   width: 24px;
   height: 24px;
 `;
@@ -109,19 +132,22 @@ const Post = ({ post }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
-  const { friend, loading, error, fetchFriend, clearFriend } = useUserStore();
-
+  const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } = useUserStore();
+  const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
-    console.log(tag);
-    // setSelectedTag(tag.tagId);
+    console.log(tag, "포스트 포함 태그 검색");
     const encodedQuery = encodeURIComponent(tag.contents);
-    navigate(`/search?type=tag&q=${encodedQuery}`);
+    navigate(`/search?tagId=${tag.tagId}&q=${encodedQuery}`);
   };
   const convertBrToNewLine = (htmlString) => {
     return htmlString.split("<br>").join("\n");
   };
 
   const htmlContent = convertBrToNewLine(post.contents);
+
+  useEffect(() => {
+    setLike(post.isLiked);
+  }, [setLike]);
 
   const handleProfileClick = async () => {
     setSelectedUser(post.userId);
@@ -133,17 +159,45 @@ const Post = ({ post }) => {
       return () => clearFriend();
     }
   }, [selectedUser, clearFriend]);
+// useEffect(() => {
+//   if (!user){
+//     fetchUser();
+//   }
+// }, [user, fetchUser]);
+useEffect(() => {
+  const loadUser = async () => {
+    await fetchUser();
+  };
+  if (!user) {
+    loadUser();
+  }
+}, [user, fetchUser]);
+  const handleLike = async () => {
+    const newLike = !like;
+    setLike(newLike);
+    console.log(newLike);
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.post(`/likes/${post.postId}`, {
+        isLiked: newLike,
+      });
+      console.log(res.data.header.message);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  };
   return (
     <>
       <Container>
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
-            <ProfileImg src={post.imageUrl} />
+            <ProfileImg src={post.profileImg} />
             {post.nickname}
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
         <Content>
+          <img src={post.imageUrl} />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
             {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
@@ -153,7 +207,7 @@ const Post = ({ post }) => {
             ))}
           </div>
           <TagContainer>
-            {post.tags.map((tag) => {
+            {post && post.tags.map((tag) => {
               return (
                 <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
                   # {tag.contents}
@@ -176,19 +230,21 @@ const Post = ({ post }) => {
               display: "flex",
               gap: "10%",
               justifyContent: "center",
-              // border: "1px solid black",
             }}
           >
-            <HeartIcon onClick={() => console.log("좋아요")} />
-            {/* <BellIcon onClick={() => console.log("신고")} /> */}
+            <HeartContainer onClick={handleLike}>
+              <HeartIcon isLiked={like} />
+            </HeartContainer>
           </div>
         </Footer>
       </Container>
-      <ProfileModal
-        user={friend}
+      {isModalOpen && (<ProfileModal
+        friend={friend}
+        user={user}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       />
+      )}
     </>
   );
 };

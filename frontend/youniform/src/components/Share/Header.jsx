@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled, { useTheme } from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import SettingIcon from "@assets/Header/setting.svg?react";
 import useUserStore from "@stores/userStore";
 import * as Font from "@/typography";
 import ColorBtn from "../Common/ColorBtn";
 import { clearAccessToken } from "@stores/apiClient";
+
 const Head = styled.div`
   background-color: #f8f8f8;
   position: fixed;
@@ -52,7 +53,7 @@ const backSvg = (theme) => {
   );
 };
 
-const alarmSvg = (isAlarm) => {
+const alarmSvg = (isAlarm, onClick) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -60,6 +61,8 @@ const alarmSvg = (isAlarm) => {
       height="30"
       viewBox="0 0 30 30"
       fill="none"
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
     >
       <path
         fillRule="evenodd"
@@ -103,6 +106,10 @@ const Header = () => {
     navigate(-1);
   };
 
+  const handleBackPhotocard = () => {
+    navigate(`/photo-card/binder`);
+  };
+
   const handleLoginClick = () => {
     navigate("/login");
   };
@@ -110,10 +117,6 @@ const Header = () => {
   const handleLogoutClick = () => {
     clearAccessToken();
     setIsToken(null);
-  };
-
-  const checkToken = () => {
-    console.log(isToken);
   };
 
   useEffect(() => {
@@ -126,18 +129,26 @@ const Header = () => {
   }, [setIsToken]);
 
   const renderContent = () => {
-    switch (currentPath) {
-      case "/":
-      case "/photo-card":
-      case "/diary":
-      case "/post":
+    switch (true) {
+      case currentPath.startsWith("/photo-card/detail/"):
+        return (
+          <InnerHead>
+            <div onClick={handleBackPhotocard}>{backSvg(theme)}</div>
+          </InnerHead>
+        );
+      case currentPath === "/photo-card/binder":
+      return (
+        <InnerHead>
+        </InnerHead>
+      );
+      case ["/", "/photo-card", "/diary", "/post"].includes(currentPath):
         return (
           <InnerHead>
             <Logo>
               <SportsBaseballIcon />
               <strong>Youniform</strong>
             </Logo>
-            <ColorBtn onClick={checkToken}>토큰확인</ColorBtn>
+            {/* <ColorBtn onClick={checkToken}>테스트</ColorBtn> */}
             {isToken ? (
               <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
             ) : (
@@ -145,31 +156,27 @@ const Header = () => {
             )}
           </InnerHead>
         );
-      case "/my-page":
+      case currentPath === "/my-page":
         return (
           <InnerHead>
-            <Logo>
-              <SportsBaseballIcon />
-              <strong>Youniform</strong>
-            </Logo>
             <IconContainer>
-              {alarmSvg(isAlarm)}
+              {alarmSvg(isAlarm, () => navigate("/alert"))}
               <SettingIcon onClick={() => navigate("/setting")} />
             </IconContainer>
           </InnerHead>
         );
-      case "/setting":
+      case currentPath === "/setting":
         return (
           <InnerHead>
             <div onClick={handleBack}>{backSvg(theme)}</div>
-            <div
-              style={{
-                position: "absolute",
-                right: "50%",
-              }}
-            >
-              설정
-            </div>
+            <div style={{ position: "absolute", right: "50%" }}>설정</div>
+          </InnerHead>
+        );
+      case currentPath === "/alert":
+        return (
+          <InnerHead>
+            <div onClick={handleBack}>{backSvg(theme)}</div>
+            <div style={{ position: "absolute", right: "45%" }}>알림함</div>
           </InnerHead>
         );
       default:

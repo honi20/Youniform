@@ -5,7 +5,10 @@ import DownIcon from "@assets/chevron-down.svg?react";
 import UpIcon from "@assets/chevron-up.svg?react";
 import PlayerSongView from "./PlayerSongView";
 import TeamSongComp from "@components/Main/Player/TeamSongComp";
-import useSongStore from "../../stores/songStore";
+import { useNavigate, useParams } from 
+"react-router-dom";
+import usePlayerStore from "@stores/playerStore";
+
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -140,35 +143,49 @@ const Btn = styled.div`
 
 const TotalSongView = () => {
   // store에서 꺼내야함
-  const selectedList = [
-    { id: 0, class: "team", name: "Monsters" },
-    { id: 1, class: "player", name: "이대호" },
-    { id: 2, class: "player", name: "김문호" },
-    { id: 3, class: "player", name: "정성훈" },
-  ];
+  const {
+    playerList,
+    fetchPlayerList,
+    teamSongs,
+    fetchTeamSongs,
+    playerSongs,
+    fetchPlayerSongs,
+  } = usePlayerStore();
+  const { playerId } = useParams();
+  const { teamId } = useParams();
+  const[player, setPlayer] = useState();
+  const navigate = useNavigate();
 
-  const { teamSongs, fetchTeamSongs } = useSongStore();
+  useEffect(() => {
+    if (teamSongs.length == 0) {
+      console.log("fetch to team songs")
+      fetchTeamSongs();
+    }
+  }, [fetchTeamSongs]);
 
-  // 나중에 api 요청할때 쓰세요
-  // useEffect(() => {
-  //   fetchTeamSongs();
-  // }, [fetchTeamSongs])
-  // toggle 관련
+  useEffect(() => {
+    console.log(playerList)
+    if (playerList.length == 0) {
+      console.log("fetch to player list")
+      fetchPlayerList();
+    }
+  }, [fetchPlayerList]);
+
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
-  const [selected, setSelected] = useState(0); // 들어온 선수 id를 null 값 대신에 넣어야함
-  const handleToggleBtn = (btnIndex) => {
+
+  const handleToggleBtn = (playeId) => {
     setIsOn(false);
-    setSelected(btnIndex);
+    setPlayer(playerList.find((p) => p.playerId == playerId))
+    navigate(`/song/player/${playeId}`)
   };
-  // 등장곡 & 응원가 관련 -> 선수 props 전달 받아서 창 바뀌어야 함
   const [activeBtn, setActiveBtn] = useState(0);
   const handleBtnClick = (btnIndex) => {
     console.log(btnIndex);
     setActiveBtn(btnIndex);
   };
   const switchChange = () => {
-    const isTeamClass = selectedList[selected].class === "team";
+    const isTeamClass = !!teamId;
     const buttonLabels = isTeamClass
       ? ["공식", "비공식"]
       : ["등장곡", "응원가"];
@@ -194,19 +211,19 @@ const TotalSongView = () => {
         <ContentWrapper>
           <NavToggle>
             <ToggleBtn onClick={() => handleToggle(isOn)}>
-              {selectedList[selected].name}
+            {playerList.length > 0 && playerList.find((p) => p.playerId == playerId).name}
               {toggle(isOn)}
             </ToggleBtn>
             <ToggleList $isOn={isOn}>
-              {selectedList.map((player) => (
+              {playerList.map((player) => (
                 <ToggleItem
                   $isOn={isOn}
-                  $isChecked={selected === player.id}
-                  key={player.id}
-                  onClick={() => handleToggleBtn(player.id)}
+                  $isChecked={playerId === player.playerId}
+                  key={player.playerId}
+                  onClick={() => handleToggleBtn(player.playerId)}
                 >
                   {player.name}
-                  <SelectIcon $isChecked={selected === player.id} />
+                  <SelectIcon $isChecked={playerId === player.id} />
                 </ToggleItem>
               ))}
             </ToggleList>
@@ -214,11 +231,12 @@ const TotalSongView = () => {
           <TabSwitcher>
             <Switcher>{switchChange()}</Switcher>
           </TabSwitcher>
-          {selectedList[selected].class === "team" ? (
+          {teamId && 
             <TeamSongComp songs={teamSongs} />
-          ) : (
-            <PlayerSongView active={activeBtn} />
-          )}
+}
+{playerId && 
+            <PlayerSongView active={activeBtn} playerId={playerId}/>
+          }
         </ContentWrapper>
       </OuterContainer>
     </Wrapper>

@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
 import LoginView from "./pages/LoginView";
 import FindEmailView from "./pages/Setting/FindEmailView";
-import FindPasswordView from "./pages/Setting/FindPasswordView";
+import FindPasswordView from "./pages/FindPasswordView";
 import DiaryDetailView from "@pages/Diary/DiaryDetailView";
 import WriteDiaryView from "@pages/Diary/WriteDiaryView";
 import SignUpView from "./pages/SignUpView";
@@ -44,11 +44,12 @@ import PhotoCardDetail from "./components/Photocard/Slot/PhotoCardDetail";
 import LikePostView from "@pages/MyPage/LikePostView";
 import FriendView from "@pages/MyPage/FriendView";
 import PostDetailView from "@pages/Post/PostDetailView";
-import SearchView from "./pages/Post/SearchView";
+import SearchView from "@pages/Post/SearchView";
 import WritePostView from "./pages/Post/WritePostView";
 import MyPost from "@pages/MyPage/MyPost";
-import ChangeProfile from "./pages/MyPage/ChangeProfile";
-
+import ChangeProfile from "@pages/MyPage/ChangeProfile";
+import MyDiaryView from "@pages/Diary/MyDiaryView";
+import AlertView from "./pages/AlertView";
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -116,29 +117,31 @@ function App() {
                   <Route index element={<BinderCover />} />
                   <Route path="cover" element={<BinderCover />} />
                   <Route path="binder" element={<Binder />} />
-                  <Route path="detail" element={<PhotoCardDetail />} />
+                  <Route path="detail/:photocardId" element={<PhotoCardDetail />} />
                   <Route path="create" element={<PhotoCardCreator />} />
                 </Route>
                 <Route path="/diary/*">
                   <Route index element={<DiaryHomeView />} />
                   <Route path=":diaryId" element={<DiaryDetailView />} />
                   <Route path=":diaryId/update" element={<WriteDiaryView />} />
-                  <Route path="write" element={<WriteDiaryView />} />
+                  <Route path="write/:diaryDate" element={<WriteDiaryView />} />
+                  <Route path="friend/:nickname" element={<MyDiaryView />} />
                 </Route>
                 <Route path="/post/*">
                   <Route index element={<PostView />} />
                   <Route path=":postId" element={<PostDetailView />} />
                   <Route path="write" element={<WritePostView />} />
+                  <Route path="friend/:nickname" element={<MyPost />} />
                 </Route>
-                <Route path="/search" element={<SearchView />} />
+                <Route path="/search" element={<SearchView />}/>
                 <Route path="/my-page/*">
                   <Route index element={<MyPageView />} />
                   <Route path="friend-list" element={<FriendView />} />
                   <Route path="like-post" element={<LikePostView />} />
                   <Route path="my-post" element={<MyPost />} />
+                  <Route path="my-diary" element={<MyDiaryView />} />
                   <Route path="change-profile" element={<ChangeProfile />} />
                 </Route>
-
                 {/* SignUp */}
                 <Route path="/sign-up/*" element={<SignUpView />}>
                   <Route index element={<StepOneForm />} />
@@ -150,9 +153,10 @@ function App() {
                 <Route path="/select-player" element={<SelectPlayerView />} />
                 <Route path="/news" element={<NewsView />} />
                 {/* 노래 관련 */}
-                <Route path="/total-song" element={<TotalSongView />} />
-                <Route path="/team-song/:id" element={<TeamSongView />} />
-                <Route path="/player-song/:id" element={<PlayerSongView />} />
+                <Route path="/song" element={<TotalSongView />}>
+                  <Route path="player/:playerId" element={<PlayerSongView />} />
+                  <Route path="team/:teamId" element={<TeamSongView />} />
+                </Route>
                 {/* 채팅 관련 */}
                 <Route path="/chat/:roomId" element={<ChatView />} />
                 <Route path="/setting/*">
@@ -171,6 +175,7 @@ function App() {
                   <Route path="find-email" element={<FindEmailView />} />
                   <Route path="find-password" element={<FindPasswordView />} />
                 </Route>
+                <Route path="alert" element={<AlertView />} />
               </Routes>
             </ContentContainer>
             <div ref={navBarRef}>

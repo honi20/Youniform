@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const API_URL = "http://i11a308.p.ssafy.io:8080/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const createApiClient = (accessToken) => {
   if (!accessToken) {
@@ -8,7 +7,8 @@ export const createApiClient = (accessToken) => {
     throw new Error("Access token is required to create an API client.");
   }
 
-  console.log("createApiClient: API 클라이언트를 생성합니다.");
+  // console.log("createApiClient: API 클라이언트를 생성합니다.");
+  // console.log(API_URL);
   return axios.create({
     baseURL: API_URL,
     headers: {
@@ -37,7 +37,7 @@ const setAccessToken = (token) => {
 export const getApiClient = () => {
   const accessToken = getAccessToken();
   if (accessToken) {
-    console.log("getApiClient: accesToken이 존재합니다.", accessToken);
+    console.log("getApiClient: accesToken이 존재합니다.");
   }
   const apiClient = createApiClient(accessToken);
 
