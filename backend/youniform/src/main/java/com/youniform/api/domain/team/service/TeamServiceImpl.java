@@ -1,8 +1,10 @@
 package com.youniform.api.domain.team.service;
 
+import com.youniform.api.domain.team.dto.TeamDetailsRes;
 import com.youniform.api.domain.team.dto.TeamSongDto;
 import com.youniform.api.domain.team.dto.TeamSongListRes;
 import com.youniform.api.domain.team.entity.TeamSong;
+import com.youniform.api.domain.team.repository.TeamRepository;
 import com.youniform.api.domain.team.repository.TeamSongRepository;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
@@ -21,6 +23,8 @@ public class TeamServiceImpl implements TeamService {
 
     private final TeamSongRepository teamSongRepository;
 
+    private final TeamRepository teamRepository;
+
     @Override
     public TeamSongListRes findTeamSongs(Long userId) {
         Users user = userRepository.findById(userId)
@@ -33,5 +37,13 @@ public class TeamServiceImpl implements TeamService {
                 .toList();
 
         return new TeamSongListRes(teamSongList);
+    }
+
+    @Override
+    public TeamDetailsRes findTeamDetail(Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        return TeamDetailsRes.toDto(user.getTeam());
     }
 }
