@@ -67,9 +67,11 @@ const MainView = () => {
     setSelectedPlayer(playerId);
     console.log(playerId);
   };
+  console.log(playerList.length)
   return (
     <Div>
       <PlayerComp
+        count={playerList.length}
         onSelectPlayer={handleSelectPlayer}
         player={playerList[selectedPlayer]}
       />

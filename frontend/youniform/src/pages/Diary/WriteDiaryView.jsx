@@ -74,16 +74,13 @@ const WriteDiaryView = () => {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [date, setDate] = useState(null);
   const [update, setUpdate] = useState(false);
-  const { diaryId } = useParams();
+  const { diaryId, diaryDate } = useParams();
+  const navigate = useNavigate();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
-  const handleToggleBtn = (btnIndex) => {
-    setIsOn(false);
-    setSelected(btnIndex);
-  };
   useEffect(() => {
     if (diaryId) {
       fetchDiary(diaryId);
@@ -94,13 +91,7 @@ const WriteDiaryView = () => {
     }
   }, [diaryId, fetchDiary]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const openSaveModal = () => setIsSaveModalOpen(true);
-  const closeSaveModal = () => setIsSaveModalOpen(false);
-
-  const navigate = useNavigate();
+  
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -228,14 +219,10 @@ const WriteDiaryView = () => {
     try {
       const formData = await saveDiaryObject();
       let newId = "";
-
-
       if (diaryId) {
-        console.log("다이어리 수정");
         console.log("다이어리 수정");
         await updateDiary(diaryId, formData);
       } else {
-        console.log("다이어리 생성");
         console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
@@ -321,11 +308,11 @@ const WriteDiaryView = () => {
     <>
       <Background $isOn={isOn} />
       <St.StampContainer>
-        test
+        {diaryId ? diary.diaryDate : diaryDate}
         <ToggleBtn onClick={() => handleToggle(isOn)}>{toggle(isOn)}</ToggleBtn>
       </St.StampContainer>
       <ToggleList $isOn={isOn}>tttttttt</ToggleList>
-      <St.SaveBtn onClick={openSaveModal}>
+      <St.SaveBtn onClick={() => setIsSaveModalOpen(true)}>
         <St.IconContainer>
           <SaveIcon />
         </St.IconContainer>
@@ -351,7 +338,7 @@ const WriteDiaryView = () => {
                 </St.IconContainer>
                 <St.IconFont>꾸미기</St.IconFont>
               </St.Btn>
-              <St.Btn $decorated={isDecorated} onClick={openModal}>
+              <St.Btn $decorated={isDecorated} onClick={() => setIsModalOpen(true)}>
                 <St.IconContainer>
                   <ExampleIcon />
                 </St.IconContainer>
@@ -398,7 +385,7 @@ const WriteDiaryView = () => {
         <BasicModal
           state="DiarySaved"
           isOpen={isSaveModalOpen}
-          onClose={closeSaveModal}
+          onClose={() => setIsSaveModalOpen(false)}
           onButtonClick={handleAfterSave}
         />
       </St.Div>

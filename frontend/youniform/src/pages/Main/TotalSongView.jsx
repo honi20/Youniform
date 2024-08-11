@@ -157,13 +157,16 @@ const TotalSongView = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!teamSongs) {
+    if (teamSongs.length == 0) {
+      console.log("fetch to team songs")
       fetchTeamSongs();
     }
   }, [fetchTeamSongs]);
 
   useEffect(() => {
-    if (!playerList) {
+    console.log(playerList)
+    if (playerList.length == 0) {
+      console.log("fetch to player list")
       fetchPlayerList();
     }
   }, [fetchPlayerList]);
@@ -208,7 +211,7 @@ const TotalSongView = () => {
         <ContentWrapper>
           <NavToggle>
             <ToggleBtn onClick={() => handleToggle(isOn)}>
-            {playerList && playerList.find((p) => p.playerId == playerId).name}
+            {playerList.length > 0 && playerList.find((p) => p.playerId == playerId).name}
               {toggle(isOn)}
             </ToggleBtn>
             <ToggleList $isOn={isOn}>

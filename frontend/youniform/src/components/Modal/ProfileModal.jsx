@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
 import UserItem from "@components/MyPage/UserItem";
@@ -123,16 +123,22 @@ const DotLine = styled.div`
 import OrderIcon from "@assets/MyPage/order.svg?react";
 import NotebookIcon from "@assets/MyPage/notebook.svg?react";
 import GroupIcon from "@assets/Post/Group_light.svg?react";
-import useUserStore from "../../stores/userStore";
+import WaitingIcon from "@assets/Post/Progress_light.svg?react";
+import DeleteFriendIcon from "@assets/Post/Sad_alt_light.svg?react";
+
 import { useNavigate } from "react-router-dom";
 import usePostStore
  from "@stores/postStore";
  import useDiaryStore from "../../stores/diaryStore";
+
 const ProfileModal = ({ user, friend, isOpen, onClose }) => {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const { fetchFriendPosts } = usePostStore();
+const theme = useTheme();
+const navigate = useNavigate();
+const { fetchFriendPosts } = usePostStore();
 const { fetchFriendDiary} = useDiaryStore();
+const [isModalOpen, setIsModalOpen] = useState(false);
+const openSaveModal = () => setIsSaveModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
   if (!isOpen) return null;
   if (user.nickname === friend.nickname){
     navigate("/my-page")
@@ -156,7 +162,60 @@ const { fetchFriendDiary} = useDiaryStore();
       set({ loading: false, error: error.message });
     }
   }
+  const addFriend = async (friend) => {
+    const apiClient = getApiClient();
+    try {
+      console.log(friend.userId)
+      const res = await apiClient.post(`/friends/request`, {
+        friendUuid : friend.userId
+      })
+      console.log(res.data.message)
+    } catch (error) {
+      console.log("Failed to Add friend", error);
+      set({ loading: false, error: error.message })
+    }
+  }
+  const deleteFriend = async (friend) => {
+    const apiClient = getApiClient();
+    try {
+      console.log(friend.userId)
+      const res = await apiClient.post(`/friends/request`, {
+        friendUuid : friend.userId
+      })
+      console.log(res.data.message)
+    } catch (error) {
+      console.log("Failed to Add friend", error);
+      set({ loading: false, error: error.message })
+    }
+  }
+  const FriendComponent = ({friend, addFriend}) => {
+    const { isFriend } = friend;
+    console.log(isFriend)
+    switch (isFriend) {
+      case "NOT_FRIEND":
+        return <UserItem
+        icon={GroupIcon}
+        text="친구 신청"
+        onClick={() => addFriend(friend)}
+      />;
+      case "WAITING":
+        return <UserItem
+        icon={WaitingIcon}
+        text="친구 요청 중"
+        onClick={() => console.log("친구 요청 중")}
+      />;
+      case "FRIEND":
+        return <UserItem
+        icon={DeleteFriendIcon}
+        text="친구 삭제"
+        onClick={() => console.log("친구 삭제")}
+      />;
+      default:
+        return null;
+        }   
+  }
   return (
+    <>
     <ModalBackdrop>
       <Container>
         <Header>
@@ -184,16 +243,14 @@ const { fetchFriendDiary} = useDiaryStore();
               onClick={() => friendPost(friend)}
            />
             <DotLine />
-            <UserItem
-              icon={GroupIcon}
-              text="친구 신청"
-              onClick={() => console.log("친구 신청")}
-            />
+            <FriendComponent friend={friend} addFriend={addFriend} />
           </ItemWrapper>
         </UserSection>
       </Container>
     </ModalBackdrop>
+    </>
   );
 };
 
 export default ProfileModal;
+

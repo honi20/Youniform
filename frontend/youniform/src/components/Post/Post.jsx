@@ -238,12 +238,13 @@ useEffect(() => {
           </div>
         </Footer>
       </Container>
-      <ProfileModal
+      {isModalOpen && (<ProfileModal
         friend={friend}
         user={user}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       />
+      )}
     </>
   );
 };

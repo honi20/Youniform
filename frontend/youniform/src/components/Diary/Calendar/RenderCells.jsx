@@ -72,9 +72,11 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
   };
 
   const handleDateClick = (day, stampSrc) => {
-    const cloneDay = new Date(day);
+    const formatDate = (day) => format(day, 'yyyy-MM-dd');
+    const formattedDate = formatDate(day);
+    console.log(formattedDate)
     if (!stampSrc) {
-      navigate('/diary/write');
+      navigate(`/diary/write/${formattedDate}`);
     } else {
       onDateClick(cloneDay);
     }

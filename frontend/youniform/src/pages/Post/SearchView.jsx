@@ -26,7 +26,7 @@ const SearchView = () => {
   }, [location]);
 
   const [results, setResults] = useState([]);
-  const [type, setType] = useState("tag");
+  const [type, setType] = useState("");
   const [search, setSearch] = useState(false);
   useEffect(() => {
     if (tagId){
@@ -99,6 +99,7 @@ const SearchView = () => {
         type={type}
         setSearch={setSearch}
       />
+      {/* {type} */}
       <div>{renderContent()}</div>
     </Container>
     </>
