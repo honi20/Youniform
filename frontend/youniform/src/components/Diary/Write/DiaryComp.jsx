@@ -27,7 +27,7 @@ const DiaryComp = ({ state, diary }) => {
   return (
     <St.Diary>
       <St.DiaryHeader>
-        <St.Profile $profileUrl={diary.profileUrl} />
+        <St.Profile src={diary.profileUrl} />
         <St.TextContainer>
           <St.HeaderText>{diary.nickname}</St.HeaderText>
         </St.TextContainer>

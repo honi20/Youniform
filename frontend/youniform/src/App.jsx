@@ -124,11 +124,13 @@ function App() {
                   <Route path=":diaryId" element={<DiaryDetailView />} />
                   <Route path=":diaryId/update" element={<WriteDiaryView />} />
                   <Route path="write" element={<WriteDiaryView />} />
+                  <Route path="friend/:nickname" element={<MyDiaryView />} />
                 </Route>
                 <Route path="/post/*">
                   <Route index element={<PostView />} />
                   <Route path=":postId" element={<PostDetailView />} />
                   <Route path="write" element={<WritePostView />} />
+                  <Route path="friend/:nickname" element={<MyPost />} />
                 </Route>
                 <Route path="/search" element={<SearchView />}/>
                 <Route path="/my-page/*">

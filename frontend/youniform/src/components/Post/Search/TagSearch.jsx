@@ -45,10 +45,10 @@ const TagSearch = ({ query, search, setSearch }) => {
     }
   };
   const handleClickTag = (result) => {
-    console.log(result.contents);
+    console.log(result);
     const encodedQuery = encodeURIComponent(result.contents);
+    navigate(`/search?tagId=${result.tagId}&q=${encodedQuery}`);
     setResults([]);
-    navigate(`/search?type=tag&q=${encodedQuery}`);
   };
   return (
     <div>

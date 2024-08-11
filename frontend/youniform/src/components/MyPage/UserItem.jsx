@@ -17,7 +17,7 @@ const IconWrapper = styled(FlexBox)`
   margin-bottom: 10px;
 `;
 const UserItemContainer = styled(FlexBox)`
-  ${Font.Small}
+  ${Font.Tiny}
   width: 32%;
   flex-direction: column;
 `;
