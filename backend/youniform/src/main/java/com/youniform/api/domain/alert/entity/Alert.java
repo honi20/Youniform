@@ -35,7 +35,7 @@ public class Alert {
 
 	private String content;
 
-	private String link;
+	private Long pk;
 
 	@Column(nullable = false)
 	@ColumnDefault("false")
