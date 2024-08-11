@@ -38,4 +38,6 @@ public interface UserService {
     void verifyEmail(EmailVerifyReq req);
 
     SearchNicknameRes findUserByNickName(String nickname);
+
+    void modifyPlayAlert(AlertModifyReq alertModifyReq, Long userId);
 }

@@ -57,6 +57,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 						users.profileUrl,
 						users.theme,
 						users.pushAlert,
+						users.playPushAlert,
 						users.team.imgUrl,
 						likePost.likePostPK.postId.countDistinct(),
 						friend1.friendPK.friendId.countDistinct()

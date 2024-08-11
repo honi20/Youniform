@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.youniform.api.domain.player.dto.*;
 import com.youniform.api.domain.player.entity.SongType;
 import com.youniform.api.domain.player.service.PlayerService;
@@ -40,9 +41,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +61,9 @@ class PlayerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private Gson gson;
 
     @MockBean
     private JwtService jwtService;
@@ -126,7 +132,7 @@ class PlayerControllerTest {
     @Test
     public void 최애_선수_정보_조회_성공() throws Exception {
         List<PlayerDetailDto> playerList = new ArrayList<>();
-        playerList.add(new PlayerDetailDto(1L, "박용택", LocalDate.parse("1979-04-21"), 33, 0.0F, 0, 0, 0, null, null, null, null, "외야수", "우투좌타"));
+        playerList.add(new PlayerDetailDto(1L, "박용택", LocalDate.parse("1979-04-21"), 33, 0.0F, 0, 0, 0, null, null, null, null, "외야수", "우투좌타", true));
 
         when(playerService.findFavoritePlayers(anyLong())).thenReturn(new FavoritePlayerListRes(playerList));
 
@@ -166,7 +172,8 @@ class PlayerControllerTest {
                                                 fieldWithPath("body.*[].win").type(JsonFieldType.NUMBER).description("선수 승수 (투수)").optional(),
                                                 fieldWithPath("body.*[].struck").type(JsonFieldType.NUMBER).description("선수 삼진 (투수)").optional(),
                                                 fieldWithPath("body.*[].position").type(JsonFieldType.STRING).description("선수 포지션"),
-                                                fieldWithPath("body.*[].twoWay").type(JsonFieldType.STRING).description("선수 투타")
+                                                fieldWithPath("body.*[].twoWay").type(JsonFieldType.STRING).description("선수 투타"),
+                                                fieldWithPath("body.*[].pushAlert").type(JsonFieldType.BOOLEAN).description("선수 등장 알림 여부")
                                         )
                                 )
                                 .responseSchema(Schema.schema("최애 선수 정보 리스트 조회 Response"))
@@ -212,6 +219,48 @@ class PlayerControllerTest {
                                         )
                                 )
                                 .responseSchema(Schema.schema("선수 응원가 리스트 조회 Response"))
+                                .build()
+                        )));
+    }
+
+    @Test
+    public void 최애_선수_알림_변경_성공() throws Exception {
+        PlayerAlertModifyReq request = new PlayerAlertModifyReq();
+        request.setPushAlert(true);
+
+        String content = gson.toJson(request);
+
+        ResultActions actions = mockMvc.perform(
+                patch("/api/players/alert/{playerId}", 3L)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ALERT_MODIFIED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ALERT_MODIFIED.getMessage()))
+                .andDo(document(
+                        "최애 선수 푸시 알림 변경 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Player API")
+                                .summary("최애 선수 등장 알림 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        fieldWithPath("pushAlert").type(JsonFieldType.BOOLEAN).description("변경된 푸시 알림 상태")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL).ignored()
+                                        )
+                                )
+                                .responseSchema(Schema.schema("최애 선수 정보 리스트 조회 Response"))
                                 .build()
                         )));
     }

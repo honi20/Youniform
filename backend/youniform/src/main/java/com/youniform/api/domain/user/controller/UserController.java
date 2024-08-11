@@ -160,4 +160,12 @@ public class UserController {
 
         return new ResponseEntity<>(ResponseDto.success(USER_SEARCH_OK, result), HttpStatus.OK);
     }
+
+    @PatchMapping("/play/alert")
+    public ResponseEntity<?> playAlertModify(@RequestBody AlertModifyReq alertModifyReq) {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        userService.modifyPlayAlert(alertModifyReq, userId);
+
+        return new ResponseEntity<>(ResponseDto.success(ALERT_MODIFIED, null), HttpStatus.OK);
+    }
 }
