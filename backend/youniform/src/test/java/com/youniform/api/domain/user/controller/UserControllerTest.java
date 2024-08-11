@@ -373,12 +373,12 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(PASSWORD_MODIFIED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(PASSWORD_MODIFIED.getMessage()))
                 .andDo(document(
-                        "비밀번호 재설정 성공",
+                        "비밀번호 변경 성공",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("User API")
-                                .summary("비밀번호 재설정 API")
+                                .summary("비밀번호 변경 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
@@ -396,8 +396,8 @@ public class UserControllerTest {
                                                         .description("내용 없음")
                                         )
                                 )
-                                .requestSchema(Schema.schema("비밀번호 재설정 Request"))
-                                .responseSchema(Schema.schema("비밀번호 재설정 Response"))
+                                .requestSchema(Schema.schema("비밀번호 변경 Request"))
+                                .responseSchema(Schema.schema("비밀번호 변경 Response"))
                                 .build()
                         ))
                 );

@@ -46,7 +46,7 @@ public class SecurityConfig {
                                         "/api/users/signup/**",
                                         "/api/users/find/password", "/api/users/check/email",
                                         "/api/users/password/reset", "/api/users/password/send",
-                                        "/api/docs/**", "/api/swagger-ui/**", "/api/v3/api-docs/**", "/api/h2-console/**").permitAll()
+                                        "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
 //                        .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 )
