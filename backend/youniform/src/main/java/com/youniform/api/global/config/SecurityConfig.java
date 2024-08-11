@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 .userService(oAuth2UserService))
                         .successHandler(oauth2SuccessHandler)
                         .authorizationEndpoint(authEndPoint -> authEndPoint
-                                .baseUri("/api/users/signin/social")))
+                                .baseUri("/users/signin/social")))
         ;
 
         http.addFilterBefore(jwtBearerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
