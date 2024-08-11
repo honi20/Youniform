@@ -25,7 +25,7 @@ public class AlertReq {
 
 	private String content;
 
-	private String link;
+	private Long pk;
 
 	public Alert toEntity(Users sender) {
 		return Alert.builder()
@@ -33,7 +33,7 @@ public class AlertReq {
 				.sender(sender)
 				.type(this.type)
 				.content(this.content)
-				.link(this.link)
+				.pk(this.pk)
 				.isRead(false)
 				.createdAt(LocalDateTime.now())
 				.build();

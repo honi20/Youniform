@@ -23,7 +23,7 @@ public class AlertDto {
 
 	private String content;
 
-	private String link;
+	private Long pk;
 
 	private Boolean isRead;
 
@@ -37,7 +37,7 @@ public class AlertDto {
 				.senderProfileUrl(alert.getSender() != null ? alert.getSender().getProfileUrl() : null)
 				.type(String.valueOf(alert.getType()))
 				.content(alert.getContent())
-				.link(alert.getLink())
+				.pk(alert.getPk() != null ? alert.getPk() : null)
 				.isRead(alert.getIsRead())
 				.createdAt(calculateTime(alert.getCreatedAt()))
 				.build();

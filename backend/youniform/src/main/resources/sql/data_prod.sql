@@ -142,12 +142,12 @@ INSERT INTO CHAT_PART (user_id, room_id, last_read_time)
 VALUES (123, 2, CURRENT_TIMESTAMP);
 
 -- alert
-INSERT INTO ALERT(alert_id, receiver_id, sender_id, type, content, link, is_read, created_at)
-VALUES (123, 123, 124, 'FRIEND_REQUEST', '', 'friend link', false, '2024-07-31T16:47:20.394415'),
-       (124, 123, 124, 'POST_COMMENT', '최강 몬스터즈 우승', 'post link', false, '2024-07-31T21:50:20.394415'),
-       (125, 123, 124, 'FRIEND_REQUEST', '', 'friend link', true, '2024-08-01T11:23:20.394415'),
-       (126, 123, 124, 'POST_COMMENT', '대호 이번주 홈런 침', 'post link', false, '2024-08-03T20:47:20.394415'),
-       (127, 124, 123, 'POST_COMMENT', '하이하이', 'post link', true, '2024-08-05T11:23:20.394415');
+INSERT INTO ALERT(alert_id, receiver_id, sender_id, type, content, pk, is_read, created_at)
+VALUES (123, 123, 124, 'FRIEND_REQUEST', '', null, false, '2024-07-31T16:47:20.394415'),
+       (124, 123, 124, 'POST_COMMENT', '최강 몬스터즈 우승', 1, false, '2024-07-31T21:50:20.394415'),
+       (125, 123, 124, 'FRIEND_REQUEST', '', null, true, '2024-08-01T11:23:20.394415'),
+       (126, 123, 124, 'POST_COMMENT', '대호 이번주 홈런 침', 1, false, '2024-08-03T20:47:20.394415'),
+       (127, 124, 123, 'POST_COMMENT', '하이하이', 1, true, '2024-08-05T11:23:20.394415');
 
 -- tag
 INSERT INTO TAG(contents)
