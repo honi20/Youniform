@@ -97,7 +97,9 @@ public class UserServiceImpl implements UserService {
             redisUtils.setData(users.getUuid(), JwtRedis.builder()
                     .userId(users.getId())
                     .uuid(users.getUuid())
-                    .refreshToken(jwtService.createRefreshToken(users.getUuid())));
+                    .refreshToken(jwtService.createRefreshToken(users.getUuid()))
+                    .build()
+            );
             return jwtService.createAccessToken(users.getUuid());
         }
 
