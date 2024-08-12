@@ -250,7 +250,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/a/diaries")
+                multipart("/diaries")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
