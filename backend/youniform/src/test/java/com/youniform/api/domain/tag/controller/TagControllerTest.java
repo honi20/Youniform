@@ -77,7 +77,7 @@ public class TagControllerTest {
                 .thenReturn(new TagListRes(tagDtoList));
         //when
         ResultActions actions = mockMvc.perform(
-                get("/api/tags")
+                get("/tags")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("name", "기아")
                         .accept(MediaType.APPLICATION_JSON)

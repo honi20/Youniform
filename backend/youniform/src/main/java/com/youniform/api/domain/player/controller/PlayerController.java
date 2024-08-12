@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.youniform.api.global.statuscode.SuccessCode.PLAYER_LIST_OK;
 
 @RestController
-@RequestMapping("/api/players")
+@RequestMapping("/players")
 @RequiredArgsConstructor
 @Validated
 public class PlayerController {

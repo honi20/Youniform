@@ -92,7 +92,7 @@ class AlertControllerTest {
         when(alertService.findAlerts(anyLong())).thenReturn(new AlertListRes(alertList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/alerts/list")
+                get("/alerts/list")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -133,7 +133,7 @@ class AlertControllerTest {
     @Test
     void 알림_읽음_처리_성공() throws Exception {
         ResultActions actions = mockMvc.perform(
-                patch("/api/alerts/{alertId}", 123L)
+                patch("/alerts/{alertId}", 123L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -165,7 +165,7 @@ class AlertControllerTest {
     @Test
     void 알림_모두_읽음_처리_성공() throws Exception {
         ResultActions actions = mockMvc.perform(
-                patch("/api/alerts")
+                patch("/alerts")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -197,7 +197,7 @@ class AlertControllerTest {
     @Test
     void 알림_삭제_성공() throws Exception {
         ResultActions actions = mockMvc.perform(
-                delete("/api/alerts/{alertId}", 123L)
+                delete("/alerts/{alertId}", 123L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -229,7 +229,7 @@ class AlertControllerTest {
     @Test
     void 알림_모두_삭제_성공() throws Exception {
         ResultActions actions = mockMvc.perform(
-                delete("/api/alerts")
+                delete("/alerts")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)

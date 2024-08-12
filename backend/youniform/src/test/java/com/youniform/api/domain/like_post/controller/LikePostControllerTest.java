@@ -62,7 +62,7 @@ public class LikePostControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/api/likes/{postId}", 1L)
+                post("/likes/{postId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)

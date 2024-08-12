@@ -20,7 +20,7 @@ import java.io.IOException;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/posts")
 @RequiredArgsConstructor
 @Validated
 @Slf4j

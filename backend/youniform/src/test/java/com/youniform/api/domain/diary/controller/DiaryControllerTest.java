@@ -115,7 +115,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries")
+                multipart("/diaries")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -161,7 +161,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries")
+                multipart("/diaries")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -206,7 +206,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries")
+                multipart("/diaries")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -250,7 +250,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries")
+                multipart("/a/diaries")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -294,7 +294,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryAddReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries")
+                multipart("/diaries")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -333,7 +333,7 @@ public class DiaryControllerTest {
 
         when(diaryService.detailDiary(anyLong(), anyLong())).thenReturn(diaryDetailDto);
 
-        performGet("/api/diaries/{diaryId}", 123L)
+        performGet("/diaries/{diaryId}", 123L)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_DETAILS_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_DETAILS_OK.getMessage()))
@@ -362,7 +362,7 @@ public class DiaryControllerTest {
     public void 다이어리_상세조회_실패_존재하지_않는_다이어리() throws Exception {
         when(diaryService.detailDiary(anyLong(), anyLong())).thenThrow(new CustomException(DIARY_NOT_FOUND));
 
-        performGet("/api/diaries/{diaryId}", 100L)
+        performGet("/diaries/{diaryId}", 100L)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_NOT_FOUND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_NOT_FOUND.getMessage()))
@@ -399,7 +399,7 @@ public class DiaryControllerTest {
         when(diaryService.findMyDiaries(anyLong(), any(), any())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/api/diaries/list")
+                get("/diaries/list")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -448,7 +448,7 @@ public class DiaryControllerTest {
         when(diaryService.findDiaries(anyLong(), anyString(), any(), any())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/api/diaries/list/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")
+                get("/diaries/list/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -493,7 +493,7 @@ public class DiaryControllerTest {
         when(diaryService.findMyMonthlyDiaries(anyLong(), any())).thenReturn(new DiaryMonthlyListRes(diaryList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/diaries/monthly")
+                get("/diaries/monthly")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -539,7 +539,7 @@ public class DiaryControllerTest {
         when(diaryService.findMyMonthlyDiaries(anyLong(), any())).thenThrow(new CustomException(INVALID_CALENDAR_DATE));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/diaries/monthly")
+                get("/diaries/monthly")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -581,7 +581,7 @@ public class DiaryControllerTest {
         when(diaryService.findMonthlyDiaries(anyLong(), anyString(), any())).thenReturn(new DiaryMonthlyListRes(diaryList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/diaries/monthly/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")
+                get("/diaries/monthly/{userId}", "1604b772-adc0-4212-8a90-81186c57f598")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -628,7 +628,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries/{diaryId}", 123L)
+                multipart("/diaries/{diaryId}", 123L)
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -673,7 +673,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries/{diaryId}", 100L)
+                multipart("/diaries/{diaryId}", 100L)
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -717,7 +717,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries/{diaryId}", 100L)
+                multipart("/diaries/{diaryId}", 100L)
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -761,7 +761,7 @@ public class DiaryControllerTest {
         MockMultipartFile dto = new MockMultipartFile("dto", "", "application/json", new ObjectMapper().writeValueAsBytes(diaryModifyReq));
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/diaries/{diaryId}", 100L)
+                multipart("/diaries/{diaryId}", 100L)
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -798,7 +798,7 @@ public class DiaryControllerTest {
     public void 다이어리_삭제_성공() throws Exception {
         diaryService.removeDiary(anyLong(), anyLong());
 
-        performDelete("/api/diaries/{diaryId}", 123L)
+        performDelete("/diaries/{diaryId}", 123L)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_DELETED.getMessage()))
@@ -825,7 +825,7 @@ public class DiaryControllerTest {
     public void 다이어리_삭제_실패_존재하지_않는_다이어리() throws Exception {
         doThrow(new CustomException(DIARY_NOT_FOUND)).when(diaryService).removeDiary(anyLong(), anyLong());
 
-        performDelete("/api/diaries/{diaryId}", 100L)
+        performDelete("/diaries/{diaryId}", 100L)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_NOT_FOUND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_NOT_FOUND.getMessage()))
@@ -851,7 +851,7 @@ public class DiaryControllerTest {
     public void 다이어리_삭제_실패_로그인유저_작성자_불일치() throws Exception {
         doThrow(new CustomException(DIARY_UPDATE_FORBIDDEN)).when(diaryService).removeDiary(anyLong(), anyLong());
 
-        performDelete("/api/diaries/{diaryId}", 126L)
+        performDelete("/diaries/{diaryId}", 126L)
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_UPDATE_FORBIDDEN.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_UPDATE_FORBIDDEN.getMessage()))
@@ -905,7 +905,7 @@ public class DiaryControllerTest {
 
         when(diaryService.findDiaryResources()).thenReturn(new ResourceListRes(resourceList));
 
-        performGet("/api/diaries/resources")
+        performGet("/diaries/resources")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_RESOURCES_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_RESOURCES_OK.getMessage()))
@@ -945,7 +945,7 @@ public class DiaryControllerTest {
 
         when(diaryService.findDiaryStamps()).thenReturn(new StampListRes(stampList));
 
-        performGet("/api/diaries/stamps")
+        performGet("/diaries/stamps")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(DIARY_STAMP_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(DIARY_STAMP_OK.getMessage()))

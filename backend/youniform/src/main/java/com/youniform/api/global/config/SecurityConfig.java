@@ -41,11 +41,11 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/users/*/check-duplication",
-                                        "/api/users/signup/**",
-                                        "/api/users/find/password", "/api/users/check/email",
-                                        "/api/users/password/reset", "/api/users/password/send",
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/users/*/check-duplication",
+                                        "/users/signup/**",
+                                        "/users/find/password", "/users/check/email",
+                                        "/users/password/reset", "/users/password/send",
                                         "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
 //                        .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
@@ -55,7 +55,7 @@ public class SecurityConfig {
                                 .userService(oAuth2UserService))
                         .successHandler(oauth2SuccessHandler)
                         .authorizationEndpoint(authEndPoint -> authEndPoint
-                                .baseUri("/api/users/signin/social")))
+                                .baseUri("/users/signin/social")))
         ;
 
         http.addFilterBefore(jwtBearerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
