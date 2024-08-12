@@ -84,6 +84,10 @@ public class UserServiceImpl implements UserService {
         Users users = userRepository.findByEmail(user.getEmail());
 
         if (users != null && passwordEncoder.matches(user.getPassword(), users.getPassword())) {
+            redisUtils.setData(users.getUuid(), JwtRedis.builder()
+                    .userId(users.getId())
+                    .uuid(users.getUuid())
+                    .refreshToken(jwtService.createRefreshToken(users.getUuid())));
             return jwtService.createAccessToken(users.getUuid());
         }
 
