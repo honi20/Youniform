@@ -9,19 +9,19 @@ spring:
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
 
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:sql/data_prod.sql
+#  sql:
+#    init:
+#      mode: always
+#      data-locations: classpath:sql/data_prod.sql
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: false
         dialect: org.hibernate.dialect.MariaDBDialect
-    defer-datasource-initialization: true
+#    defer-datasource-initialization: true
 
   data:
     mongodb:
