@@ -94,7 +94,7 @@ class PhotocardControllerTest {
         MockMultipartFile file = new MockMultipartFile("file", "sample.jpg", "image/jpeg", "image/sample.jpg".getBytes());
 
         ResultActions actions = mockMvc.perform(
-                multipart("/api/photocards")
+                multipart("/photocards")
                         .file(file)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
@@ -133,7 +133,7 @@ class PhotocardControllerTest {
         when(photocardService.findPhotocard(anyLong(), anyLong())).thenReturn(photocardDetailDto);
 
         ResultActions actions = mockMvc.perform(
-                get("/api/photocards/{photocardId}", 123L)
+                get("/photocards/{photocardId}", 123L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,7 +168,7 @@ class PhotocardControllerTest {
         when(photocardService.findPhotocard(anyLong(), anyLong())).thenThrow(new CustomException(PHOTOCARD_NOT_FOUND));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/photocards/{photocardId}", 123L)
+                get("/photocards/{photocardId}", 123L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -200,7 +200,7 @@ class PhotocardControllerTest {
         when(photocardService.findPhotocard(anyLong(), anyLong())).thenThrow(new CustomException(PHOTOCARD_ACCESS_FORBIDDEN));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/photocards/{photocardId}", 125L)
+                get("/photocards/{photocardId}", 125L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -235,7 +235,7 @@ class PhotocardControllerTest {
         photocardService.removePhotocard(anyLong(), any(PhotocardDeleteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                delete("/api/photocards")
+                delete("/photocards")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("photocardIdList", photocardIds)
                         .accept(MediaType.APPLICATION_JSON)
@@ -277,7 +277,7 @@ class PhotocardControllerTest {
         doThrow(new CustomException(PHOTOCARD_NOT_FOUND)).when(photocardService).removePhotocard(anyLong(), any(PhotocardDeleteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                delete("/api/photocards")
+                delete("/photocards")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("photocardIdList", photocardIds)
                         .accept(MediaType.APPLICATION_JSON)
@@ -318,7 +318,7 @@ class PhotocardControllerTest {
         doThrow(new CustomException(PHOTOCARD_ACCESS_FORBIDDEN)).when(photocardService).removePhotocard(anyLong(), any(PhotocardDeleteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                delete("/api/photocards")
+                delete("/photocards")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("photocardIdList", photocardIds)
                         .accept(MediaType.APPLICATION_JSON)
@@ -362,7 +362,7 @@ class PhotocardControllerTest {
         when(photocardService.findPhotocards(anyLong())).thenReturn(new PhotocardListRes(photocardList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/photocards")
+                get("/photocards")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)

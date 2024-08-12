@@ -78,7 +78,7 @@ public class FriendControllerTest {
         when(jwtService.getUserId(any())).thenReturn(123L);
 
         ResultActions actions = mockMvc.perform(
-                post("/api/friends/request")
+                post("/friends/request")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,7 +133,7 @@ public class FriendControllerTest {
         String content = gson.toJson(friendRequestReq);
 
         ResultActions actions = mockMvc.perform(
-                post("/api/friends/request")
+                post("/friends/request")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -189,7 +189,7 @@ public class FriendControllerTest {
         when(friendService.requestFriend(any(), any())).thenThrow(new CustomException(USER_NOT_FOUND));
 
         ResultActions actions = mockMvc.perform(
-                post("/api/friends/request")
+                post("/friends/request")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -241,7 +241,7 @@ public class FriendControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/api/friends/accept")
+                post("/friends/accept")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -303,7 +303,7 @@ public class FriendControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/api/friends/mypage")
+                get("/friends/mypage")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -369,7 +369,7 @@ public class FriendControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/api/friends/diary")
+                get("/friends/diary")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -420,7 +420,7 @@ public class FriendControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/api/friends")
+                delete("/friends")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("friendUuid", friendUuid)
                         .accept(MediaType.APPLICATION_JSON)

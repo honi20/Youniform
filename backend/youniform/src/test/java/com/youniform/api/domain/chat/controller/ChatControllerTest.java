@@ -104,7 +104,7 @@ public class ChatControllerTest {
         when(chatService.getChatMessages(anyLong(), anyInt())).thenReturn(messages);
 
         ResultActions actions = mockMvc.perform(
-                get("/api/chats/rooms/{roomId}", 1L)
+                get("/chats/rooms/{roomId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -161,7 +161,7 @@ public class ChatControllerTest {
                 .thenThrow(new CustomException(CHATROOM_NOT_FOUND));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/chats/rooms/{roomId}", 100L)
+                get("/chats/rooms/{roomId}", 100L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -202,7 +202,7 @@ public class ChatControllerTest {
         when(chatService.getChatRoomList(anyLong())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/api/chats/rooms")
+                get("/chats/rooms")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
         );
@@ -248,7 +248,7 @@ public class ChatControllerTest {
         when(chatService.getPreviousMessages(anyLong(), anyLong(), anyInt())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/api/chats/messages/{roomId}/previous", 1L)
+                get("/chats/messages/{roomId}/previous", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("messageId", "1")
                         .param("size", "100")
@@ -308,7 +308,7 @@ public class ChatControllerTest {
         when(chatService.getNextMessages(anyLong(), anyLong(), anyInt())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/api/chats/messages/{roomId}/next", 1L)
+                get("/chats/messages/{roomId}/next", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("messageId", "1")
                         .param("size", "100")
@@ -368,7 +368,7 @@ public class ChatControllerTest {
         // when
         ResultActions actions = mockMvc
                 .perform(RestDocumentationRequestBuilders
-                        .multipart("/api/chats/messages/upload")
+                        .multipart("/chats/messages/upload")
                 .file(file)
                 .with(csrf())
                 .contentType("multipart/form-data")
@@ -416,7 +416,7 @@ public class ChatControllerTest {
 
         when(chatService.downloadImage(anyString())).thenReturn(resource);
 
-        mockMvc.perform(get("/api/chats/messages/download")
+        mockMvc.perform(get("/chats/messages/download")
                         .param("imgUrl", "test.jpg")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())

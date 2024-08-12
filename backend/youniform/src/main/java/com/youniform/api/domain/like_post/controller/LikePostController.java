@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.youniform.api.global.statuscode.SuccessCode.LIKES_STATUS_OK;
 
 @RestController
-@RequestMapping("/api/likes")
+@RequestMapping("/likes")
 @RequiredArgsConstructor
 @Validated
 public class LikePostController {

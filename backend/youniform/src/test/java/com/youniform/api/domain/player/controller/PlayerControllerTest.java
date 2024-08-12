@@ -96,7 +96,7 @@ class PlayerControllerTest {
         when(playerService.findPlayers(1L)).thenReturn(new PlayerListRes(playerList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/players/{teamId}", 1L)
+                get("/players/{teamId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -137,7 +137,7 @@ class PlayerControllerTest {
         when(playerService.findFavoritePlayers(anyLong())).thenReturn(new FavoritePlayerListRes(playerList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/players/favorite")
+                get("/players/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -189,7 +189,7 @@ class PlayerControllerTest {
         when(playerService.findPlayerSongs(4L)).thenReturn(new PlayerSongListRes(songList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/players/song/{playerId}", 4L)
+                get("/players/song/{playerId}", 4L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -231,7 +231,7 @@ class PlayerControllerTest {
         String content = gson.toJson(request);
 
         ResultActions actions = mockMvc.perform(
-                patch("/api/players/alert/{playerId}", 3L)
+                patch("/players/alert/{playerId}", 3L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(content)

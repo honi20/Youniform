@@ -1,5 +1,7 @@
 package com.youniform.api.domain.friend.service;
 
+import com.youniform.api.domain.alert.entity.AlertType;
+import com.youniform.api.domain.alert.service.AlertService;
 import com.youniform.api.domain.friend.dto.*;
 import com.youniform.api.domain.friend.entity.Friend;
 import com.youniform.api.domain.friend.entity.FriendPK;
@@ -29,6 +31,8 @@ public class FriendServiceImpl implements FriendService {
     private final FriendRepository friendRepository;
 
     private final UserRepository userRepository;
+
+    private final AlertService alertService;
 
     @Override
     public Status isFriend(Long userId, Long friendId) {
@@ -79,6 +83,9 @@ public class FriendServiceImpl implements FriendService {
 
         friendRequest2.updateStatus(FRIEND);
         friendRequest2.updateLastVisited(LocalDateTime.now());
+
+        alertService.send(user.getUuid(), friend.getId(), AlertType.FRIEND_ACCEPTANCE, null, null);
+        alertService.send(friend.getUuid(), user.getId(), AlertType.FRIEND_ACCEPTANCE, null, null);
 
         friendRepository.save(friendRequest1);
         friendRepository.save(friendRequest2);
