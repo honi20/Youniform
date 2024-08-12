@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Validated
 public class UserController {

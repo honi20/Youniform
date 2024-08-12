@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.youniform.api.global.statuscode.SuccessCode.TAG_LIST_OK;
 
 @RestController
-@RequestMapping("/tags")
+@RequestMapping("/api/tags")
 @RequiredArgsConstructor
 @Validated
 public class TagController {
