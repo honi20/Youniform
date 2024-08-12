@@ -195,6 +195,18 @@ const stateMap = {
     title: "친구 신청이 거절되었습니다.",
     btn: [0],
   },
+  EmailSentSuccess: {
+    icon: <CheckIcon />,
+    title: "메일 발송 성공",
+    subtitle: "비밀번호 재설정 링크를 이메일로 발송했습니다.",
+    btn: [0],
+  },
+  EmailSentFailure: {
+    icon: <AlarmIcon />,
+    title: "메일 발송 실패",
+    subtitle: "회원가입 시 등록한 이메일을 입력해주세요.",
+    btn: [0],
+  },
 };
 
 const buttonMap = {
