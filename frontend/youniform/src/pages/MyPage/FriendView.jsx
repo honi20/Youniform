@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useFriendStore from "@stores/friendStore";
 import styled from "styled-components";
-import Friend from "../../components/MyPage/Friend";
-import ProfileModal from "../../components/Modal/ProfileModal";
+import Friend from "@components/MyPage/Friend";
+import ProfileModal from "@components/Modal/ProfileModal";
 
 const Container = styled.div`
   height: calc(100vh - 120px);
@@ -27,12 +27,28 @@ const Friends = styled.div`
   padding: 10px;
 `;
 const FriendView = () => {
-  const { friends, fetchFriends } = useFriendStore();
+  const { friends, fetchFriends, recommendFriends, fetchRecommendFriends } =
+    useFriendStore();
   const [selectedFriend, setSelectedFriend] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
+  // 유저의 친구 목록 패치
   useEffect(() => {
-    fetchFriends();
-  }, [fetchFriends]);
+    const loadFriends = () => {
+      if (friends.length == 0) {
+        fetchFriends();
+      }
+    };
+    loadFriends();
+  }, [fetchFriends, friends]);
+  // 친구 목록이 없는 경우 -> 추천 친구 목록 패치
+  useEffect(() => {
+    const loadRecommendFriends = () => {
+      if (recommendFriends.length == 0) {
+        fetchRecommendFriends();
+      }
+    };
+    loadRecommendFriends();
+  }, [fetchRecommendFriends, recommendFriends]);
 
   return (
     <Container>
@@ -48,7 +64,17 @@ const FriendView = () => {
             ></Friend>
           ))
         ) : (
-          <p>친구를 추천드립니다.</p>
+          <>
+            <p>유저를 추천드립니다.</p>
+            {recommendFriends.map((friend) => (
+              <Friend
+                key={friend.friendId}
+                friend={friend}
+                setSelectedFriend={setSelectedFriend}
+                setModalOpen={setModalOpen}
+              ></Friend>
+            ))}
+          </>
         )}
       </Friends>
       <ProfileModal

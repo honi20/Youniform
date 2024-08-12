@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import ProfileUrl from "@assets/profile.png";
 
 export const Diary = styled.div`
   // layout
@@ -32,7 +31,7 @@ export const DiaryHeader = styled.div`
   background-color: #fff;
   /* border: 1px solid black; */
 `;
-export const Profile = styled.div`
+export const Profile = styled.img`
   // layout
   width: 2rem;
   height: 2rem;
@@ -40,7 +39,6 @@ export const Profile = styled.div`
   align-items: center;
   margin-left: 0.5rem;
   // style
-  background-image: url(${(props) => props.profileUrl || ProfileUrl});
   background-size: cover;
   background-position: center;
   border-radius: 50%;

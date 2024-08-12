@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
 import { wallpapers, stickers, fonts } from "@assets";
-
+import styled from "styled-components";
 import DecoIcon from "@assets/DecoIcon.svg?react";
 import ExampleIcon from "@assets/ExIcon.svg?react";
 import DownloadIcon from "@assets/Img_out-box_Fill.svg?react";
 import InitializeIcon from "@assets/Refresh.svg?react";
 import SaveIcon from "@assets/Save_fill.svg?react";
+import DownIcon from "@assets/chevron-down.svg?react";
+import UpIcon from "@assets/chevron-up.svg?react";
 
 import FontComp from "@components/Diary/Write/FontComp";
 import WallPaperComp from "@components/Diary/Write/WallPaperComp";
@@ -17,9 +18,31 @@ import StickerComp from "@components/Diary/Write/StickerComp";
 import CanvasComp from "@components/Diary/Write/CanvasComp";
 import ColorChipComp from "../../components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
-
+import DiaryModal from "@components/Diary/DiaryModal";
 import useDiaryStore from "@stores/diaryStore";
+import useResourceStore from "../../stores/resoureStore";
 
+const ToggleBtn = styled.div`
+  /* width: 50%; */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  // typo
+  font-family: "Pretendard";
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid red;
+`;
+
+const toggle = (isOn) => {
+  return (
+    <div style={{ display: "flex" }}>{isOn ? <UpIcon /> : <DownIcon />}</div>
+  );
+};
 const WriteDiaryView = () => {
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
@@ -28,9 +51,13 @@ const WriteDiaryView = () => {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [date, setDate] = useState(null);
   const [update, setUpdate] = useState(false);
-  const { diaryId } = useParams();
+  const { diaryId, diaryDate } = useParams();
+  const navigate = useNavigate();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
+  const { stampList, fetchStampList, resources, fetchResources } = useResourceStore();
+  const [isOn, setIsOn] = useState(false); // 초기 상태 off
+  const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
   useEffect(() => {
     if (diaryId) {
@@ -42,13 +69,23 @@ const WriteDiaryView = () => {
     }
   }, [diaryId, fetchDiary]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  useEffect(() => {
+    const fetchStamp = () => {
+      if (stampList.length == 0){
+        fetchStampList();
+      }
+    }
+    fetchStamp();
+  }, fetchStampList, stampList)
 
-  const openSaveModal = () => setIsSaveModalOpen(true);
-  const closeSaveModal = () => setIsSaveModalOpen(false);
-
-  const navigate = useNavigate();
+   useEffect(() => {
+    const loadResource = () => {
+      if (resources.length == 0){
+        fetchResources();
+      }
+    }
+    loadResource();
+   }, [loadResource, resources])
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -129,7 +166,7 @@ const WriteDiaryView = () => {
           <>
             <ColorChipComp />
             <WallPaperComp
-              wallpapers={Object.values(wallpapers).map((mod) => mod.default)}
+              wallpapers={resources.backgrounds}
               onImageClick={handleImageClick}
             />
           </>
@@ -137,7 +174,7 @@ const WriteDiaryView = () => {
       case 1:
         return (
           <StickerComp
-            stickers={Object.values(stickers).map((mod) => mod.default)}
+            stickers={resources.stickers}
             onImageClick={handleStickerClick}
           />
         );
@@ -176,7 +213,6 @@ const WriteDiaryView = () => {
     try {
       const formData = await saveDiaryObject();
       let newId = "";
-
       if (diaryId) {
         console.log("다이어리 수정");
         await updateDiary(diaryId, formData);
@@ -184,49 +220,34 @@ const WriteDiaryView = () => {
         console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
-      console.log("Diary ID:", diaryId);
       await moveToDetailPage(newId ? newId : diaryId);
     } catch (error) {
       console.error("Error saving diary object:", error);
     }
   };
-  // const saveCanvas = () => {
-  //   if (selectCanvas) {
-  //     const json = selectCanvas.toJSON();
-  //     const dataStr =
-  //       "data:text/json;charset=utf-8," +
-  //       encodeURIComponent(JSON.stringify(json));
-  //     const downloadAnchorNode = document.createElement("a");
-  //     downloadAnchorNode.setAttribute("href", dataStr);
-  //     downloadAnchorNode.setAttribute("download", "canvas.json");
-  //     document.body.appendChild(downloadAnchorNode);
-  //     downloadAnchorNode.click();
-  //     downloadAnchorNode.remove();
-  //   }
-  // };
+
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
   };
+  const [scope, setScope] = useState("ALL");
+  const [stampId, setStampId] = useState(1);
+
   const saveDiaryObject = async () => {
     try {
       if (selectCanvas) {
         const json = selectCanvas.toJSON();
-        // const jsonBlob = await fetch(json).then((res) => res.blob());
-        const jsonBlob = new Blob([JSON.stringify(json)], {
-          type: "application/json",
-        });
 
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
 
         const formData = new FormData();
         const dto = {
-          diaryDate: date,
+          diaryDate: diaryDate ? diaryDate : date, // 날짜 바뀌는 거 확인하기
           contents: json,
-          scope: "ALL",
-          stampId: 1,
+          scope: scope,
+          stampId: stampId,
         };
 
         const dtoBlob = new Blob([JSON.stringify(dto)], {
@@ -278,7 +299,22 @@ const WriteDiaryView = () => {
   };
   return (
     <>
-      <St.SaveBtn onClick={openSaveModal}>
+      <St.StampContainer>
+        {stampId.length > 0 && <img 
+        style={{ width: "54px",
+          height: "54px",}}
+        src={stampList[stampId].imgUrl
+        }></img>}
+        {diaryId ? diary.diaryDate : diaryDate}
+        <ToggleBtn onClick={() => handleToggle(isOn)}>{toggle(isOn)}</ToggleBtn>
+      </St.StampContainer>
+      <DiaryModal 
+        isOn={isOn}
+        setIsOn={setIsOn}
+        setScope={setScope}
+        setStampId={setStampId}
+      />
+      <St.SaveBtn onClick={() => setIsSaveModalOpen(true)}>
         <St.IconContainer>
           <SaveIcon />
         </St.IconContainer>
@@ -304,7 +340,7 @@ const WriteDiaryView = () => {
                 </St.IconContainer>
                 <St.IconFont>꾸미기</St.IconFont>
               </St.Btn>
-              <St.Btn $decorated={isDecorated} onClick={openModal}>
+              <St.Btn $decorated={isDecorated} onClick={() => setIsModalOpen(true)}>
                 <St.IconContainer>
                   <ExampleIcon />
                 </St.IconContainer>
@@ -351,7 +387,7 @@ const WriteDiaryView = () => {
         <BasicModal
           state="DiarySaved"
           isOpen={isSaveModalOpen}
-          onClose={closeSaveModal}
+          onClose={() => setIsSaveModalOpen(false)}
           onButtonClick={handleAfterSave}
         />
       </St.Div>

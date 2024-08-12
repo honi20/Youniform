@@ -6,11 +6,10 @@ const Container = styled.div`
   /* border: 1px solid black; */
 `;
 const Posts = ({ posts }) => {
-  // console.log(`posts.jsx에서 posts 조회`);
   return (
     <div>
       <Container>
-        {posts.map((post) => {
+        {posts && posts.map((post) => {
           return <Post key={post.postId} post={post} />;
         })}
       </Container>

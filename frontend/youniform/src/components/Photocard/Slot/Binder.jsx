@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import coverimg from '/src/assets/photocard/cover2.png';
+import coverimg from '/src/assets/photocard/cover.png';
 import usePhotoCardStore from '@stores/photoCardStore';
+import BasicModal from '../../Modal/BasicModal';
 import ArrowPrev from '@mui/icons-material/KeyboardArrowLeft';
 import ArrowNext from '@mui/icons-material/KeyboardArrowRight';
 import CheckIcon from '@mui/icons-material/Check';
 import ColorBtn from '@components/Common/ColorBtn';
+import EmptyState from '@components/Share/EmptyState';
+import EmptyIcon from '@assets/EmptyState/EmptyState_Photocard.svg?react'
 
 const rotateAnimation = keyframes`
   from {
@@ -177,26 +180,53 @@ const MiddleGroup = styled.div`
 
 const Binder = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [animate, setAnimate] = useState(false);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
 
-  const { photocards, page, nextPage, prevPage, setSelectedImage,
-    deletePhotocards } = usePhotoCardStore();
+  const { photoCards, page, setPage, nextPage, prevPage, setSelectedImage,
+    deletePhotocards, fetchPhotoCardList, totalPages, setTotalPages } = usePhotoCardStore();
+
+  const closeWarningModal = () => setIsWarningModalOpen(false);
 
   const images = import.meta.glob('/src/assets/photocard/cards/*.png', { eager: true });
   const imageArray = Object.values(images).map((module) => module.default);
 
   useEffect(() => {
-    setAnimate(true);
-  }, []);
+    const fetchData = async () => {
+      if (location.state?.from === 'BinderCover') {
+        setAnimate(true);
+      }
+  
+      const savedPage = localStorage.getItem('currentPage');
+      if (savedPage) {
+        setPage(parseInt(savedPage, 10));
+      } else {
+        setPage(0);  // 기본 페이지로 설정 (첫 페이지)
+      }
+  
+      await fetchPhotoCardList();  // 포토카드 리스트 가져오기
+      setTotalPages();  // 총 페이지 수 설정
+  
+      console.log(photoCards);
+    };
+  
+    fetchData();
+  }, [location.state?.from]);
 
-  const handlePhotoFrameClick = (image, photocardId) => {
+  useEffect(() => {
+    // 페이지 정보가 수정 시 localStorage에 저장
+    localStorage.setItem('currentPage', page);
+  }, [page]);
+
+  const handlePhotoFrameClick = (imageUrl, photocardId) => {
     if (!isSelectMode) {
-      setSelectedImage(image);
-      navigate('/photo-card/detail');
+      setSelectedImage(imageUrl);
+      navigate(`/photo-card/detail/${photocardId}`);
     } else {
-      console.log(`imageUrl: ${image}`);
+      console.log(`imageUrl: ${imageUrl}`);
       console.log(`photocardId: ${photocardId}`);
       console.log(`selectedCards: ${selectedCards}`);
       handleSelectCard(photocardId);
@@ -218,16 +248,20 @@ const Binder = () => {
   };
 
   const renderPhotoFrames = () => {
+    if (!photoCards || !Array.isArray(photoCards)) {
+      return null; // 데이터가 없을 때
+    }
+    
     const startIndex = page * 4;
-    return imageArray.slice(startIndex, startIndex + 4).map((image, index) => {
-      const photocardId = startIndex + index + 1; // Example of generating a unique photocardId
+    return photoCards.slice(startIndex, startIndex + 4).map((photocard, index) => {
+      const photocardId = photocard.photocardId;
       const isSelected = selectedCards.includes(photocardId);
 
       return (
         <PhotoFrame 
           key={index} 
           $isSelectMode={isSelectMode}
-          onClick={() => handlePhotoFrameClick(image, photocardId)}
+          onClick={() => handlePhotoFrameClick(photocard.imgUrl, photocardId)}
         >
           {isSelectMode && (
             <SelectButton 
@@ -240,7 +274,7 @@ const Binder = () => {
               <CheckIcon style={{ color: isSelected ? '#e3e3e3' : '#b4b4b4' }} />
             </SelectButton>
           )}
-          {image && <img src={image} alt={`Photo ${photocardId}`} />}
+          {photocard.imgUrl && <img src={photocard.imgUrl} alt={`Photo ${photocardId}`} />}
         </PhotoFrame>
       );
     });
@@ -252,60 +286,84 @@ const Binder = () => {
 
   const deleteCard = async () => {
     console.log(selectedCards);
-    await deletePhotocards(selectedCards);
+    if (selectedCards.length == 0) {
+      setIsWarningModalOpen(true);
+    } else {
+      const listStr = selectedCards.join();
+      await deletePhotocards(listStr);
+      await fetchPhotoCardList();
+    }
   };
 
   return (
-    <BinderContainer>
-      <CoverImage src={coverimg} className={animate ? 'animate' : ''} />
-      <Paper>
-        <Holes>
-          {[...Array(6)].map((_, i) => (
-            <Hole key={i} />
-          ))}
-        </Holes>
-        <PhotoSlot>
-          <PhotoGroup>
-            {renderPhotoFrames()}
-          </PhotoGroup>
-          <ButtonGroup>
-            <ColorBtn
-              variant="contained"
-              style={{ minWidth: '10px', width: '14px', borderRadius: '20px' }}
-              onClick={prevPage}
-              disabled={page === 0}
-            >
-              <ArrowPrev />
-            </ColorBtn>
-            <MiddleGroup>
-              <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
-               onClick={createCard}>
-                생성
-              </ColorBtn>
-              <ColorBtn 
-                variant="contained" 
-                style={{ borderRadius: '20px' }}
-                onClick={toggleSelectMode}
+    <>
+      <BinderContainer>
+        <CoverImage src={coverimg} className={animate ? '' : 'animate'} />
+        <Paper>
+          <Holes>
+            {[...Array(6)].map((_, i) => (
+              <Hole key={i} />
+            ))}
+          </Holes>
+          <PhotoSlot>
+              {(!photoCards || !Array.isArray(photoCards)) ? (
+                <PhotoGroup>
+                  {renderPhotoFrames()}
+                </PhotoGroup>
+              ) : (
+                <EmptyState
+                  icon={EmptyIcon}
+                  state="noPhotocards"
+                />
+              )}
+            <ButtonGroup>
+              <ColorBtn
+                variant="contained"
+                style={{ minWidth: '10px', width: '14px', borderRadius: '20px' }}
+                onClick={prevPage}
+                disabled={page === 0}
               >
-                선택
+                <ArrowPrev />
               </ColorBtn>
-              <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
-               onClick={deleteCard}>
-                삭제
+              <MiddleGroup>
+                <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
+                  onClick={createCard}>
+                  만들기
+                </ColorBtn>
+                {(!photoCards || !Array.isArray(photoCards)) &&
+                  <ColorBtn 
+                    variant="contained" 
+                    style={{ borderRadius: '20px' }}
+                    onClick={toggleSelectMode}
+                  >
+                    선택
+                  </ColorBtn>
+                }
+                {isSelectMode &&
+                  <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
+                    onClick={deleteCard}>
+                    삭제
+                  </ColorBtn>
+                }
+              </MiddleGroup>
+              <ColorBtn
+                variant="contained"
+                style={{ minWidth: '10px', width: '14px', borderRadius: '20px' }}
+                onClick={nextPage}
+                disabled={page >= totalPages - 1}
+              >
+                <ArrowNext />
               </ColorBtn>
-            </MiddleGroup>
-            <ColorBtn
-              variant="contained"
-              style={{ minWidth: '10px', width: '14px', borderRadius: '20px' }}
-              onClick={nextPage}
-              disabled={page >= Math.ceil(imageArray.length / 4) - 1}
-            >
-              <ArrowNext />
-            </ColorBtn>
-          </ButtonGroup>
-        </PhotoSlot>
-      </Paper>
-    </BinderContainer>
+            </ButtonGroup>
+          </PhotoSlot>
+        </Paper>
+      </BinderContainer>
+      <BasicModal
+        state={"PhotoCardSelectWarning"}
+        isOpen={isWarningModalOpen}
+        onClose={closeWarningModal}
+      />
+    </>
   );
 };
 
