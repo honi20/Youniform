@@ -1,0 +1,15 @@
+services:
+  celery_broker:
+    image: redis:latest
+    container_name: celery_broker
+    ports:
+      - "8379:6379"
+
+  celery_worker:
+    build: .
+    container_name: kbo
+    command: ["celery", "-A", "app", "worker", "-c", "5", "--loglevel=info", "-Q", "KBO"]
+    depends_on:
+      - celery_broker
+    environment:
+      - CELERY_BROKER_URL=redis://celery_broker:8379/0
