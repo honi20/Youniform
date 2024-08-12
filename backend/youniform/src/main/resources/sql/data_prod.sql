@@ -129,9 +129,19 @@ VALUES ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/white/wh
 
 -- chat_room
 INSERT INTO CHAT_ROOM (room_id, room_name, room_state)
-VALUES (1, '1번 방', TRUE);
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state)
-VALUES (2, '2번 방', TRUE);
+VALUES (0, '몬스터즈 응원방', TRUE),
+       (1, '김문호 응원방', TRUE),
+       (2, '정근우 응원방', TRUE),
+       (3, '박용택 응원방', TRUE),
+       (4, '이대호 응원방', TRUE),
+       (5, '정의윤 응원방', TRUE),
+       (6, '최수현 응원방', TRUE),
+       (7, '박재욱 응원방', TRUE),
+       (8, '정성훈 응원방', TRUE),
+       (9, '유태웅 응원방', TRUE),
+       (10, '문교원 응원방', TRUE),
+       (11, '임상우 응원방', TRUE),
+       (12, '윤상혁 응원방', TRUE);
 
 -- chat_part
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time)
