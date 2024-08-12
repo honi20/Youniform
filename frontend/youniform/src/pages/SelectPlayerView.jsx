@@ -188,7 +188,7 @@ const ConfirmBtn = styled.div`
   font-size: 1.25rem;
 `;
 
-const SelectPlayerView = ({ teamId = "1" }) => {
+const SelectPlayerView = ({ teamId = "1000" }) => {
   const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
   useEffect(() => {
     const fetchPlayerInfo = async (teamId) => {
@@ -196,9 +196,8 @@ const SelectPlayerView = ({ teamId = "1" }) => {
       try {
         const res = await axios({
           method: "get",
-          url: `${API_URL}/players/list/1`,
+          url: `${API_URL}/players/list/1000`,
         });
-        
         const { body, header } = res.data;
         console.log(body);
         console.log(header.message);

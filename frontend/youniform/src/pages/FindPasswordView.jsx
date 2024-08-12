@@ -1,10 +1,12 @@
 import { useState } from "react";
+import BasicModal from "@components/Modal/BasicModal";
 import styled from "styled-components"
 
 import { styled as muiStyled } from "@mui/material/styles";
 import { TextField, Button } from "@mui/material";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import useUserStore from "../stores/userStore";
+import { useNavigate } from "react-router-dom";
 
 const FindPassword = styled.div`
   display: flex;
@@ -54,14 +56,35 @@ const ColorBtn = muiStyled(Button)(() => ({
 }));
 
 const FindPasswordView = () => {
+  const navigate = useNavigate();
   const { findPassword } = useUserStore();
   const [email, setEmail] = useState('');
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
+
+  const openSentSuccessModal = () => setIsSuccessModalOpen(true);
+  const closeSentSuccessModal = () => {
+    isSuccessModalOpen(false);
+  };
+
+  const openSentFailureModal = () => setIsFailureModalOpen(true);
+  const closeSentFailureModal = () => {
+    setIsFailureModalOpen(false);
+  };
+
   const handleInputChange = (event) => {
     setEmail(event.target.value);
   };
 
   const fetchFindPassword = async () => {
-    await findPassword(email); 
+    const res = await findPassword(email);
+    if (res === "$OK") {
+      openSentSuccessModal();
+      navigate("/login");
+    } else {
+      openSentFailureModal();
+      setEmail('');
+    }
   };
 
   return (
@@ -91,6 +114,20 @@ const FindPasswordView = () => {
           인증 메일 발송
         </ColorBtn>
       </FindPasswordContainer>
+      <BasicModal
+        state={"EmailSentSuccess"}
+        isOpen={isSuccessModalOpen}
+        onClose={closeSentSuccessModal}
+        // onButtonClick={(index) => handleAfterCheck(selectedAlert, index)}
+        // selectedAlert={selectedAlert}
+      />
+      <BasicModal
+        state={"EmailSentFailure"}
+        isOpen={isFailureModalOpen}
+        onClose={closeSentFailureModal}
+        // onButtonClick={(index) => handleAfterCheck(selectedAlert, index)}
+        // selectedAlert={selectedAlert}
+      />
     </FindPassword>
   )
 }
