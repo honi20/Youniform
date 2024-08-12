@@ -235,11 +235,11 @@ const Profile = () => {
   }, [fetchUser, clearUser]);
 
   if (loading) {
-    return <Loading />;
+    // return <Loading />;
   }
 
   if (error) {
-    return <Error message={error} />;
+    // return <Error message={error} />;
   }
 
   if (!user) {
