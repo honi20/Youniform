@@ -10,8 +10,7 @@ const StepThreeForm = () => {
   return (
     <>
       <EmptyBox />
-      <SelectPlayerView
-      />
+      <SelectPlayerView />
     </>
   )
 }

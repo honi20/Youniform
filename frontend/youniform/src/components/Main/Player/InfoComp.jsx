@@ -1,65 +1,29 @@
 import styled from "styled-components";
-import * as Font from "@/typography";
-import HeartSvg from "@assets/mainview/heart.svg?react";
 
 const InfoContainer = styled.div`
-  width: 150px;
-  height: 236px;
+  width: 45%;
+  height: 90%;
   flex-shrink: 0;
-  border: 1px solid;
-  border-color: ${(props) => props.theme.primary};
-  margin-left: 0.69rem;
-  /* padding: 10px; */
+  border: 1px solid #262f66;
+  margin-left: 1rem;
   display: flex;
   flex-direction: column;
-  background-color: white;
 `;
 const Header = styled.div`
-  ${Font.Large};
   display: flex;
   height: 20%;
-  justify-content: center;
-  align-items: center;
-  & h1 {
-    font-size: 2rem;
-    font-weight: 400;
-    letter-spacing: -3.5px;
-  }
-  & p {
-    font-size: 1.5rem;
-    margin-left: 5px;
-    -webkit-text-stroke-width: 0.7px;
-    -webkit-text-stroke-color: var(--Schemes-On-Primary, white);
-
-    text-shadow: ${(props) =>
-      `2px 2px 0 ${props.theme.primary}`}; /* 첫 번째 그림자 */
-  }
+  border: 1px solid red;
 `;
 const Content = styled.div`
-  ${Font.Small};
-  font-weight: 400;
   display: flex;
   height: 30%;
+  border: 1px solid blue;
   flex-direction: column;
-  justify-content: space-around;
-  margin: 7px;
-  /* border: 1px solid blue; */
-  /* justify-content: center; */
-  /* align-items: center; */
 `;
-
 const Footer = styled.div`
-  ${Font.Small};
+  /* display: flex; */
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  /* border: 1px solid black; */
-`;
-const FooterWrapper = styled.div`
-  display: flex;
-  margin: 0 10px;
-  /* border: 1px solid red; */
+  border: 1px solid black;
 `;
 const InfoComp = ({ player }) => {
   return (
@@ -67,7 +31,7 @@ const InfoComp = ({ player }) => {
       {player ? (
         <InfoContainer>
           <Header>
-            <h1>{player.backNum}</h1>
+            <p>{player.backNum}</p>
             <p>{player.name}</p>
           </Header>
           <Content>
@@ -89,17 +53,9 @@ const InfoComp = ({ player }) => {
               삼진: player.struck,
             }).map(([label, value]) =>
               value !== null ? (
-                <FooterWrapper>
-                  <HeartSvg />
-                  <div
-                    key={label}
-                    style={{
-                      marginLeft: "10px",
-                    }}
-                  >
-                    {label} {value}
-                  </div>
-                </FooterWrapper>
+                <div key={label}>
+                  {label} {value}
+                </div>
               ) : null
             )}
           </Footer>

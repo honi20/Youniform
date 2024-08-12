@@ -13,7 +13,6 @@ const Section = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2%;
-  /* width: */
 `;
 const Container = styled.div`
   padding: 5%;
@@ -28,12 +27,11 @@ const FlexBox = styled.div`
 `;
 const ProfileSection = styled(Section)`
   height: 100px;
-  width: 90%;
 `;
 const ProfileImage = styled.div`
   box-sizing: border-box;
-  height: 85px;
-  width: 85px;
+  height: 100px;
+  width: 100px;
   border-radius: 50px;
   display: flex;
   justify-content: center;
@@ -68,7 +66,36 @@ const Introduce = styled.div`
   /* border: 1px solid blue; */
 `;
 
-const ProfileComp = ({ user }) => {
+const ProfileComp = () => {
+  const { user, fetchUser, clearUser, loading, error, accessToken } =
+    useUserStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await fetchUser();
+      } catch (error) {
+        console.error("Failed to fetch user", error);
+      }
+    };
+
+    fetchData();
+
+    // Cleanup on unmount
+    return () => clearUser();
+  }, [fetchUser, clearUser]);
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <Error message={error} />;
+  }
+
+  if (!user) {
+    return <div>No user data available</div>;
+  }
   return (
     <ProfileSection>
       <ProfileImage onClick={() => console.log("프로필 사진 변경")}>
@@ -178,18 +205,23 @@ import GroupIcon from "@assets/MyPage/group.svg?react";
 import ArchiveIcon from "@assets/MyPage/archive.svg?react";
 import usePostStore from "@stores/postStore";
 
-const SocialComp = ({ user }) => {
+const SocialComp = () => {
   const { likePosts, fetchLikePosts } = usePostStore();
   const navigate = useNavigate();
   useEffect(() => {
     fetchLikePosts();
   }, [fetchLikePosts]);
+
+  // const handleLikePost = () => {
+  //   console.log("좋아요한 포스트로 이동");
+  //   navigate("./like-post");
+  // };
   return (
     <>
       <SocialSection>
         <SocialItem onClick={() => navigate("./friend-list")}>
           <SocialHeader>친구 관리</SocialHeader>
-          <SocialContent>{user && user.friendCount}</SocialContent>
+          <SocialContent>33</SocialContent>
           <div
             style={{
               display: "flex",
@@ -201,7 +233,7 @@ const SocialComp = ({ user }) => {
         </SocialItem>
         <SocialItem onClick={() => navigate("./like-post")}>
           <SocialHeader>좋아요한 포스트</SocialHeader>
-          <SocialContent>{user && user.likePostCount}</SocialContent>
+          <SocialContent>10</SocialContent>
           <div
             style={{
               display: "flex",
@@ -216,40 +248,11 @@ const SocialComp = ({ user }) => {
   );
 };
 const Profile = () => {
-  const { user, fetchUser, clearUser, loading, error } = useUserStore();
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await fetchUser();
-      } catch (error) {
-        console.error("Failed to fetch user", error);
-      }
-    };
-
-    fetchData();
-
-    return () => clearUser();
-  }, [fetchUser, clearUser]);
-
-  if (loading) {
-    // return <Loading />;
-  }
-
-  if (error) {
-    // return <Error message={error} />;
-  }
-
-  if (!user) {
-    return <div>No user data available</div>;
-  }
   return (
     <>
-      <ProfileComp user={user} />
+      <ProfileComp />
       <UserComp />
-      <SocialComp user={user} />
+      <SocialComp />
     </>
   );
 };

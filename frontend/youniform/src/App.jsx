@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
 import LoginView from "./pages/LoginView";
 import FindEmailView from "./pages/Setting/FindEmailView";
-import FindPasswordView from "./pages/FindPasswordView";
+import FindPasswordView from "./pages/Setting/FindPasswordView";
 import DiaryDetailView from "@pages/Diary/DiaryDetailView";
 import WriteDiaryView from "@pages/Diary/WriteDiaryView";
 import SignUpView from "./pages/SignUpView";
@@ -44,12 +44,11 @@ import PhotoCardDetail from "./components/Photocard/Slot/PhotoCardDetail";
 import LikePostView from "@pages/MyPage/LikePostView";
 import FriendView from "@pages/MyPage/FriendView";
 import PostDetailView from "@pages/Post/PostDetailView";
-import SearchView from "@pages/Post/SearchView";
+import SearchView from "./pages/Post/SearchView";
 import WritePostView from "./pages/Post/WritePostView";
 import MyPost from "@pages/MyPage/MyPost";
 import ChangeProfile from "@pages/MyPage/ChangeProfile";
 import MyDiaryView from "@pages/Diary/MyDiaryView";
-import AlertView from "./pages/AlertView";
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -57,7 +56,7 @@ const AppContainer = styled.div`
   background-color: #f8f8f8;
   /* min-width: 400px; */
   /* min-height: 100vh; */
-  /* @media (max-width: 400px) {
+  @media (max-width: 400px) {
     padding: 0 10px;
     width: 100%;
     max-width: 400px;
@@ -65,127 +64,124 @@ const AppContainer = styled.div`
     margin: 0 auto;
     position: relative;
     overflow-y: auto;
-  } */
+  }
 `;
 
 const ContentContainer = styled.div`
   flex: 1; /* Header와 NavBar를 제외한 남은 공간을 차지 */
   overflow-y: auto;
-  /* margin-top: 49px; */
+  margin-top: 49px;
 `;
 
 function App() {
-  // const headerRef = useRef(null);
-  // const navBarRef = useRef(null);
+  const headerRef = useRef(null);
+  const navBarRef = useRef(null);
   const [contentHeight, setContentHeight] = useState("auto");
   const { theme, setTheme } = useThemeStore();
   useEffect(() => {
     setTheme("monsters");
-    // const updateContentHeight = () => {
-    //   const headerHeight = headerRef.current
-    //     ? headerRef.current.offsetHeight
-    //     : 0;
-    //   const navBarHeight = navBarRef.current
-    //     ? navBarRef.current.offsetHeight
-    //     : 0;
-    //   const totalHeight = window.innerHeight - headerHeight - navBarHeight;
-    //   setContentHeight(`${totalHeight}px`);
-    // };
+    const updateContentHeight = () => {
+      const headerHeight = headerRef.current
+        ? headerRef.current.offsetHeight
+        : 0;
+      const navBarHeight = navBarRef.current
+        ? navBarRef.current.offsetHeight
+        : 0;
+      const totalHeight = window.innerHeight - headerHeight - navBarHeight;
+      setContentHeight(`${totalHeight}px`);
+    };
 
-    // updateContentHeight();
-    // window.addEventListener("resize", updateContentHeight);
-    // return () => window.removeEventListener("resize", updateContentHeight);
+    updateContentHeight();
+    window.addEventListener("resize", updateContentHeight);
+    return () => window.removeEventListener("resize", updateContentHeight);
   }, []);
 
   return (
-    <AppContainer className="App">
+    <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          {/* <div ref={headerRef}> */}
-            <Header />
-          {/* </div> */}
-          <ContentContainer style={{ height: contentHeight }}>
-            <Routes>
-              <Route path="/" element={<MainView />} />
-              <Route path="/login" element={<LoginView />} />
-              <Route path="/find-email" element={<FindEmailView />} />
-              <Route path="/find-password" element={<FindPasswordView />} />
-              {/* Photocard */}
-              <Route path="/photo-card" element={<PhotoCardView />}>
-                <Route index element={<BinderCover />} />
-                <Route path="cover" element={<BinderCover />} />
-                <Route path="binder" element={<Binder />} />
-                <Route
-                  path="detail/:photocardId"
-                  element={<PhotoCardDetail />}
-                />
-                <Route path="create" element={<PhotoCardCreator />} />
-              </Route>
-              <Route path="/diary/*">
-                <Route index element={<DiaryHomeView />} />
-                <Route path=":diaryId" element={<DiaryDetailView />} />
-                <Route path=":diaryId/update" element={<WriteDiaryView />} />
-                <Route path="write/:diaryDate" element={<WriteDiaryView />} />
-                <Route path="friend/:nickname" element={<MyDiaryView />} />
-              </Route>
-              <Route path="/post/*">
-                <Route index element={<PostView />} />
-                <Route path=":postId" element={<PostDetailView />} />
-                <Route path="write" element={<WritePostView />} />
-                <Route path="friend/:nickname" element={<MyPost />} />
-              </Route>
-              <Route path="/search" element={<SearchView />} />
-              <Route path="/my-page/*">
-                <Route index element={<MyPageView />} />
-                <Route path="friend-list" element={<FriendView />} />
-                <Route path="like-post" element={<LikePostView />} />
-                <Route path="my-post" element={<MyPost />} />
-                <Route path="my-diary" element={<MyDiaryView />} />
-                <Route path="change-profile" element={<ChangeProfile />} />
-              </Route>
-              {/* SignUp */}
-              <Route path="/sign-up/*" element={<SignUpView />}>
-                <Route index element={<StepOneForm />} />
-                <Route path="step-1" element={<StepOneForm />} />
-                <Route path="step-2" element={<StepTwoForm />} />
-                <Route path="step-3" element={<StepThreeForm />} />
-                <Route path="step-4" element={<SignUpSuccess />} />
-              </Route>
-              <Route path="/select-player" element={<SelectPlayerView />} />
-              <Route path="/news" element={<NewsView />} />
-              {/* 노래 관련 */}
-              <Route path="/song" element={<TotalSongView />}>
-                <Route path="player/:playerId" element={<PlayerSongView />} />
-                <Route path="team/:teamId" element={<TeamSongView />} />
-              </Route>
-              {/* 채팅 관련 */}
-              <Route path="/chat/:roomId" element={<ChatView />} />
-              <Route path="/setting/*">
-                <Route index element={<SettingView />} />
-                <Route
-                  path="change-password"
-                  element={<ChangePasswordView />}
-                />
-                <Route path="theme" element={<ChangeTheme />} />
-                <Route path="notifications" element={<PushAlarm />} />
-                <Route path="permissions" element={<Permissions />} />
-                <Route path="contact" element={<Contact />} />
-                <Route path="terms" element={<Terms />} />
-                <Route path="privacy" element={<Privacy />} />
-                <Route path="version" element={<Version />} />
-                <Route path="find-email" element={<FindEmailView />} />
-                <Route path="find-password" element={<FindPasswordView />} />
-              </Route>
-              <Route path="alert" element={<AlertView />} />
-            </Routes>
-          </ContentContainer>
-          {/* <div ref={navBarRef}> */}
-            <NavBar />
-          {/* </div> */}
+          <AppContainer>
+            <div ref={headerRef}>
+              <Header />
+            </div>
+            <ContentContainer style={{ height: contentHeight }}>
+              <Routes>
+                <Route path="/" element={<MainView />} />
+                <Route path="/login" element={<LoginView />} />
+                <Route path="/find-email" element={<FindEmailView />} />
+                <Route path="/find-password" element={<FindPasswordView />} />
+                {/* Photocard */}
+                <Route path="/photo-card" element={<PhotoCardView />}>
+                  <Route index element={<BinderCover />} />
+                  <Route path="cover" element={<BinderCover />} />
+                  <Route path="binder" element={<Binder />} />
+                  <Route path="detail" element={<PhotoCardDetail />} />
+                  <Route path="create" element={<PhotoCardCreator />} />
+                </Route>
+                <Route path="/diary/*">
+                  <Route index element={<DiaryHomeView />} />
+                  <Route path=":diaryId" element={<DiaryDetailView />} />
+                  <Route path=":diaryId/update" element={<WriteDiaryView />} />
+                  <Route path="write" element={<WriteDiaryView />} />
+                </Route>
+                <Route path="/post/*">
+                  <Route index element={<PostView />} />
+                  <Route path=":postId" element={<PostDetailView />} />
+                  <Route path="write" element={<WritePostView />} />
+                </Route>
+                <Route path="/search" element={<SearchView />} />
+                <Route path="/my-page/*">
+                  <Route index element={<MyPageView />} />
+                  <Route path="friend-list" element={<FriendView />} />
+                  <Route path="like-post" element={<LikePostView />} />
+                  <Route path="my-post" element={<MyPost />} />
+                  <Route path="my-diary" element={<MyDiaryView />} />
+                  <Route path="change-profile" element={<ChangeProfile />} />
+                </Route>
+
+                {/* SignUp */}
+                <Route path="/sign-up/*" element={<SignUpView />}>
+                  <Route index element={<StepOneForm />} />
+                  <Route path="step-1" element={<StepOneForm />} />
+                  <Route path="step-2" element={<StepTwoForm />} />
+                  <Route path="step-3" element={<StepThreeForm />} />
+                  <Route path="step-4" element={<SignUpSuccess />} />
+                </Route>
+                <Route path="/select-player" element={<SelectPlayerView />} />
+                <Route path="/news" element={<NewsView />} />
+                {/* 노래 관련 */}
+                <Route path="/song" element={<TotalSongView />}>
+                  <Route path="player/:playerId" element={<PlayerSongView />} />
+                  <Route path="team/:teamId" element={<TeamSongView />} />
+                </Route>
+                {/* 채팅 관련 */}
+                <Route path="/chat/:roomId" element={<ChatView />} />
+                <Route path="/setting/*">
+                  <Route index element={<SettingView />} />
+                  <Route
+                    path="change-password"
+                    element={<ChangePasswordView />}
+                  />
+                  <Route path="theme" element={<ChangeTheme />} />
+                  <Route path="notifications" element={<PushAlarm />} />
+                  <Route path="permissions" element={<Permissions />} />
+                  <Route path="contact" element={<Contact />} />
+                  <Route path="terms" element={<Terms />} />
+                  <Route path="privacy" element={<Privacy />} />
+                  <Route path="version" element={<Version />} />
+                  <Route path="find-email" element={<FindEmailView />} />
+                  <Route path="find-password" element={<FindPasswordView />} />
+                </Route>
+              </Routes>
+            </ContentContainer>
+            <div ref={navBarRef}>
+              <NavBar />
+            </div>
+          </AppContainer>
         </BrowserRouter>
       </ThemeProvider>
-    </AppContainer>
+    </>
   );
 }
 

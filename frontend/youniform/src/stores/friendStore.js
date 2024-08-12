@@ -1,50 +1,39 @@
 import { create } from "zustand";
 import axios from "axios";
-import { getApiClient } from "@stores/apiClient";
 
-const handleApiError = (err) => {
-  console.error(err.response ? err.response.data : err.message);
-};
-
+const API_URL = "http://i11a308.p.ssafy.io:8080";
 const useFriendStore = create((set) => ({
   friends: [],
-  diaryFriends: [],
   fetchFriends: async () => {
-    const apiClient = getApiClient();
     try {
-      const res = await apiClient.get(`/friends/mypage`);
-      const { body, header } = res.data;
+      const res = await axios({
+        method: "get",
+        url: `${API_URL}/friends`,
+        // headers: {
+        //   Authorization: "Bearer your_token_here",
+        // },
+        // data: {
 
-      console.log(body);
-      console.log(header.message);
-
-      set({ friends: body.friendMypageList });
-    } catch (err) {
-      handleApiError(err);
-    }
-  },
-  addFriend: async (friend) => {
-    const apiClient = getApiClient();
-    try {
-      console.log(friend.userId);
-
-      const res = await apiClient.post(`/friends/request`, {
-        friendUuid: friend.userId,
+        // },
       });
-
-      console.log(res.data.message);
+      console.log(res.data.body.friendList);
+      console.log(res.data.header.message);
+      set({ friends: res.data.body.friendList });
     } catch (err) {
-      console.log("Failed to Add friend");
-      handleApiError(err);
-      set({ loading: false, error: err.message });
+      console.error(err.response ? err.response.data : err.message);
     }
   },
   deleteFriend: async (friendId) => {
-    const apiClient = getApiClient();
     try {
-      const res = await apiClient.delete(`/friends`, {
+      console.log(`Attempting to delete friend with ID: ${friendId}`);
+      const res = await axios({
+        method: "delete",
+        url: `${API_URL}/friends`,
+        // headers: {
+        //   Authorization: "Bearer your_token_here",
+        // },
         params: {
-          friendUuid: friendId,
+          id: "dstfiposdjfsd0fsb3t466t54regfdb-dsbsdb4324543",
         },
       });
       console.log(res.data.header.message);
@@ -53,42 +42,10 @@ const useFriendStore = create((set) => ({
         friends: state.friends.filter((friend) => friend.friendId !== friendId),
       }));
     } catch (err) {
-      console.error("Error deleting friend:");
-      handleApiError(err);
-    }
-  },
-  fetchDiaryFriends: async () => {
-    const apiClient = getApiClient();
-    try {
-      const res = await apiClient.get(`/friends/diary`);
-      console.log(res.data);
-      set({ diaryFriends: res.data.body.friendDiaryList });
-    } catch (error) {
-      console.log("Failed to fetchDiaryFriends", error);
-    }
-  },
-  acceptFriendRequest: async (uuid) => {
-    const apiClient = getApiClient();
-    try {
-      const res = await apiClient.post(`/friends/accept`, {
-        friendUuid: uuid,
-      });
-      console.log(res.data);
-      return "$SUCCESS";
-    } catch (error) {
-      console.log("Failed to fetchDiaryFriends", error);
-    }
-  },
-  recommendFriends: [],
-  fetchRecommendFriends: async () => {
-    const apiClient = getApiClient();
-    try {
-      const res = await apiClient.GET(`/users/lists`);
-      console.log(res.data.header);
-      console.log(res.data.body.userList.content);
-      set({ recommendFriends: res.data.body.userList.content });
-    } catch (error) {
-      console.log("Failed to fetchDiaryFriends", error);
+      console.error(
+        "Error deleting friend:",
+        err.response ? err.response.data : err.message
+      );
     }
   },
 }));
