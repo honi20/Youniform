@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import CheckIcon from "../assets/Done_round_light.svg?react";
-import BasicModal from "../components/Modal/BasicModal";
-import useSignUpStore from "../stores/signUpStore";
+import CheckIcon from "@assets/etc/Done_round_light.svg?react";
+import BasicModal from "@components/Modal/BasicModal";
+import useSignUpStore from "@stores/signUpStore";
 import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
 const Div = styled.div`
@@ -198,6 +198,7 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
           method: "get",
           url: `${API_URL}/players/list/1000`,
         });
+
         const { body, header } = res.data;
         console.log(body);
         console.log(header.message);
@@ -212,10 +213,10 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
         });
       } catch (err) {
         // handleApiError(err);
-        console.log(err)
+        console.log(err);
       }
     };
-      fetchPlayerInfo();
+    fetchPlayerInfo();
   }, [teamId]);
 
   const [selectedPlayers, setSelectedPlayers] = useState([]);

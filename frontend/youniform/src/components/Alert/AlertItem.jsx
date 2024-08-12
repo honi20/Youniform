@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import OptionIcon from "@assets/Icons/Options.svg?react";
 
 const AlertContainer = styled.div`
   display: flex;

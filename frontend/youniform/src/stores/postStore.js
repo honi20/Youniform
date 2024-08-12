@@ -18,8 +18,9 @@ const usePostStore = create((set) => ({
       set({
         post: res.data.body,
         comments: {
-          [postId]: res.data.body.commentList || [] // 댓글 목록을 포스트 ID를 기준으로 저장
-        },});
+          [postId]: res.data.body.commentList || [], // 댓글 목록을 포스트 ID를 기준으로 저장
+        },
+      });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -88,7 +89,7 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/comments/${postId}`, {
-        contents: comment
+        contents: comment,
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
@@ -108,8 +109,8 @@ const usePostStore = create((set) => ({
   updateComment: async (commentId, updatedComment) => {
     const apiClient = getApiClient();
     try {
-      const res = await apiClient.put(`/comments/${commentId}`, {
-        contents: updatedComment
+      const res = await apiClient.patch(`/comments/${commentId}`, {
+        contents: updatedComment,
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
@@ -121,9 +122,10 @@ const usePostStore = create((set) => ({
         return {
           comments: {
             ...state.comments,
-            [postId]: state.comments[postId]?.map(comment =>
-              comment.id === commentId ? newComment : comment
-            ) || [],
+            [postId]:
+              state.comments[postId]?.map((comment) =>
+                comment.id === commentId ? newComment : comment
+              ) || [],
           },
         };
       });
@@ -131,7 +133,7 @@ const usePostStore = create((set) => ({
       console.error(err.response ? err.response.data : err.message);
     }
   },
-  deleteComment : async (commentId, postId) => {
+  deleteComment: async (commentId, postId) => {
     const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/comments/${commentId}`);
@@ -139,16 +141,21 @@ const usePostStore = create((set) => ({
       console.log(res.data.body);
       set((state) => {
         const postComments = state.comments[postId] || [];
-        console.log(postComments)
+        console.log(postComments);
         return {
           comments: {
             ...state.comments,
-            [postId]: postComments.filter(comment => comment.id !== commentId), // 댓글 삭제
+            [postId]: postComments.filter(
+              (comment) => comment.id !== commentId
+            ), // 댓글 삭제
           },
         };
       });
     } catch (error) {
-      console.error("Failed to delete comment:", error.response ? error.response.data : error.message);
+      console.error(
+        "Failed to delete comment:",
+        error.response ? error.response.data : error.message
+      );
     }
   },
   friendPosts: [],
@@ -156,8 +163,8 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.get(`/posts/friends/${userId}`);
-      console.log(response.data.header)
-      console.log(response.data.body)
+      console.log(response.data.header);
+      console.log(response.data.body);
       set({ friendPosts: response.data.body.postList.content, loading: false });
     } catch (error) {
       console.log("Failed to fetch friend", error);

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as Font from "@/typography";
-import HeartSvg from "@assets/mainview/heart.svg?react";
+import HeartSvg from "@assets/Main/heart.svg?react";
 
 const InfoContainer = styled.div`
   width: 150px;
@@ -64,7 +64,7 @@ const FooterWrapper = styled.div`
 const InfoComp = ({ player }) => {
   return (
     <>
-      {player ? (
+      {player && (
         <InfoContainer>
           <Header>
             <h1>{player.backNum}</h1>
@@ -89,7 +89,7 @@ const InfoComp = ({ player }) => {
               삼진: player.struck,
             }).map(([label, value]) =>
               value !== null ? (
-                <FooterWrapper>
+                <FooterWrapper key={label}>
                   <HeartSvg />
                   <div
                     key={label}
@@ -104,8 +104,6 @@ const InfoComp = ({ player }) => {
             )}
           </Footer>
         </InfoContainer>
-      ) : (
-        <></>
       )}
     </>
   );

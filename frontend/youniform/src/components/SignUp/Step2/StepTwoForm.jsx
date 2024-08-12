@@ -6,7 +6,6 @@ import StatusMessageForm from '../StatusMessageForm';
 
 import { styled as muiStyled } from '@mui/material/styles';
 import { TextField, Button } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AddIcon from '@mui/icons-material/ControlPoint';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import CheckIcon from '@mui/icons-material/Check';

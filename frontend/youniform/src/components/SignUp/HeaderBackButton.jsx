@@ -1,8 +1,8 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import ArrowBackIcon from '@mui/icons-material/ArrowBackIosNew';
-import useSignUpStore from '../../stores/signUpStore';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import ArrowBackIcon from "@mui/icons-material/ArrowBackIosNew";
+import useSignUpStore from "@stores/signUpStore";
 
 const Header = styled.div`
   display: flex;

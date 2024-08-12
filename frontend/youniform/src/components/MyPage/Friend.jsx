@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import * as Font from "@/typography";
-import useFriendStore from "../../stores/friendStore";
+import useFriendStore from "@stores/friendStore";
 const Container = styled.div`
   margin: 1%;
   padding: 1%;

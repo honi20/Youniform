@@ -103,7 +103,7 @@ const UserSection = styled.div`
 `;
 
 const ItemWrapper = styled.div`
-${Font.Tiny};
+  ${Font.Tiny};
   width: 95%;
   height: 100%;
   background-color: white;
@@ -127,21 +127,20 @@ import WaitingIcon from "@assets/Post/Progress_light.svg?react";
 import DeleteFriendIcon from "@assets/Post/Sad_alt_light.svg?react";
 
 import { useNavigate } from "react-router-dom";
-import usePostStore
- from "@stores/postStore";
- import useDiaryStore from "../../stores/diaryStore";
+import usePostStore from "@stores/postStore";
+import useDiaryStore from "@stores/diaryStore";
 
 const ProfileModal = ({ user, friend, isOpen, onClose }) => {
-const theme = useTheme();
-const navigate = useNavigate();
-const { fetchFriendPosts } = usePostStore();
-const { fetchFriendDiary} = useDiaryStore();
-const [isModalOpen, setIsModalOpen] = useState(false);
-const openSaveModal = () => setIsSaveModalOpen(true);
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const { fetchFriendPosts } = usePostStore();
+  const { fetchFriendDiary } = useDiaryStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openSaveModal = () => setIsSaveModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   if (!isOpen) return null;
-  if (user.nickname === friend.nickname){
-    navigate("/my-page")
+  if (user.nickname === friend.nickname) {
+    navigate("/my-page");
     return;
   }
   const friendPost = async (friend) => {
@@ -152,105 +151,110 @@ const openSaveModal = () => setIsSaveModalOpen(true);
       console.log("Failed to fetch friend", error);
       set({ loading: false, error: error.message });
     }
-  }
+  };
   const friendDiary = async (friend) => {
     try {
-      await fetchFriendDiary(friend.userId)
+      await fetchFriendDiary(friend.userId);
       navigate(`/diary/friend/${friend.nickname}`);
     } catch (error) {
       console.log("Failed to fetch friend", error);
       set({ loading: false, error: error.message });
     }
-  }
+  };
   const addFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      console.log(friend.userId)
+      console.log(friend.userId);
       const res = await apiClient.post(`/friends/request`, {
-        friendUuid : friend.userId
-      })
-      console.log(res.data.message)
+        friendUuid: friend.userId,
+      });
+      console.log(res.data.message);
     } catch (error) {
       console.log("Failed to Add friend", error);
-      set({ loading: false, error: error.message })
+      set({ loading: false, error: error.message });
     }
-  }
+  };
   const deleteFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      console.log(friend.userId)
+      console.log(friend.userId);
       const res = await apiClient.post(`/friends/request`, {
-        friendUuid : friend.userId
-      })
-      console.log(res.data.message)
+        friendUuid: friend.userId,
+      });
+      console.log(res.data.message);
     } catch (error) {
       console.log("Failed to Add friend", error);
-      set({ loading: false, error: error.message })
+      set({ loading: false, error: error.message });
     }
-  }
-  const FriendComponent = ({friend, addFriend}) => {
+  };
+  const FriendComponent = ({ friend, addFriend }) => {
     const { isFriend } = friend;
-    console.log(isFriend)
+    console.log(isFriend);
     switch (isFriend) {
       case "NOT_FRIEND":
-        return <UserItem
-        icon={GroupIcon}
-        text="친구 신청"
-        onClick={() => addFriend(friend)}
-      />;
+        return (
+          <UserItem
+            icon={GroupIcon}
+            text="친구 신청"
+            onClick={() => addFriend(friend)}
+          />
+        );
       case "WAITING":
-        return <UserItem
-        icon={WaitingIcon}
-        text="친구 요청 중"
-        onClick={() => console.log("친구 요청 중")}
-      />;
+        return (
+          <UserItem
+            icon={WaitingIcon}
+            text="친구 요청 중"
+            onClick={() => console.log("친구 요청 중")}
+          />
+        );
       case "FRIEND":
-        return <UserItem
-        icon={DeleteFriendIcon}
-        text="친구 삭제"
-        onClick={() => console.log("친구 삭제")}
-      />;
+        return (
+          <UserItem
+            icon={DeleteFriendIcon}
+            text="친구 삭제"
+            onClick={() => console.log("친구 삭제")}
+          />
+        );
       default:
         return null;
-        }   
-  }
+    }
+  };
   return (
     <>
-    <ModalBackdrop>
-      <Container>
-        <Header>
-          정보
-          <BtnContainer onClick={onClose}>{CloseSvg(theme)}</BtnContainer>
-        </Header>
-        <Profile>
-          <ProfileImg src={friend.profileUrl} />
-          <ProfileInfo>
-            <Nickname>{friend.nickname}</Nickname>
-            <Introduce>{friend.introduce}</Introduce>
-          </ProfileInfo>
-        </Profile>
-        <UserSection>
-          <ItemWrapper>
-            <UserItem
-              icon={NotebookIcon}
-              text="친구 다이어리"
-              onClick={() => friendDiary(friend)}
-            />
-            <DotLine />
-            <UserItem
-              icon={OrderIcon}
-              text="친구 포스트"
-              onClick={() => friendPost(friend)}
-           />
-            <DotLine />
-            <FriendComponent friend={friend} addFriend={addFriend} />
-          </ItemWrapper>
-        </UserSection>
-      </Container>
-    </ModalBackdrop>
+      <ModalBackdrop>
+        <Container>
+          <Header>
+            정보
+            <BtnContainer onClick={onClose}>{CloseSvg(theme)}</BtnContainer>
+          </Header>
+          <Profile>
+            <ProfileImg src={friend.profileUrl} />
+            <ProfileInfo>
+              <Nickname>{friend.nickname}</Nickname>
+              <Introduce>{friend.introduce}</Introduce>
+            </ProfileInfo>
+          </Profile>
+          <UserSection>
+            <ItemWrapper>
+              <UserItem
+                icon={NotebookIcon}
+                text="친구 다이어리"
+                onClick={() => friendDiary(friend)}
+              />
+              <DotLine />
+              <UserItem
+                icon={OrderIcon}
+                text="친구 포스트"
+                onClick={() => friendPost(friend)}
+              />
+              <DotLine />
+              <FriendComponent friend={friend} addFriend={addFriend} />
+            </ItemWrapper>
+          </UserSection>
+        </Container>
+      </ModalBackdrop>
     </>
   );
 };
 
 export default ProfileModal;
-

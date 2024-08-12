@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import * as St from "./ChatViewStyle";
 import Message from "@components/Main/Chat/Message";
 import styled from "styled-components";
-import DownIcon from "@assets/chevron-down.svg?react";
-import UpIcon from "@assets/chevron-up.svg?react";
-import SelectSvg from "@assets/selectedIcon.svg?react";
+import DownIcon from "@assets/Main/chevron-down.svg?react";
+import UpIcon from "@assets/Main/chevron-up.svg?react";
+import SelectSvg from "@assets/Main/selectedIcon.svg?react";
 import useChatStore from "@stores/chatStore";
 import useUserStore from "@stores/userStore";
 import { useParams } from "react-router-dom";
@@ -90,8 +90,8 @@ const ChatView = () => {
       fetchChatRoom(); // 채팅방 리스트를 가져옴
       if (roomId) {
         console.log(roomId);
-        setSelectedRoom(roomId);
-        connect(selectedRoom); 
+        setSelectedRoom(1000);
+        connect(1000);
       }
     };
     initChat();
@@ -122,8 +122,8 @@ const ChatView = () => {
     setSelected(btnIndex);
   };
   useEffect(() => {
-    console.log(messages)
-  }, [messages])
+    console.log(messages);
+  }, [messages]);
   return (
     <St.Wrapper>
       <St.ChatToggleSection>
@@ -145,16 +145,17 @@ const ChatView = () => {
         </ToggleList>
       </St.ChatToggleSection>
       <St.ChatSection ref={chatBoxRef}>
-        {messages.length > 0 && messages.map((msg, index) => {
-          return (
-            <St.ChatContainer
-              key={index}
-              $isUser={user.nickname === msg.nickname}
-            >
-              <Message isUser={user.nickname === msg.nickname} msg={msg} />
-            </St.ChatContainer>
-          );
-        })}
+        {messages.length > 0 &&
+          messages.map((msg, index) => {
+            return (
+              <St.ChatContainer
+                key={index}
+                $isUser={user.nickname === msg.nickname}
+              >
+                <Message isUser={user.nickname === msg.nickname} msg={msg} />
+              </St.ChatContainer>
+            );
+          })}
       </St.ChatSection>
       <St.InputSection>
         <St.InputContaier>
@@ -166,8 +167,7 @@ const ChatView = () => {
           <St.IconWrapper>
             <St.SubmitBtn
               onClick={() => sendMessage(user.nickname, imageUrl)}
-            >
-            </St.SubmitBtn>
+            ></St.SubmitBtn>
           </St.IconWrapper>
         </St.InputContaier>
       </St.InputSection>

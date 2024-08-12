@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
-import Calendar from '../components/Diary/Calendar';
-import styled from 'styled-components';
-import DiaryFriendsList from '../components/Diary/DiaryFriendsList';
+import { useEffect, useState, useRef } from "react";
+import Calendar from "@components/Diary/Calendar";
+import styled from "styled-components";
+import DiaryFriendsList from "@components/Diary/DiaryFriendsList";
 
 const DiaryHome = styled.div`
   position: relative;
@@ -30,10 +30,10 @@ const DiaryHomeView = () => {
         setCalendarHeight(`${diaryHomeHeight - 220}px`);
       }
     };
-    
+
     updateCalendarHeight();
-    window.addEventListener('resize', updateCalendarHeight);
-    
+    window.addEventListener("resize", updateCalendarHeight);
+
     return () => {
       window.removeEventListener("resize", updateCalendarHeight);
     };
@@ -44,7 +44,7 @@ const DiaryHomeView = () => {
     console.log(user);
     setCurrentMonth(new Date()); // 현재 월로 설정
   };
-  
+
   return (
     <DiaryHome ref={diaryHomeRef}>
       <FriendsContainer>

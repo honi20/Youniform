@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import useFriendStore from '@stores/friendStore';
-import useDiaryStore from '@stores/diaryStore';
-import useUserStore from '../../stores/userStore';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import useFriendStore from "@stores/friendStore";
+import useDiaryStore from "@stores/diaryStore";
+import useUserStore from "@stores/userStore";
 
 // Styled Components 정의
 const ListContainer = styled.div`
-  background-color: #EDEDED;
+  background-color: #ededed;
   width: 100%;
   height: 100%;
   overflow-x: auto;
@@ -42,10 +42,11 @@ const UserCard = styled.div`
   position: relative;
   height: 100px;
   width: 80px;
-  background-color: ${props => (props.$isSelected) ? '#D9D9D9' : 'transparent'};
+  background-color: ${(props) =>
+    props.$isSelected ? "#D9D9D9" : "transparent"};
   cursor: pointer;
   transition: background-color 0.3s ease;
-  opacity: ${props => (props.$noneSelected || props.$isSelected) ? 1 : 0.3};
+  opacity: ${(props) => (props.$noneSelected || props.$isSelected ? 1 : 0.3)};
 `;
 
 const UserImage = styled.img`
@@ -72,10 +73,10 @@ const UpdateStatusCircle = styled.div`
   right: 13px;
   width: 13px;
   height: 13px;
-  background-color: #F97D93;
+  background-color: #f97d93;
   border: 1.5px solid white;
   border-radius: 50%;
-  display: ${props => props.$updateStatus ? 'block' : 'none'};
+  display: ${(props) => (props.$updateStatus ? "block" : "none")};
 `;
 
 const VerticalBar = styled.div`
@@ -91,21 +92,26 @@ const DiaryFriendsList = ({ onUserClick }) => {
   const [selectedSelf, setSelectedSelf] = useState(false);
   const { friends, diaryFriends, fetchDiaryFriends } = useFriendStore();
   const { fetchUser, user } = useUserStore();
-  const { selectedUser, setSelectedUser, monthlyDiaries, fetchMonthlyDiaries, fetchFriendsDiaries } = useDiaryStore();
-  
+  const {
+    selectedUser,
+    setSelectedUser,
+    monthlyDiaries,
+    fetchMonthlyDiaries,
+    fetchFriendsDiaries,
+  } = useDiaryStore();
+
   useEffect(() => {
     fetchUser();
   }, []);
-  
+
   useEffect(() => {
     fetchDiaryFriends();
-  }, [fetchDiaryFriends]); 
-  
-  const handleUserClick = async (type, index = null) => {
+  }, [fetchDiaryFriends]);
 
+  const handleUserClick = async (type, index = null) => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0");
     const formattedDate = `${year}-${month}`;
 
     if (type === "friend") {
@@ -129,40 +135,40 @@ const DiaryFriendsList = ({ onUserClick }) => {
 
   return (
     <>
-      {user && monthlyDiaries && 
-      <ListContainer>
-        <FriendsList>
-          {/* Login User */}
-          <UserCard
-            $isSelected={selectedSelf}
-            $noneSelected={selectedUserIndex === null && !selectedSelf}
-            onClick={() => handleUserClick("self")}
-          >
-            <UserImage src={user.profileUrl} alt={user.nickname}/>
-            {user.diaryUpdated && 
-              <UpdateStatusCircle $updateStatus={user.updateStatus} />
-            }
-            <UserName>{user.nickname}</UserName>
-          </UserCard>
-          <VerticalBar />
-          {/* Friends List */}
-          {diaryFriends.map((user, index) => (
+      {user && monthlyDiaries && (
+        <ListContainer>
+          <FriendsList>
+            {/* Login User */}
             <UserCard
-              key={user.friendId}
-              $isSelected={index === selectedUserIndex}
+              $isSelected={selectedSelf}
               $noneSelected={selectedUserIndex === null && !selectedSelf}
-              onClick={() => handleUserClick("friend", index)}
+              onClick={() => handleUserClick("self")}
             >
-              <UserImage src={user.imgUrl} alt={user.nickname} />
-              {user.diaryUpdated && 
-                <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
-              }
+              <UserImage src={user.profileUrl} alt={user.nickname} />
+              {user.diaryUpdated && (
+                <UpdateStatusCircle $updateStatus={user.updateStatus} />
+              )}
               <UserName>{user.nickname}</UserName>
             </UserCard>
-          ))}
-        </FriendsList>
-      </ListContainer>
-      }
+            <VerticalBar />
+            {/* Friends List */}
+            {diaryFriends.map((user, index) => (
+              <UserCard
+                key={user.friendId}
+                $isSelected={index === selectedUserIndex}
+                $noneSelected={selectedUserIndex === null && !selectedSelf}
+                onClick={() => handleUserClick("friend", index)}
+              >
+                <UserImage src={user.imgUrl} alt={user.nickname} />
+                {user.diaryUpdated && (
+                  <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
+                )}
+                <UserName>{user.nickname}</UserName>
+              </UserCard>
+            ))}
+          </FriendsList>
+        </ListContainer>
+      )}
     </>
   );
 };

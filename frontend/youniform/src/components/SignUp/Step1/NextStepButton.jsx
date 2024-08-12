@@ -1,11 +1,11 @@
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import useSignUpStore from '../../../stores/signUpStore';
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import useSignUpStore from "@stores/signUpStore";
 
 const NextStepBtn = styled.div`
   width: 100%;
   height: 8vh;
-  background-color: #262F66;
+  background-color: #262f66;
   color: white;
   display: flex;
   align-items: center;
@@ -46,15 +46,15 @@ const NextStepButton = () => {
         }
         break;
       case 4:
-          // 마지막 단계는 별도 설정
-          setStep(1);
-          navigate(`/`);
+        // 마지막 단계는 별도 설정
+        setStep(1);
+        navigate(`/`);
         return;
       default:
         nextStep = 1;
         break;
     }
-    
+
     if (nextStep) {
       navigate(`/sign-up/step-${nextStep}`);
     }
@@ -62,9 +62,9 @@ const NextStepButton = () => {
 
   return (
     <NextStepBtn onClick={handleNextStep}>
-      { step == 4 ? "홈으로" : "다음 단계로" }
+      {step == 4 ? "홈으로" : "다음 단계로"}
     </NextStepBtn>
   );
-}
+};
 
 export default NextStepButton;
