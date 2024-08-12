@@ -96,7 +96,7 @@ class PlayerControllerTest {
         when(playerService.findPlayers(1L)).thenReturn(new PlayerListRes(playerList));
 
         ResultActions actions = mockMvc.perform(
-                get("/api/players/{teamId}", 1L)
+                get("/api/players/list/{teamId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
