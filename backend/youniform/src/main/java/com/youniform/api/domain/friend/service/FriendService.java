@@ -12,6 +12,8 @@ public interface FriendService {
 
     void acceptFriend(Long userId, String friendUuid);
 
+    void rejectFriend(Long userId, String friendUuid);
+
     FriendMypageRes findMypageFriends(Long userId);
 
     FriendDiaryRes findDiaryFriends(Long userId);

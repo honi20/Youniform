@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum SuccessCode {
-    //user
+    //user success code
     USER_NICKNAME_OK(HttpStatus.OK.value(), "사용 가능한 닉네임입니다."),
     VERIFY_CODE_SEND(HttpStatus.OK.value(), "인증번호 발송에 성공했습니다."),
     EMAIL_VERIFIED(HttpStatus.OK.value(), "사용 가능한 이메일입니다."),
@@ -27,9 +27,10 @@ public enum SuccessCode {
     USER_RECOMMEND_SUCCESS(HttpStatus.OK.value(), "유저 추천에 성공했습니다"),
     USER_SEARCH_OK(HttpStatus.OK.value(), "유저 검색에 성공했습니다"),
 
-    //friends
+    //friends success code
     FRIEND_REQUEST_OK(HttpStatus.CREATED.value(), "친구 요청에 성공했습니다."),
     FRIEND_ACCEPT_OK(HttpStatus.CREATED.value(), "친구 요청을 수락했습니다."),
+    FRIEND_REJECTED(HttpStatus.CREATED.value(), "친구 요청을 거절했습니다."),
     FRIEND_LIST_OK(HttpStatus.OK.value(), "친구 리스트 조회에 성공했습니다."),
     FRIEND_DELETED(HttpStatus.OK.value(), "친구 삭제에 성공했습니다."),
 
@@ -45,7 +46,7 @@ public enum SuccessCode {
     DIARY_RESOURCES_OK(HttpStatus.OK.value(), "다이어리 리소스 리스트 조회에 성공했습니다."),
     DIARY_STAMP_OK(HttpStatus.OK.value(), "다이어리 스탬프 리스트 조회에 성공했습니다."),
 
-    //post
+    //post success code
     POST_CREATED(HttpStatus.CREATED.value(), "게시글 생성에 성공했습니다."),
     PUBLIC_POST_LIST_OK(HttpStatus.OK.value(), "전체 게시글 조회에 성공했습니다."),
     MY_POST_LIST_OK(HttpStatus.OK.value(), "나의 게시글 조회에 성공했습니다."),
@@ -56,9 +57,10 @@ public enum SuccessCode {
     POST_MODIFIED(HttpStatus.OK.value(), "게시글 수정에 성공했습니다."),
     POST_DELETED(HttpStatus.OK.value(), "게시글 삭제에 성공했습니다"),
 
+    //tag success code
     TAG_LIST_OK(HttpStatus.OK.value(), "태그 검색에 성공했습니다."),
 
-    //comment
+    //comment success code
     COMMENT_CREATED(HttpStatus.CREATED.value(), "댓글 생성에 성공했습니다."),
     COMMENT_LIST_OK(HttpStatus.OK.value(), "댓글 조회에 성공했습니다."),
     COMMENT_MODIFIED(HttpStatus.OK.value(), "댓글 수정에 성공했습니다."),
