@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
 import { wallpapers, stickers, fonts } from "@assets";
@@ -22,6 +21,7 @@ import BasicModal from "@components/Modal/BasicModal";
 import DiaryModal from "@components/Diary/DiaryModal";
 import useDiaryStore from "@stores/diaryStore";
 import useResourceStore from "../../stores/resoureStore";
+
 const ToggleBtn = styled.div`
   /* width: 50%; */
   height: 100%;
@@ -36,20 +36,6 @@ const ToggleBtn = styled.div`
   font-weight: 600;
   cursor: pointer;
   border: 1px solid red;
-`;
-const Background = styled.div`
-  display: ${(props) => (props.$isOn ? "flex" : "none")};
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  /* display: flex; */
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 5;
 `;
 
 const toggle = (isOn) => {
@@ -69,7 +55,7 @@ const WriteDiaryView = () => {
   const navigate = useNavigate();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
-  const { stampList, fetchStampList } = useResourceStore();
+  const { stampList, fetchStampList, resources, fetchResources } = useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
@@ -91,6 +77,15 @@ const WriteDiaryView = () => {
     }
     fetchStamp();
   }, fetchStampList, stampList)
+
+   useEffect(() => {
+    const loadResource = () => {
+      if (resources.length == 0){
+        fetchResources();
+      }
+    }
+    loadResource();
+   }, [loadResource, resources])
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -171,7 +166,7 @@ const WriteDiaryView = () => {
           <>
             <ColorChipComp />
             <WallPaperComp
-              wallpapers={Object.values(wallpapers).map((mod) => mod.default)}
+              wallpapers={resources.backgrounds}
               onImageClick={handleImageClick}
             />
           </>
@@ -179,7 +174,7 @@ const WriteDiaryView = () => {
       case 1:
         return (
           <StickerComp
-            stickers={Object.values(stickers).map((mod) => mod.default)}
+            stickers={resources.stickers}
             onImageClick={handleStickerClick}
           />
         );
@@ -249,7 +244,7 @@ const WriteDiaryView = () => {
 
         const formData = new FormData();
         const dto = {
-          diaryDate: date,
+          diaryDate: diaryDate ? diaryDate : date, // 날짜 바뀌는 거 확인하기
           contents: json,
           scope: scope,
           stampId: stampId,
@@ -314,10 +309,10 @@ const WriteDiaryView = () => {
         <ToggleBtn onClick={() => handleToggle(isOn)}>{toggle(isOn)}</ToggleBtn>
       </St.StampContainer>
       <DiaryModal 
-      isOn={isOn}
-      setIsOn={setIsOn}
-      setScope={setScope}
-      setStampId={setStampId}
+        isOn={isOn}
+        setIsOn={setIsOn}
+        setScope={setScope}
+        setStampId={setStampId}
       />
       <St.SaveBtn onClick={() => setIsSaveModalOpen(true)}>
         <St.IconContainer>

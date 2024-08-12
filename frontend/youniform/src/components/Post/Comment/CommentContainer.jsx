@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import styled from 'styled-components';
-import * as Font from '@/typography';
-import usePostStore from '@stores/postStore';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import styled from "styled-components";
+import * as Font from "@/typography";
+import usePostStore from "@stores/postStore";
 // Styled components
 const Container = styled.div`
   margin: 1% 3%;
@@ -22,7 +22,7 @@ const Ellipsis = styled.div`
   justify-content: center;
   align-items: center;
   color: gray;
-  opacity: ${props => props.visible ? 1 : 0}; 
+  opacity: ${(props) => (props.visible ? 1 : 0)};
   transition: opacity 0.1s ease;
 `;
 const FlexBox = styled.div`
@@ -64,7 +64,7 @@ const LowerContainer = styled(FlexBox)`
   ${Font.XSmall}
   flex-direction: row;
   justify-content: end;
-  flex:1;
+  flex: 1;
   color: #848484;
 `;
 
@@ -89,18 +89,21 @@ const TextWrapper = styled.textarea`
 `;
 const CommentBtn = styled.div`
   /* border: 1px solid black; */
-`
+`;
 const Btn = styled.div`
-text-decoration-line: underline; 
+  text-decoration-line: underline;
 
   /* border: 1px solid red; */
-`
+`;
 // 메모이제이션된 CommentTextarea 컴포넌트
 const CommentTextarea = React.memo(({ content, setContent, onKeyDown }) => {
-  const handleTextChange = useCallback((e) => {
-    setContent(e.target.value);
-    autoResize(e.target);
-  }, [setContent]);
+  const handleTextChange = useCallback(
+    (e) => {
+      setContent(e.target.value);
+      autoResize(e.target);
+    },
+    [setContent]
+  );
 
   const autoResize = (textarea) => {
     textarea.style.height = "auto";
@@ -126,6 +129,7 @@ const CommentContainer = ({ postId }) => {
   // const fetchPost = usePostStore((state) => state.fetchPost); // 포스트를 가져오는 함수
   // const addComment = usePostStore((state) => state.addComment); // 댓글을 추가하는 함수
   const { addComment, updateComment, deleteComment } = usePostStore();
+  const [editMode, setEditMode] = useState(null); // Track which comment is being edited
   const [showEllipsis, setShowEllipsis] = useState(true);
   const scrollableRef = useRef(null);
   const isInitialRender = useRef(true);
@@ -134,14 +138,14 @@ const CommentContainer = ({ postId }) => {
     const { scrollTop, scrollHeight, clientHeight } = event.target;
     const isAtTop = scrollTop === 0;
     const isAtBottom = scrollTop + clientHeight >= scrollHeight;
-    console.log(scrollTop,clientHeight, scrollHeight)
+    console.log(scrollTop, clientHeight, scrollHeight);
     setShowEllipsis({
       top: !isAtTop,
       bottom: !isAtBottom,
     });
   };
   useEffect(() => {
-    console.log('showEllipsis updated:', showEllipsis);
+    console.log("showEllipsis updated:", showEllipsis);
   }, [showEllipsis]);
 
   useEffect(() => {
@@ -155,64 +159,116 @@ const CommentContainer = ({ postId }) => {
     }
   }, [comments]);
   // 댓글 생성 / 수정 / 삭제 요청
-  const handleCommentAction = async({ action, postId, commentId, content }) => {
-    if (action === 'add') {
+  const handleCommentAction = async ({
+    action,
+    postId,
+    commentId,
+    content,
+  }) => {
+    if (action === "add") {
       await addComment(postId, content);
       setContent("");
-    } else if (action === 'update') {
+    } else if (action === "update") {
       await updateComment(commentId, content);
-    } else if (action === 'delete') {
-      await deleteComment(commentId)
+    } else if (action === "delete") {
+      await deleteComment(commentId);
     }
-  }
+  };
+  const handleEditClick = (comment) => {
+    setContent(comment.contents); // Set content to the current comment's text
+    setEditMode(comment.commentId); // Set the comment ID to indicate which comment is being edited
+  };
+
   // 댓글 삭제 요청
-  // const 
+  // const
   return (
     <Container onClick={() => console.log("댓글창 클릭됨")}>
-      
-      {/* {showEllipsis.top && <TopEllipsis>...</TopEllipsis>} */}
-      <ScrollableView ref={scrollableRef}onScroll={handleScroll}>
-      {comments &&
-        comments.map((comment) => (
-          <Comment key={comment.commentId}>
-            <ProfileContainer>
-              <Profile src={comment.imgUrl} alt={`${comment.nickname}의 프로필`} />
-              {comment.nickname}
-            </ProfileContainer>
-            <FlexBox>
-              <UpperContainer>{comment.contents}</UpperContainer>
-              <LowerContainer>{comment.createdAt}
-                &nbsp;
-                <Btn onClick={()=> handleCommentAction({
-                  action: "update",
-                  commentId: comment.commentId,
-                  content: comment.content,
-                })}>수정</Btn>
-                &nbsp;
-                <Btn onClick={()=> handleCommentAction({
-                  action: "delete",
-                  commentId: comment.commentId,
-                })} >삭제</Btn>
-              </LowerContainer>
-            </FlexBox>
-          </Comment>
-        ))}
-        </ScrollableView>
-        {showEllipsis && <Ellipsis visible={showEllipsis.bottom}>...</Ellipsis>}
+      <ScrollableView ref={scrollableRef} onScroll={handleScroll}>
+        {comments &&
+          comments.map((comment) => (
+            <Comment key={comment.commentId}>
+              <ProfileContainer>
+                <Profile
+                  src={comment.imgUrl}
+                  alt={`${comment.nickname}의 프로필`}
+                />
+                {comment.nickname}
+              </ProfileContainer>
+              <FlexBox>
+                {editMode === comment.commentId ? (
+                  <UpperContainer>
+                    <CommentTextarea
+                      content={content}
+                      setContent={setContent}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleCommentAction({
+                            action: "update",
+                            commentId: comment.commentId,
+                            content: content,
+                          });
+                        }
+                      }}
+                    />
+                    <CommentBtn
+                      onClick={() =>
+                        handleCommentAction({
+                          action: "update",
+                          commentId: comment.commentId,
+                          content: content,
+                        })
+                      }
+                    >
+                      저장
+                    </CommentBtn>
+
+                    <CommentBtn onClick={() => setEditMode(null)}>
+                      취소
+                    </CommentBtn>
+                  </UpperContainer>
+                ) : (
+                  <>
+                    <UpperContainer>{comment.contents}</UpperContainer>
+                    <LowerContainer>
+                      {comment.createdAt}
+                      &nbsp;
+                      <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
+                      &nbsp;
+                      <Btn
+                        onClick={() =>
+                          handleCommentAction({
+                            action: "delete",
+                            commentId: comment.commentId,
+                          })
+                        }
+                      >
+                        삭제
+                      </Btn>
+                    </LowerContainer>
+                  </>
+                )}
+              </FlexBox>
+            </Comment>
+          ))}
+      </ScrollableView>
+      {showEllipsis && <Ellipsis visible={showEllipsis.bottom}>...</Ellipsis>}
       <CreateComment>
         <ChatIcon />
-        <CommentTextarea
-          content={content}
-          setContent={setContent}
-        />
-        <CommentBtn onClick={()=> handleCommentAction({
-                  action: "add",
-                  postId: postId,
-                  content: content,
-                })}>전송</CommentBtn>
+        <CommentTextarea content={content} setContent={setContent} />
+        <CommentBtn
+          onClick={() =>
+            handleCommentAction({
+              action: "add",
+              postId: postId,
+              content: content,
+            })
+          }
+        >
+          전송
+        </CommentBtn>
       </CreateComment>
     </Container>
-    
   );
 };
 

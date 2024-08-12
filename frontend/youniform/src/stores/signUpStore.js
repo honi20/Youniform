@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io/api";
+const API_URL = import.meta.env.VITE_API_URL;
 const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
