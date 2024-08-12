@@ -41,12 +41,12 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/users/*/check-duplication",
-                                        "/users/signup/**",
-                                        "/users/find/password", "/users/check/email",
+                                .requestMatchers(
+                                        "/users/signup/**", "/users/signin/local",
+                                        "/users/verify", "/users/email/send",
+                                        "/users/email/verify", "/users/check/email",
                                         "/users/password/reset", "/users/password/send",
-                                        "/docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
+                                        "/docs/**", "/swagger-ui/**", "/v3-docs/**", "/h2-console/**").permitAll()
 //                        .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 )
