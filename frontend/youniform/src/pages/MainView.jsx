@@ -7,8 +7,6 @@ import ChatIcon from "@assets/mainview/Chat_alt_2_light.svg?react";
 import HeartIcon from "@assets/mainview/Add_ring_light.svg?react";
 import { useNavigate } from "react-router-dom";
 import usePlayerStore from "@stores/playerStore";
-import Loading from "@components/Share/Loading";
-import Error from "@components/Share/Error";
 
 const Div = styled.div`
   display: flex;
@@ -19,7 +17,6 @@ const Div = styled.div`
   height: calc(100vh - 120px); // navbar + header
   background-color: #f8f8f8;
 `;
-
 const Container = styled.div`
   /* margin-top: 3%; */
   /* border: 1px solid black; */
@@ -60,7 +57,7 @@ const TextContainer = styled.div`
 const MainView = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const navigate = useNavigate();
-  const { playerList, fetchPlayerList, loading, error } = usePlayerStore();
+  const { playerList, fetchPlayerList } = usePlayerStore();
 
   useEffect(() => {
     fetchPlayerList();
@@ -70,18 +67,9 @@ const MainView = () => {
     setSelectedPlayer(playerId);
     console.log(playerId);
   };
-  console.log(playerList.length)
-  // if (loading) {
-  //   return <Loading />;
-  // }
-
-  // if (error) {
-  //   return <Error message={error} />;
-  // }
   return (
     <Div>
       <PlayerComp
-        count={playerList.length}
         onSelectPlayer={handleSelectPlayer}
         player={playerList[selectedPlayer]}
       />

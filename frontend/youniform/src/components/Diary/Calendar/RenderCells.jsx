@@ -1,17 +1,7 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import useDiaryStore from "@stores/diaryStore";
-import styled from "styled-components";
-import {
-  format,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  isSameMonth,
-  isSameDay,
-  addDays,
-} from "date-fns";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays } from 'date-fns';
 
 const CellsContainer = styled.div`
   display: grid;
@@ -30,14 +20,14 @@ const Cell = styled.div`
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-
+  
   &.disabled {
     background-color: #f0f0f0;
-    pointer-events: none;
+    pointer-events : none;
   }
 
   &.selected {
-    color: ${(props) => props.theme.calendar};
+    color: #FF4D6C;
   }
 
   &.not-valid {
@@ -45,86 +35,64 @@ const Cell = styled.div`
   }
 `;
 
-const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
-  const { fetchDiary, monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
+const RenderCells = ({ currentMonth, selectedDate, onDateClick, stamps }) => {
   const navigate = useNavigate();
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
 
-  const now = new Date();
-  const year = now.getFullYear();
-  // 월은 0부터 시작, padStart(month 두 자릿수 보장)
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const formatDate = `${year}-${month}`; // yyyy-MM
-
-  useEffect(() => {
-    fetchMonthlyDiaries(formatDate);
-  }, []);
-
   const rows = [];
   let days = [];
   let day = startDate;
-  let formattedDate = "";
-  let stampDate = "";
+  let formattedDate = '';
+  let stampDate = '';
 
   const getStampSrcForDate = (day, date) => {
     if (day > monthEnd || day < monthStart) return null;
 
-    for (const diary of monthlyDiaries) {
-      if (diary.diaryDate === date) {
-        return diary;
+    for (const stamp of stamps) {
+      if (stamp.date === date) {
+        return stamp.stampSrc;
       }
     }
     return null;
   };
 
   const handleDateClick = (day, stampSrc) => {
-    const formatDate = (day) => format(day, "yyyy-MM-dd");
-    const formattedDate = formatDate(day);
-    console.log(formattedDate);
+    const cloneDay = new Date(day);
     if (!stampSrc) {
-      navigate(`/diary/write/${formattedDate}`);
+      navigate('/diary/write');
     } else {
       onDateClick(cloneDay);
     }
   };
 
-  const loadDiaryDetail = async (diaryId) => {
-    navigate(`/diary/${diaryId}`);
-  };
-
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
-      formattedDate = format(day, "d");
-      stampDate = format(day, "yyyy-MM-dd");
-      const diaryInfo = getStampSrcForDate(day, stampDate);
-      const stampSrc = diaryInfo !== null ? diaryInfo.stampImgUrl : null;
+      formattedDate = format(day, 'd');
+      stampDate = format(day, 'yyyy-MM-dd');
+      const stampSrc = getStampSrcForDate(day, stampDate);
       const cloneDay = new Date(day);
       days.push(
         <Cell
           className={`cell ${
             !isSameMonth(day, monthStart)
-              ? "disabled"
+              ? 'disabled'
               : isSameDay(day, selectedDate)
-              ? "selected"
-              : format(currentMonth, "M") !== format(day, "M")
-              ? "not-valid"
-              : "valid"
+              ? 'selected'
+              : format(currentMonth, 'M') !== format(day, 'M')
+              ? 'not-valid'
+              : 'valid'
           }`}
           key={day}
-          onClick={
-            stampSrc
-              ? () => loadDiaryDetail(diaryInfo.diaryId)
-              : () => handleDateClick(cloneDay, stampSrc)
-          }
+          onClick={() => handleDateClick(cloneDay, stampSrc)}
         >
           <p
             className={
-              format(currentMonth, "M") !== format(day, "M")
-                ? "text not-valid"
-                : ""
+              format(currentMonth, 'M') !== format(day, 'M')
+                ? 'text not-valid'
+                : ''
             }
           >
             {formattedDate}
@@ -134,21 +102,20 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
               src={stampSrc}
               alt="stamp"
               style={{
-                marginTop: "60%",
-                width: "40px",
-                height: "40px",
+                marginTop: '60%',
+                width: '40px',
+                height: '40px',
               }}
-              // onClick={() => {loadDiaryDetail(diaryInfo.diaryId)}}
             />
           )}
           {!stampSrc && (
             <div
               style={{
-                marginTop: "60%",
-                width: "40px",
-                height: "40px",
+                marginTop: '60%',
+                width: '40px',
+                height: '40px',
               }}
-            ></div>
+            ></div>          
           )}
         </Cell>
       );

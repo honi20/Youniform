@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = "http://i11a308.p.ssafy.io:8080/api";
 const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
@@ -59,11 +59,8 @@ const signUpStore = create((set, get) => ({
     }
   },
   verifyEmailCode: async (email, authenticCode) => {
-    console.log(email);
-    console.log(authenticCode);
     try {
       const res = await axios({
-        
         method: "get",
         url: `${API_URL}/users/email/verify`,
         params: {
@@ -71,15 +68,7 @@ const signUpStore = create((set, get) => ({
           verifyCode: authenticCode,
         },
       });
-      if (res.data.header.httpStatusCode === 200) {
-        console.log("이메일 인증번호 확인 성공");
-        console.log(res.data);
-        return "$SUCCESS"
-      }
-    } catch (error) {
-      console.log("Failed to verifyEmailCode", error);
-      return "$FAIL";
-    }
+    } catch (error) {}
   },
   verifyNickname: async () => {
     try {
@@ -123,22 +112,6 @@ const signUpStore = create((set, get) => ({
       console.log("Failed to fetch Local SignUp", err);
     }
   },
-  // fetchPlayerList: async () => {
-  //   set({ loading: true, error: null });
-  //   try {
-  //     const res = await axios({
-  //       method: "get",
-  //       url: `${API_URL}/players`,
-  //       params: {
-  //         teamId: "1"
-  //       }
-  //     })
-  //     set({ playerList: res.data.body.playerList, loading: false });
-  //   } catch (err) {
-  //     console.error(err.response ? err.response.data : err.message);
-  //     set({ loading: false, error: err.message });
-  //   }
-  // },
 }));
 
 export default signUpStore;

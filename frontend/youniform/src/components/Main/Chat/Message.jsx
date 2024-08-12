@@ -2,6 +2,7 @@ import React from "react";
 import * as St from "@pages/Main/ChatViewStyle";
 
 const Message = ({ isUser, msg }) => {
+  console.log(isUser);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");

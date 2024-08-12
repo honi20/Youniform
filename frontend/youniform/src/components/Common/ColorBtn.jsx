@@ -4,7 +4,7 @@ import { styled as muiStyled } from '@mui/material/styles';
 const ColorBtn = muiStyled(Button)(() => ({
   height: "38px",
   backgroundColor: "#D9D9D9",
-  fontSize: "12px",
+  fontSize: "13px",
   fontWeight: "bold",
   boxShadow: "none",
   color: "#3A3A3A",

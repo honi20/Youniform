@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
 import * as Stomp from "@stomp/stompjs";
-import { getApiClient } from "@stores/apiClient";
+
+const API_URL = "http://i11a308.p.ssafy.io:8080/api";
 const useChatStore = create((set, get) => ({
   messages: [],
   content: "",
@@ -12,10 +13,6 @@ const useChatStore = create((set, get) => ({
   client: null, // WebSocket 클라이언트
   connect: () => {
     const { client, selectedRoom } = get();
-    if (!selectedRoom) {
-      console.warn("selectedRoom이 설정되지 않았습니다.");
-      return;
-    }
     if (client) {
       console.log("client가 있음");
       return;
@@ -53,14 +50,17 @@ const useChatStore = create((set, get) => ({
   },
 
   fetchChatRoom: async () => {
-    const apiClient = getApiClient();
     try {
-      const res = await apiClient.get(
-        `/chats/rooms`
-      );
+      const res = await axios({
+        method: "get",
+        url: `${API_URL}/chats/rooms`,
+        // headers: {
+        //   Authorization:
+        //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLTQyMTItOGE5MC04MTE4NmM1N2YxMDAiLCJpc3MiOiJ3d3cuc2Ftc3VuZy5jb20iLCJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzIzMDA3NDAwfQ.D856FncOnKSe1O_1vw0jyOHGMPfWionPRvMZ_QWPaPDnAmRHfM9U2VFOprdM3QP2JEQXz_Ewn4mJvPoVAg5NQA",
+        // },
+      });
       console.log(res.data.header.message);
       console.log(res.data.body);
-      console.log(res.data.body.chatRoomList);
 
       set({
         chatRooms: res.data.body.chatRoomList,
@@ -83,29 +83,24 @@ const useChatStore = create((set, get) => ({
 
   sendMessage: (nickname, imageUrl) => {
     const { content, client, selectedRoom } = get();
-    
-    if (content.trim() === "") return;
     console.log("메세지 보냄", client);
-    const now = new Date();
-    const formattedDate = now.toISOString();
+    if (content.trim() === "") return;
+
     const message = {
       nickname,
       imageUrl,
       content,
-      messageTime: formattedDate,
     };
 
     if (client) {
-      console.log("채팅방 구독 성공", client);
+      console.log("pub");
       client.publish({
         destination: `/pub/${selectedRoom}`,
         body: JSON.stringify(message),
       });
 
-      set((state) => ({
-        messages: [...state.messages, message],
-        content: "",
-      }));
+      // addMessage(message); // Optional: Add the sent message to the chat (if desired)
+      set({ content: "" });
     }
   },
 }));

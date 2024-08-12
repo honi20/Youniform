@@ -8,14 +8,12 @@ const Container = styled.div`
   border-radius: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
-  margin: 0 5%;
+  margin: 0 8%;
   overflow-y: auto;
   cursor: pointer;
   &:not(:first-child) {
-    margin: 4% 5%;
+    margin: 4% 8%;
   }
-  /* height: calc(100vh - 120px); */
-
 `;
 const Header = styled.div`
   ${Font.Medium};
@@ -49,11 +47,6 @@ const Content = styled.div`
   font-weight: 400;
   margin: 1% 5%;
   /* border: 1px solid green; */
-  & img {
-    /* height: 100%; */
-    width: 100%;
-    object-fit: cover;
-  }
 `;
 const TagContainer = styled.div`
   flex-wrap: wrap;
@@ -132,23 +125,23 @@ const Post = ({ post }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
-  const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } = useUserStore();
+  const { friend, loading, error, fetchFriend, clearFriend } = useUserStore();
   const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
-    console.log(tag, "포스트 포함 태그 검색");
+    console.log(tag);
+    // setSelectedTag(tag.tagId);
     const encodedQuery = encodeURIComponent(tag.contents);
-    navigate(`/search?tagId=${tag.tagId}&q=${encodedQuery}`);
+    navigate(`/search?type=tag&q=${encodedQuery}`);
   };
   const convertBrToNewLine = (htmlString) => {
     return htmlString.split("<br>").join("\n");
   };
 
   const htmlContent = convertBrToNewLine(post.contents);
-
   useEffect(() => {
+    console.log(post.isLiked);
     setLike(post.isLiked);
   }, [setLike]);
-
   const handleProfileClick = async () => {
     setSelectedUser(post.userId);
     await fetchFriend(post.userId);
@@ -159,29 +152,20 @@ const Post = ({ post }) => {
       return () => clearFriend();
     }
   }, [selectedUser, clearFriend]);
-// useEffect(() => {
-//   if (!user){
-//     fetchUser();
-//   }
-// }, [user, fetchUser]);
-useEffect(() => {
-  const loadUser = async () => {
-    await fetchUser();
-  };
-  if (!user) {
-    loadUser();
-  }
-}, [user, fetchUser]);
+
   const handleLike = async () => {
-    const newLike = !like;
-    setLike(newLike);
-    console.log(newLike);
+    console.log("좋아요 버튼 클릭");
+    setLike((prev) => !prev);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
-        isLiked: newLike,
+        data: {
+          isLiked: like,
+        },
       });
       console.log(res.data.header.message);
+      console.log(res.data.body);
+      set({ monthlyDiaries: res.data.body.diaryList });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -191,13 +175,12 @@ useEffect(() => {
       <Container>
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
-            <ProfileImg src={post.profileImg} />
+            <ProfileImg src={post.imageUrl} />
             {post.nickname}
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
         <Content>
-          <img src={post.imageUrl} />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
             {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
@@ -207,7 +190,7 @@ useEffect(() => {
             ))}
           </div>
           <TagContainer>
-            {post && post.tags.map((tag) => {
+            {post.tags.map((tag) => {
               return (
                 <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
                   # {tag.contents}
@@ -230,6 +213,7 @@ useEffect(() => {
               display: "flex",
               gap: "10%",
               justifyContent: "center",
+              // border: "1px solid black",
             }}
           >
             <HeartContainer onClick={handleLike}>
@@ -238,13 +222,11 @@ useEffect(() => {
           </div>
         </Footer>
       </Container>
-      {isModalOpen && (<ProfileModal
-        friend={friend}
-        user={user}
+      <ProfileModal
+        user={friend}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       />
-      )}
     </>
   );
 };

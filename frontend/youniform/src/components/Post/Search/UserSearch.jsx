@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { getApiClient } from "@stores/apiClient";
-import useUserStore from "@stores/userStore";
-import ProfileModal from "@components/Modal/ProfileModal";
 const SearchResult = styled.div`
+  /* border: 1px solid black; */
   height: 50px;
   margin: 0 20px;
   display: flex;
@@ -16,89 +15,56 @@ const SearchResult = styled.div`
     color: ${(props) => props.theme.primary};
   }
 `;
-const ProfileImage = styled.img`
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-right: 10px;
-`
 const UserSearch = ({ query, search, setSearch }) => {
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } = useUserStore();
   useEffect(() => {
     if (search) {
-      searchUser(query)
+      console.log("유저 검색 테스트", query);
       setSearch(false);
     }
     console.log(search);
   }, [search]);
-  const handleProfileClick = async () => {
-    setSelectedUser(post.userId);
-    await fetchFriend(post.userId);
-    setModalOpen(true);
-  };
-  useEffect(() => {
-    if (selectedUser) {
-      return () => clearFriend();
-    }
-  }, [selectedUser, clearFriend]);
-  useEffect(() => {
-    const loadUser = async () => {
-      await fetchUser();
-    };
-    if (!user) {
-      loadUser();
-    }
-  }, [user, fetchUser]);
+  const API_URL = "http://i11a308.p.ssafy.io:8080";
+  // axios 유저 검색 용으로 변경해야함
   const searchUser = async (query) => {
     if (query) {
       console.log("유저 검색 시작");
-      const apiClient = getApiClient();
       try {
-        const res = await apiClient.get(`/users/search`, {
+        const res = await axios.get(`${API_URL}/tags`, {
+          // headers: {
+          //   Authorization: "Bearer your_token_here",
+          // },
           params: {
-            nickname: query,
+            name: query,
+            // lastPostId: "",
           },
         });
         console.log(res.data.header.message);
-        console.log(res.data.body.userList)
-        setResults(res.data.body.userList);
+        setResults(res.data.body.tags);
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
       }
     }
   };
-  const handleClickUser = async (result) => {
-    console.log(result)
-    setSelectedUser(result.userId);
-    await fetchFriend(result.userId);
-    setModalOpen(true);
+  const handleClickUser = (result) => {
+    console.log(result.contents);
+    const encodedQuery = encodeURIComponent(result.contents);
+    setResults([]);
+    navigate(`/search?type=user&q=${encodedQuery}`);
   };
   return (
-    <>
     <div>
-      {results.length > 0 ? (
+      {results ? (
         results.map((result, index) => (
           <SearchResult key={index} onClick={() => handleClickUser(result)}>
-            <ProfileImage src={result.imgUrl} />
-            {result.nickname}
+            # {result.contents} {query}
           </SearchResult>
         ))
       ) : (
-        <SearchResult>검색 결과 없음</SearchResult>
+        <>검색 결과 없음</>
       )}
     </div>
-    <ProfileModal
-    friend={friend}
-    user={user}
-    isOpen={isModalOpen}
-    onClose={() => setModalOpen(false)}
-  />
-  </>
   );
 };
 

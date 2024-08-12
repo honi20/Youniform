@@ -1,19 +1,15 @@
-@media (min-width: 500px) {
+@media (max-width: 400px) {
   .App {
-    max-width: 500px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
+    width: 100%;
+    padding: 0 10px;
   }
-}
 
-.App {
-  margin: 0 auto;
-  max-width: 100%;
-  min-height: 100vh;
-  position: relative;
-  width: 100%;
-}
-div {
-  display: block;
-  unicode-bidi: isolate;
+  .App {
+    width: 100%;
+    max-width: 400px;
+    min-height: 100vh;
+    margin: 0 auto;
+    position: relative;
+    overflow-y: auto;
+  }
 }

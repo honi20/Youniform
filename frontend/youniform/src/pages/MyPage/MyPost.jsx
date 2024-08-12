@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PostView from "@pages/Post/Posts";
 import usePostStore from "@stores/postStore";
-import { useParams } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -16,16 +15,10 @@ const ScrollablePostView = styled.div`
 `;
 const MyPost = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { myPosts, fetchMyPosts, friendPosts, fetchFriendPosts } = usePostStore();
-  const { nickname } = useParams();
-  console.log(nickname)
+  const { myPosts, fetchMyPosts } = usePostStore();
+
   useEffect(() => {
-    if (nickname) {
-      // fetchFriendPosts(nickname);
-      console.log('test')
-    } else {
-      fetchMyPosts();
-    }
+    fetchMyPosts();
   }, [fetchMyPosts]);
 
   const handleScroll = (event) => {
@@ -35,12 +28,11 @@ const MyPost = () => {
       setIsScrolled(false);
     }
   };
-  const postsToShow = nickname ? friendPosts : myPosts;
   return (
     <>
       <Container>
         <ScrollablePostView onScroll={handleScroll}>
-          <PostView posts={postsToShow} />
+          <PostView posts={myPosts} />
         </ScrollablePostView>
       </Container>
     </>
