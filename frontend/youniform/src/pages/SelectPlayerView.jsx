@@ -4,7 +4,7 @@ import CheckIcon from "../assets/Done_round_light.svg?react";
 import BasicModal from "../components/Modal/BasicModal";
 import useSignUpStore from "../stores/signUpStore";
 import { getApiClient } from "@stores/apiClient";
-
+import axios from "axios";
 const Div = styled.div`
   width: 100%;
   height: calc(100vh - 120px);
@@ -188,15 +188,18 @@ const ConfirmBtn = styled.div`
   font-size: 1.25rem;
 `;
 
-const SelectPlayerView = (teamId) => {
+const SelectPlayerView = ({ teamId = "1" }) => {
   const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
   useEffect(() => {
     const fetchPlayerInfo = async (teamId) => {
-      const apiClient = getApiClient();
+      const API_URL = import.meta.env.VITE_API_URL;
       try {
-        const res = await apiClient.get(`/players/1`);
+        const res = await axios({
+          method: "get",
+          url: `${API_URL}/players/list/1`,
+        });
+        
         const { body, header } = res.data;
-
         console.log(body);
         console.log(header.message);
         setPlayerList((prevList) => {
@@ -209,11 +212,12 @@ const SelectPlayerView = (teamId) => {
           }
         });
       } catch (err) {
-        handleApiError(err);
+        // handleApiError(err);
+        console.log(err)
       }
     };
-    fetchPlayerInfo();
-  }, []);
+      fetchPlayerInfo();
+  }, [teamId]);
 
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
