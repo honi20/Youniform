@@ -31,5 +31,9 @@ public interface ChatService {
 
     InputStreamResource downloadImage(String imgUrl) throws IOException;
 
-    void updateLastReadTime(Long roomId, Long userId, LocalDateTime lastReadTime);
+    void updateLastReadTime(Long userId, Long roomId, LocalDateTime lastReadTime);
+
+    Long getRoomIdFromSessionId(String sessionId);
+
+    void broadcastUserCount(Long roomId);
 }

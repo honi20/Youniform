@@ -37,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -97,9 +98,8 @@ public class UserServiceImpl implements UserService {
             redisUtils.setData(users.getUuid(), JwtRedis.builder()
                     .userId(users.getId())
                     .uuid(users.getUuid())
-                    .refreshToken(jwtService.createRefreshToken(users.getUuid()))
-                    .build()
-            );
+                    .refreshToken(jwtService.createRefreshToken(users.getUuid())));
+
             return jwtService.createAccessToken(users.getUuid());
         }
 
@@ -132,6 +132,7 @@ public class UserServiceImpl implements UserService {
 
             userPlayerRepository.save(userPlayer);
 
+            // 최애 채팅방
             ChatRoom chatRoom = chatRoomRepository.findById(playerId)
                     .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
@@ -144,6 +145,19 @@ public class UserServiceImpl implements UserService {
 
             chatPartRepository.save(chatPart);
         });
+
+        // 팀 채팅방
+        ChatRoom teamChatRoom = chatRoomRepository.findById(1000L)
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+        ChatPart chatPart = ChatPart.builder()
+                .chatPartPK(new ChatPartPK(users.getId(), teamChatRoom.getId()))
+                .user(users)
+                .room(teamChatRoom)
+                .lastReadTime(LocalDateTime.now())
+                .build();
+
+        chatPartRepository.save(chatPart);
 
         JwtRedis jwtRedis = user.toRedis(uuid, users.getId(), jwtService.createRefreshToken(uuid));
         redisUtils.setData(uuid, jwtRedis);
@@ -286,10 +300,30 @@ public class UserServiceImpl implements UserService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if (userFavoriteReq.getTeamId() != null) {
-            Team newTeam = teamRepository.findById(Long.valueOf(userFavoriteReq.getTeamId()))
+        Team currentTeam = user.getTeam();
+
+        if (userFavoriteReq.getTeamId() != null && !Objects.equals(currentTeam.getId(), userFavoriteReq.getTeamId())) {
+            Team newTeam = teamRepository.findById(userFavoriteReq.getTeamId())
                     .orElseThrow(() -> new CustomException(TEAM_NOT_FOUND));
+
             user.updateTeam(newTeam);
+
+            ChatPart currentTeamChatRoom = chatPartRepository.findById(new ChatPartPK(user.getId(), currentTeam.getId()))
+                    .orElseThrow(() -> new CustomException(CHATPART_NOT_FOUND));
+
+            chatPartRepository.deleteById(new ChatPartPK(userId, currentTeam.getId()));
+
+            ChatRoom newTeamChatRoom = chatRoomRepository.findById(newTeam.getId())
+                    .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+            ChatPart newTeamChatPart = ChatPart.builder()
+                    .chatPartPK(new ChatPartPK(userId, newTeamChatRoom.getId()))
+                    .user(user)
+                    .room(newTeamChatRoom)
+                    .lastReadTime(LocalDateTime.now())
+                    .build();
+
+            chatPartRepository.save(newTeamChatPart);
         }
 
         List<UserPlayer> currentPlayers = userPlayerRepository.findByUserId(userId);
@@ -323,6 +357,7 @@ public class UserServiceImpl implements UserService {
                     .player(player)
                     .pushAlert(true)
                     .build();
+
             userPlayerRepository.save(userPlayer);
 
             ChatRoom chatRoom = chatRoomRepository.findById(playerId)

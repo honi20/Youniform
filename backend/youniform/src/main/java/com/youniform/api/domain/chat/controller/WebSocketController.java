@@ -5,6 +5,7 @@ import com.youniform.api.domain.chat.service.ChatService;
 import com.youniform.api.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -13,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Controller
@@ -24,6 +25,8 @@ public class WebSocketController {
 
     private final JwtService jwtService;
 
+    private final RedisTemplate<String, Long> longRedisTemplate;
+
     // 채팅방에 메시지 전송 및 저장
     @MessageMapping("/{roomId}")
     @SendTo("/sub/{roomId}")
@@ -33,11 +36,15 @@ public class WebSocketController {
         return chatService.processChatMessage(roomId, chatMessage, userId);
     }
 
-    @MessageMapping("/{roomId}/leave")
-    public void updateLastReadTime(@DestinationVariable Long roomId) {
+    // 하트비트 측정
+    @MessageMapping("/heartbeat")
+    public void processHeartbeat() {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-        LocalDateTime lastReadTime = LocalDateTime.now();
+        String sessionId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        chatService.updateLastReadTime(userId, roomId, lastReadTime);
+        long currentTimeMillis = System.currentTimeMillis();
+        String redisKey = "chat:user:" + userId + ":session:" + sessionId;
+
+        longRedisTemplate.opsForValue().set(redisKey, currentTimeMillis, 1, TimeUnit.MINUTES);
     }
 }
