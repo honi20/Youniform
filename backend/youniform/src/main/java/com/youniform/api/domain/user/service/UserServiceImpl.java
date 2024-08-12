@@ -1,6 +1,11 @@
 package com.youniform.api.domain.user.service;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.youniform.api.domain.chat.entity.ChatPart;
+import com.youniform.api.domain.chat.entity.ChatPartPK;
+import com.youniform.api.domain.chat.entity.ChatRoom;
+import com.youniform.api.domain.chat.repository.ChatPartRepository;
+import com.youniform.api.domain.chat.repository.ChatRoomRepository;
 import com.youniform.api.domain.friend.service.FriendService;
 import com.youniform.api.domain.player.entity.Player;
 import com.youniform.api.domain.player.repository.PlayerRepository;
@@ -30,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -66,6 +72,10 @@ public class UserServiceImpl implements UserService {
     private final TeamRepository teamRepository;
 
     private final UserPlayerRepository userPlayerRepository;
+
+    private final ChatRoomRepository chatRoomRepository;
+
+    private final ChatPartRepository chatPartRepository;
 
     @Value("${BUCKET_URL}")
     private String bucketURl;
@@ -119,6 +129,18 @@ public class UserServiceImpl implements UserService {
                     .build();
 
             userPlayerRepository.save(userPlayer);
+
+            ChatRoom chatRoom = chatRoomRepository.findById(playerId)
+                    .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+            ChatPart chatPart = ChatPart.builder()
+                    .chatPartPK(new ChatPartPK(users.getId(), chatRoom.getId()))
+                    .user(users)
+                    .room(chatRoom)
+                    .lastReadTime(LocalDateTime.now())
+                    .build();
+
+            chatPartRepository.save(chatPart);
         });
 
         JwtRedis jwtRedis = user.toRedis(uuid, users.getId(), jwtService.createRefreshToken(uuid));
@@ -285,6 +307,10 @@ public class UserServiceImpl implements UserService {
 
         userPlayerRepository.deleteAll(playersToRemove);
 
+        playersToRemove.forEach(up -> {
+            chatPartRepository.deleteById(new ChatPartPK(userId, up.getUserPlayerPK().getPlayerId()));
+        });
+
         playersToAdd.forEach(playerId -> {
             Player player = playerRepository.findById(playerId)
                     .orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
@@ -296,6 +322,18 @@ public class UserServiceImpl implements UserService {
                     .pushAlert(true)
                     .build();
             userPlayerRepository.save(userPlayer);
+
+            ChatRoom chatRoom = chatRoomRepository.findById(playerId)
+                    .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+            ChatPart chatPart = ChatPart.builder()
+                    .chatPartPK(new ChatPartPK(userId, chatRoom.getId()))
+                    .user(user)
+                    .room(chatRoom)
+                    .lastReadTime(LocalDateTime.now())
+                    .build();
+
+            chatPartRepository.save(chatPart);
         });
     }
 
