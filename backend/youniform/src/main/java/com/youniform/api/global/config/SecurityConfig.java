@@ -42,10 +42,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                                 .requestMatchers(
-                                        "/users/signup/**", "/users/signin/local",
-                                        "/users/verify", "/users/email/send",
-                                        "/users/email/verify", "/users/check/email",
-                                        "/users/password/reset", "/users/password/send",
+                                        "/api/users/signup/**", "/api/users/signin/local",
+                                        "/api/users/verify", "/api/users/email/send",
+                                        "/api/users/email/verify", "/api/users/check/email",
+                                        "/api/users/password/reset", "/api/users/password/send",
                                         "/docs/**", "/swagger-ui/**", "/v3-docs/**", "/h2-console/**").permitAll()
 //                        .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
