@@ -46,6 +46,7 @@ const useAlertStore = create((set) => ({
       const response = await apiClient.delete(`/alerts/${alertId}`);
       console.log("알림 삭제에 성공했습니다.")
       console.log(response.data.body)
+      return "$SUCCESS";
     } catch (error) {
       console.log("Failed to deleteAlert", error);
     }

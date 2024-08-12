@@ -44,7 +44,7 @@ const TitleRow = styled.div`
 
 const TitleText = styled.span`
   font-weight: bold;
-  font-size: 16px;
+  font-size: 15px;
   color: #262626;
 `;
 
@@ -146,8 +146,7 @@ const AlertItem = ({ alert, checkAlert }) => {
           <TitleRow>
             <IconWrapper>
               <img src={alert.senderProfileUrl} alt="icon" />
-              {
-                alert.isRead === false &&
+              {alert.isRead === false &&
                 <UpdateStatusCircle />
               }
             </IconWrapper>
@@ -157,10 +156,11 @@ const AlertItem = ({ alert, checkAlert }) => {
           </TitleRow>
         </ContentWrapper>
         <MoreOptions>
-          {(alert.type === 'FRIEND_REQUEST' || alert.type === 'POST_COMMENT') &&
+          {((alert.type === 'FRIEND_REQUEST') || alert.type === 'POST_COMMENT') &&
             <ColorBtn onClick={() => checkAlert(alert)}>
               {getButtonText(alert)}
-            </ColorBtn>}
+            </ColorBtn>
+          }
           {/* <OptionIcon /> */}
         </MoreOptions>
       </AlertHeader>
