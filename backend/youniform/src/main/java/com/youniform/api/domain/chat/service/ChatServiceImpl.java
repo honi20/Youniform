@@ -26,6 +26,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,11 +36,10 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.youniform.api.global.statuscode.ErrorCode.CHATROOM_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
-import static com.youniform.api.global.statuscode.SuccessCode.IMAGE_DOWNLOAD_OK;
 
 @Slf4j
 @Service
@@ -55,6 +56,10 @@ public class ChatServiceImpl implements ChatService {
     private final MongoOperations mongoOperations;
 
     private final S3Service s3Service;
+
+    private final RedisTemplate<String, Long> longRedisTemplate;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public ChatRoomListRes getChatRoomList(Long userId) {
@@ -124,8 +129,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId) {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Users user = userRepository.findById(userId).get();
 
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
@@ -182,9 +186,22 @@ public class ChatServiceImpl implements ChatService {
     public void updateLastReadTime(Long userId, Long roomId, LocalDateTime lastReadTime) {
         ChatPart chatPart = chatPartRepository.findById(new ChatPartPK(userId, roomId))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
-
         chatPart.updateLastReadTime(lastReadTime);
-
         chatPartRepository.save(chatPart);
+    }
+
+    @Override
+    public Long getRoomIdFromSessionId(String sessionId) {
+        return longRedisTemplate.opsForValue().get("session:" + sessionId);
+    }
+
+    @Override
+    public void broadcastUserCount(Long roomId) {
+        Set<String> keys = longRedisTemplate.keys("session:*");
+        int connectedUsers = (int) keys.stream()
+                .filter(key -> roomId.equals(longRedisTemplate.opsForValue().get(key)))
+                .count();
+
+        messagingTemplate.convertAndSend("/sub/" + roomId + "/userCount", connectedUsers);
     }
 }

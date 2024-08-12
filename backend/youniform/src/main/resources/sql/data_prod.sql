@@ -1,6 +1,6 @@
 -- team
 INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name)
-VALUES (1, CURRENT_DATE, 3, 1, 2, 66.6, '홈그라운드', '서울', '팀 이름');
+VALUES (1000, CURRENT_DATE, 3, 1, 2, 66.6, '홈그라운드', '서울', '팀 이름');
 
 -- users
 INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_write_diary, team_id, email, introduce,
@@ -245,7 +245,7 @@ VALUES (1, 1, '승리하라 몬스터즈여',
         'OFFICIAL', 'https://youtu.be/cEHB2nsqFTw?si=iCq-PBbtt9JyYgnd');
 
 -- user favorite player
-INSERT INTO USER_PLAYER(user_id, player_id)
-VALUES (123, 3),
-       (123, 4),
-       (123, 9);
+INSERT INTO USER_PLAYER(user_id, player_id, push_alert)
+VALUES (123, 3, true),
+       (123, 4, true),
+       (123, 9, true);
