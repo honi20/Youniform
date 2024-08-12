@@ -16,17 +16,17 @@ const useResourceStore = create((set) => ({
       themes: {},
     };
 
-    resourceList.forEach(resource => {
+    resourceList.forEach((resource) => {
       const { type, categories } = resource;
 
-      categories.forEach(category => {
+      categories.forEach((category) => {
         const { category: categoryName, items } = category;
 
-        if (type === 'BACKGOUND') {
+        if (type === "BACKGOUND") {
           resources.backgrounds[categoryName] = items;
-        } else if (type === 'STICKER') {
+        } else if (type === "STICKER") {
           resources.stickers[categoryName] = items;
-        } else if (type === 'THEME') {
+        } else if (type === "THEME") {
           resources.themes[categoryName] = items;
         }
       });
@@ -37,12 +37,12 @@ const useResourceStore = create((set) => ({
       ...resources,
     }));
   },
-  
-fetchResources: async () => {
-  set({ loading: true, error: null });
+
+  fetchResources: async () => {
+    set({ loading: true, error: null });
     const apiClient = getApiClient();
     try {
-      const res = await apiClient.get('/diaries/resources');
+      const res = await apiClient.get("/diaries/resources");
       const resourceList = res.data.body.resourceList;
 
       set((state) => ({
@@ -51,7 +51,7 @@ fetchResources: async () => {
         loading: false,
       }));
     } catch (error) {
-      console.error('Failed to fetch resources:', error);
+      console.error("Failed to fetch resources:", error);
     }
   },
 

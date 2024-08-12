@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 const MainContainer = styled.div`
-  width: 8.3125rem;
-height: 14.75rem;
-flex-shrink: 0;
+  width: 133px;
+  height: 236px;
+  flex-shrink: 0;
   border: 1px solid #262f66;
   display: flex;
   flex-direction: column;

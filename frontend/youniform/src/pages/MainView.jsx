@@ -71,9 +71,9 @@ const MainView = () => {
     console.log(playerId);
   };
   console.log(playerList.length)
-  if (loading) {
-    return <Loading />;
-  }
+  // if (loading) {
+  //   return <Loading />;
+  // }
 
   // if (error) {
   //   return <Error message={error} />;
