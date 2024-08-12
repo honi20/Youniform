@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import VideoIcon from "@assets/Video_duotone_line.svg?react";
-import HeadsetIcon from "@assets/Headphones_fill.svg?react";
+import VideoIcon from "@assets/Main/Video_duotone_line.svg?react";
+import HeadsetIcon from "@assets/Main/Headphones_fill.svg?react";
 import usePlayerStore from "@stores/playerStore";
 
 const LyricsDisplay = styled.div`
@@ -52,16 +52,11 @@ const LinkContainer = styled.div`
 `;
 
 const PlayerSongView = ({ active, playerId }) => {
-  const {
-    playerSongs,
-    fetchPlayerSongs,
-  } = usePlayerStore();
+  const { playerSongs, fetchPlayerSongs } = usePlayerStore();
   useEffect(() => {
-        fetchPlayerSongs(playerId);
-        console.log(playerSongs[0])
-    },
-    [playerId, fetchPlayerSongs]
-  );
+    fetchPlayerSongs(playerId);
+    console.log(playerSongs[0]);
+  }, [playerId, fetchPlayerSongs]);
   return (
     <>
       <LyricsDisplay>
@@ -72,9 +67,13 @@ const PlayerSongView = ({ active, playerId }) => {
         </Title>
         <Character>캐릭터</Character>
         <Lyrics>
-        {playerSongs && playerSongs.length > 0 
-    ? (active === 0 ? playerSongs[0].lyrics : (playerSongs.length > 1 ? playerSongs[1].lyrics : "No song available"))
-    : "Loading songs..."}
+          {playerSongs && playerSongs.length > 0
+            ? active === 0
+              ? playerSongs[0].lyrics
+              : playerSongs.length > 1
+              ? playerSongs[1].lyrics
+              : "No song available"
+            : "Loading songs..."}
         </Lyrics>
       </LyricsDisplay>
       <Footer>

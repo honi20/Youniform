@@ -1,41 +1,18 @@
 import React, { useState } from "react";
 import InfoComp from "./InfoComp";
 import CharacterComp from "./CharacterComp";
-import Star1 from "@assets/mainview/Star1.svg?react";
-import Star2 from "@assets/mainview/Star2.svg?react";
-import Star3 from "@assets/mainview/Star3.svg?react";
-import Star4 from "@assets/mainview/Star4.svg?react";
-import Star5 from "@assets/mainview/Star5.svg?react";
-import Star6 from "@assets/mainview/Star6.svg?react";
+import Star1 from "@assets/Main/Star1.svg?react";
+import Star2 from "@assets/Main/Star2.svg?react";
+import Star3 from "@assets/Main/Star3.svg?react";
+import Star4 from "@assets/Main/Star4.svg?react";
+import Star5 from "@assets/Main/Star5.svg?react";
+import Star6 from "@assets/Main/Star6.svg?react";
 import * as St from "./PlayerCompStyle";
-import { useNavigate } from "react-router-dom";
 import { getApiClient } from "@stores/apiClient";
 
-export default function PlayerContainer({
-  onSelectPlayer,
-  // count,
-  // player
-}) {
+export default function PlayerContainer({ onSelectPlayer, count, player }) {
   const [selectedFolder, setSelectedFolder] = useState(0);
-  const navigate = useNavigate();
-  // 나중에 삭제
-  const count = 2;
-  const player = {
-    playerId: 1,
-    name: "박용택",
-    age: "1979-04-21",
-    backNum: 33,
-    battingAverage: 0,
-    hit: 0,
-    homerun: 0,
-    steal: 0,
-    era: null,
-    whip: null,
-    win: null,
-    struck: null,
-    position: "외야수",
-    twoWay: "우투좌타",
-  };
+
   const [isOn, setIsOn] = useState(false);
   const handleFolderClick = (index) => {
     console.log(index);
@@ -47,11 +24,10 @@ export default function PlayerContainer({
     setIsOn(!isOn);
     const apiClient = getApiClient();
     try {
-      const response = await apiClient.post(`/players/alert/${playerId}`);
+      const response = await apiClient.patch(`/players/alert/${playerId}`);
       console.log("Server response:", response.data);
     } catch (error) {
       console.error("There was an error updating the toggle state:", error);
-      // Optionally, revert the state if the request fails
       setIsOn(isOn);
     }
   };
@@ -69,7 +45,7 @@ export default function PlayerContainer({
       </St.FolderHeader>
     );
   };
-
+  console.log(player);
   return (
     <St.Card>
       <Star1

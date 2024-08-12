@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import SelectSvg from "@assets/selectedIcon.svg?react";
-import DownIcon from "@assets/chevron-down.svg?react";
-import UpIcon from "@assets/chevron-up.svg?react";
+import SelectSvg from "@assets/Main/selectedIcon.svg?react";
+import DownIcon from "@assets/Main/chevron-down.svg?react";
+import UpIcon from "@assets/Main/chevron-up.svg?react";
 import PlayerSongView from "./PlayerSongView";
 import TeamSongComp from "@components/Main/Player/TeamSongComp";
-import { useNavigate, useParams } from 
-"react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import usePlayerStore from "@stores/playerStore";
 
 const Wrapper = styled.div`
@@ -153,20 +152,20 @@ const TotalSongView = () => {
   } = usePlayerStore();
   const { playerId } = useParams();
   const { teamId } = useParams();
-  const[player, setPlayer] = useState();
+  const [player, setPlayer] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (teamSongs.length == 0) {
-      console.log("fetch to team songs")
+      console.log("fetch to team songs");
       fetchTeamSongs();
     }
   }, [fetchTeamSongs]);
 
   useEffect(() => {
-    console.log(playerList)
+    console.log(playerList);
     if (playerList.length == 0) {
-      console.log("fetch to player list")
+      console.log("fetch to player list");
       fetchPlayerList();
     }
   }, [fetchPlayerList]);
@@ -176,8 +175,8 @@ const TotalSongView = () => {
 
   const handleToggleBtn = (playeId) => {
     setIsOn(false);
-    setPlayer(playerList.find((p) => p.playerId == playerId))
-    navigate(`/song/player/${playeId}`)
+    setPlayer(playerList.find((p) => p.playerId == playerId));
+    navigate(`/song/player/${playeId}`);
   };
   const [activeBtn, setActiveBtn] = useState(0);
   const handleBtnClick = (btnIndex) => {
@@ -211,7 +210,8 @@ const TotalSongView = () => {
         <ContentWrapper>
           <NavToggle>
             <ToggleBtn onClick={() => handleToggle(isOn)}>
-            {playerList.length > 0 && playerList.find((p) => p.playerId == playerId).name}
+              {playerList.length > 0 &&
+                playerList.find((p) => p.playerId == playerId).name}
               {toggle(isOn)}
             </ToggleBtn>
             <ToggleList $isOn={isOn}>
@@ -231,12 +231,10 @@ const TotalSongView = () => {
           <TabSwitcher>
             <Switcher>{switchChange()}</Switcher>
           </TabSwitcher>
-          {teamId && 
-            <TeamSongComp songs={teamSongs} />
-}
-{playerId && 
-            <PlayerSongView active={activeBtn} playerId={playerId}/>
-          }
+          {teamId && <TeamSongComp songs={teamSongs} />}
+          {playerId && (
+            <PlayerSongView active={activeBtn} playerId={playerId} />
+          )}
         </ContentWrapper>
       </OuterContainer>
     </Wrapper>

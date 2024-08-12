@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import CheckIcon from "../../assets/CheckIcon.svg?react";
-import AlarmIcon from "../../assets/AlarmIcon.svg?react";
+import CheckIcon from "@assets/Modal/CheckIcon.svg?react";
+import AlarmIcon from "@assets/Modal/AlarmIcon.svg?react";
 
 const ModalBackdrop = styled.div`
   position: fixed;

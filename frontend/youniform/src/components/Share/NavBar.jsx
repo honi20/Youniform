@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
-import { Icon, SvgIcon } from "@mui/material";
 import { format } from "date-fns";
 import { styled as muiStyled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-import CommunityIcon from "../../assets/NavBar/community.svg?react";
-import DiaryIcon from "../../assets/NavBar/diary.svg?react";
-import HomeIcon from "../../assets/NavBar/home.svg?react";
-import MyPageIcon from "../../assets/NavBar/my_page.svg?react";
-import PhotoCardIcon2 from "../../assets/NavBar/photo_card2.svg?react";
+import CommunityIcon from "@assets/NavBar/community.svg?react";
+import DiaryIcon from "@assets/NavBar/diary.svg?react";
+import HomeIcon from "@assets/NavBar/home.svg?react";
+import MyPageIcon from "@assets/NavBar/my_page.svg?react";
+import PhotoCardIcon2 from "@assets/NavBar/photo_card2.svg?react";
 
 const Nav = styled.nav`
   background: #ffffff;
-  /* position: fixed; */
+  position: fixed;
   bottom: 0;
   z-index: 10;
   height: 70px;
@@ -23,8 +22,9 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: 0% 2%;
-  /* border: 1px solid black; */
-  /* width: 100%; */
+  border: 1px solid black;
+  width: 100%;
+  max-width: 500px;
   @media (min-width: 500px) {
     .nav {
       max-width: 500px !important;

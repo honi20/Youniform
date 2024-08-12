@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, FormControl, InputAdornment, IconButton } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import useSignUpStore from '../../../stores/signUpStore';
-import StatusMessageForm from '../StatusMessageForm';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import {
+  TextField,
+  FormControl,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import useSignUpStore from "@stores/signUpStore";
+import StatusMessageForm from "../StatusMessageForm";
+import styled from "styled-components";
 
 const PasswordForm = styled.div`
   width: 100%;
@@ -13,20 +18,23 @@ const PasswordForm = styled.div`
 `;
 
 const PasswordInput = () => {
-  const { user, setPassword, setConfirmPw, setIsPwVerified } = useSignUpStore((state) => ({
-    user: state.user,
-    setPassword: state.user.setPassword,
-    setConfirmPw: state.user.setConfirmPw,
-    setIsPwVerified: state.user.setIsPwVerified
-  }));
+  const { user, setPassword, setConfirmPw, setIsPwVerified } = useSignUpStore(
+    (state) => ({
+      user: state.user,
+      setPassword: state.user.setPassword,
+      setConfirmPw: state.user.setConfirmPw,
+      setIsPwVerified: state.user.setIsPwVerified,
+    })
+  );
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
-    const match = user.password === user.confirmPw && validatePassword(user.password);
+    const match =
+      user.password === user.confirmPw && validatePassword(user.password);
     setIsPasswordMatch(match);
     setIsPwVerified(match);
   }, [user.password, user.confirmPw]);
@@ -42,15 +50,17 @@ const PasswordInput = () => {
   const handlePwChange = (prop) => (event) => {
     const value = event.target.value;
     switch (prop) {
-      case 'password':
+      case "password":
         setPassword(value);
         if (!validatePassword(value)) {
-          setPasswordError('비밀번호는 8자 이상 16자 이하의 영문으로, 숫자 및 특수문자를 하나 이상 포함해야 합니다.');
+          setPasswordError(
+            "비밀번호는 8자 이상 16자 이하의 영문으로, 숫자 및 특수문자를 하나 이상 포함해야 합니다."
+          );
         } else {
-          setPasswordError('');
+          setPasswordError("");
         }
         break;
-      case 'confirmPw':
+      case "confirmPw":
         setConfirmPw(value);
         break;
     }
@@ -58,10 +68,10 @@ const PasswordInput = () => {
 
   const handleClickShowPassword = (key) => {
     switch (key) {
-      case 'showPassword':
+      case "showPassword":
         setShowPassword(!showPassword);
         break;
-      case 'showConfirmPw':
+      case "showConfirmPw":
         setShowConfirmPw(!showConfirmPw);
         break;
     }
@@ -76,12 +86,12 @@ const PasswordInput = () => {
       <PasswordForm>
         <FormControl sx={{ width: "100%" }} variant="outlined">
           <TextField
-            autoComplete='off'
+            autoComplete="off"
             label="비밀번호 입력"
             variant="outlined"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             value={user.password}
-            onChange={handlePwChange('password')}
+            onChange={handlePwChange("password")}
             error={passwordError.length > 0}
             helperText={passwordError}
             InputProps={{
@@ -89,36 +99,36 @@ const PasswordInput = () => {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => handleClickShowPassword('showPassword')}
+                    onClick={() => handleClickShowPassword("showPassword")}
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
-                    sx={{ paddingRight: '12px' }}
+                    sx={{ paddingRight: "12px" }}
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
             fullWidth
           />
         </FormControl>
         <FormControl sx={{ width: "100%" }} variant="outlined">
           <TextField
-            autoComplete='off'
+            autoComplete="off"
             label="비밀번호 확인"
             variant="outlined"
-            type={showConfirmPw ? 'text' : 'password'}
+            type={showConfirmPw ? "text" : "password"}
             value={user.confirmPw}
-            onChange={handlePwChange('confirmPw')}
+            onChange={handlePwChange("confirmPw")}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => handleClickShowPassword('showConfirmPw')}
+                    onClick={() => handleClickShowPassword("showConfirmPw")}
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
-                    sx={{ paddingRight: '12px' }}
+                    sx={{ paddingRight: "12px" }}
                   >
                     {showConfirmPw ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -128,11 +138,11 @@ const PasswordInput = () => {
             fullWidth
           />
         </FormControl>
-        {(user.password.length <= 0 || user.confirmPw.length <= 0) ? (
-          <StatusMessageForm statusMsg='비밀번호 정보를 입력하세요.' />
+        {user.password.length <= 0 || user.confirmPw.length <= 0 ? (
+          <StatusMessageForm statusMsg="비밀번호 정보를 입력하세요." />
         ) : (
           !isPasswordMatch && (
-            <StatusMessageForm statusMsg='비밀번호 정보가 일치하지 않습니다.' />
+            <StatusMessageForm statusMsg="비밀번호 정보가 일치하지 않습니다." />
           )
         )}
       </PasswordForm>

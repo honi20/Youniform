@@ -6,14 +6,14 @@ import { fabric } from "fabric";
 import { frames, stickers, fonts } from "@assets";
 import usePhotoCardStore from "@stores/photoCardStore";
 
-import DecoIcon from "@assets/DecoIcon.svg?react";
-import ExampleIcon from "@assets/ExIcon.svg?react";
-import DownloadIcon from "@assets/Img_out-box_Fill.svg?react";
-import InitializeIcon from "@assets/Refresh.svg?react";
+import DecoIcon from "@assets/Main/DecoIcon.svg?react";
+import ExampleIcon from "@assets/Main/ExIcon.svg?react";
+import DownloadIcon from "@assets/Main/Img_out-box_Fill.svg?react";
+import InitializeIcon from "@assets/Main/Refresh.svg?react";
 import BackgroundIcon from "@assets/Canvas/background.svg?react";
 
 import FontComp from "@components/Diary/Write/FontComp";
-import FrameComp from "../components/Photocard/Create/FrameComp";
+import FrameComp from "@components/Photocard/Create/FrameComp";
 import StickerComp from "@components/Diary/Write/StickerComp";
 import ColorChipComp from "@components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
@@ -55,11 +55,11 @@ const PhotoCardCreator = () => {
       // 기존의 프레임 객체를 찾아서 제거
       const objects = selectCanvas.getObjects();
       objects.forEach((obj) => {
-        if (obj.type === 'image' && obj !== selectCanvas.backgroundImage) {
+        if (obj.type === "image" && obj !== selectCanvas.backgroundImage) {
           selectCanvas.remove(obj);
         }
       });
-  
+
       fabric.Image.fromURL(selectedImg, (img) => {
         img.scaleToWidth(selectCanvas.getWidth());
         img.scaleToHeight(selectCanvas.getHeight());
@@ -95,7 +95,7 @@ const PhotoCardCreator = () => {
       });
     }
   };
-  
+
   const handleFontClick = async (selectedFont) => {
     const getFontName = (path) => {
       const parts = path.split("/");
@@ -113,8 +113,7 @@ const PhotoCardCreator = () => {
         fontFamily: getFontName(selectedFont),
         fill: "#000000",
       });
-  
-  
+
       selectCanvas.add(text);
       selectCanvas.renderAll();
     }
@@ -166,7 +165,6 @@ const PhotoCardCreator = () => {
     }
   };
 
-
   // axios 요청 시 날짜
   const getCurrentDate = () => {
     const date = new Date();
@@ -181,7 +179,7 @@ const PhotoCardCreator = () => {
     if (index == 5) {
       const photocardImgUrl = selectCanvas.toDataURL({ format: "png" });
       console.log(photocardImgUrl);
-      const formData = new FormData();       
+      const formData = new FormData();
       const imageBlob = await fetch(photocardImgUrl).then((res) => res.blob());
       formData.append("file", imageBlob, "image.png");
       await createPhotoCard(formData);
@@ -262,8 +260,8 @@ const PhotoCardCreator = () => {
 
   return (
     <>
-    {/* onClick={openSaveModal} */}
-    {/* onClick={downloadCanvas} */}
+      {/* onClick={openSaveModal} */}
+      {/* onClick={downloadCanvas} */}
       <St.Div $decorated={isDecorated}>
         <PhotocardCanvas
           selectCanvas={selectCanvas}
@@ -311,17 +309,15 @@ const PhotoCardCreator = () => {
           <St.DecorationPanel $decorated={isDecorated}>
             <St.DecorationBtnContainer $decorated={isDecorated}>
               <div style={{ display: "flex", width: "100%" }}>
-                {["템플릿", "스티커", "폰트"].map(
-                  (text, index) => (
-                    <St.DecorationBtn
-                      key={index}
-                      $selected={selectedBtn === index}
-                      onClick={() => handleBtnClick(index)}
-                    >
-                      {text}
-                    </St.DecorationBtn>
-                  )
-                )}
+                {["템플릿", "스티커", "폰트"].map((text, index) => (
+                  <St.DecorationBtn
+                    key={index}
+                    $selected={selectedBtn === index}
+                    onClick={() => handleBtnClick(index)}
+                  >
+                    {text}
+                  </St.DecorationBtn>
+                ))}
               </div>
             </St.DecorationBtnContainer>
           </St.DecorationPanel>
@@ -347,13 +343,13 @@ const PhotoCardCreator = () => {
       <input
         type="file"
         ref={fileInputRef}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         onChange={handleFileChange}
       />
       <input
         type="file"
         ref={fileInputRef}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         onChange={handleFileChange}
       />
     </>

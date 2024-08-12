@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import useUserStore from "../../stores/userStore";
+import useUserStore from "@stores/userStore";
 import * as Font from "@/typography";
 import { useNavigate } from "react-router-dom";
 import Loading from "@components/Share/Loading";
@@ -235,11 +235,11 @@ const Profile = () => {
   }, [fetchUser, clearUser]);
 
   if (loading) {
-    // return <Loading />;
+    return <Loading />;
   }
 
   if (error) {
-    // return <Error message={error} />;
+    return <Error message={error} />;
   }
 
   if (!user) {

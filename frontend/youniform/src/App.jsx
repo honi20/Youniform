@@ -56,17 +56,6 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #f8f8f8;
-  /* min-width: 400px; */
-  /* min-height: 100vh; */
-  /* @media (max-width: 400px) {
-    padding: 0 10px;
-    width: 100%;
-    max-width: 400px;
-    min-height: 100vh;
-    margin: 0 auto;
-    position: relative;
-    overflow-y: auto;
-  } */
 `;
 
 const ContentContainer = styled.div`
@@ -76,26 +65,10 @@ const ContentContainer = styled.div`
 `;
 
 function App() {
-  // const headerRef = useRef(null);
-  // const navBarRef = useRef(null);
   const [contentHeight, setContentHeight] = useState("auto");
   const { theme, setTheme } = useThemeStore();
   useEffect(() => {
     setTheme("monsters");
-    // const updateContentHeight = () => {
-    //   const headerHeight = headerRef.current
-    //     ? headerRef.current.offsetHeight
-    //     : 0;
-    //   const navBarHeight = navBarRef.current
-    //     ? navBarRef.current.offsetHeight
-    //     : 0;
-    //   const totalHeight = window.innerHeight - headerHeight - navBarHeight;
-    //   setContentHeight(`${totalHeight}px`);
-    // };
-
-    // updateContentHeight();
-    // window.addEventListener("resize", updateContentHeight);
-    // return () => window.removeEventListener("resize", updateContentHeight);
   }, []);
 
   return (
@@ -103,9 +76,7 @@ function App() {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          {/* <div ref={headerRef}> */}
-            <Header />
-          {/* </div> */}
+          <Header />
           <ContentContainer style={{ height: contentHeight }}>
             <Routes>
               <Route path="/" element={<MainView />} />
@@ -182,9 +153,7 @@ function App() {
               <Route path="alert" element={<AlertView />} />
             </Routes>
           </ContentContainer>
-          {/* <div ref={navBarRef}> */}
-            <NavBar />
-          {/* </div> */}
+          <NavBar />
         </BrowserRouter>
       </ThemeProvider>
     </AppContainer>

@@ -3,8 +3,6 @@ import styled, { useTheme } from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import SettingIcon from "@assets/Header/setting.svg?react";
-import useUserStore from "@stores/userStore";
-import * as Font from "@/typography";
 import ColorBtn from "../Common/ColorBtn";
 import { clearAccessToken } from "@stores/apiClient";
 

@@ -4,23 +4,23 @@ import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
 import { wallpapers, stickers, fonts } from "@assets";
 import styled from "styled-components";
-import DecoIcon from "@assets/DecoIcon.svg?react";
-import ExampleIcon from "@assets/ExIcon.svg?react";
-import DownloadIcon from "@assets/Img_out-box_Fill.svg?react";
-import InitializeIcon from "@assets/Refresh.svg?react";
-import SaveIcon from "@assets/Save_fill.svg?react";
-import DownIcon from "@assets/chevron-down.svg?react";
-import UpIcon from "@assets/chevron-up.svg?react";
+import DecoIcon from "@assets/Main/DecoIcon.svg?react";
+import ExampleIcon from "@assets/Main/ExIcon.svg?react";
+import DownloadIcon from "@assets/Main/Img_out-box_Fill.svg?react";
+import InitializeIcon from "@assets/Main/Refresh.svg?react";
+import SaveIcon from "@assets/Main/Save_fill.svg?react";
+import DownIcon from "@assets/Main/chevron-down.svg?react";
+import UpIcon from "@assets/Main/chevron-up.svg?react";
 
 import FontComp from "@components/Diary/Write/FontComp";
 import WallPaperComp from "@components/Diary/Write/WallPaperComp";
 import StickerComp from "@components/Diary/Write/StickerComp";
 import CanvasComp from "@components/Diary/Write/CanvasComp";
-import ColorChipComp from "../../components/Diary/Write/ColorChipComp";
+import ColorChipComp from "@components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
 import DiaryModal from "@components/Diary/DiaryModal";
 import useDiaryStore from "@stores/diaryStore";
-import useResourceStore from "../../stores/resoureStore";
+import useResourceStore from "@stores/resoureStore";
 
 const ToggleBtn = styled.div`
   /* width: 50%; */
@@ -55,7 +55,8 @@ const WriteDiaryView = () => {
   const navigate = useNavigate();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
-  const { stampList, fetchStampList, resources, fetchResources } = useResourceStore();
+  const { stampList, fetchStampList, resources, fetchResources } =
+    useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
@@ -71,21 +72,21 @@ const WriteDiaryView = () => {
 
   useEffect(() => {
     const fetchStamp = () => {
-      if (stampList.length == 0){
+      if (stampList.length == 0) {
         fetchStampList();
       }
-    }
+    };
     fetchStamp();
-  }, fetchStampList, stampList)
+  }, [fetchStampList, stampList]);
 
-   useEffect(() => {
-    const loadResource = () => {
-      if (resources.length == 0){
+  useEffect(() => {
+    const loadResources = () => {
+      if (resources.length == 0) {
         fetchResources();
       }
-    }
-    loadResource();
-   }, [loadResource, resources])
+    };
+    loadResources();
+  }, [fetchResources, resources]);
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -300,15 +301,16 @@ const WriteDiaryView = () => {
   return (
     <>
       <St.StampContainer>
-        {stampId.length > 0 && <img 
-        style={{ width: "54px",
-          height: "54px",}}
-        src={stampList[stampId].imgUrl
-        }></img>}
+        {stampId.length > 0 && (
+          <img
+            style={{ width: "54px", height: "54px" }}
+            src={stampList[stampId].imgUrl}
+          ></img>
+        )}
         {diaryId ? diary.diaryDate : diaryDate}
         <ToggleBtn onClick={() => handleToggle(isOn)}>{toggle(isOn)}</ToggleBtn>
       </St.StampContainer>
-      <DiaryModal 
+      <DiaryModal
         isOn={isOn}
         setIsOn={setIsOn}
         setScope={setScope}
@@ -340,7 +342,10 @@ const WriteDiaryView = () => {
                 </St.IconContainer>
                 <St.IconFont>꾸미기</St.IconFont>
               </St.Btn>
-              <St.Btn $decorated={isDecorated} onClick={() => setIsModalOpen(true)}>
+              <St.Btn
+                $decorated={isDecorated}
+                onClick={() => setIsModalOpen(true)}
+              >
                 <St.IconContainer>
                   <ExampleIcon />
                 </St.IconContainer>

@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import * as Font from "@/typography";
-import { getApiClient } from "@stores/apiClient";
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -30,13 +28,11 @@ const Container = styled.div`
 const ShareComp = () => {
   return (
     <>
-    <ModalBackdrop>
-      <Container>
-        
-      </Container>
-    </ModalBackdrop>
+      <ModalBackdrop>
+        <Container></Container>
+      </ModalBackdrop>
     </>
-  )
-}
+  );
+};
 
-export default ShareComp
+export default ShareComp;

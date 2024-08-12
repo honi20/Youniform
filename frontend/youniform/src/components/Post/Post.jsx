@@ -3,6 +3,7 @@ import styled from "styled-components";
 import * as Font from "@/typography";
 import ProfileModal from "../Modal/ProfileModal";
 import { getApiClient } from "@stores/apiClient";
+
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
@@ -15,7 +16,6 @@ const Container = styled.div`
     margin: 4% 5%;
   }
   /* height: calc(100vh - 120px); */
-
 `;
 const Header = styled.div`
   ${Font.Medium};
@@ -132,7 +132,8 @@ const Post = ({ post }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
-  const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } = useUserStore();
+  const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } =
+    useUserStore();
   const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
     console.log(tag, "포스트 포함 태그 검색");
@@ -159,19 +160,19 @@ const Post = ({ post }) => {
       return () => clearFriend();
     }
   }, [selectedUser, clearFriend]);
-// useEffect(() => {
-//   if (!user){
-//     fetchUser();
-//   }
-// }, [user, fetchUser]);
-useEffect(() => {
-  const loadUser = async () => {
-    await fetchUser();
-  };
-  if (!user) {
-    loadUser();
-  }
-}, [user, fetchUser]);
+  // useEffect(() => {
+  //   if (!user){
+  //     fetchUser();
+  //   }
+  // }, [user, fetchUser]);
+  useEffect(() => {
+    const loadUser = async () => {
+      await fetchUser();
+    };
+    if (!user) {
+      loadUser();
+    }
+  }, [user, fetchUser]);
   const handleLike = async () => {
     const newLike = !like;
     setLike(newLike);
@@ -207,13 +208,14 @@ useEffect(() => {
             ))}
           </div>
           <TagContainer>
-            {post && post.tags.map((tag) => {
-              return (
-                <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
-                  # {tag.contents}
-                </Tag>
-              );
-            })}
+            {post &&
+              post.tags.map((tag) => {
+                return (
+                  <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
+                    # {tag.contents}
+                  </Tag>
+                );
+              })}
           </TagContainer>
         </Content>
         <Footer>
@@ -238,12 +240,13 @@ useEffect(() => {
           </div>
         </Footer>
       </Container>
-      {isModalOpen && (<ProfileModal
-        friend={friend}
-        user={user}
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {isModalOpen && (
+        <ProfileModal
+          friend={friend}
+          user={user}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        />
       )}
     </>
   );

@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useUserStore from "@stores/userStore";
 import usePhotoCardStore from "@stores/photoCardStore";
 
-import GoogleIcon from "../assets/login/google.png";
-import KakaoIcon from "../assets/login/kakao.png";
-import NaverIcon from "../assets/login/naver.png";
+import GoogleIcon from "@assets/login/google.png";
+import KakaoIcon from "@assets/login/kakao.png";
+import NaverIcon from "@assets/login/naver.png";
 
 import { styled as muiStyled } from "@mui/material/styles";
 import { TextField, MenuItem, Button } from "@mui/material";
