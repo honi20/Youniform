@@ -1,6 +1,6 @@
 from celery.schedules import crontab
 
-# CELERY_BROKER_URL='redis://localhost:8379',
+CELERY_BROKER_URL='redis://celery_broker:8379',
 # CELERY_RESULT_BACKEND='redis://i11a308.p.ssafy.io:6379'
 
 # celery beat

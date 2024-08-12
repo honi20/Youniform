@@ -12,4 +12,4 @@ services:
     depends_on:
       - celery_broker
     environment:
-      - CELERY_BROKER_URL=redis://celery_broker:8379/0
+      - CELERY_BROKER_URL=redis://celery_broker:6379/0
