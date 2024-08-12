@@ -8,6 +8,8 @@ import ArrowPrev from '@mui/icons-material/KeyboardArrowLeft';
 import ArrowNext from '@mui/icons-material/KeyboardArrowRight';
 import CheckIcon from '@mui/icons-material/Check';
 import ColorBtn from '@components/Common/ColorBtn';
+import EmptyState from '@components/Share/EmptyState';
+import EmptyIcon from '@assets/EmptyState/EmptyState_Photocard.svg?react'
 
 const rotateAnimation = keyframes`
   from {
@@ -304,9 +306,16 @@ const Binder = () => {
             ))}
           </Holes>
           <PhotoSlot>
-            <PhotoGroup>
-              {renderPhotoFrames()}
-            </PhotoGroup>
+              {(!photoCards || !Array.isArray(photoCards)) ? (
+                <PhotoGroup>
+                  {renderPhotoFrames()}
+                </PhotoGroup>
+              ) : (
+                <EmptyState
+                  icon={EmptyIcon}
+                  state="noPhotocards"
+                />
+              )}
             <ButtonGroup>
               <ColorBtn
                 variant="contained"
@@ -318,19 +327,21 @@ const Binder = () => {
               </ColorBtn>
               <MiddleGroup>
                 <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
-                onClick={createCard}>
-                  생성
+                  onClick={createCard}>
+                  만들기
                 </ColorBtn>
-                <ColorBtn 
-                  variant="contained" 
-                  style={{ borderRadius: '20px' }}
-                  onClick={toggleSelectMode}
-                >
-                  선택
-                </ColorBtn>
+                {(!photoCards || !Array.isArray(photoCards)) &&
+                  <ColorBtn 
+                    variant="contained" 
+                    style={{ borderRadius: '20px' }}
+                    onClick={toggleSelectMode}
+                  >
+                    선택
+                  </ColorBtn>
+                }
                 {isSelectMode &&
                   <ColorBtn variant="contained" style={{ borderRadius: '20px' }}
-                  onClick={deleteCard}>
+                    onClick={deleteCard}>
                     삭제
                   </ColorBtn>
                 }

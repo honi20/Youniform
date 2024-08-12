@@ -5,8 +5,8 @@ import dayjs from "dayjs";
 
 import useAlertStore from "@stores/alertStore";
 import useFriendStore from "@/stores/friendStore";
-import EmptyState from "@components/Alert/EmptyState";
-import AlertItem from "@components/Alert/AlertItem.jsx";
+import EmptyState from "@components/Share/EmptyState";
+import AlertItem from "@components/Alert/AlertItem";
 import BasicModal from "@components/Modal/BasicModal";
 import EmptyIcon from "@assets/EmptyState/EmptyState_Alert.svg?react";
 
@@ -33,21 +33,36 @@ const TitleText = styled.span`
 
 const AlertView = () => {
   const navigate = useNavigate();
-  const { alerts, fetchAlerts } = useAlertStore();
+  const { alerts, fetchAlerts, deleteAlert, markAlertAsRead } = useAlertStore();
   const { acceptFriendRequest } = useFriendStore();
 
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+  const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
   
   useEffect(() => {
     fetchAlerts();
   }, [fetchAlerts]);
 
   const openCheckModal = () => setIsCheckModalOpen(true);
-  const closeCheckModal = () => setIsCheckModalOpen(false);
-  const openConfirmModal = () => setIsConfirmModalOpen(true);
-  const closeConfirmModal = () => setIsConfirmModalOpen(false);
+  const closeCheckModal = async (targetAlert) => {
+    setIsCheckModalOpen(false);
+    if (!targetAlert) return;
+    // 친구 신청 읽음 처리만 진행
+    if (targetAlert.isRead === false)
+    await markAlertAsRead(targetAlert.alertId);
+  };
+  const openAcceptModal = () => setIsAcceptModalOpen(true);
+  const closeAcceptModal = async () => {
+    setIsAcceptModalOpen(false);
+    await fetchAlerts();
+  };
+  const openDeclineModal = () => setIsDeclineModalOpen(true);
+  const closeDeclineModal = async () => {
+    setIsDeclineModalOpen(false);
+    await fetchAlerts();
+  };
   
   const now = dayjs();
   const isRelativeTime = (createdAt) => {
@@ -72,23 +87,31 @@ const AlertView = () => {
     return false; // 상대 시간은 이전 알림으로 간주하지 않음
   });
 
-const checkAlert = (alert) => {
+const checkAlert = async (alert) => {
   setSelectedAlert(alert); // 선택된 알림 저장
+  if (alert.isRead === false) {
+    await markAlertAsRead(alert.alertId);
+  }
   switch (alert.type) {
     case 'FRIEND_REQUEST':
       openCheckModal();
       break;
     case 'POST_COMMENT':
-      // 필요한 경우 수정
+      navigate(`/post/${alert.pk}`);
       break;
   }
 };
 
   const handleAfterCheck = async (alert, index) => {
-    if (index === 0 && alert.type === 'FRIEND_REQUEST') {
+    if (index === 7 && alert.type === 'FRIEND_REQUEST') {
       const res = await acceptFriendRequest(alert.senderUuid);
       if (res === "$SUCCESS") {
-        openConfirmModal();
+        openAcceptModal();
+      }
+    } else if (index === 6 && alert.type === 'FRIEND_REQUEST') {
+      const res = await deleteAlert(alert.alertId);
+      if (res === "$SUCCESS") {
+        openDeclineModal();
       }
     }
   };
@@ -115,18 +138,27 @@ const checkAlert = (alert) => {
           )}
         </AlertBox>
       ) : (
-        <EmptyState icon={EmptyIcon} />
+        <EmptyState
+          icon={EmptyIcon}
+          state="noAlerts"
+        />
       )}
       <BasicModal
         state={"CheckFriendRequest"}
         isOpen={isCheckModalOpen}
         onClose={closeCheckModal}
         onButtonClick={(index) => handleAfterCheck(selectedAlert, index)}
+        selectedAlert={selectedAlert}
       />
       <BasicModal
-        state={"ConfirmFriendRequest"}
-        isOpen={isConfirmModalOpen}
-        onClose={closeConfirmModal}
+        state={"AcceptFriendRequest"}
+        isOpen={isAcceptModalOpen}
+        onClose={closeAcceptModal}
+      />
+      <BasicModal
+        state={"DeclineFriendRequest"}
+        isOpen={isDeclineModalOpen}
+        onClose={closeDeclineModal}
       />
     </AlertContainer>
   );

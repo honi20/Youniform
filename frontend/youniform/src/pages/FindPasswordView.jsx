@@ -11,7 +11,6 @@ const FindPassword = styled.div`
   flex-direction: column;
   width: 100%;
   height: calc(100% - 70px);
-  justify-content: center;
   align-items: center;
 `;
 const LoginLogo = styled.div`
@@ -33,13 +32,20 @@ const FindPasswordContainer = styled.div`
   width: 100%;
   justify-content: center;
   align-items: center;
-  border: 1px solid red;
   gap: 20px;
 `;
 
 const Title = styled.span`
-  
+  font-size: 25px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  color: #000078;
 `
+
+const SubTitle = styled.span`
+  font-size: 14px;
+  margin-bottom: 2rem;
+`;
 
 const ColorBtn = muiStyled(Button)(() => ({
   backgroundColor: "rgb(124, 124, 124)",
@@ -68,8 +74,11 @@ const FindPasswordView = () => {
         <Title>
           비밀번호 찾기
         </Title>
+        <SubTitle>
+          가입한 아이디(이메일)을 입력해주세요.
+        </SubTitle>
         <TextField
-          sx={{ width: "100%" }}
+          sx={{ width: "80%" }}
           label="이메일 입력"
           value={email}
           onChange={handleInputChange}
@@ -77,7 +86,7 @@ const FindPasswordView = () => {
         <ColorBtn
           variant="contained"
           onClick={fetchFindPassword}
-          style={{ width: "100%" }}
+          style={{ width: "80%" }}
         >
           인증 메일 발송
         </ColorBtn>
