@@ -5,8 +5,10 @@ import DownIcon from "@assets/chevron-down.svg?react";
 import UpIcon from "@assets/chevron-up.svg?react";
 import PlayerSongView from "./PlayerSongView";
 import TeamSongComp from "@components/Main/Player/TeamSongComp";
-import { useParams } from "react-router-dom";
-import usePlayerStore from "../../stores/playerStore";
+import { useNavigate, useParams } from 
+"react-router-dom";
+import usePlayerStore from "@stores/playerStore";
+
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -151,23 +153,20 @@ const TotalSongView = () => {
   } = usePlayerStore();
   const { playerId } = useParams();
   const { teamId } = useParams();
-  // fetch song
+  const[player, setPlayer] = useState();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (!teamSongs) {
+    if (teamSongs.length == 0) {
+      console.log("fetch to team songs")
       fetchTeamSongs();
     }
   }, [fetchTeamSongs]);
-  useEffect(
-    (playerId) => {
-      if (!playerSongs) {
-        fetchPlayerSongs(playerId);
-      }
-    },
-    [fetchPlayerSongs]
-  );
+
   useEffect(() => {
-    console.log(playerList);
-    if (!playerList) {
+    console.log(playerList)
+    if (playerList.length == 0) {
+      console.log("fetch to player list")
       fetchPlayerList();
     }
   }, [fetchPlayerList]);
@@ -175,11 +174,11 @@ const TotalSongView = () => {
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
-  const handleToggleBtn = (btnIndex) => {
+  const handleToggleBtn = (playeId) => {
     setIsOn(false);
-    setSelected(btnIndex);
+    setPlayer(playerList.find((p) => p.playerId == playerId))
+    navigate(`/song/player/${playeId}`)
   };
-  // 등장곡 & 응원가 관련 -> 선수 props 전달 받아서 창 바뀌어야 함
   const [activeBtn, setActiveBtn] = useState(0);
   const handleBtnClick = (btnIndex) => {
     console.log(btnIndex);
@@ -212,20 +211,19 @@ const TotalSongView = () => {
         <ContentWrapper>
           <NavToggle>
             <ToggleBtn onClick={() => handleToggle(isOn)}>
-              {playerList.find((p) => p.playerId === playerId)}
+            {playerList.length > 0 && playerList.find((p) => p.playerId == playerId).name}
               {toggle(isOn)}
             </ToggleBtn>
             <ToggleList $isOn={isOn}>
               {playerList.map((player) => (
-                // <div>{player}</div>
                 <ToggleItem
                   $isOn={isOn}
-                  //   $isChecked={selected === player.id}
+                  $isChecked={playerId === player.playerId}
                   key={player.playerId}
-                  onClick={() => handleToggleBtn(player.id)}
+                  onClick={() => handleToggleBtn(player.playerId)}
                 >
                   {player.name}
-                  {/* //   <SelectIcon $isChecked={selected === player.id} /> */}
+                  <SelectIcon $isChecked={playerId === player.id} />
                 </ToggleItem>
               ))}
             </ToggleList>
@@ -233,11 +231,12 @@ const TotalSongView = () => {
           <TabSwitcher>
             <Switcher>{switchChange()}</Switcher>
           </TabSwitcher>
-          {teamId ? (
+          {teamId && 
             <TeamSongComp songs={teamSongs} />
-          ) : (
-            <PlayerSongView active={activeBtn} />
-          )}
+}
+{playerId && 
+            <PlayerSongView active={activeBtn} playerId={playerId}/>
+          }
         </ContentWrapper>
       </OuterContainer>
     </Wrapper>

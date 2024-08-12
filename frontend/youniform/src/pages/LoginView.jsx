@@ -209,7 +209,7 @@ const LoginView = () => {
       navigate("/");
     }
   };
- 
+
   // console.log(accessToken);
 
   return (
@@ -307,9 +307,9 @@ const LoginView = () => {
         </InputForm>
         {/* 이메일 / 비밀번호 찾기 */}
         <FindBox>
-          <StyledLink to="find-email">이메일 찾기</StyledLink>
+          <StyledLink to="/find-email">이메일 찾기</StyledLink>
           <VerticalBar />
-          <StyledLink to="find-password">비밀번호 찾기</StyledLink>
+          <StyledLink to="/find-password">비밀번호 찾기</StyledLink>
           <VerticalBar />
           <StyledLink to="/sign-up">회원가입</StyledLink>
         </FindBox>
