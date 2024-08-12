@@ -65,20 +65,28 @@ const useUserStore = create((set, get) => ({
     }
   },
 
-  findPassword: async (email) => {
-    console.log(email);
+  findPassword: async (uuid, verifyCode, pw, confirmPw) => {
     try {
-      const response = await axios.post(`${API_URL}/users/password/send`, {
-        email
+      const response = await axios.patch(`${API_URL}/users/password/reset`, {
+        uuid: uuid,
+        verify: verifyCode,
+        password: pw,
+        confirmPassword: confirmPw
       });
       console.log(response.data.header.message);
       console.log(response);
-      return "$OK";
+      if (response.data.header.httpStatusCode === 200) {
+        return "$OK";
+      } 
     } catch (err) {
       console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }
   },
+
+  resetPassword: async () => {
+
+  }
 }));
 
 export default useUserStore;

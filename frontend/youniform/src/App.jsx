@@ -50,6 +50,7 @@ import MyPost from "@pages/MyPage/MyPost";
 import ChangeProfile from "@pages/MyPage/ChangeProfile";
 import MyDiaryView from "@pages/Diary/MyDiaryView";
 import AlertView from "./pages/AlertView";
+import ResetPasswordView from "./pages/ResetPasswordView";
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -111,6 +112,7 @@ function App() {
               <Route path="/login" element={<LoginView />} />
               <Route path="/find-email" element={<FindEmailView />} />
               <Route path="/find-password" element={<FindPasswordView />} />
+              <Route path="/reset-password" element={<ResetPasswordView />} />
               {/* Photocard */}
               <Route path="/photo-card" element={<PhotoCardView />}>
                 <Route index element={<BinderCover />} />
