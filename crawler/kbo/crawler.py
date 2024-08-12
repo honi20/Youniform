@@ -325,7 +325,7 @@ def init():
     player["WO"]["변상권"] = 307
     player["WO"]["박주홍"] = 308
 
-def game_info_crawling(response):
+def game_info_crawling(response, game_id):
     try:
         soup = BeautifulSoup(response.text, "html.parser")
 
@@ -350,8 +350,10 @@ def game_info_crawling(response):
                     cleaned_text = cleaned_text.replace("-\n", " ")
                     cleaned_text = cleaned_text.replace("\n---------------------------------------", " ")
                     game_info[inning].append(cleaned_text)
-                # if inning in game_info and len(game_info[inning]) > 0 and game_info[inning][0] == "경기종료":
-                #     return "경기종료"
+                if inning in game_info and len(game_info[inning]) > 0 and game_info[inning][0] == "경기종료":
+
+                    print(game_id + " : 경기 종료")
+                    return "경기종료"
 
             return game_info
     except requests.exceptions.RequestException as e:
@@ -502,7 +504,7 @@ def crawling(game_id):
             pass
 
         # 경기 정보 가져오기
-        game_info = game_info_crawling(response)
+        game_info = game_info_crawling(response, game_id)
 
         # 이닝 정보 가져오기
         inning_info = inning_info_crawling(game_info)
