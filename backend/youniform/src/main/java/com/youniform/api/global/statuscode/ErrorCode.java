@@ -40,11 +40,11 @@ public enum ErrorCode {
     PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "유효하지 않은 포토카드 ID 입니다."),
     PHOTOCARD_ACCESS_FORBIDDEN(HttpStatus.FORBIDDEN.value(), "포토카드 접근 권한이 없습니다.(작성자만 접근 가능)"),
 
-    //token
+    //token error code
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST.value(), "만료된 토큰입니다."),
     NOT_VALID_TOKEN(HttpStatus.BAD_REQUEST.value(), "유효하지 않은 토큰입니다."),
 
-    //file
+    //file error code
     FILE_UPLOAD_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 업로드에 실패했습니다."),
     FILE_DOWNLOAD_FAIL(HttpStatus.BAD_GATEWAY.value(), "파일 다운로드에 실패했습니다."),
     FILE_DELETE_FAIL(HttpStatus.BAD_REQUEST.value(), "파일 삭제에 실패했습니다"),
@@ -52,6 +52,10 @@ public enum ErrorCode {
 
     //friend error code
     FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "친구를 찾을 수 없습니다."),
+    FRIEND_REQUEST_EXIST(HttpStatus.BAD_REQUEST.value(), "이미 친구 신청이 존재합니다."),
+    FRIEND_REQUEST_ABSCENT(HttpStatus.BAD_REQUEST.value(), "친구 요청이 존재하지 않습니다."),
+    FRIEND_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "이미 친구입니다."),
+    FRIEND_NOT_VALID(HttpStatus.BAD_REQUEST.value(), "친구가 아닙니다."),
 
     // chat error code
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "채팅방을 찾을 수 없습니다."),

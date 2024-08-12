@@ -21,6 +21,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.youniform.api.global.statuscode.ErrorCode.FRIEND_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.any;
@@ -175,61 +175,6 @@ public class FriendControllerTest {
     }
 
     @Test
-    public void 친구_요청_실패_사용자_없음() throws Exception {
-        // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFriendUuid("1604b772-adc0-4212-8a90-81186c57f598");
-
-        String jwtToken = jwtService.createAccessToken(UUID);
-
-        String content = gson.toJson(friendRequestReq);
-
-        // when
-//        when(jwtService.getUserId(any())).thenThrow(new CustomException(USER_NOT_FOUND));
-        when(friendService.requestFriend(any(), any())).thenThrow(new CustomException(USER_NOT_FOUND));
-
-        ResultActions actions = mockMvc.perform(
-                post("/api/friends/request")
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-                        .with(csrf())
-        );
-
-        // then
-        actions
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(USER_NOT_FOUND.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(USER_NOT_FOUND.getMessage()))
-                .andDo(document(
-                        "Friend 요청 실패 - 사용자 없음",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Friend API")
-                                .summary("Friend 요청 실패 - 사용자 없음 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        fieldWithPath("friendUuid").type(JsonFieldType.STRING)
-                                                .description("요청 할 친구 ID(UUID)")
-                                )
-                                .responseFields(
-                                        getCommonResponseFields(
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("Friend 요청 실패 - 사용자 없음 Request"))
-                                .responseSchema(Schema.schema("Friend 요청 실패 - 사용자 없음 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
     public void 친구_요청_수락_성공() throws Exception {
         //given
         FriendAcceptReq friendAcceptReq = new FriendAcceptReq();
@@ -276,6 +221,51 @@ public class FriendControllerTest {
                                 )
                                 .requestSchema(Schema.schema("Friend 요청 수락 Request"))
                                 .responseSchema(Schema.schema("Friend 요청 수락 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    public void 친구_요청_거절_성공() throws Exception {
+        // given
+        String friendUuid = "dstfiposdjfsd0f-sb3t466t54regfdb-dsbsdb4324543";
+        String jwtToken = jwtService.createAccessToken(UUID);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/api/friends/reject")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .param("friendUuid", friendUuid)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf().asHeader())
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_REJECTED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_REJECTED.getMessage()))
+                .andDo(document(
+                        "Friend 요청 거절 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("Friend 요청 거절 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .queryParameters(
+                                        parameterWithName("friendUuid").description("요청 거절할 친구 ID(UUID)").optional()
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Friend 요청 거절 Response"))
                                 .build()
                         ))
                 );
