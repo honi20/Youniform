@@ -129,7 +129,7 @@ VALUES ('https://youniforms3.s3.ap-northeast-2.amazonaws.com/background/white/wh
 
 -- chat_room
 INSERT INTO CHAT_ROOM (room_id, room_name, room_state)
-VALUES (0, '몬스터즈 응원방', TRUE),
+VALUES (1000, '몬스터즈 응원방', TRUE),
        (1, '김문호 응원방', TRUE),
        (2, '정근우 응원방', TRUE),
        (3, '박용택 응원방', TRUE),
