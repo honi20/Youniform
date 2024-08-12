@@ -1,19 +1,19 @@
 import styled from "styled-components";
-import * as Font from "@/typography"
+import * as Font from "@/typography";
 import HeartSvg from "@assets/mainview/heart.svg?react";
 
 const InfoContainer = styled.div`
-  width: 9.375rem;
-height: 14.75rem;
-flex-shrink: 0;
+  width: 150px;
+  height: 236px;
+  flex-shrink: 0;
   border: 1px solid;
-  border-color: ${(props) => props.theme.primary};;
-  margin-left: 1rem;
+  border-color: ${(props) => props.theme.primary};
+  margin-left: 0.69rem;
   /* padding: 10px; */
   display: flex;
   flex-direction: column;
   background-color: white;
-`
+`;
 const Header = styled.div`
   ${Font.Large};
   display: flex;
@@ -25,15 +25,15 @@ const Header = styled.div`
     font-weight: 400;
     letter-spacing: -3.5px;
   }
-    & p{
-      font-size: 1.5rem;
-      margin-left: 5px;
-  -webkit-text-stroke-width: 0.7px;
-  -webkit-text-stroke-color: var(--Schemes-On-Primary, white);
+  & p {
+    font-size: 1.5rem;
+    margin-left: 5px;
+    -webkit-text-stroke-width: 0.7px;
+    -webkit-text-stroke-color: var(--Schemes-On-Primary, white);
 
-  text-shadow: ${(props) =>
-    `2px 2px 0 ${props.theme.primary}`}; /* 첫 번째 그림자 */
-    }
+    text-shadow: ${(props) =>
+      `2px 2px 0 ${props.theme.primary}`}; /* 첫 번째 그림자 */
+  }
 `;
 const Content = styled.div`
   ${Font.Small};
@@ -60,7 +60,7 @@ const FooterWrapper = styled.div`
   display: flex;
   margin: 0 10px;
   /* border: 1px solid red; */
-`
+`;
 const InfoComp = ({ player }) => {
   return (
     <>
@@ -90,13 +90,15 @@ const InfoComp = ({ player }) => {
             }).map(([label, value]) =>
               value !== null ? (
                 <FooterWrapper>
-<HeartSvg/>
-                <div key={label} 
-                style={{
-                  marginLeft: "10px",
-                }}>
-                  {label} {value}
-                </div>
+                  <HeartSvg />
+                  <div
+                    key={label}
+                    style={{
+                      marginLeft: "10px",
+                    }}
+                  >
+                    {label} {value}
+                  </div>
                 </FooterWrapper>
               ) : null
             )}

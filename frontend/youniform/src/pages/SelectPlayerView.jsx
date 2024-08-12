@@ -65,7 +65,6 @@ const BtnWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  border: 1px solid red;
   padding-left: 4%;
 `;
 
@@ -190,12 +189,12 @@ const ConfirmBtn = styled.div`
 `;
 
 const SelectPlayerView = (teamId) => {
-  const [playerList, setPlayerList] = useState([{playerId: 0, name: "없음"}]);
+  const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
   useEffect(() => {
-    const fetchPlayerInfo = async(teamId) => {
+    const fetchPlayerInfo = async (teamId) => {
       const apiClient = getApiClient();
       try {
-        const res = await apiClient.get(`/players/1`)
+        const res = await apiClient.get(`/players/1`);
         const { body, header } = res.data;
 
         console.log(body);
@@ -205,22 +204,25 @@ const SelectPlayerView = (teamId) => {
           if (prevList.length === 1) {
             return [...prevList, ...body.playerList];
           } else {
-            const newList = [{playerId: 0, name: "없음"}]
-          return [...newList, ...body.playerList];
+            const newList = [{ playerId: 0, name: "없음" }];
+            return [...newList, ...body.playerList];
           }
-        })
+        });
       } catch (err) {
-        handleApiError(err)
+        handleApiError(err);
       }
-    }
-    fetchPlayerInfo()
-  }, [])
-  
+    };
+    fetchPlayerInfo();
+  }, []);
+
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalState, setModalState] = useState("");
 
-  const { step, user, user: { players, setPlayers } } = useSignUpStore();
+  const {
+    step,
+    user: { players, setPlayers },
+  } = useSignUpStore();
 
   useEffect(() => {
     setPlayers(selectedPlayers);
@@ -249,29 +251,31 @@ const SelectPlayerView = (teamId) => {
   };
 
   const handleConfirmClick = () => {
-    setModalState(selectedPlayers.length === 0 ? "PlayerChangeWarning" : "FavoriteChanged");
+    setModalState(
+      selectedPlayers.length === 0 ? "PlayerChangeWarning" : "FavoriteChanged"
+    );
     setIsModalOpen(true);
   };
 
   const handleModalButtonClick = (buttonType) => {
     console.log("Button clicked:", buttonType);
-    if (buttonType == 2){
-      console.log("변경 요청 보내기", selectedPlayers)
-      changePlayer()
+    if (buttonType == 2) {
+      console.log("변경 요청 보내기", selectedPlayers);
+      changePlayer();
     }
     setIsModalOpen(false);
   };
   const changePlayer = async () => {
     const apiClient = getApiClient();
-//     console.log(selectedPlayers)
-//     const result = checkTypes(selectedPlayers);
-// console.log(result);
+    //     console.log(selectedPlayers)
+    //     const result = checkTypes(selectedPlayers);
+    // console.log(result);
     try {
       const res = await apiClient.patch(`users/favorite`, {
         teamId: 1,
         players: selectedPlayers,
-      })
-      console.log(res.data)
+      });
+      console.log(res.data);
       const { body, header } = res.data;
 
       console.log(body);
@@ -279,16 +283,16 @@ const SelectPlayerView = (teamId) => {
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
-  }
+  };
   function checkTypes(arr) {
     if (!Array.isArray(arr)) {
       throw new TypeError("Input must be an array");
     }
-  
-    return arr.map(value => {
-      if (typeof value === 'string') {
+
+    return arr.map((value) => {
+      if (typeof value === "string") {
         return `${value} is a string`;
-      } else if (typeof value === 'number') {
+      } else if (typeof value === "number") {
         return `${value} is a number`;
       } else {
         return `${value} is neither a string nor a number`;
@@ -304,23 +308,24 @@ const SelectPlayerView = (teamId) => {
       </Header>
       <Content>
         <BtnWrapper>
-          {playerList && playerList.map((player) => (
-            <PlayerButton
-              key={player.playerId}
-              player={player}
-              selected={selectedPlayers.includes(player.playerId)}
-              onClick={() => handleClick(player.playerId)}
-            />
-          ))}
+          {playerList &&
+            playerList.map((player) => (
+              <PlayerButton
+                key={player.playerId}
+                player={player}
+                selected={selectedPlayers.includes(player.playerId)}
+                onClick={() => handleClick(player.playerId)}
+              />
+            ))}
         </BtnWrapper>
       </Content>
-      {step != 3 &&
+      {step != 3 && (
         <Footer>
           <ConfirmBtnWrapper>
             <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>
           </ConfirmBtnWrapper>
         </Footer>
-      }
+      )}
       {isModalOpen && (
         <BasicModal
           state={modalState}

@@ -68,8 +68,7 @@ const Introduce = styled.div`
   /* border: 1px solid blue; */
 `;
 
-const ProfileComp = ({user}) => {
-  
+const ProfileComp = ({ user }) => {
   return (
     <ProfileSection>
       <ProfileImage onClick={() => console.log("프로필 사진 변경")}>
@@ -179,7 +178,7 @@ import GroupIcon from "@assets/MyPage/group.svg?react";
 import ArchiveIcon from "@assets/MyPage/archive.svg?react";
 import usePostStore from "@stores/postStore";
 
-const SocialComp = ({user}) => {
+const SocialComp = ({ user }) => {
   const { likePosts, fetchLikePosts } = usePostStore();
   const navigate = useNavigate();
   useEffect(() => {
@@ -217,11 +216,10 @@ const SocialComp = ({user}) => {
   );
 };
 const Profile = () => {
-    const { user, fetchUser, clearUser, loading, error } =
-    useUserStore();
-  
-    const navigate = useNavigate();
-  
+  const { user, fetchUser, clearUser, loading, error } = useUserStore();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -249,9 +247,9 @@ const Profile = () => {
   }
   return (
     <>
-      <ProfileComp user={user}/>
+      <ProfileComp user={user} />
       <UserComp />
-      <SocialComp user={user}/>
+      <SocialComp user={user} />
     </>
   );
 };

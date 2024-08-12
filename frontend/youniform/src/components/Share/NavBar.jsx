@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { Icon, SvgIcon } from "@mui/material";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import { styled as muiStyled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -15,23 +15,30 @@ import PhotoCardIcon2 from "../../assets/NavBar/photo_card2.svg?react";
 
 const Nav = styled.nav`
   background: #ffffff;
-  position: fixed;
-  left: 0;
+  /* position: fixed; */
   bottom: 0;
   z-index: 10;
-  width: 100%;
   height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
   padding: 0% 2%;
+  /* border: 1px solid black; */
+  /* width: 100%; */
+  @media (min-width: 500px) {
+    .nav {
+      max-width: 500px !important;
+      width: 100% !important;
+      margin: 0 auto !important;
+    }
+  }
 `;
 
 const LinkDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* border: 1px solid pink; */
   width: 15%;
 `;
 
@@ -49,21 +56,21 @@ const StyledLink = styled(Link)`
   }
 `;
 
-const CustomBtn = muiStyled(IconButton)(() => ({
-  color: "#FF506F",
+const CustomBtn = muiStyled(IconButton)(({ theme }) => ({
+  color: theme.primary,
 }));
 
 const NavBar = () => {
   const location = useLocation();
   const [currentPath, setCurrentPath] = useState(location.pathname);
-
+  const theme = useTheme();
   useEffect(() => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
-  
-  const formatDate = (day) => format(day, 'yyyy-MM-dd');
+
+  const formatDate = (day) => format(day, "yyyy-MM-dd");
   const formattedDate = formatDate(new Date());
-  
+
   return (
     <Nav>
       <LinkDiv>
@@ -81,7 +88,7 @@ const NavBar = () => {
       <LinkDiv>
         {currentPath === "/diary" ? (
           <StyledLink to={`/diary/write/${formattedDate}`}>
-            <CustomBtn>
+            <CustomBtn theme={theme}>
               <AddCircleIcon />
             </CustomBtn>
           </StyledLink>

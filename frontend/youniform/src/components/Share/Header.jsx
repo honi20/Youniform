@@ -10,12 +10,12 @@ import { clearAccessToken } from "@stores/apiClient";
 
 const Head = styled.div`
   background-color: #f8f8f8;
-  position: fixed;
+  /* position: fixed; */
   top: 0;
-  width: 100%;
+  /* width: 100%; */
   height: 50px;
   display: flex;
-  // border: 1px solid orange;
+  /* border: 1px solid orange; */
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
