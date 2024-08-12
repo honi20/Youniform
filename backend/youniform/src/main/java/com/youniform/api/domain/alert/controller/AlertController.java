@@ -19,7 +19,7 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/alerts")
+@RequestMapping("/api/alerts")
 @RequiredArgsConstructor
 @Validated
 public class AlertController {

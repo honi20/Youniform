@@ -92,7 +92,7 @@ class TeamControllerTest {
         when(teamService.findTeamSongs(anyLong())).thenReturn(new TeamSongListRes(teamSongList));
 
         ResultActions actions = mockMvc.perform(
-                get("/teams/song")
+                get("/api/teams/song")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -132,7 +132,7 @@ class TeamControllerTest {
         when(teamService.findTeamDetail(anyLong())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
-                get("/teams/favorite")
+                get("/api/teams/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));

@@ -24,7 +24,7 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/chats")
+@RequestMapping("/api/chats")
 @Validated
 public class ChatController {
     private final ChatService chatService;

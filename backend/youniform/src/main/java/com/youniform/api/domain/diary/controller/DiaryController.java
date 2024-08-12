@@ -22,7 +22,7 @@ import java.io.IOException;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
-@RequestMapping("/diaries")
+@RequestMapping("/api/diaries")
 @RequiredArgsConstructor
 @Validated
 public class DiaryController {

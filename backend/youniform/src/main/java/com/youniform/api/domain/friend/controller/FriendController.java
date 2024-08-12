@@ -18,7 +18,7 @@ import static com.youniform.api.global.statuscode.SuccessCode.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/friends")
+@RequestMapping("/api/friends")
 @Validated
 public class FriendController {
     private final FriendService friendService;

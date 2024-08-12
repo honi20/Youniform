@@ -88,7 +88,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/users/verify")
+                get("/api/users/verify")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("nickname", nickname)
                         .accept(MediaType.APPLICATION_JSON)
@@ -138,7 +138,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/users/email/send")
+                post("/api/users/email/send")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -188,7 +188,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/users/email/verify")
+                get("/api/users/email/verify")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("email", email)
                         .param("verifyCode", verifyCode)
@@ -243,7 +243,7 @@ public class UserControllerTest {
         //when
         when(mailService.sendPasswordResetMail(any(), any())).thenReturn("verify");
         ResultActions actions = mockMvc.perform(
-                post("/users/password/send")
+                post("/api/users/password/send")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -299,7 +299,7 @@ public class UserControllerTest {
         //when
         when(mailService.sendPasswordResetMail(any(), any())).thenReturn("asdf");
         ResultActions actions = mockMvc.perform(
-                patch("/users/password/reset")
+                patch("/api/users/password/reset")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -359,7 +359,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/password")
+                patch("/api/users/password")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -421,7 +421,7 @@ public class UserControllerTest {
                         .build()
         );
         ResultActions actions = mockMvc.perform(
-                get("/users")
+                get("/api/users")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -489,7 +489,7 @@ public class UserControllerTest {
                         .build()
         );
         ResultActions actions = mockMvc.perform(
-                get("/users/{userId}", 1L)
+                get("/api/users/{userId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -555,7 +555,7 @@ public class UserControllerTest {
                         .build()
         );
         ResultActions actions = mockMvc.perform(
-                multipart("/users/profile")
+                multipart("/api/users/profile")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -610,7 +610,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/profile/theme")
+                patch("/api/users/profile/theme")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -662,7 +662,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/profile/alert")
+                patch("/api/users/profile/alert")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -714,7 +714,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/play/alert")
+                patch("/api/users/play/alert")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -771,7 +771,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/resign")
+                patch("/api/users/resign")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -815,7 +815,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/users/signin/local")
+                post("/api/users/signin/local")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(content))
@@ -866,7 +866,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/users/signup/local")
+                post("/api/users/signup/local")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(content))
@@ -930,7 +930,7 @@ public class UserControllerTest {
         userService.modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                patch("/users/favorite")
+                patch("/api/users/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -981,7 +981,7 @@ public class UserControllerTest {
         doThrow(new CustomException(TEAM_NOT_FOUND)).when(userService).modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                patch("/users/favorite")
+                patch("/api/users/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1031,7 +1031,7 @@ public class UserControllerTest {
         doThrow(new CustomException(PLAYER_NOT_FOUND)).when(userService).modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                patch("/users/favorite")
+                patch("/api/users/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1097,7 +1097,7 @@ public class UserControllerTest {
                 .thenReturn(new SearchUserRes(searchUSerDto));
 
         ResultActions actions = mockMvc.perform(
-                get("/users/lists")
+                get("/api/users/lists")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastUserId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -1172,7 +1172,7 @@ public class UserControllerTest {
                 .thenReturn(new SearchNicknameRes(result));
 
         ResultActions actions = mockMvc.perform(
-                get("/users/search")
+                get("/api/users/search")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("nickname", "User")
                         .accept(MediaType.APPLICATION_JSON)
