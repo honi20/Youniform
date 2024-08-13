@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import dayjs from "dayjs";
+
+import styled from "styled-components";
+import ReadIcon from '@mui/icons-material/VisibilityOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import useAlertStore from "@stores/alertStore";
 import useFriendStore from "@/stores/friendStore";
+
 import EmptyState from "@components/Share/EmptyState";
 import AlertItem from "@components/Alert/AlertItem";
 import BasicModal from "@components/Modal/BasicModal";
+import OptionIcon from '@assets/Icons/Options.svg?react';
 import EmptyIcon from "@assets/EmptyState/EmptyState_Alert.svg?react";
 
 const AlertContainer = styled.div`
@@ -27,19 +32,59 @@ const AlertBox = styled.div`
 `;
 
 const TitleText = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 20px;
   font-weight: bold;
+`;
+
+const MoreOptions = styled.div`
+  display: flex;
+  width: 18%;
+  height: 85%;
+  margin-left: 8px;
+  justify-content: right;
+  cursor: pointer;
+  position: relative;
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 120px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: ${({ $visible }) => ($visible ? 'block' : 'none')};
+`;
+
+const DropdownItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  font-size: 14px;
+  color: #4e4e4e;
+  cursor: pointer;
+  &:hover {
+    background-color: #f1f1f1;
+  }
 `;
 
 const AlertView = () => {
   const navigate = useNavigate();
   const { alerts, fetchAlerts, deleteAlert, markAlertAsRead } = useAlertStore();
-  const { acceptFriendRequest } = useFriendStore();
+  const { acceptFriendRequest, rejectFriend } = useFriendStore();
 
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+  
+  const [openDropdownAlertId, setOpenDropdownAlertId] = useState(null);
   
   useEffect(() => {
     fetchAlerts();
@@ -49,9 +94,10 @@ const AlertView = () => {
   const closeCheckModal = async (targetAlert) => {
     setIsCheckModalOpen(false);
     if (!targetAlert) return;
-    // 친구 신청 읽음 처리만 진행
-    if (targetAlert.isRead === false)
-    await markAlertAsRead(targetAlert.alertId);
+    if (targetAlert.isRead === false) {
+      await markAlertAsRead(targetAlert.alertId);
+      await fetchAlerts();
+    }
   };
   const openAcceptModal = () => setIsAcceptModalOpen(true);
   const closeAcceptModal = async () => {
@@ -68,63 +114,102 @@ const AlertView = () => {
   const isRelativeTime = (createdAt) => {
     return createdAt.includes("전");
   };
-  // 24시간 이내의 알림과 이전 알림 분류
+
   const recentAlerts = alerts.filter((alert) => {
     if (isRelativeTime(alert.createdAt)) {
-      // 상대 시간 ("1시간 전" 등)은 모두 24시간 이내로 간주
       return true;
     } else {
-      // 절대 시간 ("yyyy-mm-dd" 형식)은 현재 시간과 비교
       return now.diff(dayjs(alert.createdAt), "hour") < 24;
     }
   });
 
   const olderAlerts = alerts.filter((alert) => {
     if (!isRelativeTime(alert.createdAt)) {
-      // 절대 시간 ("yyyy-mm-dd" 형식)만 24시간 이전으로 간주
       return now.diff(dayjs(alert.createdAt), "hour") >= 24;
     }
-    return false; // 상대 시간은 이전 알림으로 간주하지 않음
+    return false;
   });
 
-const checkAlert = async (alert) => {
-  setSelectedAlert(alert); // 선택된 알림 저장
-  if (alert.isRead === false) {
-    await markAlertAsRead(alert.alertId);
-  }
-  switch (alert.type) {
-    case 'FRIEND_REQUEST':
-      openCheckModal();
-      break;
-    case 'POST_COMMENT':
-      navigate(`/post/${alert.pk}`);
-      break;
-  }
-};
+  const checkAlert = async (alert) => {
+    setSelectedAlert(alert); // 선택된 알림 저장
+    if (alert.isRead === false) {
+      await markAlertAsRead(alert.alertId);
+    }
+    switch (alert.type) {
+      case 'FRIEND_REQUEST':
+        openCheckModal();
+        break;
+      case 'POST_COMMENT':
+        navigate(`/post/${alert.pk}`);
+        break;
+    }
+  };
 
   const handleAfterCheck = async (alert, index) => {
-    if (index === 7 && alert.type === 'FRIEND_REQUEST') {
-      const res = await acceptFriendRequest(alert.senderUuid);
-      if (res === "$SUCCESS") {
-        openAcceptModal();
-      }
-    } else if (index === 6 && alert.type === 'FRIEND_REQUEST') {
-      const res = await deleteAlert(alert.alertId);
-      if (res === "$SUCCESS") {
-        openDeclineModal();
+    if (alert.type === 'FRIEND_REQUEST') {
+      if (index === 7) {
+        const res = await acceptFriendRequest(alert.senderUuid);
+        if (res === "$SUCCESS") {
+          await deleteAlert(alert.alertId);
+          openAcceptModal();
+        }
+      } else if (index === 6) {
+        const res = await rejectFriend(alert.senderUuid);
+        if (res === "$SUCCESS") {
+          openDeclineModal();
+        }
       }
     }
+  };
+
+  const toggleDropdown = (alertId) => {
+    setOpenDropdownAlertId(prevId => prevId === alertId ? null : alertId);
+  };
+
+  const updateAlertStatus = async (type) => {
+    switch (type) {
+      case "realAll":
+        await markAlertAsRead(alert.alertId);
+        break;
+      case "deleteAll":
+        await deleteAlert(alert.alertId);
+        break;
+    }
+    await fetchAlerts();
   };
 
   return (
     <AlertContainer>
       {alerts && alerts.length > 0 ? (
         <AlertBox>
-          <TitleText>최근 받은 알림</TitleText>
+          <TitleText>
+            <span>최근 받은 알림</span>
+            <MoreOptions onClick={toggleDropdown}>
+              <OptionIcon />
+              <DropdownMenu>
+                <DropdownItem
+                  onClick={() => updateAlertStatus("realAll")}>
+                  모두 읽기
+                  <ReadIcon />
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => updateAlertStatus("deleteAll")}>
+                  전체 삭제
+                  <DeleteIcon />
+                </DropdownItem>
+              </DropdownMenu>
+            </MoreOptions>
+          </TitleText>
           {recentAlerts.length > 0 && (
             <>
               {recentAlerts.map((alert) => (
-                <AlertItem key={alert.alertId} alert={alert} checkAlert={checkAlert} />
+                <AlertItem
+                  key={alert.alertId}
+                  alert={alert}
+                  checkAlert={checkAlert}
+                  openDropdownAlertId={openDropdownAlertId}
+                  onToggleDropdown={toggleDropdown}
+                />
               ))}
             </>
           )}
@@ -132,7 +217,13 @@ const checkAlert = async (alert) => {
             <>
               <TitleText>이전 알림</TitleText>
               {olderAlerts.map((alert) => (
-                <AlertItem key={alert.alertId} alert={alert} checkAlert={checkAlert} />
+                <AlertItem
+                  key={alert.alertId}
+                  alert={alert}
+                  checkAlert={checkAlert}
+                  openDropdownAlertId={openDropdownAlertId}
+                  onToggleDropdown={toggleDropdown}
+                />
               ))}
             </>
           )}

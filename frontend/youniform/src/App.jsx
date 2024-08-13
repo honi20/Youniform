@@ -83,7 +83,7 @@ function App() {
               <Route path="/login" element={<LoginView />} />
               <Route path="/find-email" element={<FindEmailView />} />
               <Route path="/find-password" element={<FindPasswordView />} />
-              <Route path="/reset-password" element={<ResetPasswordView />} />
+              <Route path="/reset-password/:uuid" element={<ResetPasswordView />} />
               {/* Photocard */}
               <Route path="/photo-card" element={<PhotoCardView />}>
                 <Route index element={<BinderCover />} />

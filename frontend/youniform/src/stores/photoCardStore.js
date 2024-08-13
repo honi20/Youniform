@@ -33,6 +33,9 @@ const usePhotoCardStore = create((set, get) => ({
       const res = await apiClient.get(`/photocards`);
       console.log(res);
       set({ photoCards: res.data.body.photocardList });
+      get().setTotalPages();
+      console.log("fetch photocard");
+      console.log(get().photoCards);
     } catch (error) {
       console.log("Failed to fetchPhotocards", error);
     }
@@ -54,6 +57,7 @@ const usePhotoCardStore = create((set, get) => ({
   },
   // 포토카드 삭제
   deletePhotocards: async (list) => {
+    console.log("deletePhotocards function called with", list);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/photocards`, {
@@ -61,6 +65,7 @@ const usePhotoCardStore = create((set, get) => ({
           photocardIdList: list,
         },
       });
+      console.log(res);
       console.log(res.data.header);
     } catch (error) {
       console.log("Failed to createPhotoCard", error);
@@ -83,16 +88,13 @@ const usePhotoCardStore = create((set, get) => ({
   //   }
   // },
   fetchPhotocardDetail: async (id) => {
-    console.log(1);
     const apiClient = getApiClient();
-    console.log(2);
     try {
       const res = await apiClient.get(`photocards/${id}`, {
         params: {
-          photocardId: id
-        }
+          photocardId: id,
+        },
       });
-      console.log(3);
       set({ photoCard: res.data.body });
       console.log(get().photoCard);
     } catch (error) {

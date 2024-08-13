@@ -39,6 +39,24 @@ const useFriendStore = create((set) => ({
       set({ loading: false, error: err.message });
     }
   },
+  rejectFriend: async (friendId) => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.delete(`/friends/reject`, {
+        params: {
+          friendUuid: friendId,
+        },
+      });
+      console.log(res.data.header.message);
+
+      set((state) => ({
+        friends: state.friends.filter((friend) => friend.friendId !== friendId),
+      }));
+    } catch (err) {
+      console.error("Error deleting friend:");
+      handleApiError(err);
+    }
+  },
   deleteFriend: async (friendId) => {
     const apiClient = getApiClient();
     try {

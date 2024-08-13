@@ -207,6 +207,18 @@ const stateMap = {
     subtitle: "회원가입 시 등록한 이메일을 입력해주세요.",
     btn: [0],
   },
+  ResetPassword: {
+    icon: <CheckIcon />,
+    title: "비밀번호 재설정 성공",
+    subtitle: "변경된 비밀번호로 로그인하세요.",
+    btn: [0],
+  },
+  ResetPasswordFailure: {
+    icon: <AlarmIcon />,
+    title: "비밀번호 재설정 실패",
+    subtitle: "정확한 인증 코드를 입력하세요.",
+    btn: [0],
+  },
 };
 
 const buttonMap = {
