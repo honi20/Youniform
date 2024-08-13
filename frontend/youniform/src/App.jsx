@@ -51,7 +51,8 @@ import ChangeProfile from "@pages/MyPage/ChangeProfile";
 import MyDiaryView from "@pages/Diary/MyDiaryView";
 import AlertView from "./pages/AlertView";
 import ResetPasswordView from "./pages/ResetPasswordView";
-import ShareModal from "./components/Modal/ShareModal";
+import TestView from "@pages/Diary/TestView";
+
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -157,7 +158,7 @@ function App() {
               </Route>
               <Route path="alert" element={<AlertView />} />
               {/* 공유 모달 테스트 끝나면 삭제해야함 */}
-              <Route path="share-modal" element={<ShareModal />} />
+              <Route path="test" element={<TestView />} />
             </Routes>
           </ContentContainer>
           <NavBar />
