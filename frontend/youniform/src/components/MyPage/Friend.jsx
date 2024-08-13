@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import * as Font from "@/typography";
 import useFriendStore from "@stores/friendStore";
+import ProfileModal from "@components/Modal/ProfileModal";
+
 const Container = styled.div`
   margin: 1%;
   padding: 1%;
@@ -50,17 +52,19 @@ const DeleteBtn = styled.div`
   align-items: center;
   color: white;
 `;
-const Friend = ({ friend, setSelectedFriend, setModalOpen }) => {
+const Friend = ({ friend, setSelectedFriend }) => {
   const { deleteFriend } = useFriendStore();
+  const [isModalOpen, setModalOpen] = useState(false);
   const handleDeleteBtn = () => {
     console.log("친구삭제");
-    deleteFriend(friend.friendId);
+    deleteFriend(friend.userId);
   };
   const handleProfileClick = () => {
     console.log("프로필 모달");
     setSelectedFriend(friend);
     setModalOpen(true);
   };
+  console.log(friend);
   return (
     <Container>
       <div style={{ display: "flex", flex: "1" }} onClick={handleProfileClick}>
@@ -70,7 +74,14 @@ const Friend = ({ friend, setSelectedFriend, setModalOpen }) => {
           <Introduce>{friend.introduce}</Introduce>
         </ProfileInfo>
       </div>
-      <DeleteBtn onClick={handleDeleteBtn}>삭제</DeleteBtn>
+      {friend.status == "FRIEND" && (
+        <DeleteBtn onClick={handleDeleteBtn}>삭제</DeleteBtn>
+      )}
+      <ProfileModal
+        user={friend}
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </Container>
   );
 };

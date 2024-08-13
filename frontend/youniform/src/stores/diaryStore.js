@@ -170,7 +170,8 @@ const useDiaryStore = create((set) => ({
         },
       });
       console.log(res.data.header.message);
-      console.log(res.data.body);
+      console.log(res.data.body.diaryList.content);
+      set({ mydiary: res.data.body.diaryList.content });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -187,7 +188,7 @@ const useDiaryStore = create((set) => ({
       console.log("Failed to fetch friend", error);
       set({ loading: false, error: error.message });
     }
-  }
+  },
 }));
 
 export default useDiaryStore;

@@ -56,6 +56,10 @@ const EmptyState = ({ icon: Icon, state }) => {
       title = '생성된 포토카드가 없습니다.';
       subTitle = '나만의 포토카드를 만들고 수집해보세요.';
     break;
+    case 'noDiaries':
+      title = '다이어리가 없습니다.';
+      subTitle = '나만의 다이어리를 만들고 수집해보세요.';
+    break;
     default:
       title = '정보가 없습니다.';
       subTitle = '원하는 정보를 찾을 수 없습니다.\n다시 시도해 주세요.';

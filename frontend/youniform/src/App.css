@@ -1,6 +1,6 @@
-@media (min-width: 500px) {
+@media (min-width: 400px) {
   .App {
-    max-width: 500px !important;
+    max-width: 400px !important;
     width: 100% !important;
     margin: 0 auto !important;
   }

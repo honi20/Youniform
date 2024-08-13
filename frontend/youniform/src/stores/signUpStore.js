@@ -123,22 +123,6 @@ const signUpStore = create((set, get) => ({
       console.log("Failed to fetch Local SignUp", err);
     }
   },
-  // fetchPlayerList: async () => {
-  //   set({ loading: true, error: null });
-  //   try {
-  //     const res = await axios({
-  //       method: "get",
-  //       url: `${API_URL}/players`,
-  //       params: {
-  //         teamId: "1"
-  //       }
-  //     })
-  //     set({ playerList: res.data.body.playerList, loading: false });
-  //   } catch (err) {
-  //     console.error(err.response ? err.response.data : err.message);
-  //     set({ loading: false, error: err.message });
-  //   }
-  // },
 }));
 
 export default signUpStore;

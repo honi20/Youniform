@@ -35,7 +35,6 @@ const ToggleBtn = styled.div`
   font-style: normal;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid red;
 `;
 
 const toggle = (isOn) => {
@@ -79,14 +78,14 @@ const WriteDiaryView = () => {
     fetchStamp();
   }, [fetchStampList, stampList]);
 
-  useEffect(() => {
-    const loadResources = () => {
-      if (resources.length == 0) {
-        fetchResources();
-      }
-    };
-    loadResources();
-  }, [fetchResources, resources]);
+  // useEffect(() => {
+  //   const loadResources = () => {
+  //     if (resources.length == 0) {
+  //       fetchResources();
+  //     }
+  //   };
+  //   loadResources();
+  // }, [fetchResources, resources]);
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -167,7 +166,7 @@ const WriteDiaryView = () => {
           <>
             <ColorChipComp />
             <WallPaperComp
-              wallpapers={resources.backgrounds}
+              wallpapers={Object.values(wallpapers).map((mod) => mod.default)}
               onImageClick={handleImageClick}
             />
           </>
@@ -175,7 +174,7 @@ const WriteDiaryView = () => {
       case 1:
         return (
           <StickerComp
-            stickers={resources.stickers}
+            stickers={Object.values(stickers).map((mod) => mod.default)}
             onImageClick={handleStickerClick}
           />
         );
@@ -242,7 +241,10 @@ const WriteDiaryView = () => {
 
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
-
+        console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        console.log("contents: ", json);
+        console.log("scope: ", scope);
+        console.log("stamp: ", stampId);
         const formData = new FormData();
         const dto = {
           diaryDate: diaryDate ? diaryDate : date, // 날짜 바뀌는 거 확인하기
@@ -298,13 +300,18 @@ const WriteDiaryView = () => {
     selectCanvas.renderAll();
     setIsDecorated(!isDecorated);
   };
+  console.log(stampList, stampId);
   return (
     <>
       <St.StampContainer>
-        {stampId.length > 0 && (
+        {stampList.length > 0 && (
           <img
-            style={{ width: "54px", height: "54px" }}
-            src={stampList[stampId].imgUrl}
+            style={{ width: "50px", height: "50px" }}
+            src={
+              stampId
+                ? stampList.find((stamp) => stamp.stampId === stampId).imgUrl
+                : stampList[0].imgUrl
+            }
           ></img>
         )}
         {diaryId ? diary.diaryDate : diaryDate}
