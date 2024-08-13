@@ -1,5 +1,5 @@
 import styled, { useTheme, keyframes } from "styled-components";
-import StarIcon from "@assets/star.svg?react";
+import StarIcon from "@assets/Main/star.svg?react";
 
 export const Card = styled.div`
   box-sizing: border-box;

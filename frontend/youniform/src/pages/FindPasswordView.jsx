@@ -1,11 +1,11 @@
 import { useState } from "react";
 import BasicModal from "@components/Modal/BasicModal";
-import styled from "styled-components"
+import styled from "styled-components";
 
 import { styled as muiStyled } from "@mui/material/styles";
 import { TextField, Button } from "@mui/material";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
-import useUserStore from "../stores/userStore";
+import useUserStore from "@stores/userStore";
 import { useNavigate } from "react-router-dom";
 
 const FindPassword = styled.div`
@@ -42,7 +42,7 @@ const Title = styled.span`
   font-weight: bold;
   letter-spacing: -1px;
   color: #000078;
-`
+`;
 
 const SubTitle = styled.span`
   font-size: 14px;
@@ -58,7 +58,7 @@ const ColorBtn = muiStyled(Button)(() => ({
 const FindPasswordView = () => {
   const navigate = useNavigate();
   const { findPassword } = useUserStore();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
 
@@ -83,7 +83,7 @@ const FindPasswordView = () => {
       navigate("/login");
     } else {
       openSentFailureModal();
-      setEmail('');
+      setEmail("");
     }
   };
 
@@ -94,12 +94,8 @@ const FindPasswordView = () => {
         <span>Youniform</span>
       </LoginLogo>
       <FindPasswordContainer>
-        <Title>
-          비밀번호 찾기
-        </Title>
-        <SubTitle>
-          가입한 아이디(이메일)을 입력해주세요.
-        </SubTitle>
+        <Title>비밀번호 찾기</Title>
+        <SubTitle>가입한 아이디(이메일)을 입력해주세요.</SubTitle>
         <TextField
           sx={{ width: "80%" }}
           label="이메일 입력"
@@ -129,7 +125,7 @@ const FindPasswordView = () => {
         // selectedAlert={selectedAlert}
       />
     </FindPassword>
-  )
-}
+  );
+};
 
 export default FindPasswordView;

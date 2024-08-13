@@ -7,7 +7,7 @@ import Loading from "@components/Share/Loading";
 import ImgSvg from "@assets/Post/img_box.svg?react";
 import DoneSvg from "@assets/Post/done.svg?react";
 import { getApiClient } from "@stores/apiClient";
-import usePostStore from "../../stores/postStore";
+import usePostStore from "@stores/postStore";
 const Container = styled.div`
   height: calc(100vh - 120px);
   display: flex;

@@ -61,7 +61,8 @@ const UpperContainer = styled(FlexBox)`
 `;
 
 const LowerContainer = styled(FlexBox)`
-  ${Font.XSmall}
+  ${Font.Small}
+  font-weight: 300;
   flex-direction: row;
   justify-content: end;
   flex: 1;
@@ -81,6 +82,7 @@ const ChatIcon = styled(Chatsvg)`
 
 const TextWrapper = styled.textarea`
   ${Font.Small}
+  font-weight: 400;
   border: none;
   flex: 1;
   height: auto;
@@ -126,11 +128,10 @@ const CommentContainer = ({ postId }) => {
   const [content, setContent] = useState("");
   const post = usePostStore((state) => state.post); // 현재 포스트 가져오기
   const comments = usePostStore((state) => state.comments[postId] || []); // 현재 포스트의 댓글 목록 가져오기
-  // const fetchPost = usePostStore((state) => state.fetchPost); // 포스트를 가져오는 함수
-  // const addComment = usePostStore((state) => state.addComment); // 댓글을 추가하는 함수
   const { addComment, updateComment, deleteComment } = usePostStore();
   const [editMode, setEditMode] = useState(null); // Track which comment is being edited
   const [showEllipsis, setShowEllipsis] = useState(true);
+  const [editedComment, setEditedComment] = useState(null);
   const scrollableRef = useRef(null);
   const isInitialRender = useRef(true);
   // 스크롤 시 발동하는 함수
@@ -170,13 +171,15 @@ const CommentContainer = ({ postId }) => {
       setContent("");
     } else if (action === "update") {
       await updateComment(commentId, content);
+      setComments
+      setEditedComment(null);
     } else if (action === "delete") {
       await deleteComment(commentId);
     }
   };
+
   const handleEditClick = (comment) => {
-    setContent(comment.contents); // Set content to the current comment's text
-    setEditMode(comment.commentId); // Set the comment ID to indicate which comment is being edited
+    setEditedComment(comment); // Set the comment object being edited
   };
 
   // 댓글 삭제 요청
@@ -195,38 +198,46 @@ const CommentContainer = ({ postId }) => {
                 {comment.nickname}
               </ProfileContainer>
               <FlexBox>
-                {editMode === comment.commentId ? (
-                  <UpperContainer>
-                    <CommentTextarea
-                      content={content}
-                      setContent={setContent}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
+                {editedComment &&
+                editedComment.commentId === comment.commentId ? (
+                  <>
+                    <UpperContainer>
+                      <CommentTextarea
+                        content={editedComment.contents}
+                        setContent={(value) =>
+                          setEditedComment({
+                            ...editedComment,
+                            contents: value,
+                          })
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleCommentAction({
+                              action: "update",
+                              commentId: editedComment.commentId,
+                              content: editedComment.contents,
+                            });
+                          }
+                        }}
+                      />
+                    </UpperContainer>
+                    <LowerContainer>
+                      <Btn
+                        onClick={() =>
                           handleCommentAction({
                             action: "update",
-                            commentId: comment.commentId,
-                            content: content,
-                          });
+                            commentId: editedComment.commentId,
+                            content: editedComment.contents,
+                          })
                         }
-                      }}
-                    />
-                    <CommentBtn
-                      onClick={() =>
-                        handleCommentAction({
-                          action: "update",
-                          commentId: comment.commentId,
-                          content: content,
-                        })
-                      }
-                    >
-                      저장
-                    </CommentBtn>
-
-                    <CommentBtn onClick={() => setEditMode(null)}>
-                      취소
-                    </CommentBtn>
-                  </UpperContainer>
+                      >
+                        저장
+                      </Btn>
+                      &nbsp;
+                      <Btn onClick={() => setEditedComment(null)}>취소</Btn>
+                    </LowerContainer>
+                  </>
                 ) : (
                   <>
                     <UpperContainer>{comment.contents}</UpperContainer>

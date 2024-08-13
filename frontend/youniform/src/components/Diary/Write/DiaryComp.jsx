@@ -39,14 +39,6 @@ const DiaryComp = ({ state, diary }) => {
         break;
     }
   };
-  // function formatDate(dateString) {
-  //   const date = new Date(dateString);
-  //   const year = date.getFullYear();
-  //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  //   const day = date.getDate().toString().padStart(2, "0");
-  //   return `${year}-${month}-${day}`;
-  // }
-
   console.log(diary);
   return (
     <St.Diary>
@@ -59,12 +51,6 @@ const DiaryComp = ({ state, diary }) => {
       <St.DiaryContent>
         <ImageContainer>
           <img src={diary.diaryImgUrl}/>
-          {/* <CanvasComp
-            selectCanvas={selectCanvas}
-            setSelectCanvas={setSelectCanvas}
-            decorated={isDecorated}
-            diary={diary.contents}
-          /> */}
         </ImageContainer>
       </St.DiaryContent>
       <St.DiaryFooter>

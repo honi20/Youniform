@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Post from "@components/Post/Post";
-import useDiaryStore from "../../stores/diaryStore";
+import useDiaryStore from "@stores/diaryStore";
 import DiaryDetailView from "./DiaryDetailView";
 import { useParams } from "react-router-dom";
 
@@ -21,9 +20,9 @@ const MyDiaryView = () => {
   const { nickname } = useParams();
   useEffect(() => {
     if (nickname) {
-console.log(nickname)
+      console.log(nickname);
     } else {
-    fetchMyDiary();
+      fetchMyDiary();
     }
   }, [fetchMyDiary]);
 

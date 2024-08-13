@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import CheckIcon from "../../assets/CheckIcon.svg?react";
-import AlarmIcon from "../../assets/AlarmIcon.svg?react";
+import CheckIcon from "@assets/Modal/CheckIcon.svg?react";
+import AlarmIcon from "@assets/Modal/AlarmIcon.svg?react";
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -220,12 +220,25 @@ const buttonMap = {
   7: { bgcolor: "#262F66", color: "white", label: "수락" },
 };
 
-const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname, selectedAlert }) => {
+const BasicModal = ({
+  state,
+  isOpen,
+  onClose,
+  onButtonClick,
+  nickname,
+  selectedAlert,
+}) => {
   if (!isOpen) return null;
 
   const renderIcon = (state) => {
     if (state === "CheckFriendRequest" && selectedAlert?.senderProfileUrl) {
-      return <img src={selectedAlert.senderProfileUrl} alt="Profile" style={{ borderRadius: '50%', width: '50px', height: '50px' }} />;
+      return (
+        <img
+          src={selectedAlert.senderProfileUrl}
+          alt="Profile"
+          style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+        />
+      );
     }
     return stateMap[state]?.icon || <AlarmIcon />;
   };
