@@ -22,7 +22,7 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: 0% 2%;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   width: 100%;
   max-width: 400px;
   @media (min-width: 400px) {
