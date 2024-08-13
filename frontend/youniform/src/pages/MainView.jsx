@@ -87,7 +87,9 @@ const MainView = () => {
     console.log(playerId);
   };
   console.log(playerList.length);
-
+  const handleNews = () => {
+    navigate(`/news/${playerList[selectedPlayer].playerId}`);
+  };
   if (loading) {
     return <Loading />;
   }
@@ -103,11 +105,7 @@ const MainView = () => {
         player={playerList[selectedPlayer]}
       />
       <Container>
-        <Btn
-          onClick={() =>
-            navigate(`/news/${playerList[selectedPlayer].playerId}`)
-          }
-        >
+        <Btn onClick={handleNews}>
           <IconWrapper>
             <MessageIcon />
           </IconWrapper>

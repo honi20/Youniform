@@ -74,6 +74,7 @@ const CreateComment = styled(FlexBox)`
 `;
 
 import Chatsvg from "@assets/Post/chat.svg?react";
+import useUserStore from "../../../stores/userStore";
 
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
@@ -124,7 +125,7 @@ const CommentTextarea = React.memo(({ content, setContent, onKeyDown }) => {
   );
 });
 
-const CommentContainer = ({ postId }) => {
+const CommentContainer = ({ postId, user }) => {
   const [content, setContent] = useState("");
   const post = usePostStore((state) => state.post); // 현재 포스트 가져오기
   const comments = usePostStore((state) => state.comments[postId] || []); // 현재 포스트의 댓글 목록 가져오기
@@ -132,6 +133,7 @@ const CommentContainer = ({ postId }) => {
   const [editMode, setEditMode] = useState(null); // Track which comment is being edited
   const [showEllipsis, setShowEllipsis] = useState(true);
   const [editedComment, setEditedComment] = useState(null);
+  // const { user, fetchUser } = useUserStore();
   const scrollableRef = useRef(null);
   const isInitialRender = useRef(true);
   // 스크롤 시 발동하는 함수
@@ -171,7 +173,7 @@ const CommentContainer = ({ postId }) => {
       setContent("");
     } else if (action === "update") {
       await updateComment(commentId, content);
-      setComments
+      // setComments
       setEditedComment(null);
     } else if (action === "delete") {
       await deleteComment(commentId);
@@ -195,10 +197,11 @@ const CommentContainer = ({ postId }) => {
                   src={comment.imgUrl}
                   alt={`${comment.nickname}의 프로필`}
                 />
-                {comment.nickname}
+                {comment.nickname} 
               </ProfileContainer>
               <FlexBox>
-                {editedComment &&
+                {user.nickname === comment.nickname &&
+                editedComment &&
                 editedComment.commentId === comment.commentId ? (
                   <>
                     <UpperContainer>

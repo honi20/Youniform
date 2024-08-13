@@ -51,7 +51,6 @@ const DiaryDetailView = ({ diaries }) => {
             </Container>
           </ScrollableDiaryView>
           {diary ? <DiaryComp key={diary.diaryId} diary={diary} /> : <></>}
-          <ShareModal />
         </Div>
       )}
     </>
