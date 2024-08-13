@@ -4,6 +4,7 @@ import DiaryComp from "@components/Diary/Write/DiaryComp";
 import { useParams } from "react-router-dom";
 import useDiaryStore from "@stores/diaryStore";
 import Loading from "@components/Share/Loading";
+import ShareModal from "@components/Modal/ShareModal";
 const Div = styled.div`
   flex-shrink: 0;
   display: flex;
@@ -50,6 +51,7 @@ const DiaryDetailView = ({ diaries }) => {
             </Container>
           </ScrollableDiaryView>
           {diary ? <DiaryComp key={diary.diaryId} diary={diary} /> : <></>}
+          <ShareModal />
         </Div>
       )}
     </>
