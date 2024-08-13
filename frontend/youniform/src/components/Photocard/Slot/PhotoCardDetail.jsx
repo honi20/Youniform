@@ -73,6 +73,7 @@ const PhotoCardDetail = () => {
       await deletePhotocards(photocardId);
       await fetchPhotoCardList();
       await setTotalPages();
+      navigate(`/photo-card/binder`);
       // 2. 다음 Modal Open
       openConfirmModal();
     }
