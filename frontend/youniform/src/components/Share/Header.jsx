@@ -87,7 +87,7 @@ const IconContainer = styled.div`
   display: flex;
   position: absolute;
   right: 0;
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   align-items: center;
   gap: 5px;
 `;
@@ -135,10 +135,7 @@ const Header = () => {
           </InnerHead>
         );
       case currentPath === "/photo-card/binder":
-      return (
-        <InnerHead>
-        </InnerHead>
-      );
+        return <InnerHead></InnerHead>;
       case ["/", "/photo-card", "/diary", "/post"].includes(currentPath):
         return (
           <InnerHead>
@@ -146,7 +143,6 @@ const Header = () => {
               <SportsBaseballIcon />
               <strong>Youniform</strong>
             </Logo>
-            {/* <ColorBtn onClick={checkToken}>테스트</ColorBtn> */}
             {isToken ? (
               <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
             ) : (

@@ -198,7 +198,10 @@ const Post = ({ post }) => {
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
         <Content>
-          <img src={post.imageUrl} />
+          <img
+            onClick={() => navigate(`/post/${post.postId}`)}
+            src={post.imageUrl}
+          />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
             {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
@@ -219,7 +222,7 @@ const Post = ({ post }) => {
           </TagContainer>
         </Content>
         <Footer>
-          <CommentContainer onClick={() => console.log("댓글창")}>
+          <CommentContainer onClick={() => navigate(`/post/${post.postId}`)}>
             <ChatIcon />
             {post.commentCount ? (
               <CommentInfo>댓글 {post.commentCount}개 보기</CommentInfo>

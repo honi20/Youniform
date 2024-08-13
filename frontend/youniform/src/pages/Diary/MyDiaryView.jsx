@@ -3,7 +3,8 @@ import styled from "styled-components";
 import useDiaryStore from "@stores/diaryStore";
 import DiaryDetailView from "./DiaryDetailView";
 import { useParams } from "react-router-dom";
-
+import EmptyState from "@components/Share/EmptyState";
+import EmptyIcon from "@assets/EmptyState/EmptyState_Photocard.svg?react";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -34,6 +35,17 @@ const MyDiaryView = () => {
     }
   };
   const diariesToShow = nickname ? friendDiary : myDiary;
+
+  if (friendDiary.length == 0 || myDiary.length == 0) {
+    console.log("없음");
+    return (
+      <EmptyState
+        icon={EmptyIcon}
+        state="noDiaries"
+        // icon=
+      />
+    );
+  }
   return (
     <div>
       <Container>

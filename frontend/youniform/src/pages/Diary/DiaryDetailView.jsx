@@ -12,7 +12,7 @@ const Div = styled.div`
   height: auto;
 `;
 const Container = styled.div`
-  /* border: 1px solid black; */
+  /* border: 5px solid red; */
 `;
 const ScrollableDiaryView = styled.div`
   flex: 1 1 auto;
