@@ -155,8 +155,7 @@ const DropdownItem = styled.div`
 
 const AlertItem = ({ alert, checkAlert, openDropdownAlertId, onToggleDropdown }) => {
   const { markAlertAsRead, deleteAlert } = useAlertStore();
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-
+  
   let alertMessage = "";
 
   switch (alert.type) {

@@ -76,7 +76,8 @@ const DropdownItem = styled.div`
 
 const AlertView = () => {
   const navigate = useNavigate();
-  const { alerts, fetchAlerts, deleteAlert, markAlertAsRead } = useAlertStore();
+  const { alerts, fetchAlerts, deleteAlert, deleteAllAlerts,
+    markAlertAsRead, markAllAlertsAsRead } = useAlertStore();
   const { acceptFriendRequest, rejectFriend } = useFriendStore();
 
   const [selectedAlert, setSelectedAlert] = useState(null);
@@ -85,7 +86,7 @@ const AlertView = () => {
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
   
   const [openDropdownAlertId, setOpenDropdownAlertId] = useState(null);
-  
+
   useEffect(() => {
     fetchAlerts();
   }, [fetchAlerts]);
@@ -163,16 +164,20 @@ const AlertView = () => {
   };
 
   const toggleDropdown = (alertId) => {
-    setOpenDropdownAlertId(prevId => prevId === alertId ? null : alertId);
+    setOpenDropdownAlertId((prevId) => (prevId === alertId ? null : alertId));
+  };
+
+  const handleMoreOptionsClick = () => {
+    toggleDropdown(""); // 혹은 다른 로직을 사용하여 드롭다운을 열 수 있습니다.
   };
 
   const updateAlertStatus = async (type) => {
     switch (type) {
       case "realAll":
-        await markAlertAsRead(alert.alertId);
+        await markAllAlertsAsRead();
         break;
       case "deleteAll":
-        await deleteAlert(alert.alertId);
+        await deleteAllAlerts();
         break;
     }
     await fetchAlerts();
@@ -184,9 +189,11 @@ const AlertView = () => {
         <AlertBox>
           <TitleText>
             <span>최근 받은 알림</span>
-            <MoreOptions onClick={toggleDropdown}>
+            <MoreOptions onClick={handleMoreOptionsClick}>
               <OptionIcon />
-              <DropdownMenu>
+              <DropdownMenu
+              $visible={openDropdownAlertId === ""}
+              >
                 <DropdownItem
                   onClick={() => updateAlertStatus("realAll")}>
                   모두 읽기
