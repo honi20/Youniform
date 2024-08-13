@@ -64,7 +64,7 @@ const FindPasswordView = () => {
 
   const openSentSuccessModal = () => setIsSuccessModalOpen(true);
   const closeSentSuccessModal = () => {
-    isSuccessModalOpen(false);
+    setIsSuccessModalOpen(false);
   };
 
   const openSentFailureModal = () => setIsFailureModalOpen(true);
@@ -80,11 +80,14 @@ const FindPasswordView = () => {
     const res = await findPassword(email);
     if (res === "$OK") {
       openSentSuccessModal();
-      navigate("/login");
     } else {
       openSentFailureModal();
       setEmail("");
     }
+  };
+  
+  const handleAfterCheck = () => {
+    navigate("/login");
   };
 
   return (
@@ -114,15 +117,12 @@ const FindPasswordView = () => {
         state={"EmailSentSuccess"}
         isOpen={isSuccessModalOpen}
         onClose={closeSentSuccessModal}
-        // onButtonClick={(index) => handleAfterCheck(selectedAlert, index)}
-        // selectedAlert={selectedAlert}
+        onButtonClick={() => handleAfterCheck()}
       />
       <BasicModal
         state={"EmailSentFailure"}
         isOpen={isFailureModalOpen}
         onClose={closeSentFailureModal}
-        // onButtonClick={(index) => handleAfterCheck(selectedAlert, index)}
-        // selectedAlert={selectedAlert}
       />
     </FindPassword>
   );

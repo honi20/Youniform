@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import BasicModal from "@components/Modal/BasicModal";
+import { useNavigate, useParams } from "react-router-dom";
+
 import styled from "styled-components"
-import { TextField, FormControl, InputAdornment, IconButton, Button } from '@mui/material';
-import { Margin, Visibility, VisibilityOff } from '@mui/icons-material';
 import { styled as muiStyled } from "@mui/material/styles";
+import { Margin, Visibility, VisibilityOff } from '@mui/icons-material';
+import { TextField, FormControl, InputAdornment, IconButton, Button } from '@mui/material';
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
-import useUserStore from "../stores/userStore";
-import { useNavigate } from "react-router-dom";
+
+import useUserStore from "@stores/userStore";
+import BasicModal from "@components/Modal/BasicModal";
 import StatusMessageForm from '@components/SignUp/StatusMessageForm';
 
 const FindPassword = styled.div`
@@ -58,35 +60,36 @@ const ColorBtn = muiStyled(Button)(() => ({
 
 const ResetPasswordView = () => {
   const navigate = useNavigate();
-  const { findPassword } = useUserStore();
+  const { uuid } = useParams();
+
+  const { resetPassword } = useUserStore();
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [verifyCode, setVerifyCode] = useState('');
-
   const [passwordError, setPasswordError] = useState('');
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [isPwVerified, setIsPwVerified] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
+  
   // 모달
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
 
   useEffect(() => {
-    const match = password === confirmPassword && validatePassword(password);
+    const match = isPwVerified && password === confirmPassword;
     setIsPasswordMatch(match);
-    setIsPwVerified(match);
-  }, [password, confirmPassword]);
+  }, [password, confirmPassword, isPwVerified]);
 
-  const openSentSuccessModal = () => setIsSuccessModalOpen(true);
-  const closeSentSuccessModal = () => {
-    isSuccessModalOpen(false);
+  const openSuccessModal = () => setIsSuccessModalOpen(true);
+  const closeSuccessModal = () => {
+    setIsSuccessModalOpen(false);
   };
 
-  const openSentFailureModal = () => setIsFailureModalOpen(true);
-  const closeSentFailureModal = () => {
+  const openFailureModal = () => setIsFailureModalOpen(true);
+  const closeFailureModal = () => {
     setIsFailureModalOpen(false);
   };
 
@@ -106,6 +109,7 @@ const ResetPasswordView = () => {
         if (!validatePassword(value)) {
           setPasswordError('비밀번호는 8자 이상 16자 이하의 영문으로, 숫자 및 특수문자를 하나 이상 포함해야 합니다.');
         } else {
+          setIsPwVerified(true);
           setPasswordError('');
         }
         break;
@@ -120,13 +124,15 @@ const ResetPasswordView = () => {
   };
 
   const fetchResetPassword = async () => {
-    const res = await findPassword(email);
-    if (res === "$OK") {
-      openSentSuccessModal();
-      navigate("/login");
+    if (verifyCode.length <= 0) {
+      // 모달창 열기
+      return;
+    }
+    const res = await resetPassword(uuid, verifyCode, password, confirmPassword);
+    if (res === "$SUCCESS") {
+      openSuccessModal();
     } else {
-      openSentFailureModal();
-      setPassword('');
+      openFailureModal();
     }
   };
 
@@ -143,6 +149,17 @@ const ResetPasswordView = () => {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleAfterCheck = (state, index) => {
+    switch (state) {
+      case "ResetPassword":
+        navigate("/login");
+        break;
+      case "ResetPasswordFailure":
+        setPassword('');
+        break;
+    }
   };
 
   return (
@@ -216,7 +233,7 @@ const ResetPasswordView = () => {
         {/* {(user.password.length <= 0 || user.confirmPw.length <= 0) ? (
           <StatusMessageForm statusMsg='비밀번호 정보를 입력하세요.' />
         ) : ( */}
-          {(password.length > 0 && confirmPassword.length > 0) &&!isPasswordMatch && 
+          {(password.length > 0 && confirmPassword.length > 0) && isPwVerified && !isPasswordMatch && 
             <StatusMessageForm
             style={{ width: "100%", margin: "0 auto" }}
             statusMsg='비밀번호 정보가 일치하지 않습니다.' />
@@ -235,19 +252,19 @@ const ResetPasswordView = () => {
           완료
         </ColorBtn>
       </FindPasswordContainer>
+      {/* 비밀번호 수정 성공 / 변경된 비밀번호로 로그인하세요. */}
       <BasicModal
-        state={"EmailSentSuccess"}
+        state={"ResetPassword"}
         isOpen={isSuccessModalOpen}
-        onClose={closeSentSuccessModal}
-        // onButtonClick={(index) => handleAfterCheck(selectedAlert, index)}
-        // selectedAlert={selectedAlert}
+        onClose={closeSuccessModal}
+        onButtonClick={(index) => handleAfterCheck("ResetPassword", index)}
       />
+      {/* 비밀번호 수정 실패 / 정확한 인증 코드를 입력해주세요. */}
       <BasicModal
-        state={"EmailSentFailure"}
+        state={"ResetPasswordFailure"}
         isOpen={isFailureModalOpen}
-        onClose={closeSentFailureModal}
-        // onButtonClick={(index) => handleAfterCheck(selectedAlert, index)}
-        // selectedAlert={selectedAlert}
+        onClose={closeFailureModal}
+        onButtonClick={(index) => handleAfterCheck("ResetPasswordFailure", index)}
       />
     </FindPassword>
     </form>

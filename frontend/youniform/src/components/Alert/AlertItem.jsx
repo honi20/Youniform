@@ -1,13 +1,19 @@
 import styled from 'styled-components';
+import OptionIcon from '@assets/Icons/Options.svg?react';
+import { useState } from 'react';
+import ReadIcon from '@mui/icons-material/VisibilityOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import useAlertStore from '../../stores/alertStore';
 
 const AlertContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 20px;
   background-color: #ebebeb;
   border-radius: 10px;
   color: #4e4e4e;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: relative;
 `;
 
 const AlertHeader = styled.div`
@@ -15,7 +21,7 @@ const AlertHeader = styled.div`
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 
 const IconWrapper = styled.div`
@@ -71,8 +77,9 @@ const MoreOptions = styled.div`
   width: 18%;
   height: 85%;
   margin-left: 8px;
-  justify-content: center;
+  justify-content: right;
   cursor: pointer;
+  position: relative;
 `;
 
 const UpdateStatusCircle = styled.div`
@@ -83,7 +90,6 @@ const UpdateStatusCircle = styled.div`
   height: 6px;
   background-color: #ff355a;
   border-radius: 50%;
-  /* display: ${props => props.$updateStatus ? 'block' : 'none'}; */
 `;
 
 const ColorBtn = styled.button`
@@ -94,13 +100,15 @@ const ColorBtn = styled.button`
   color: white;
   font-size: 12px;
   font-weight: 600;
-`
+`;
+
 const PostContent = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
   margin-top: 10px;
 `;
+
 const VerticalBar = styled.div`
   height: 16px;
   width: 3px;
@@ -108,7 +116,47 @@ const VerticalBar = styled.div`
   margin-right: 5px;
 `;
 
-const AlertItem = ({ alert, checkAlert }) => {
+const AlertBody = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const AlertTextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 82%;
+  gap: 2px;
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 120px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: ${({ $visible }) => ($visible ? 'block' : 'none')};
+`;
+
+const DropdownItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  font-size: 14px;
+  color: #4e4e4e;
+  cursor: pointer;
+  &:hover {
+    background-color: #f1f1f1;
+  }
+`;
+
+const AlertItem = ({ alert, checkAlert, openDropdownAlertId, onToggleDropdown }) => {
+  const { markAlertAsRead, deleteAlert } = useAlertStore();
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
   let alertMessage = "";
 
   switch (alert.type) {
@@ -120,6 +168,9 @@ const AlertItem = ({ alert, checkAlert }) => {
       break;
     case 'POST_COMMENT':
       alertMessage = "회원님의 게시글에 댓글을 남겼습니다.";
+      break;
+    case 'FRIEND_ACCEPTANCE':
+      alertMessage = `<strong>${alert.senderNickname}</strong>님과 친구가 되었습니다.`;
       break;
     case 'PLAYER_APPEARANCE':
       alertMessage = "This is an error alert.";
@@ -138,6 +189,18 @@ const AlertItem = ({ alert, checkAlert }) => {
     }
   };
 
+  const updateAlertStatus = async (type) => {
+    switch (type) {
+      case "read":
+        await markAlertAsRead(alert.alertId);
+        break;
+      case "delete":
+        await deleteAlert(alert.alertId);
+        break;
+    }
+    await fetchAlerts();
+  };
+
   return (
     <AlertContainer>
       <AlertHeader>
@@ -154,24 +217,43 @@ const AlertItem = ({ alert, checkAlert }) => {
             <TimeText>{alert.createdAt}</TimeText>
           </TitleRow>
         </ContentWrapper>
+        <MoreOptions onClick={() => onToggleDropdown(alert.alertId)}>
+          <OptionIcon />
+          <DropdownMenu $visible={openDropdownAlertId === alert.alertId}>
+            <DropdownItem
+              onClick={() => updateAlertStatus("read")}>
+              읽음
+              <ReadIcon />
+            </DropdownItem>
+            <DropdownItem
+              onClick={() => updateAlertStatus("delete")}>
+              삭제
+              <DeleteIcon />
+            </DropdownItem>
+          </DropdownMenu>
+        </MoreOptions>
+      </AlertHeader>
+      <AlertBody>
+        <AlertTextBox>
+          <AlertContent
+            dangerouslySetInnerHTML={{ __html: alertMessage }}
+          />
+          {alert.type === 'POST_COMMENT' &&
+            <PostContent>
+              <VerticalBar />
+              <AlertContent>{alert.content}</AlertContent>
+            </PostContent>
+          }
+        </AlertTextBox>
         <MoreOptions>
           {((alert.type === 'FRIEND_REQUEST') || alert.type === 'POST_COMMENT') &&
-            <ColorBtn onClick={() => checkAlert(alert)}>
+            <ColorBtn onClick={() => checkAlert(alert)}
+              style={{ height: "30px" }}>
               {getButtonText(alert)}
             </ColorBtn>
           }
-          {/* <OptionIcon /> */}
         </MoreOptions>
-      </AlertHeader>
-      <AlertContent
-        dangerouslySetInnerHTML={{ __html: alertMessage }}
-      />
-      {alert.type === 'POST_COMMENT' &&
-        <PostContent>
-          <VerticalBar/>
-          <AlertContent>{alert.content}</AlertContent>
-        </PostContent>
-      }
+      </AlertBody>
     </AlertContainer>
   );
 };

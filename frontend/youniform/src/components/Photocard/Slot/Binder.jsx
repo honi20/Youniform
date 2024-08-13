@@ -179,9 +179,13 @@ const MiddleGroup = styled.div`
   gap: inherit;
 `;
 
-const Binder = () => {
+const Binder = (prevLocation) => {
   const navigate = useNavigate();
+
   const location = useLocation();
+  const { state } = location;
+  const from = state?.from;
+
   const [animate, setAnimate] = useState(false);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -202,17 +206,8 @@ const Binder = () => {
 
   const closeWarningModal = () => setIsWarningModalOpen(false);
 
-  const images = import.meta.glob("/src/assets/photocard/cards/*.png", {
-    eager: true,
-  });
-  const imageArray = Object.values(images).map((module) => module.default);
-
   useEffect(() => {
     const fetchData = async () => {
-      if (location.state?.from === "BinderCover") {
-        setAnimate(true);
-      }
-
       const savedPage = localStorage.getItem("currentPage");
       if (savedPage) {
         setPage(parseInt(savedPage, 10));
@@ -220,19 +215,25 @@ const Binder = () => {
         setPage(0); // 기본 페이지로 설정 (첫 페이지)
       }
 
-      await fetchPhotoCardList(); // 포토카드 리스트 가져오기
+      fetchPhotoCardList(); // 포토카드 리스트 가져오기
       setTotalPages(); // 총 페이지 수 설정
-
-      console.log(photoCards);
     };
 
     fetchData();
-  }, [location.state?.from]);
+  }, [fetchPhotoCardList, setPage, setTotalPages, location.state?.from]);
 
   useEffect(() => {
     // 페이지 정보가 수정 시 localStorage에 저장
     localStorage.setItem("currentPage", page);
   }, [page]);
+
+  useEffect(() => {
+    if (from === 'photo-card') {
+      setAnimate(true);
+    } else {
+      setAnimate(false);
+    }
+  }, [from]);
 
   const handlePhotoFrameClick = (imageUrl, photocardId) => {
     if (!isSelectMode) {
@@ -304,20 +305,28 @@ const Binder = () => {
   };
 
   const deleteCard = async () => {
+    
     console.log(selectedCards);
-    if (selectedCards.length == 0) {
+    if (selectedCards.length === 0) {
       setIsWarningModalOpen(true);
-    } else {
+      return;
+    }
+    
+    try {
       const listStr = selectedCards.join();
       await deletePhotocards(listStr);
       await fetchPhotoCardList();
+    } catch (error) {
+      console.error("Error in deleteCard:", error);
     }
   };
-
+  
   return (
     <>
       <BinderContainer>
-        <CoverImage src={coverimg} className={animate ? "" : "animate"} />
+        { from === 'photo-card' &&
+          <CoverImage src={coverimg} className={animate ? "animate" : ""} />
+        }
         <Paper>
           <Holes>
             {[...Array(6)].map((_, i) => (
@@ -325,7 +334,7 @@ const Binder = () => {
             ))}
           </Holes>
           <PhotoSlot>
-            {!photoCards || !Array.isArray(photoCards) ? (
+            {photoCards.length > 0 || !Array.isArray(photoCards) ? (
               <PhotoGroup>{renderPhotoFrames()}</PhotoGroup>
             ) : (
               <EmptyState icon={EmptyIcon} state="noPhotocards" />
@@ -351,7 +360,7 @@ const Binder = () => {
                 >
                   만들기
                 </ColorBtn>
-                {(!photoCards || !Array.isArray(photoCards)) && (
+                {(photoCards.length > 0 || !Array.isArray(photoCards)) && (
                   <ColorBtn
                     variant="contained"
                     style={{ borderRadius: "20px" }}
@@ -360,7 +369,7 @@ const Binder = () => {
                     선택
                   </ColorBtn>
                 )}
-                {isSelectMode && (
+                {(photoCards.length > 0 && isSelectMode) && (
                   <ColorBtn
                     variant="contained"
                     style={{ borderRadius: "20px" }}
