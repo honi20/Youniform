@@ -1,6 +1,6 @@
 import "./App.css";
 import GlobalStyle from "./globalStyles";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
@@ -16,10 +16,10 @@ import TotalSongView from "@pages/Main/TotalSongView";
 import PlayerSongView from "@pages/Main/PlayerSongView";
 import TeamSongView from "@pages/Main/TeamSongView";
 import ChatView from "@pages/Main/ChatView";
-import StepOneForm from "./components/SignUp/Step1/StepOneForm";
-import StepTwoForm from "./components/SignUp/Step2/StepTwoForm";
-import StepThreeForm from "./components/SignUp/Step3/StepThreeForm";
-import SignUpSuccess from "./components/SignUp/SignUpSuccess";
+import StepOneForm from "@components/SignUp/Step1/StepOneForm";
+import StepTwoForm from "@components/SignUp/Step2/StepTwoForm";
+import StepThreeForm from "@components/SignUp/Step3/StepThreeForm";
+import SignUpSuccess from "@components/SignUp/SignUpSuccess";
 import useThemeStore from "@/stores/themeStore";
 import Header from "@/components/Share/Header";
 import NavBar from "@/components/Share/NavBar";
@@ -32,25 +32,26 @@ import DiaryHomeView from "@/pages/DiaryHomeView";
 import PostView from "@/pages/PostView";
 import MyPageView from "@/pages/MyPageView";
 import SettingView from "@pages/Setting/SettingView";
-import ChangePasswordView from "./pages/Setting/ChangePasswordView";
-import ChangeTheme from "./pages/Setting/ChangeTheme";
-import PushAlarm from "./pages/Setting/PushAlarm";
-import Permissions from "./pages/Setting/Permissions";
-import Contact from "./pages/Setting/Contact";
+import ChangePasswordView from "@pages/Setting/ChangePasswordView";
+import ChangeTheme from "@pages/Setting/ChangeTheme";
+import PushAlarm from "@pages/Setting/PushAlarm";
+import Permissions from "@pages/Setting/Permissions";
+import Contact from "@pages/Setting/Contact";
 import Terms from "@pages/Setting/Terms";
-import Privacy from "./pages/Setting/Privacy";
+import Privacy from "@pages/Setting/Privacy";
 import Version from "@pages/Setting/Version";
-import PhotoCardDetail from "./components/Photocard/Slot/PhotoCardDetail";
+import PhotoCardDetail from "@components/Photocard/Slot/PhotoCardDetail";
 import LikePostView from "@pages/MyPage/LikePostView";
 import FriendView from "@pages/MyPage/FriendView";
 import PostDetailView from "@pages/Post/PostDetailView";
 import SearchView from "@pages/Post/SearchView";
-import WritePostView from "./pages/Post/WritePostView";
+import WritePostView from "@pages/Post/WritePostView";
 import MyPost from "@pages/MyPage/MyPost";
 import ChangeProfile from "@pages/MyPage/ChangeProfile";
 import MyDiaryView from "@pages/Diary/MyDiaryView";
-import AlertView from "./pages/AlertView";
-import ResetPasswordView from "./pages/ResetPasswordView";
+import AlertView from "@pages/AlertView";
+import ResetPasswordView from "@pages/ResetPasswordView";
+
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
   display: flex;
@@ -83,7 +84,10 @@ function App() {
               <Route path="/login" element={<LoginView />} />
               <Route path="/find-email" element={<FindEmailView />} />
               <Route path="/find-password" element={<FindPasswordView />} />
-              <Route path="/reset-password/:uuid" element={<ResetPasswordView />} />
+              <Route
+                path="/reset-password/:uuid"
+                element={<ResetPasswordView />}
+              />
               {/* Photocard */}
               <Route path="/photo-card" element={<PhotoCardView />}>
                 <Route index element={<BinderCover />} />

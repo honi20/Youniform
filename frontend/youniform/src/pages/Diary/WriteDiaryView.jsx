@@ -300,10 +300,9 @@ const WriteDiaryView = () => {
     selectCanvas.renderAll();
     setIsDecorated(!isDecorated);
   };
-  console.log(stampList, stampId);
   return (
     <>
-      <St.StampContainer>
+      <St.StampContainer onClick={() => handleToggle(isOn)}>
         {stampList.length > 0 && (
           <img
             style={{ width: "50px", height: "50px" }}
@@ -315,7 +314,7 @@ const WriteDiaryView = () => {
           ></img>
         )}
         {diaryId ? diary.diaryDate : diaryDate}
-        <ToggleBtn onClick={() => handleToggle(isOn)}>{toggle(isOn)}</ToggleBtn>
+        <ToggleBtn>{toggle(isOn)}</ToggleBtn>
       </St.StampContainer>
       <DiaryModal
         isOn={isOn}

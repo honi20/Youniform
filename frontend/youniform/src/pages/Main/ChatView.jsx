@@ -31,8 +31,7 @@ const ToggleList = styled.div`
   position: absolute;
   z-index: 1;
   top: 10%;
-  /* left: 15%; */
-  width: 40%;
+  width: auto;
   border: 1px solid #737373;
   background-color: white;
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -90,8 +89,8 @@ const ChatView = () => {
       fetchChatRoom(); // 채팅방 리스트를 가져옴
       if (roomId) {
         console.log(roomId);
-        setSelectedRoom(1000);
-        connect(1000);
+        setSelectedRoom(parseInt(roomId, 10)); // roomId를 정수로 변환
+        connect(parseInt(roomId, 10));
       }
     };
     initChat();
@@ -118,15 +117,21 @@ const ChatView = () => {
   const [selected, setSelected] = useState(0);
   const handleToggleBtn = (btnIndex) => {
     handleToggle(isOn);
-    console.log(btnIndex);
     setSelected(btnIndex);
+    setSelectedRoom(btnIndex); // 선택된 방 ID를 설정
+    connect(btnIndex); // 연결할 방 ID를 올바르게 설정
   };
   useEffect(() => {
     console.log(messages);
   }, [messages]);
+  console.log(chatRooms);
   return (
     <St.Wrapper>
       <St.ChatToggleSection>
+        {chatRooms
+          .filter((room) => room.roomId === selectedRoom) // 필터링된 방 배열
+          .map((room) => room.roomName) // 첫 번째 요소에서 방 이름을 가져옴
+          .join(", ")}{" "}
         <ToggleBtn onClick={toggleChatListVisibility}>
           {isChatListVisible ? <UpIcon /> : <DownIcon />}
         </ToggleBtn>
