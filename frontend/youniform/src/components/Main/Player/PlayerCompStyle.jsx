@@ -183,7 +183,7 @@ export const Btn = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  background-color: ${(props) => (props.isOn ? "#4caf50" : "#f44336")};
+  /* background-color: ${(props) => (props.$isOn ? "#4caf50" : "#f44336")}; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -203,7 +203,7 @@ export const SwitchContainer = styled.div`
   width: 60px; // Width of the switch container
   height: 30px; // Height of the switch container
   background-color: ${(props) =>
-    props.isOn
+    props.$isOn
       ? props.theme.primary
       : "#ccc"}; // Background color based on the toggle state
   border-radius: 30px; // Round edges for the switch
@@ -220,7 +220,7 @@ export const Slider = styled.div`
   background-color: white;
   border-radius: 50%;
   position: relative;
-  left: ${(props) => (props.isOn ? "28px" : "0px")};
+  left: ${(props) => (props.$isOn ? "28px" : "0px")};
   transition: left 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   display: flex;

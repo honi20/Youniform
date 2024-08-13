@@ -13,6 +13,7 @@ const usePlayerStore = create((set) => ({
       console.log(res.data.header.message);
       console.log(res.data.body);
       set({ playerList: res.data.body.playerList, loading: false });
+      return res.data.body.playerList
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
       set({ loading: false, error: err.message });

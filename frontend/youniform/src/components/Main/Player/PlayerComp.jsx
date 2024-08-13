@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InfoComp from "./InfoComp";
 import CharacterComp from "./CharacterComp";
 import Star1 from "@assets/Main/Star1.svg?react";
@@ -10,11 +10,25 @@ import Star6 from "@assets/Main/Star6.svg?react";
 import * as St from "./PlayerCompStyle";
 import { getApiClient } from "@stores/apiClient";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../../../stores/userStore";
 
 export default function PlayerContainer({ onSelectPlayer, count, player }) {
   const [selectedFolder, setSelectedFolder] = useState(0);
   const navigate = useNavigate();
-  const [isOn, setIsOn] = useState(false);
+  const { user, fetchUser } = useUserStore();
+  const [isOn, setIsOn] = useState(user ? user.playPushAlert : null);
+
+  useEffect(() => {
+    const loadUser = () => {
+      if (!user || user.length == 0) {
+        fetchUser();
+      }
+      loadUser();
+      setIsOn(user.pushplayPushAlertAlert);
+    };
+  }, [fetchUser, user]);
+
+  console.log(user);
   const handleFolderClick = (index) => {
     console.log(index);
     setSelectedFolder(index);
@@ -24,8 +38,11 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
   const toggleSwitch = async (playerId) => {
     setIsOn(!isOn);
     const apiClient = getApiClient();
+    console.log(!isOn);
     try {
-      const response = await apiClient.patch(`/players/alert/${playerId}`);
+      const response = await apiClient.patch(`/users/play/alert`, {
+        pushAlert: !isOn,
+      });
       console.log("Server response:", response.data);
     } catch (error) {
       console.error("There was an error updating the toggle state:", error);
@@ -46,7 +63,6 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
       </St.FolderHeader>
     );
   };
-  console.log(player);
   return (
     <St.Card>
       <Star1
@@ -119,10 +135,10 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
         <St.BtnContainer onClick={() => console.log("실시간 방송 알림")}>
           {/* <St.OffBtn /> */}
           <St.SwitchContainer
-            isOn={isOn}
+            $isOn={isOn}
             onClick={() => toggleSwitch(player.playerId)}
           >
-            <St.Slider isOn={isOn}>{isOn ? "ON" : "OFF"}</St.Slider>
+            <St.Slider $isOn={isOn}>{isOn ? "ON" : "OFF"}</St.Slider>
           </St.SwitchContainer>
         </St.BtnContainer>
       </St.Container>
