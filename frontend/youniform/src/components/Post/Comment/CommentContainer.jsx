@@ -243,26 +243,28 @@ const CommentContainer = ({ postId, user }) => {
                 ) : (
                   <>
                     <UpperContainer>{comment.contents}</UpperContainer>
-                    {user.nickname === comment.nickname && (
                       <LowerContainer>
                         {comment.createdAt}
-                        &nbsp;
-                        <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
-                        &nbsp;
-                        <Btn
-                          onClick={() =>
-                            handleCommentAction({
-                              action: "delete",
-                              commentId: comment.commentId,
-                            })
-                          }
-                        >
+                        {user.nickname === comment.nickname && 
+                        <>
+                          &nbsp;
+                          <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
+                          &nbsp;
+                          <Btn
+                            onClick={() =>
+                              handleCommentAction({
+                                action: "delete",
+                                commentId: comment.commentId,
+                              })
+                            }
+                          >
                           삭제
-                        </Btn>
+                          </Btn>
+                          </>}
                       </LowerContainer>
-                    )}
                   </>
-                )}
+                )
+}
               </FlexBox>
             </Comment>
           ))}

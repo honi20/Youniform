@@ -1,5 +1,7 @@
 import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
+import ImgSvg from "@assets/Post/img_box.svg?react";
+
 
 export const Wrapper = styled.div`
   height: calc(100vh - 120px);
@@ -135,7 +137,18 @@ export const SubmitBtn = ({ onClick }) => {
     </div>
   );
 };
+
+export const ImgBtn = ({ onClick}) => {
+  return (
+    <div onClick={onClick}>
+      <ImgSvg/>
+    </div>
+  )
+};
+
 export const IconWrapper = styled.div`
   /* border: 1px solid red; */
+  display: flex;
+  gap: 7px;
 `;
 export * from "./ChatViewStyle";
