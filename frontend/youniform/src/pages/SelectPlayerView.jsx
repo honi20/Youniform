@@ -255,6 +255,7 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
         }
       }
     });
+    console.log(selectedPlayers);
   };
 
   const handleConfirmClick = () => {

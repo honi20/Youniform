@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { carouselTest } from "@assets";
 import defaultImg from "@assets/carousel/test_1.jpg";
+import { useParams } from "react-router-dom";
+import usePlayerStore from "../../stores/playerStore";
+import useNewsStore from "../../stores/newsStore";
 
 const Div = styled.div`
   width: 100%;
@@ -19,44 +22,20 @@ const Main = styled.div`
   width: 100%;
 `;
 const TagSection = styled.div`
-  height: 10vh;
+  /* height: 10vh; */
+  height: 50px;
   position: sticky;
   top: 0;
   overflow: hidden;
   display: flex;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #f5f5f5;
 `;
 const ArticleSection = styled.div`
   flex: 1;
-  border: 1px solid green;
+  /* border: 1px solid green; */
   font-size: 2rem;
 `;
-const articles = [
-  {
-    id: 1,
-    title:
-      "'또 역전승!!! 전반기 1위 KIA, 김도영 리드오프 홈런이야야이 삼성 4연패",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-  {
-    id: 2,
-    title: "김도영 짱짱",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-  {
-    id: 3,
-    title: "최!강!기!아!",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-  {
-    id: 4,
-    title: "기아 우승 가보자구",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-];
 const CustomSlider = styled(Slider)`
   height: 100%;
   .slick-slide {
@@ -97,7 +76,6 @@ const Image = styled.img`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 const Tag = styled.div`
-  /* border: 1px solid red; */
   margin: auto 1%;
   width: auto;
   border-radius: 5rem;
@@ -110,7 +88,6 @@ const Tag = styled.div`
   color: ${(props) => (props.selected ? "white" : "#2E3138")};
   background-color: ${(props) =>
     props.selected ? props.theme.primary : "white"};
-  font-family: "Pretendard";
   font-weight: 600;
 `;
 const Article = styled.div`
@@ -162,23 +139,97 @@ const Footer = styled.div`
   justify-content: end;
 `;
 const NewsView = () => {
-  const settings = {
-    centerMode: true,
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    centerPadding: "40px",
-  };
-  const images = Object.values(carouselTest).map((mod) => mod.default);
-  const tags = ["All", ...["이대호", "문교원", "정근우"]];
-  const [selectedTag, setSelectedTag] = useState("All");
+  // CAROSEL SETTINGS
+  // const settings = {
+  //   centerMode: true,
+  //   infinite: true,
+  //   slidesToShow: 1,
+  //   slidesToScroll: 1,
+  //   centerPadding: "40px",
+  // };
+  // const images = Object.values(carouselTest).map((mod) => mod.default);
 
-  const handleTagClick = (tag) => {
-    setSelectedTag(tag);
+  const { playerId } = useParams();
+  const { playerList, fetchPlayerList } = usePlayerStore();
+  const [newsList, setNewsList] = useState([]);
+  const [tags, setTags] = useState(["All"]);
+  const [selectedTagId, setSelectedTagId] = useState(playerId || 0);
+  const { news, fetchTotalNews, getTotalNews, getPlayerNews } = useNewsStore();
+  const [loading, setLoading] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const loadPlayerList = async () => {
+      if (!playerList || playerList.length == 0) {
+        const res = await fetchPlayerList();
+        await fetchTotalNews(res);
+        console.log(news);
+      }
+    };
+    loadPlayerList();
+  }, [playerList, fetchPlayerList, fetchTotalNews]);
+
+  useEffect(() => {
+    if (playerList && playerList.length > 0) {
+      setTags([
+        { id: 0, name: "All" },
+        ...playerList.map((player) => ({
+          id: player.playerId,
+          name: player.name,
+        })),
+      ]);
+    }
+  }, [playerList]);
+
+  useEffect(() => {
+    if (selectedTagId === 0) {
+      setNewsList(getTotalNews());
+    } else {
+      setNewsList(getPlayerNews(selectedTagId));
+    }
+  }, [selectedTagId, getTotalNews, getPlayerNews, news]);
+
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const bottom =
+  //       containerRef.current.scrollHeight ===
+  //       containerRef.current.scrollTop + containerRef.current.clientHeight;
+
+  //     if (bottom && !loading) {
+  //       setLoading(true);
+  //       fetchTotalNews(playerList).finally(() => setLoading(false));
+  //     }
+  //   };
+
+  //   const container = containerRef.current;
+  //   container.addEventListener("scroll", handleScroll);
+
+  //   return () => container.removeEventListener("scroll", handleScroll);
+  // }, [playerList, loading, fetchTotalNews]);
+
+  const handleTagClick = (tagId) => {
+    setSelectedTagId(tagId);
   };
+
+  // useEffect(() => {
+  //   const loadNews = async () => {
+  //     console.log(news.length);
+  //     if (news.length == 0) {
+  //       console.log("test");
+  //       const searchPlayer = playerList.filter(
+  //         (player) => player.playerId == selectedTagId
+  //       )[0];
+  //       console.log(searchPlayer);
+  //       await fetchTotalNews();
+  //     }
+  //   };
+  //   loadNews();
+  //   console.log(news);
+  // }, [fetchNews, news]);
+
   return (
-    <Div>
-      <Main>
+    <Div ref={containerRef}>
+      {/* <Main>
         <CustomSlider {...settings}>
           {images.map((image, index) => (
             <CardNews key={index}>
@@ -186,29 +237,31 @@ const NewsView = () => {
             </CardNews>
           ))}
         </CustomSlider>
-      </Main>
+      </Main> */}
       <TagSection>
         {tags.map((tag, index) => (
           <Tag
             key={index}
-            selected={tag === selectedTag}
-            onClick={() => handleTagClick(tag)}
+            selected={tag.id == selectedTagId}
+            onClick={() => handleTagClick(tag.id)}
           >
-            {tag}
+            {tag.name}
           </Tag>
         ))}
       </TagSection>
       <ArticleSection>
-        {articles.map((article, index) => (
-          <Article key={index}>
-            <ArticleImg />
-            <ArticleContent>
-              <Header>미디어</Header>
-              <Title>{article.title}</Title>
-              <Footer>날짜</Footer>
-            </ArticleContent>
-          </Article>
-        ))}
+        {newsList &&
+          newsList.map((news, index) => (
+            <Article key={index}>
+              <ArticleImg />
+              <ArticleContent>
+                <Header>미디어</Header>
+                <Title>{news.title}</Title>
+                <Footer>날짜</Footer>
+              </ArticleContent>
+            </Article>
+          ))}
+        {loading && <div>Loading...</div>}
       </ArticleSection>
     </Div>
   );

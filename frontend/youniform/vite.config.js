@@ -21,4 +21,14 @@ export default defineConfig({
     global: "window",
     "process.env": {},
   },
+  server: {
+    proxy: {
+      "/v1/search": {
+        target: "https://openapi.naver.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/v1\/search/, "/v1/search"),
+        secure: true,
+      },
+    },
+  },
 });

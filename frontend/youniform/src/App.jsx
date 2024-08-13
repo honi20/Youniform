@@ -132,7 +132,7 @@ function App() {
                 <Route path="step-4" element={<SignUpSuccess />} />
               </Route>
               <Route path="/select-player" element={<SelectPlayerView />} />
-              <Route path="/news" element={<NewsView />} />
+              <Route path="/news/:playerId" element={<NewsView />} />
               {/* 노래 관련 */}
               <Route path="/song" element={<TotalSongView />}>
                 <Route path="player/:playerId" element={<PlayerSongView />} />

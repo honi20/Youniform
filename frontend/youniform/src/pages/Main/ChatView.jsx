@@ -115,16 +115,19 @@ const ChatView = () => {
     console.log(isOn);
   };
   const [selected, setSelected] = useState(0);
+  
   const handleToggleBtn = (btnIndex) => {
     handleToggle(isOn);
     setSelected(btnIndex);
     setSelectedRoom(btnIndex); // 선택된 방 ID를 설정
     connect(btnIndex); // 연결할 방 ID를 올바르게 설정
   };
+
   useEffect(() => {
     console.log(messages);
   }, [messages]);
   console.log(chatRooms);
+
   return (
     <St.Wrapper>
       <St.ChatToggleSection>
