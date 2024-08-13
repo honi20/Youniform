@@ -5,7 +5,6 @@ import { getApiClient } from "@stores/apiClient";
 const useChatStore = create((set, get) => ({
   messages: [],
   content: "",
-  // user: null,
   isChatListVisible: false,
   chatRooms: [], // 전체 룸. axios 이용해서 fetch 필요함
   selectedRoom: null,
@@ -30,7 +29,16 @@ const useChatStore = create((set, get) => ({
     }
 
     const newClient = new Stomp.Client({
-      brokerURL: "ws://youniform.site/api/stomp/chat",
+      brokerURL: "wss://youniform.site/api/stomp/chat",
+      connectHeaders: {
+        Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+      },
+      debug: function (str) {
+        console.log(str);
+      },
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
       onConnect: () => {
         console.log("websocket 연결 성공");
         newClient.subscribe(`/sub/${selectedRoom}`, (message) => {
@@ -100,7 +108,7 @@ const useChatStore = create((set, get) => ({
       const res = await apiClient.get(`/chats/rooms`);
       console.log(res.data.header.message);
       console.log(res.data.body);
-      console.log(res.data.body.chatRoomList);
+      // console.log(res.data.body.chatRoomList);
 
       set({
         chatRooms: res.data.body.chatRoomList,
