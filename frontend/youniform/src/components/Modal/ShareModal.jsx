@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useState, useEffect } from 'react';
+const { Kakao } = window;
 
+import styled, { keyframes } from 'styled-components';
 import ShareIcon from '@assets/Modal/ShareIcon.svg?react';
 import Instagram from '@assets/Modal/InstagramLogo.png';
 import X from '@assets/Modal/XLogo.png';
@@ -106,9 +107,6 @@ const Btn = styled.div`
 const ShareModal = () => {
   const [copied, setCopied] = useState(false);
 
-  // test code
-  const [imageUrl, setImageUrl] = useState("https://youniforms3.s3.ap-northeast-2.amazonaws.com/diary/upload_2024-08-13_04_58_52.png");
-
   const copyToClipboard = () => {
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl)
@@ -120,29 +118,30 @@ const ShareModal = () => {
         console.error('클립보드 복사 실패:', err);
       });
   };
+
+  // 카카오톡 공유
+  const realUrl = "https://youniform.site"
+  const resultUrl = window.location.href;
   
-  const urlToBlob = async (imageUrl) => {
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-    return blob;
+  useEffect(() => {
+    Kakao.cleanup();
+    // JS 키 적용
+    Kakao.init('effa2e35c7eae72bf635ecdf75d2e618');
+    // 성공 시 true 반환
+    console.log(Kakao.isInitialized());
+  }, []);
+
+  const shareToKakao = async () => {
+    Kakao.Share.sendDefault({
+      objectType: 'text',
+      text:
+        '기본 템플릿으로 제공되는 텍스트 템플릿은 텍스트를 최대 200자까지 표시할 수 있습니다. 텍스트 템플릿은 텍스트 영역과 하나의 기본 버튼을 가집니다. 임의의 버튼을 설정할 수도 있습니다. 여러 장의 이미지, 프로필 정보 등 보다 확장된 형태의 카카오톡 공유는 다른 템플릿을 이용해 보낼 수 있습니다.',
+      link: {
+        mobileWebUrl: 'https://developers.kakao.com',
+        webUrl: 'https://developers.kakao.com',
+      },
+    });
   };
-
-  const shareToInstagramStory = async () => {
-        try {
-            const blob = await urlToBlob(imageUrl);
-            const file = blobToFile(blob, 'share_image.png');
-            
-            const formData = new FormData();
-            formData.append("file", file);
-
-            const instagramIntent = `intent://story#Intent;package=com.instagram.android;scheme=instagram;end`;
-
-            // 실제 기기에서만 테스트 가능
-            window.location.href = instagramIntent;
-        } catch (error) {
-            console.error("Error sharing to Instagram Story", error);
-        }
-    };
 
   const currentUrl = window.location.href;
 
@@ -160,7 +159,7 @@ const ShareModal = () => {
           <IconWrapper>
             <IconCircle>
               <img src={Instagram} alt="Instagram Logo"
-              onClick={shareToInstagramStory}/>
+              onClick={shareToKakao}/>
             </IconCircle>
             <SubText>Instagram</SubText>
           </IconWrapper>
