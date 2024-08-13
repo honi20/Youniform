@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import * as Font from "@/typography";
 import useFriendStore from "@stores/friendStore";
 import ProfileModal from "@components/Modal/ProfileModal";
+import useUserStore from "../../stores/userStore";
 
 const Container = styled.div`
   margin: 1%;
@@ -54,7 +55,18 @@ const DeleteBtn = styled.div`
 `;
 const Friend = ({ friend, setSelectedFriend }) => {
   const { deleteFriend } = useFriendStore();
+  const { user, fetchUser } = useUserStore();
   const [isModalOpen, setModalOpen] = useState(false);
+  useEffect(() => {
+    const loadUserDate = () => {
+      if (!user || user.length == 0) {
+        console.log("user data fatch");
+        fetchUser();
+      }
+    };
+    loadUserDate();
+  }, [user, fetchUser]);
+  
   const handleDeleteBtn = () => {
     console.log("친구삭제");
     deleteFriend(friend.userId);
@@ -78,7 +90,8 @@ const Friend = ({ friend, setSelectedFriend }) => {
         <DeleteBtn onClick={handleDeleteBtn}>삭제</DeleteBtn>
       )}
       <ProfileModal
-        user={friend}
+        user={user}
+        friend={friend}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       />

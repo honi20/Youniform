@@ -55,24 +55,27 @@ const useChatStore = create((set, get) => ({
 
         //경덕
         // 접속자 수 경로 구독
-        newClient.subscribe(`/sub/${selectedRoom}/userCount`, (message) => {
-          const userCount = parseInt(message.body, 10);
-          console.log("접속자 수 업데이트:", userCount);
-          set({ connectedUsers: userCount });
-        });
+        // newClient.subscribe(`/sub/${selectedRoom}/userCount`, (message) => {
+        //   const userCount = parseInt(message.body, 10);
+        //   console.log("접속자 수 업데이트:", userCount);
+        //   set({ connectedUsers: userCount });
+        // });
 
         // 하트비트 전송 설정 (1초마다 하트비트 전송)
-        const heartbeatInterval = setInterval(() => {
-          if (newClient.connected) {
-            newClient.publish({
-              destination: `/pub/heartbeat`,
-              body: JSON.stringify({ type: "HEARTBEAT" }),
-            });
-            console.log("하트비트 전송");
-          }
-        }, 1000);
+        // const heartbeatInterval = setInterval(() => {
+        //   if (newClient.connected) {
+        //     newClient.publish({
+        //       destination: `/pub/heartbeat`,
+        //       body: JSON.stringify({ type: "HEARTBEAT" }),
+        //       headers: {
+        //         Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+        //       },
+        //     });
+        //     console.log("하트비트 전송");
+        //   }
+        // }, 1000);
 
-        set({ heartbeatInterval });
+        // set({ heartbeatInterval });
       },
       //
 
@@ -93,8 +96,8 @@ const useChatStore = create((set, get) => ({
       client.deactivate();
 
       //경덕,
-      clearInterval(heartbeatInterval); // 하트비트 타이머 중지
-      set({ client: null, heartbeatInterval: null });
+      // clearInterval(heartbeatInterval); // 하트비트 타이머 중지
+      // set({ client: null, heartbeatInterval: null });
       //
 
       // 위 코드로 대체했음.
@@ -148,12 +151,14 @@ const useChatStore = create((set, get) => ({
       client.publish({
         destination: `/pub/${selectedRoom}`,
         body: JSON.stringify(message),
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+        },
       });
 
-      set((state) => ({
-        messages: [...state.messages, message],
+      set({
         content: "",
-      }));
+      });
     }
   },
 }));

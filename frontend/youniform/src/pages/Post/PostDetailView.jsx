@@ -239,7 +239,7 @@ const PostDetailView = () => {
               <HeartIcon isLiked={like !== null ? like : post.isLiked} />
             </HeartContainer>
           </Footer>
-          <CommentContainer postId={post.postId}/>
+          <CommentContainer postId={post.postId} user={user}/>
         </Container>
       ) : (
         <>엥</>
