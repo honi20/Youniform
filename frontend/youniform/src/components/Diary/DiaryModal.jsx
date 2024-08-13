@@ -61,7 +61,9 @@ const StampSlider = styled.div`
   gap: 10px;
   padding: 10px 20px;
   align-items: center;
-  border: 1px solid black;
+  width: 365px;
+  border-radius: 12px;
+  background: #f5f5f5;
 `;
 const ScopeContainer = styled.div`
   ${Font.Small};
@@ -72,21 +74,25 @@ const ScopeContainer = styled.div`
   padding: 10px 0;
 `;
 const ScopeSetting = styled.div`
+  ${Font.Small};
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 20px 0;
+  width: 365px;
+  border-radius: 5px;
+  background: #f5f5f5;
 `;
 
 const ScopeButton = styled.button`
-  ${Font.Small};
-  font-weight: 400;
   background-color: ${(props) =>
-    props.selected ? props.theme.secondary : "#ddd"};
+    props.selected ? props.theme.secondary : "#f5f5f5"};
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
   font-size: 16px;
+  width: 121px;
+
   cursor: pointer;
 
   &:hover {
@@ -111,7 +117,6 @@ const Footer = styled.div`
   height: 50px;
   display: flex;
   justify-content: center;
-  /* align-items: center; */
 `;
 const CompleteBtn = styled.div`
   ${Font.Small};

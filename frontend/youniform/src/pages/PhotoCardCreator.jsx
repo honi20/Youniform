@@ -161,7 +161,6 @@ const PhotoCardCreator = () => {
         return <div>사진</div>; // 사진 컴포지션
       default:
         return <FrameComp />;
-        return <FrameComp />;
     }
   };
 
