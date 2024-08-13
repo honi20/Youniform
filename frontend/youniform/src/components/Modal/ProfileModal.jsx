@@ -136,9 +136,8 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const { fetchFriendPosts } = usePostStore();
   const { fetchFriendDiary } = useDiaryStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openSaveModal = () => setIsSaveModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
   if (!isOpen) return null;
+  
   if (user.nickname === friend.nickname) {
     navigate("/my-page");
     return;

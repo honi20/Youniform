@@ -185,7 +185,7 @@ const ChangeProfile = () => {
       });
       console.log(res.data.header.message);
       console.log(res.data.body);
-      navigate("/my-page")
+      navigate("/my-page");
       // return res.data.body.diaryId;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
