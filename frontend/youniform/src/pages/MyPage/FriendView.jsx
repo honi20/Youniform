@@ -31,19 +31,28 @@ const FriendView = () => {
     useFriendStore();
   const [selectedFriend, setSelectedFriend] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [friendList, setFriendList] = useState([]);
+  const [waitingList, setWaitingList] = useState([]);
+
+  const seperateFriendList = () => {
+    setFriendList(friends.filter((friend) => friend.status === "FRIEND"));
+    setWaitingList(friends.filter((friend) => friend.status === "WAITING"));
+  };
   // 유저의 친구 목록 패치
   useEffect(() => {
     const loadFriends = () => {
       if (friends.length == 0) {
         fetchFriends();
       }
+      seperateFriendList();
     };
     loadFriends();
   }, [fetchFriends, friends]);
+
   // 친구 목록이 없는 경우 -> 추천 친구 목록 패치
   useEffect(() => {
     const loadRecommendFriends = () => {
-      if (recommendFriends.length == 0) {
+      if (friends.length == 0) {
         fetchRecommendFriends();
       }
     };
@@ -54,21 +63,36 @@ const FriendView = () => {
     <Container>
       <Header>친구 목록</Header>
       <Friends>
+        요청 중인 칭구
+        {waitingList.map((friend) => (
+          <Friend
+            key={friend.userId}
+            friend={friend}
+            setSelectedFriend={setSelectedFriend}
+            setModalOpen={setModalOpen}
+          />
+        ))}
+      </Friends>
+      <Friends>
+        내 칭구
         {friends.length > 0 ? (
-          friends.map((friend) => (
-            <Friend
-              key={friend.friendId}
-              friend={friend}
-              setSelectedFriend={setSelectedFriend}
-              setModalOpen={setModalOpen}
-            ></Friend>
-          ))
+          <>
+            {friendList.map((friend) => (
+              <Friend
+                key={friend.userId}
+                friend={friend}
+                setSelectedFriend={setSelectedFriend}
+                setModalOpen={setModalOpen}
+              ></Friend>
+            ))}
+          </>
         ) : (
           <>
             <p>유저를 추천드립니다.</p>
             {recommendFriends.map((friend) => (
               <Friend
-                key={friend.friendId}
+                state="recommend"
+                key={friend.userId}
                 friend={friend}
                 setSelectedFriend={setSelectedFriend}
                 setModalOpen={setModalOpen}
@@ -77,11 +101,11 @@ const FriendView = () => {
           </>
         )}
       </Friends>
-      <ProfileModal
+      {/* <ProfileModal
         user={selectedFriend}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
-      />
+      /> */}
     </Container>
   );
 };

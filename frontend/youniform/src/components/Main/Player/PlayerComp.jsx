@@ -9,10 +9,11 @@ import Star5 from "@assets/Main/Star5.svg?react";
 import Star6 from "@assets/Main/Star6.svg?react";
 import * as St from "./PlayerCompStyle";
 import { getApiClient } from "@stores/apiClient";
+import { useNavigate } from "react-router-dom";
 
 export default function PlayerContainer({ onSelectPlayer, count, player }) {
   const [selectedFolder, setSelectedFolder] = useState(0);
-
+  const navigate = useNavigate();
   const [isOn, setIsOn] = useState(false);
   const handleFolderClick = (index) => {
     console.log(index);

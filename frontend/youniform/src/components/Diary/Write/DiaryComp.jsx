@@ -9,37 +9,40 @@ import BasicModal from "@components/Modal/BasicModal";
 const ImageContainer = styled.div`
   height: 502px;
   width: 302px;
-  border: 1px solid black;
+  /* border: fi1px solid black; */
 `;
 const DiaryComp = ({ state, diary }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { deleteDiary } = useDiaryStore();
   const handleDeleteBtn = async (diaryId) => {
-    console.log("다이어리 삭제", diaryId)
+    console.log("다이어리 삭제", diaryId);
     await deleteDiary(diaryId);
-    navigate('/diary')
-  }
+    navigate("/diary");
+  };
   const handleButtonClick = (index) => {
     switch (index) {
       case 1:
-        console.log('Button 1 clicked');
+        console.log("Button 1 clicked");
         // 추가 작업
         break;
       case 2:
-        console.log('Button 2 clicked');
+        console.log("Button 2 clicked");
         // 추가 작업
         break;
       case 3:
-        console.log('Button 3 clicked');
+        console.log("Button 3 clicked");
         handleDeleteBtn(diary.diaryId);
         break;
       default:
-        console.log('Unknown button clicked');
+        console.log("Unknown button clicked");
         break;
     }
   };
-  console.log(diary);
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split("-");
+    return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
+  };
   return (
     <St.Diary>
       <St.DiaryHeader>
@@ -47,10 +50,13 @@ const DiaryComp = ({ state, diary }) => {
         <St.TextContainer>
           <St.HeaderText>{diary.nickname}</St.HeaderText>
         </St.TextContainer>
+        <St.DiaryDate>
+          {diary?.diaryDate && formatDate(diary.diaryDate)}
+        </St.DiaryDate>
       </St.DiaryHeader>
       <St.DiaryContent>
         <ImageContainer>
-          <img src={diary.diaryImgUrl}/>
+          <img src={diary.diaryImgUrl} />
         </ImageContainer>
       </St.DiaryContent>
       <St.DiaryFooter>

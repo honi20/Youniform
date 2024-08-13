@@ -5,6 +5,8 @@ import BasicModal from "@components/Modal/BasicModal";
 import useSignUpStore from "@stores/signUpStore";
 import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import usePlayerStore from "../stores/playerStore";
 const Div = styled.div`
   width: 100%;
   height: calc(100vh - 120px);
@@ -190,20 +192,22 @@ const ConfirmBtn = styled.div`
 
 const SelectPlayerView = ({ teamId = "1000" }) => {
   const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
+  const { fetchPlayerList } = usePlayerStore();
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchPlayerInfo = async (teamId) => {
       const API_URL = import.meta.env.VITE_API_URL;
       try {
         const res = await axios({
           method: "get",
-          url: `${API_URL}/players/list/1000`,
+          url: `${API_URL}/players/list/1000`, // teanId = 최강야구여서 1000번으로 고정
         });
 
         const { body, header } = res.data;
         console.log(body);
         console.log(header.message);
+
         setPlayerList((prevList) => {
-          // 이전 리스트가 "없음"이면 새로운 리스트로 교체
           if (prevList.length === 1) {
             return [...prevList, ...body.playerList];
           } else {
@@ -212,7 +216,6 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
           }
         });
       } catch (err) {
-        // handleApiError(err);
         console.log(err);
       }
     };
@@ -269,14 +272,12 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
     }
     setIsModalOpen(false);
   };
+
   const changePlayer = async () => {
     const apiClient = getApiClient();
-    //     console.log(selectedPlayers)
-    //     const result = checkTypes(selectedPlayers);
-    // console.log(result);
     try {
       const res = await apiClient.patch(`users/favorite`, {
-        teamId: 1,
+        teamId: 1000,
         players: selectedPlayers,
       });
       console.log(res.data);
@@ -284,25 +285,13 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
 
       console.log(body);
       console.log(header.message);
+      await fetchPlayerList();
+      navigate("/");
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
   };
-  function checkTypes(arr) {
-    if (!Array.isArray(arr)) {
-      throw new TypeError("Input must be an array");
-    }
 
-    return arr.map((value) => {
-      if (typeof value === "string") {
-        return `${value} is a string`;
-      } else if (typeof value === "number") {
-        return `${value} is a number`;
-      } else {
-        return `${value} is neither a string nor a number`;
-      }
-    });
-  }
   return (
     <Div>
       <Header>

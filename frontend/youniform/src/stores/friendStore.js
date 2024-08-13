@@ -50,7 +50,7 @@ const useFriendStore = create((set) => ({
       console.log(res.data.header.message);
 
       set((state) => ({
-        friends: state.friends.filter((friend) => friend.friendId !== friendId),
+        friends: state.friends.filter((friend) => friend.userId !== friendId),
       }));
     } catch (err) {
       console.error("Error deleting friend:");
@@ -83,12 +83,12 @@ const useFriendStore = create((set) => ({
   fetchRecommendFriends: async () => {
     const apiClient = getApiClient();
     try {
-      const res = await apiClient.GET(`/users/lists`);
+      const res = await apiClient.get(`/users/lists`);
       console.log(res.data.header);
       console.log(res.data.body.userList.content);
       set({ recommendFriends: res.data.body.userList.content });
     } catch (error) {
-      console.log("Failed to fetchDiaryFriends", error);
+      console.log("Failed to fetchRecommendFriends", error);
     }
   },
 }));

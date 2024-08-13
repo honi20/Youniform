@@ -95,6 +95,7 @@ function App() {
                 />
                 <Route path="create" element={<PhotoCardCreator />} />
               </Route>
+              {/* 다이어리 */}
               <Route path="/diary/*">
                 <Route index element={<DiaryHomeView />} />
                 <Route path=":diaryId" element={<DiaryDetailView />} />

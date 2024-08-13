@@ -24,10 +24,10 @@ const Nav = styled.nav`
   padding: 0% 2%;
   border: 1px solid black;
   width: 100%;
-  max-width: 500px;
-  @media (min-width: 500px) {
+  max-width: 400px;
+  @media (min-width: 400px) {
     .nav {
-      max-width: 500px !important;
+      max-width: 400px !important;
       width: 100% !important;
       margin: 0 auto !important;
     }
