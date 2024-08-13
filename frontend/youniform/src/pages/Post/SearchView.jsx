@@ -14,6 +14,11 @@ const Container = styled.div`
   flex-direction: column;
   height: calc(100vh - 120px);
 `;
+const RecommendContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 5% 5%;
+`;
 const SearchView = () => {
   const location = useLocation();
   const queryParams = useRef(queryString.parse(location.search));
@@ -59,6 +64,7 @@ const SearchView = () => {
       }
     }
   }, [searchQuery, tagId]);
+
   useEffect(() => {
     const loadRecommendFriends = () => {
       if (recommendFriends.length == 0) {
@@ -67,9 +73,11 @@ const SearchView = () => {
     };
     loadRecommendFriends();
   }, [fetchRecommendFriends, recommendFriends]);
+
   const hasSearchParams = Boolean(
     queryParams.current.q || queryParams.current.type
   );
+  const [selectedFriend, setSelectedFriend] = useState();
   const renderContent = () => {
     console.log(hasSearchParams, searchQuery);
     if (hasSearchParams) {
@@ -97,14 +105,16 @@ const SearchView = () => {
         />
       ) : (
         <>
-          {recommendFriends.map((friend) => (
-            <Friend
-              key={friend.friendId}
-              friend={friend}
-              setSelectedFriend={setSelectedFriend}
-              setModalOpen={setModalOpen}
-            ></Friend>
-          ))}
+          <RecommendContainer>
+            <p>친구를 추천드립니다</p>
+            {recommendFriends.map((friend) => (
+              <Friend
+                key={friend.friendId}
+                friend={friend}
+                setSelectedFriend={setSelectedFriend}
+              ></Friend>
+            ))}
+          </RecommendContainer>
         </>
       );
     }
@@ -118,7 +128,6 @@ const SearchView = () => {
           type={type}
           setSearch={setSearch}
         />
-        {/* {type} */}
         <div>{renderContent()}</div>
       </Container>
     </>

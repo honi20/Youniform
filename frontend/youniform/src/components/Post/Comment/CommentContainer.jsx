@@ -197,11 +197,10 @@ const CommentContainer = ({ postId, user }) => {
                   src={comment.imgUrl}
                   alt={`${comment.nickname}의 프로필`}
                 />
-                {comment.nickname} 
+                {comment.nickname}
               </ProfileContainer>
               <FlexBox>
-                {user.nickname === comment.nickname &&
-                editedComment &&
+                {editedComment &&
                 editedComment.commentId === comment.commentId ? (
                   <>
                     <UpperContainer>
@@ -244,22 +243,24 @@ const CommentContainer = ({ postId, user }) => {
                 ) : (
                   <>
                     <UpperContainer>{comment.contents}</UpperContainer>
-                    <LowerContainer>
-                      {comment.createdAt}
-                      &nbsp;
-                      <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
-                      &nbsp;
-                      <Btn
-                        onClick={() =>
-                          handleCommentAction({
-                            action: "delete",
-                            commentId: comment.commentId,
-                          })
-                        }
-                      >
-                        삭제
-                      </Btn>
-                    </LowerContainer>
+                    {user.nickname === comment.nickname && (
+                      <LowerContainer>
+                        {comment.createdAt}
+                        &nbsp;
+                        <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
+                        &nbsp;
+                        <Btn
+                          onClick={() =>
+                            handleCommentAction({
+                              action: "delete",
+                              commentId: comment.commentId,
+                            })
+                          }
+                        >
+                          삭제
+                        </Btn>
+                      </LowerContainer>
+                    )}
                   </>
                 )}
               </FlexBox>

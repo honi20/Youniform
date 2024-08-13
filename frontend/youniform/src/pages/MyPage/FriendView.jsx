@@ -69,7 +69,7 @@ const FriendView = () => {
             key={friend.userId}
             friend={friend}
             setSelectedFriend={setSelectedFriend}
-            setModalOpen={setModalOpen}
+            // setModalOpen={setModalOpen}
           />
         ))}
       </Friends>

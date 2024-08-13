@@ -66,13 +66,13 @@ const useUserStore = create((set, get) => ({
   findPassword: async (email) => {
     try {
       const response = await axios.post(`${API_URL}/users/password/send`, {
-        email
+        email,
       });
       console.log(response.data.header.message);
       console.log(response);
       if (response.data.header.httpStatusCode === 200) {
         return "$OK";
-      } 
+      }
     } catch (err) {
       console.log("Failed to fetchLogin", err);
       return "$FAIL";
@@ -89,13 +89,13 @@ const useUserStore = create((set, get) => ({
         uuid: uuid,
         verify: verifyCode,
         password: pw,
-        confirmPassword: confirmPw
+        confirmPassword: confirmPw,
       });
       console.log(response);
       console.log(response.data.header.message);
       if (response.data.header.httpStatusCode === 200) {
         return "$SUCCESS";
-      } 
+      }
     } catch (err) {
       console.log("Failed to fetchLogin", err);
       return "$FAIL";
