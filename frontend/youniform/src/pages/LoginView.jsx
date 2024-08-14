@@ -134,7 +134,7 @@ const LoginView = () => {
   const [emailInput, setEmailInput] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [currency, setCurrency] = useState("");
-  const subscribe = useAlertStore(state => state.subscribe);
+  // const subscribe = useAlertStore(state => state.subscribe);
 
   const navigate = useNavigate();
 
@@ -207,7 +207,7 @@ const LoginView = () => {
     } else if (result === "$OK") {
       await fetchPhotoCardList();
       await setTotalPages(photoCards / 4 + 1);
-      subscribe();
+      // subscribe();
       console.log(`로그인 성공`);
       console.log(`sse 연결 성공`)
       navigate("/");

@@ -72,13 +72,13 @@ const ContentContainer = styled.div`
 function App() {
   const [contentHeight, setContentHeight] = useState("auto");
   const { theme, setTheme } = useThemeStore();
-  const subscribe = useAlertStore(state => state.subscribe);
+  // const subscribe = useAlertStore(state => state.subscribe);
 
-  useEffect(() => {
-    if (isLoggedIn()) {
-      subscribe(); // 로그인된 상태일 때만 subscribe 요청
-    }
-  }, [subscribe]);
+  // useEffect(() => {
+  //   if (isLoggedIn()) {
+  //     subscribe(); // 로그인된 상태일 때만 subscribe 요청
+  //   }
+  // }, [subscribe]);
 
 
   useEffect(() => {
