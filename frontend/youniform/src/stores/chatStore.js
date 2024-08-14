@@ -5,42 +5,46 @@ import { getApiClient } from "@stores/apiClient";
 const useChatStore = create((set, get) => ({
   messages: [],
   content: "",
-  isChatListVisible: false,
   chatRooms: [], // 전체 룸. axios 이용해서 fetch 필요함
   selectedRoom: null,
   client: null, // WebSocket 클라이언트
-
+  isConnected: false, // WebSocket 연결 상태
   //경덕
   // 하트비트 타이머 ID
   heartbeatInterval: null,
   // 현재 접속자 수
   connectedUsers: 0,
-  //
 
   connect: () => {
-    const { client, selectedRoom } = get();
+    const { client, selectedRoom, isConnected, fetchChatRoomMessage } = get();
     if (!selectedRoom) {
       console.warn("selectedRoom이 설정되지 않았습니다.");
       return;
     }
-    if (client) {
-      console.log("client가 있음");
+    if (client && isConnected) {
+      console.log("이미 연결되어 있습니다.");
       return;
     }
+
+    const token = window.localStorage.getItem("accessToken");
+    console.log("Retrieved token from localStorage:", token);
 
     const newClient = new Stomp.Client({
       brokerURL: "wss://youniform.site/api/stomp/chat",
       connectHeaders: {
-        Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${token}`,
       },
-      debug: function (str) {
-        console.log(str);
-      },
+      // debug: function (str) {
+      //   console.log(str);
+      // },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
       onConnect: () => {
-        console.log("websocket 연결 성공");
+        console.log("websocket 연결 성공", selectedRoom);
+        set({ isConnected: true });
+        fetchChatRoomMessage();
+
         newClient.subscribe(`/sub/${selectedRoom}`, (message) => {
           try {
             const receivedMessage = JSON.parse(message.body);
@@ -52,56 +56,28 @@ const useChatStore = create((set, get) => ({
             console.error("메시지 파싱 오류", e);
           }
         });
-
-        //경덕
-        // 접속자 수 경로 구독
-        // newClient.subscribe(`/sub/${selectedRoom}/userCount`, (message) => {
-        //   const userCount = parseInt(message.body, 10);
-        //   console.log("접속자 수 업데이트:", userCount);
-        //   set({ connectedUsers: userCount });
-        // });
-
-        // 하트비트 전송 설정 (1초마다 하트비트 전송)
-        // const heartbeatInterval = setInterval(() => {
-        //   if (newClient.connected) {
-        //     newClient.publish({
-        //       destination: `/pub/heartbeat`,
-        //       body: JSON.stringify({ type: "HEARTBEAT" }),
-        //       headers: {
-        //         Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-        //       },
-        //     });
-        //     console.log("하트비트 전송");
-        //   }
-        // }, 1000);
-
-        // set({ heartbeatInterval });
       },
-      //
 
       onStompError: (frame) => {
         console.error("STOMP 오류", frame);
       },
+      onDisconnect: () => {
+        set({ isConnected: false });
+        console.log("websocket 연결 해제");
+      },
     });
+
     newClient.activate();
     set({ client: newClient });
   },
-  disconnect: () => {
-    // 경덕,
-    //const { clien } = get();
-    // 아래코드로 대체했음.
 
+  disconnect: () => {
     const { client, heartbeatInterval } = get();
     if (client) {
       client.deactivate();
-
-      //경덕,
+      // 경덕
       // clearInterval(heartbeatInterval); // 하트비트 타이머 중지
-      // set({ client: null, heartbeatInterval: null });
-      //
-
-      // 위 코드로 대체했음.
-      //set({ client: null });
+      set({ client: null, isConnected: false, heartbeatInterval: null });
     }
   },
 
@@ -111,17 +87,30 @@ const useChatStore = create((set, get) => ({
       const res = await apiClient.get(`/chats/rooms`);
       console.log(res.data.header.message);
       console.log(res.data.body);
-      // console.log(res.data.body.chatRoomList);
 
       set({
         chatRooms: res.data.body.chatRoomList,
       });
     } catch (error) {
-      console.log("Failed to fetch user", error);
+      console.log("Failed to fetch chat rooms", error);
       set({ loading: false, error: error.message });
     }
   },
 
+  fetchChatRoomMessage: async () => {
+    const { selectedRoom, messages } = get();
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.get(`/chats/rooms/${selectedRoom}`);
+      console.log("채팅방 메세지 fetch");
+      console.log(res.data.body.messages.content);
+
+      set({ messages: res.data.body.messages.content });
+      console.log(messages);
+    } catch (error) {
+      console.log("Failed to fetch chat room messages", error);
+    }
+  },
   toggleChatListVisibility: () =>
     set((state) => ({ isChatListVisible: !state.isChatListVisible })),
 
@@ -133,9 +122,14 @@ const useChatStore = create((set, get) => ({
   setSelectedRoom: (room) => set({ selectedRoom: room }),
 
   sendMessage: (nickname, imageUrl) => {
-    const { content, client, selectedRoom } = get();
+    const { content, client, selectedRoom, isConnected } = get();
 
     if (content.trim() === "") return;
+    if (!isConnected) {
+      console.error("STOMP 클라이언트가 연결되지 않았습니다.");
+      return;
+    }
+
     console.log("메세지 보냄", client);
     const now = new Date();
     const formattedDate = now.toISOString();
@@ -147,7 +141,7 @@ const useChatStore = create((set, get) => ({
     };
 
     if (client) {
-      console.log("채팅방 구독 성공", client);
+      console.log("메시지 전송", client);
       client.publish({
         destination: `/pub/${selectedRoom}`,
         body: JSON.stringify(message),
@@ -156,10 +150,58 @@ const useChatStore = create((set, get) => ({
         },
       });
 
-      set({
-        content: "",
+      set({ content: "" });
+    }
+  },
+  sendImage: async (file) => {
+    const { selectedRoom } = get();
+    if (!selectedRoom || !file) return;
+
+    const apiClient = getApiClient();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await apiClient.post(`/chats/messages/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+        },
       });
+      console.log(res.data.header);
+      console.log(res.data.body);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  },
+
+  fetchPreviousMessages: async () => {
+    const { selectedRoom, messages } = get();
+    if (!selectedRoom) return;
+
+    const apiClient = getApiClient();
+    // const lastMessage = messages[0];
+    // const beforeTimestamp = lastMessage
+    //   ? new Date(lastMessage.messageTime).toISOString()
+    //   : new Date().toISOString();
+
+    try {
+      const res = await apiClient.get(
+        `/chats/messages/${selectedRoom}/previous`,
+        {
+          messageId: 0,
+          size: 10,
+        }
+      );
+      console.log(res.data.body);
+      // const newMessages = res.data.body.messages;
+      // set((state) => ({
+      //   messages: [...state.messages, ...newMessages],
+      // }));
+    } catch (error) {
+      console.log("Failed to fetch previous messages", error);
     }
   },
 }));
+
 export default useChatStore;

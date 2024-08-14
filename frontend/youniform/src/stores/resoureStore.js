@@ -43,6 +43,8 @@ const useResourceStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get("/diaries/resources");
+      console.log(res.data.header);
+      console.log(res.data.body);
       const resourceList = res.data.body.resourceList;
 
       set((state) => ({

@@ -78,14 +78,14 @@ const WriteDiaryView = () => {
     fetchStamp();
   }, [fetchStampList, stampList]);
 
-  // useEffect(() => {
-  //   const loadResources = () => {
-  //     if (resources.length == 0) {
-  //       fetchResources();
-  //     }
-  //   };
-  //   loadResources();
-  // }, [fetchResources, resources]);
+  useEffect(() => {
+    const loadResources = () => {
+      if (!resources || resources.length == 0) {
+        fetchResources();
+      }
+    };
+    loadResources();
+  }, [fetchResources, resources]);
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
