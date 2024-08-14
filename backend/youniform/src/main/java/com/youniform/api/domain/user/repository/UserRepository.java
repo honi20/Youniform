@@ -22,6 +22,8 @@ public interface UserRepository extends JpaRepository<Users, Long>, UserCustomRe
 
     Users findByNickname(String nickname);
 
+    List<Users> findAllByPushAlertTrue();
+
     @Query("SELECT u FROM Users u " +
             "WHERE u.nickname LIKE %:nickname% " +
             "ORDER BY CASE WHEN u.nickname = :nickname THEN 1 ELSE 2 END, u.nickname")

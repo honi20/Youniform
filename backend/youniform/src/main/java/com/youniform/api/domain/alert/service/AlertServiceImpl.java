@@ -131,6 +131,14 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	public void sendCleanSweepAlert() {
+		List<Users> uesrs = userRepository.findAllByPushAlertTrue();
+		uesrs.forEach(user -> {
+			send(user.getUuid(), 124L, AlertType.CLEAN_SWEEP, "10분 뒤 최강야구 방송이 시작됩니다!", null);
+		});
+	}
+
+	@Override
 	public void send(String receiverUuid, Long senderId, AlertType type, String content, Long pk) {
 		Users receiver = userRepository.findByUuid(receiverUuid)
 				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
