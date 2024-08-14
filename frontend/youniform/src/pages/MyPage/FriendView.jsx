@@ -41,18 +41,18 @@ const FriendView = () => {
   // 유저의 친구 목록 패치
   useEffect(() => {
     const loadFriends = () => {
-      if (friends.length == 0) {
+      if (friends.length == 0 && recommendFriends.length == 0) {
         fetchFriends();
       }
-      seperateFriendList();
     };
     loadFriends();
+    seperateFriendList(); // friends가 변경될 때만 호출
   }, [fetchFriends, friends]);
 
   // 친구 목록이 없는 경우 -> 추천 친구 목록 패치
   useEffect(() => {
     const loadRecommendFriends = () => {
-      if (friends.length == 0) {
+      if (recommendFriends.length == 0) {
         fetchRecommendFriends();
       }
     };
