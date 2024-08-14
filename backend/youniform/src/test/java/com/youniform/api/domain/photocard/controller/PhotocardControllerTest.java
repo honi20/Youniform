@@ -387,9 +387,53 @@ class PhotocardControllerTest {
                                                 fieldWithPath("body.*[].imgUrl").type(JsonFieldType.STRING).description("포토카드 이미지 URL")
                                         )
                                 )
-                                .responseSchema(Schema.schema("Photocard 상세조회 Response"))
+                                .responseSchema(Schema.schema("Photocard 리스트 조회 Response"))
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    public void 포토카드_리소스_리스트_조회_성공() throws Exception {
+        PhotocardResourceDto dto1 = new PhotocardResourceDto("TEMPLATE", List.of("template_url1", "template_url2"));
+        PhotocardResourceDto dto2 = new PhotocardResourceDto("STICKER", List.of("sticker_url1", "sticker_url2"));
+        List<PhotocardResourceDto> resourceList = new ArrayList<>();
+        resourceList.add(dto1);
+        resourceList.add(dto2);
+
+        when(photocardService.findPhotocardResources()).thenReturn(new PhotocardResourceListRes(resourceList));
+
+        ResultActions actions = mockMvc.perform(
+                get("/api/photocards/resources")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(PHOTOCARD_RESOURCES_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(PHOTOCARD_RESOURCES_OK.getMessage()))
+                .andDo(document("Photocard 리소스 리스트 조회 성공",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Photocard API")
+                                .summary("Photocard 리소스 리스트 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        getCommonResponseFields(
+                                                fieldWithPath("body.resourceList[]").type(JsonFieldType.ARRAY).description("포토카드 리소스 리스트"),
+                                                fieldWithPath("body.*[].type").type(JsonFieldType.STRING).description("포토카드 리소스 타입(TEMPLATE, STICKER)"),
+                                                fieldWithPath("body.*[].imgUrlList").type(JsonFieldType.ARRAY).description("포토카드 리소스 이미지 URL 리스트")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("Photocard 리소스 리스트 Response"))
+                                .build()
+                        ))
+                );
+
+
     }
 }

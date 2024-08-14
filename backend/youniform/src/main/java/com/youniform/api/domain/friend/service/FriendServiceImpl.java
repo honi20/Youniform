@@ -116,8 +116,6 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendMypageRes findMypageFriends(Long userId) {
-        Users user = userRepository.findById(userId).get();
-
         List<Friend> friends = friendRepository.findByFriendPKUserId(userId);
 
         List<FriendMypageDto> friendMypageDto = friends.stream()

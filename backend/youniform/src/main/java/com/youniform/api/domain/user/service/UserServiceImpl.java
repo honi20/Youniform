@@ -229,6 +229,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserDetailsWithCounts(userId);
     }
 
+    @Transactional
     @Override
     public void passwordReset(PasswordResetReq req) {
         JwtRedis jwtRedis = (JwtRedis) redisUtils.getData(req.getUuid());
@@ -253,6 +254,7 @@ public class UserServiceImpl implements UserService {
         throw new CustomException(VERIFY_NOT_MATCH);
     }
 
+    @Transactional
     @Override
     public void modifyPassword(PasswordModifyReq req, Long userId) {
         Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -409,6 +411,8 @@ public class UserServiceImpl implements UserService {
         if (!verify.equals(req.getVerifyCode())) {
             throw new CustomException(VERIFY_NOT_MATCH);
         }
+
+        redisUtils.deleteData(req.getEmail()+"_verify");
     }
 
     @Override

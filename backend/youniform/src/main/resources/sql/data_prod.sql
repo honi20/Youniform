@@ -141,7 +141,14 @@ VALUES (1000, '몬스터즈 응원방', TRUE),
        (9, '유태웅 응원방', TRUE),
        (10, '문교원 응원방', TRUE),
        (11, '임상우 응원방', TRUE),
-       (12, '윤상혁 응원방', TRUE);
+       (12, '윤상혁 응원방', TRUE),
+       (13, '이대은 응원방', TRUE),
+       (14, '신재영 응원방', TRUE),
+       (15, '오주원 응원방', TRUE),
+       (16, '유희관 응원방', TRUE),
+       (17, '장원삼 응원방', TRUE),
+       (18, '니퍼트 응원방', TRUE),
+       (19, '송승준 응원방', TRUE);
 
 -- chat_part
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time)

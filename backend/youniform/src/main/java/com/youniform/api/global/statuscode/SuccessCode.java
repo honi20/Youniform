@@ -71,6 +71,7 @@ public enum SuccessCode {
     PHOTOCARD_DETAILS_OK(HttpStatus.OK.value(), "포토카드 상세보기에 성공했습니다."),
     PHOTOCARD_DELETED(HttpStatus.OK.value(), "포토카드 삭제에 성공했습니다."),
     PHOTOCARD_LIST_OK(HttpStatus.OK.value(), "포토카드 리스트 조회에 성공했습니다."),
+    PHOTOCARD_RESOURCES_OK(HttpStatus.OK.value(), "포토카드 리소스 조회에 성공했습니다."),
 
     // likes success code
     LIKES_STATUS_OK(HttpStatus.OK.value(), "좋아요 상태가 저장됐습니다."),

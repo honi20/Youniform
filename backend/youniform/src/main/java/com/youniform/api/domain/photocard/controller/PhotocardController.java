@@ -1,12 +1,9 @@
 package com.youniform.api.domain.photocard.controller;
 
-import com.youniform.api.domain.diary.dto.DiaryAddReq;
 import com.youniform.api.domain.photocard.dto.*;
 import com.youniform.api.domain.photocard.service.PhotocardService;
 import com.youniform.api.global.dto.ResponseDto;
-import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.service.JwtService;
-import com.youniform.api.global.statuscode.ErrorCode;
 import com.youniform.api.global.statuscode.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -62,5 +59,12 @@ public class PhotocardController {
         PhotocardListRes response = photocardService.findPhotocards(userId);
 
         return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_LIST_OK, response), HttpStatus.OK);
+    }
+
+    @GetMapping("/resources")
+    public ResponseEntity<?> photocardResources() throws Exception {
+        PhotocardResourceListRes response = photocardService.findPhotocardResources();
+
+        return new ResponseEntity<>(ResponseDto.success(SuccessCode.PHOTOCARD_RESOURCES_OK, response), HttpStatus.OK);
     }
 }
