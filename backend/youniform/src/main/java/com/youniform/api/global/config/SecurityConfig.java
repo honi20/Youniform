@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                                 .requestMatchers(
-                                        "/api/users/signup/**", "/api/users/signin/local", "/api/alerts/*",
+                                            "/api/users/signup/**", "/api/users/signin/local", "/api/alerts/[0-9]+",
                                         "/api/users/verify", "/api/users/email/send", "/api/login/oauth2/**",
                                         "/api/users/email/verify", "/api/users/check/email",
                                         "/api/users/password/reset", "/api/users/password/send",
