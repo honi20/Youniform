@@ -52,6 +52,9 @@ import MyDiaryView from "@pages/Diary/MyDiaryView";
 import AlertView from "./pages/AlertView";
 import ResetPasswordView from "./pages/ResetPasswordView";
 import TestView from "@pages/Diary/TestView";
+import SSEAlertModal from "@/components/Modal/SSEAlertModal";
+import useAlertStore from '@stores/alertStore';
+import { isLoggedIn } from '@stores/apiClient';
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -69,12 +72,22 @@ const ContentContainer = styled.div`
 function App() {
   const [contentHeight, setContentHeight] = useState("auto");
   const { theme, setTheme } = useThemeStore();
+  const subscribe = useAlertStore(state => state.subscribe);
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      subscribe(); // 로그인된 상태일 때만 subscribe 요청
+    }
+  }, [subscribe]);
+
+
   useEffect(() => {
     setTheme("monsters");
   }, []);
 
   return (
     <AppContainer className="App">
+      <SSEAlertModal />
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>

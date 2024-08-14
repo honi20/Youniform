@@ -172,7 +172,7 @@ const AlertItem = ({ alert, checkAlert, openDropdownAlertId, onToggleDropdown })
       alertMessage = `<strong>${alert.senderNickname}</strong>님과 친구가 되었습니다.`;
       break;
     case 'PLAYER_APPEARANCE':
-      alertMessage = "This is an error alert.";
+      alertMessage = `${alert.content}`;
       break;
     default:
       alertMessage = "This is a default alert.";
@@ -206,12 +206,13 @@ const AlertItem = ({ alert, checkAlert, openDropdownAlertId, onToggleDropdown })
         <ContentWrapper>
           <TitleRow>
             <IconWrapper>
-              <img src={alert.senderProfileUrl} alt="icon" />
+              <img src={alert.senderProfileUrl || 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/no_profile.png'} 
+              alt="icon" />
               {alert.isRead === false &&
                 <UpdateStatusCircle />
               }
             </IconWrapper>
-            <TitleText>{alert.senderNickname}</TitleText>
+            <TitleText>{alert.senderNickname || 'Youniform'}</TitleText>
             <Dot />
             <TimeText>{alert.createdAt}</TimeText>
           </TitleRow>

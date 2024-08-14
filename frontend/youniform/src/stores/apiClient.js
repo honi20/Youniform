@@ -16,7 +16,10 @@ export const createApiClient = (accessToken) => {
     },
   });
 };
-
+export const isLoggedIn = () => {
+  const accessToken = getAccessToken();
+  return !!accessToken; // accessToken이 있으면 true, 없으면 false를 반환
+};
 const getAccessToken = () => {
   return (
     localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
