@@ -54,6 +54,32 @@ const usePostStore = create((set) => ({
       console.error(err.response ? err.response.data : err.message);
     }
   },
+  updatePost: async (postId, formData) => {
+    const apiClient = getApiClient();
+    try {
+      console.log(postId);
+      const res = await apiClient.post(`/posts/${postId}`, formData, {
+      headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(res.data.header.message);
+      console.log(res.data.body.postId);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  },
+  deletePost: async (postId) => {
+    const apiClient = getApiClient();
+    try {
+      console.log(postId);
+      const res = await apiClient.delete(`/posts/${postId}`);
+      console.log(res.data.header.message);
+      console.log(res.data.body.postId);
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  },
   likePosts: [],
   fetchLikePosts: async () => {
     const apiClient = getApiClient();

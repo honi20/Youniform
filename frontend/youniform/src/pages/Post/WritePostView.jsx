@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import * as Font from "@/typography";
 import useUserStore from "@stores/userStore";
@@ -95,25 +95,32 @@ const CreateBtn = styled(Btn)`
 `;
 const WritePostView = () => {
   const { user, fetchUser, loading } = useUserStore();
-  const { addPost } = usePostStore();
+  const { addPost, updatePost } = usePostStore();
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
   const { postId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
+    if (location.state && location.state.post) {
+      const post = location.state.post;
+      setContent(post.contents);
+      console.log(post.contents);
+      setTags(post.tags.map((tag) => tag.contents));
+      if (post.imageUrl) {
+        setFilePreview(post.imageUrl);
+      }
+    }
     if (!user) {
       fetchUser();
-      console.log("testset");
     }
-  }, [user, fetchUser]);
+  }, [location.state, user, fetchUser]);
 
   // 해쉬태그
   useEffect(() => {
-    console.log(content);
-
     const extractedTags = content.match(/# \S+/g) || [];
     const uniqueTags = [
       ...new Set(
@@ -141,7 +148,6 @@ const WritePostView = () => {
     console.log("해쉬태그", tags);
     console.log("Selected file:", selectedFile);
 
-    const apiClient = getApiClient();
     const formData = new FormData();
     const dto = {
       contents: cleanedContent,
@@ -167,7 +173,9 @@ const WritePostView = () => {
       const formData = await createFormData();
       let newPostId = "";
       if (postId) {
-        console.log("포스트 수정");
+        console.log("업데이트", postId);
+        logFormData(formData);
+        await updatePost(postId, formData);
       } else {
         newPostId = await addPost(formData);
       }

@@ -74,7 +74,6 @@ const CreateComment = styled(FlexBox)`
 `;
 
 import Chatsvg from "@assets/Post/chat.svg?react";
-import useUserStore from "../../../stores/userStore";
 
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
@@ -130,7 +129,6 @@ const CommentContainer = ({ postId, user }) => {
   const post = usePostStore((state) => state.post); // 현재 포스트 가져오기
   const comments = usePostStore((state) => state.comments[postId] || []); // 현재 포스트의 댓글 목록 가져오기
   const { addComment, updateComment, deleteComment } = usePostStore();
-  const [editMode, setEditMode] = useState(null); // Track which comment is being edited
   const [showEllipsis, setShowEllipsis] = useState(true);
   const [editedComment, setEditedComment] = useState(null);
   // const { user, fetchUser } = useUserStore();
@@ -184,8 +182,6 @@ const CommentContainer = ({ postId, user }) => {
     setEditedComment(comment); // Set the comment object being edited
   };
 
-  // 댓글 삭제 요청
-  // const
   return (
     <Container onClick={() => console.log("댓글창 클릭됨")}>
       <ScrollableView ref={scrollableRef} onScroll={handleScroll}>
@@ -197,11 +193,10 @@ const CommentContainer = ({ postId, user }) => {
                   src={comment.imgUrl}
                   alt={`${comment.nickname}의 프로필`}
                 />
-                {comment.nickname} 
+                {comment.nickname}
               </ProfileContainer>
               <FlexBox>
-                {user.nickname === comment.nickname &&
-                editedComment &&
+                {editedComment &&
                 editedComment.commentId === comment.commentId ? (
                   <>
                     <UpperContainer>
@@ -244,24 +239,28 @@ const CommentContainer = ({ postId, user }) => {
                 ) : (
                   <>
                     <UpperContainer>{comment.contents}</UpperContainer>
-                    <LowerContainer>
-                      {comment.createdAt}
-                      &nbsp;
-                      <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
-                      &nbsp;
-                      <Btn
-                        onClick={() =>
-                          handleCommentAction({
-                            action: "delete",
-                            commentId: comment.commentId,
-                          })
-                        }
-                      >
-                        삭제
-                      </Btn>
-                    </LowerContainer>
+                      <LowerContainer>
+                        {comment.createdAt}
+                        {user.nickname === comment.nickname && 
+                        <>
+                          &nbsp;
+                          <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
+                          &nbsp;
+                          <Btn
+                            onClick={() =>
+                              handleCommentAction({
+                                action: "delete",
+                                commentId: comment.commentId,
+                              })
+                            }
+                          >
+                          삭제
+                          </Btn>
+                          </>}
+                      </LowerContainer>
                   </>
-                )}
+                )
+}
               </FlexBox>
             </Comment>
           ))}

@@ -219,6 +219,12 @@ const stateMap = {
     subtitle: "정확한 인증 코드를 입력하세요.",
     btn: [0],
   },
+  PostDeleted: {
+    icon: <AlarmIcon />,
+    title: "포스트를 삭제하시겠습니까?",
+    subtitle: "삭제된 포스트는 다시 볼 수 없습니다.",
+    btn: [1, 3],
+  },
 };
 
 const buttonMap = {

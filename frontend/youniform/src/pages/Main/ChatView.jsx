@@ -63,6 +63,11 @@ const ToggleItem = styled.div`
 const SelectIcon = styled(SelectSvg)`
   display: ${(props) => (props.$isChecked ? "block" : "none")};
 `;
+const ImgBox = styled.img`
+  border: 1px solid black;
+  max-width: 50px;
+  margin-bottom: 10px;
+`;
 const ChatView = () => {
   const {
     messages,
@@ -81,7 +86,7 @@ const ChatView = () => {
   const { fetchUser, user } = useUserStore();
   const chatBoxRef = useRef(null);
   const { roomId } = useParams();
-  const imageUrl = "test";
+  const imageUrl = useRef(null);
 
   useEffect(() => {
     const initChat = async () => {
@@ -127,7 +132,24 @@ const ChatView = () => {
     console.log(messages);
   }, [messages]);
   console.log(chatRooms);
+  const [filePreview, setFilePreview] = useState(null);
+  const fileInputRef = useRef(null)
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleAddPhotoClick = () => {
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+  };
   return (
     <St.Wrapper>
       <St.ChatToggleSection>
@@ -162,10 +184,17 @@ const ChatView = () => {
               >
                 <Message isUser={user.nickname === msg.nickname} msg={msg} />
               </St.ChatContainer>
-            );
+            )
           })}
       </St.ChatSection>
+      {filePreview && <ImgBox src={filePreview} alt="Preview" />}
       <St.InputSection>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
         <St.InputContaier>
           <St.ChatTextarea
             content={content}
@@ -173,8 +202,9 @@ const ChatView = () => {
             onKeyDown={handleKeyDown}
           />
           <St.IconWrapper>
+            <St.ImgBtn onClick={handleAddPhotoClick}/>
             <St.SubmitBtn
-              onClick={() => sendMessage(user.nickname, imageUrl)}
+              onClick={() => sendMessage(user.nickname, fileInputRef.current.files[0])}
             ></St.SubmitBtn>
           </St.IconWrapper>
         </St.InputContaier>

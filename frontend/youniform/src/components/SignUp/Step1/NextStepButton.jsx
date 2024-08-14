@@ -39,11 +39,9 @@ const NextStepButton = () => {
         }
         break;
       case 3:
-        if (user.players.length > 0) {
-          nextStep = 4;
-          setStep(4);
-          const res = await fetchLocalSignUp();
-        }
+        nextStep = 4;
+        setStep(4);
+        const res = await fetchLocalSignUp();
         break;
       case 4:
         // 마지막 단계는 별도 설정
