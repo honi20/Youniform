@@ -41,7 +41,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, Channe
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/stomp/chat")
+        registry.addEndpoint("/api/stomp/chat")
                 .setAllowedOriginPatterns("*")
                 .setHandshakeHandler(new DefaultHandshakeHandler() {
                     @Override
@@ -49,16 +49,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, Channe
                         String token = request.getHeaders().getFirst("Authorization");
                         log.info("token: " + token);
                         log.info("request" + request.getPrincipal());
-                        log.info("배러 토큰 입력: {}", token);
+                        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!token11111: {}", token);
                         if (token != null && token.startsWith("Bearer ")) {
                             token = token.substring(7);
-                            log.info("진짜 토큰: {}", token);
+                            log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!token: {}", token);
                             Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
                             if (userId != null) {
                                 return userId::toString;
                             }
                         }
-                        log.info("성공");
+                        log.info("!!!!!!!!!!!!!!!!!!!!!!에러에러에러에러");
                         return null; // 인증 실패 시 연결 차단
                     }
                 });
@@ -96,7 +96,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, Channe
         System.out.println("full message:" + message);
         System.out.println("auth:" + headerAccessor.getNativeHeader("Authorization"));
         System.out.println(headerAccessor.getHeader("nativeHeaders").getClass());
-
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
             System.out.println("msg: " + "conne");
         }

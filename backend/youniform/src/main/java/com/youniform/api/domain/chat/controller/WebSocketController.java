@@ -35,12 +35,10 @@ public class WebSocketController {
                                           @Payload ChatMessage chatMessage,
                                           SimpMessageHeaderAccessor headerAccessor) {
         String authHeader = headerAccessor.getFirstNativeHeader("Authorization");
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
+            Long userId = (Long) jwtService.getAuthentication(token).getPrincipal(); // 토큰에서 userId 추출
             log.info("웹소켓1 : processChatMessage() userId: {}", userId);
-
             return chatService.processChatMessage(roomId, chatMessage, userId);
         } else {
             log.warn("Authorization 헤더가 없음 또는 잘못된 형식");
