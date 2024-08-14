@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useUserStore from "@stores/userStore";
 import usePhotoCardStore from "@stores/photoCardStore";
+import useAlertStore from '@stores/alertStore';
 
 import GoogleIcon from "@assets/login/google.png";
 import KakaoIcon from "@assets/login/kakao.png";
@@ -133,6 +134,7 @@ const LoginView = () => {
   const [emailInput, setEmailInput] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [currency, setCurrency] = useState("");
+  const subscribe = useAlertStore(state => state.subscribe);
 
   const navigate = useNavigate();
 
@@ -205,7 +207,9 @@ const LoginView = () => {
     } else if (result === "$OK") {
       await fetchPhotoCardList();
       await setTotalPages(photoCards / 4 + 1);
+      subscribe();
       console.log(`로그인 성공`);
+      console.log(`sse 연결 성공`)
       navigate("/");
     }
   };
