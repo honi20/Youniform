@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -61,8 +60,8 @@ public class SecurityConfig {
                                 .baseUri("/api/users/oauth2/code/*"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService))
-                        .successHandler(oauth2SuccessHandler)
-                );
+                        .successHandler(oauth2SuccessHandler))
+        ;
 
         http.addFilterBefore(jwtBearerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

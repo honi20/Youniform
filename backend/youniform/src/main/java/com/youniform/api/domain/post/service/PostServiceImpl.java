@@ -134,8 +134,9 @@ public class PostServiceImpl implements PostService {
             s3Service.fileDelete(post.getImgUrl());
         }
 
+        commentRepository.deleteAllByPostId(post.getId());
         postTagRepository.deletePostTagsByPostId(post.getId());
-
+        likePostRepository.deleteAllByPostId(post.getId());
         postRepository.delete(post);
     }
 
