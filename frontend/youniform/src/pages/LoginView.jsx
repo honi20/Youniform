@@ -319,7 +319,7 @@ const LoginView = () => {
             <Bar />
           </SocialLoginText>
           <LoginLinkIcon>
-            <LoginIcon src={KakaoIcon}></LoginIcon>
+            <LoginIcon src={KakaoIcon} onClick={handleLoginClick}></LoginIcon>
             <LoginIcon src={NaverIcon}></LoginIcon>
             <LoginIcon src={GoogleIcon}></LoginIcon>
           </LoginLinkIcon>

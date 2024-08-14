@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
-const { Kakao } = window;
-
 import styled, { keyframes } from 'styled-components';
 import ShareIcon from '@assets/Modal/ShareIcon.svg?react';
 import Instagram from '@assets/Modal/InstagramLogo.png';
 import X from '@assets/Modal/XLogo.png';
-
 import { TwitterShareButton } from "react-share";
 
 const ModalBackdrop = styled.div`
-  position: fixed;
-  width: 400px;
-  height: calc(100% - 45px);
+  position: fixed;  // Changed from absolute to fixed
+  top: 0;           // Make sure it covers the whole screen
+  left: 0;          // Set to top-left corner
+  width: 100%;
+  max-width: 400px;
+  height: 100%;     // Make sure it covers the whole screen
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
   z-index: 5;
 `;
 
@@ -61,7 +60,7 @@ const animateBackground = keyframes`
     background-color: white;
   }
   100% {
-    background-color: #4caf50; /* 원하는 색상으로 변경 */
+    background-color: #4caf50;
   }
 `;
 
@@ -75,8 +74,6 @@ const IconCircle = styled.div`
   border: 2px solid #D9D9D9;
   overflow: hidden; 
   cursor: pointer;
-  
-  /* 애니메이션 적용 */
   background-color: ${({ copied }) => (copied ? "#120078" : "white")};
   animation: ${({ copied }) => copied && `${animateBackground} 0.5s forwards`};
 
@@ -104,7 +101,9 @@ const Btn = styled.div`
   cursor: pointer;
 `;
 
-const ShareModal = () => {
+const ShareModal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
@@ -119,52 +118,79 @@ const ShareModal = () => {
       });
   };
 
-  // 카카오톡 공유
-  const realUrl = "https://youniform.site"
-  const resultUrl = window.location.href;
-  
   useEffect(() => {
     Kakao.cleanup();
-    // JS 키 적용
     Kakao.init('effa2e35c7eae72bf635ecdf75d2e618');
-    // 성공 시 true 반환
     console.log(Kakao.isInitialized());
   }, []);
 
   const shareToKakao = async () => {
     Kakao.Share.sendDefault({
-      objectType: 'text',
-      text:
-        '기본 템플릿으로 제공되는 텍스트 템플릿은 텍스트를 최대 200자까지 표시할 수 있습니다. 텍스트 템플릿은 텍스트 영역과 하나의 기본 버튼을 가집니다. 임의의 버튼을 설정할 수도 있습니다. 여러 장의 이미지, 프로필 정보 등 보다 확장된 형태의 카카오톡 공유는 다른 템플릿을 이용해 보낼 수 있습니다.',
-      link: {
-        mobileWebUrl: 'https://developers.kakao.com',
-        webUrl: 'https://developers.kakao.com',
+      objectType: 'feed',
+      content: {
+        title: '나의 다이어리를 구경해봐~',
+        description: '아메리카노, 빵, 케익',
+        imageUrl:
+          'https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+        link: {
+          mobileWebUrl: 'https://developers.kakao.com',
+          webUrl: 'https://developers.kakao.com',
+        },
       },
+      itemContent: {
+        profileText: 'Kakao',
+        profileImageUrl: 'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
+        titleImageUrl: 'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
+        titleImageText: 'Cheese cake',
+        titleImageCategory: 'Cake',
+        items: [
+          { item: 'Cake1', itemOp: '1000원' },
+          { item: 'Cake2', itemOp: '2000원' },
+          { item: 'Cake3', itemOp: '3000원' },
+          { item: 'Cake4', itemOp: '4000원' },
+          { item: 'Cake5', itemOp: '5000원' },
+        ],
+        sum: '총 결제금액',
+        sumOp: '15000원',
+      },
+      social: { likeCount: 10, commentCount: 20 },
+      buttons: [
+        {
+          title: '웹으로 이동',
+          link: {
+            mobileWebUrl: 'https://developers.kakao.com',
+            webUrl: 'https://developers.kakao.com',
+          },
+        },
+        {
+          title: '앱으로 이동',
+          link: {
+            mobileWebUrl: 'https://developers.kakao.com',
+            webUrl: 'https://developers.kakao.com',
+          },
+        },
+      ],
     });
   };
-
-  const currentUrl = window.location.href;
-
   return (
     <ModalBackdrop>
       <Container>
         <TitleText>다이어리 공유하기</TitleText>
         <ShareOptions>
           <IconWrapper>
-            <IconCircle $copied={copied} onClick={copyToClipboard}>
+            <IconCircle copied={copied} onClick={copyToClipboard}>
               <ShareIcon />
             </IconCircle>
             <SubText>링크 복사</SubText>
           </IconWrapper>
           <IconWrapper>
             <IconCircle>
-              <img src={Instagram} alt="Instagram Logo"
-              onClick={shareToKakao}/>
+              <img src={Instagram} alt="Instagram Logo" onClick={shareToKakao} />
             </IconCircle>
             <SubText>Instagram</SubText>
           </IconWrapper>
           <IconWrapper>
-            <TwitterShareButton url={currentUrl}>
+            <TwitterShareButton url={window.location.href}>
               <IconCircle style={{ backgroundColor: "black" }}>
                 <img src={X} alt="X Logo" style={{ padding: "13px" }} />
               </IconCircle>
@@ -172,7 +198,7 @@ const ShareModal = () => {
             <SubText>X</SubText>
           </IconWrapper>
         </ShareOptions>
-        <Btn>취소</Btn>
+        <Btn onClick={onClose}>취소</Btn>
       </Container>
     </ModalBackdrop>
   );
