@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useSignUpStore from '@stores/signUpStore';
-import ProfileImg from '@assets/login/user.svg?react';
+import ProfileImg from '@assets/login/user_png.png';
 import StatusMessageForm from '../StatusMessageForm';
 
 import { styled as muiStyled } from '@mui/material/styles';
@@ -10,6 +10,24 @@ import AddIcon from '@mui/icons-material/ControlPoint';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import CheckIcon from '@mui/icons-material/Check';
 import WarningIcon from '@mui/icons-material/PriorityHigh';
+import NextStepButton from '../Step1/NextStepButton';
+
+const InputForm = styled.div`
+  width: 85%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  gap: 18px;
+`;
+
+const ProfileImgContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
 
 const ProfileImgWrapper = styled.div`
   position: relative;
@@ -29,7 +47,7 @@ const ProfileImgWrapper = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.3); /* Slightly dark overlay */
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
   }
 `;
@@ -40,12 +58,50 @@ const ProfileImgStyled = styled.img`
   object-fit: cover;
 `;
 
+const StepIndicatorBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: ${(props) => (props.$step !== 4 ? "15%" : "3%")};
+`;
+
+const StepCircle = styled.div`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: ${(props) => (props.$active ? "#262F66" : "#e0e0e0")};
+  color: ${(props) => (props.$active ? "#fff" : "#9e9e9e")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background-color 0.4s ease-in-out;
+`;
+
+const StepBar = styled.div`
+  width: 23px;
+  height: 1px;
+  background-image: linear-gradient(to right, ${"#a1a1a1"} 50%, transparent 50%);
+  background-size: 8px 2px;
+  background-repeat: repeat-x;
+  margin: 0 8px;
+`;
+
+const SignUpText = styled.div`
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #262F66;
+  text-align: center;
+  margin-top: 2.2rem;
+  margin-bottom: 2rem;
+  letter-spacing: -1px;
+`;
+
 const AddIconStyled = styled(AddIcon)`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* cursor: pointer; */
 `;
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -53,7 +109,6 @@ const DeleteIconStyled = styled(DeleteIcon)`
   top: 50%;
   right: 0%;
   transform: translate(-50%, -50%);
-  /* cursor: pointer; */
 `;
 
 const IconWrapper = styled.div`
@@ -95,16 +150,8 @@ const UserInfoContainer = styled.div`
   gap: 0.5rem;
 `;
 
-const ProfileImgContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 4rem;
-  position: relative;
-`;
-
 const validateNickname = (nickname) => {
-  const regex = /^[가-힣a-z0-9]{1,10}$/; // 정규식: 한글 or 소문자 or 숫자 && 1~10자
+  const regex = /^[가-힣a-z0-9]{1,10}$/;
   return regex.test(nickname);
 };
 
@@ -119,11 +166,12 @@ const StepTwoForm = () => {
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [nicknameChecked, setNicknameChecked] = useState(false);
 
+  const step = 2;
   useEffect(() => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-    
+
     if (nickname.length > 0) {
       if (validateNickname(nickname)) {
         const timeout = setTimeout(async () => {
@@ -153,7 +201,7 @@ const StepTwoForm = () => {
 
   const handleIntroduceChange = (event) => {
     const value = event.target.value;
-    const length = [...value].length; // 한글도 한 자로 계산
+    const length = [...value].length;
     if (length <= 20) {
       setIntroduce(value);
       setIntroduceStatusMsg('');
@@ -173,29 +221,44 @@ const StepTwoForm = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      const validExtensions = ['image/jpeg', 'image/png', 'image/gif']; // 허용할 이미지 확장자
+      if (validExtensions.includes(file.type)) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfileImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert('JPEG, PNG, GIF 형식의 이미지 파일만 업로드 가능합니다.');
+      }
     }
   };
 
   return (
-    <>
+    <InputForm>
+      <StepIndicatorBox $step={step}>
+        {[1, 2, 3, 4].map((num, index) => (
+          <React.Fragment key={index}>
+            <StepCircle $active={num === step}>{num}</StepCircle>
+            {num < 4 && <StepBar $active={num < step} />}
+          </React.Fragment>
+        ))}
+      </StepIndicatorBox>
+      <SignUpText>프로필 입력</SignUpText>
       <ProfileImgContainer>
         <ProfileImgWrapper>
-          <ProfileImg />
+          <ProfileImgStyled src={profileImage} alt="프로필 이미지" />
         </ProfileImgWrapper>
-        <IconWrapper style={{ left: '42%' }} onClick={handleAddIconClick}>
+        <IconWrapper style={{ left: '14%' }} onClick={handleAddIconClick}>
           <AddIconStyled />
         </IconWrapper>
-        <IconWrapper style={{ left: '58%' }} onClick={handleDeleteIconClick}>
+        <IconWrapper style={{ right: '-34%' }} onClick={handleDeleteIconClick}>
           <DeleteIconStyled />
         </IconWrapper>
         <VisuallyHiddenInput 
           type="file" 
           id="upload-input" 
+          accept=".jpeg, .jpg, .png, .gif"  // 허용할 파일 확장자 설정
           onChange={handleFileChange} 
         />
       </ProfileImgContainer>
@@ -234,7 +297,10 @@ const StepTwoForm = () => {
           <StatusMessageForm statusMsg={introduceStatusMsg} />
         }
       </UserInfoContainer>
-    </>
+      <NextStepButton
+        step="2"
+      />
+    </InputForm>
   );
 };
 

@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  TextField,
-  FormControl,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
+import { TextField, FormControl, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useSignUpStore from "@stores/signUpStore";
 import StatusMessageForm from "../StatusMessageForm";
@@ -17,27 +12,18 @@ const PasswordForm = styled.div`
   }
 `;
 
-const PasswordInput = () => {
+const PasswordInput = ({ isPasswordMatch, isPasswordVerified, setIsPasswordVerified, setIsPasswordMatch }) => {
   const { user, setPassword, setConfirmPw, setIsPwVerified } = useSignUpStore(
     (state) => ({
       user: state.user,
       setPassword: state.user.setPassword,
       setConfirmPw: state.user.setConfirmPw,
-      setIsPwVerified: state.user.setIsPwVerified,
     })
   );
 
-  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-
-  useEffect(() => {
-    const match =
-      user.password === user.confirmPw && validatePassword(user.password);
-    setIsPasswordMatch(match);
-    setIsPwVerified(match);
-  }, [user.password, user.confirmPw]);
 
   const validatePassword = (inputPw) => {
     const lengthCheck = inputPw.length >= 8 && inputPw.length <= 16;
@@ -46,6 +32,12 @@ const PasswordInput = () => {
 
     return lengthCheck && numberCheck && charCheck;
   };
+
+  useEffect(() => {
+    if (user.password && user.confirmPw) {
+      setIsPasswordMatch(user.password === user.confirmPw);
+    }
+  }, [user.password, user.confirmPw]);
 
   const handlePwChange = (prop) => (event) => {
     const value = event.target.value;
@@ -56,8 +48,10 @@ const PasswordInput = () => {
           setPasswordError(
             "비밀번호는 8자 이상 16자 이하의 영문으로, 숫자 및 특수문자를 하나 이상 포함해야 합니다."
           );
+          setIsPasswordVerified(false);
         } else {
           setPasswordError("");
+          setIsPasswordVerified(true);
         }
         break;
       case "confirmPw":
@@ -138,12 +132,11 @@ const PasswordInput = () => {
             fullWidth
           />
         </FormControl>
-        {user.password.length <= 0 || user.confirmPw.length <= 0 ? (
+        {isPasswordVerified && user.confirmPw.length > 0 && !isPasswordMatch && (
+          <StatusMessageForm statusMsg="비밀번호 정보가 일치하지 않습니다." />
+        )}
+        {isPasswordVerified && user.confirmPw.length <= 0 && (
           <StatusMessageForm statusMsg="비밀번호 정보를 입력하세요." />
-        ) : (
-          !isPasswordMatch && (
-            <StatusMessageForm statusMsg="비밀번호 정보가 일치하지 않습니다." />
-          )
         )}
       </PasswordForm>
     </form>

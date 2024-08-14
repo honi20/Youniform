@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TextField, MenuItem, Button } from "@mui/material";
 import styled from "styled-components";
 import CheckIcon from "@mui/icons-material/Check";
@@ -15,6 +15,7 @@ const InputEmail = styled.div`
 
 const CheckEmail = styled.div`
   display: flex;
+  justify-content: space-between;
   width: 100%;
   align-items: center;
 `;
@@ -26,21 +27,18 @@ const TimerDisplay = styled.span`
   width: 38%;
 `;
 
-const EmailInput = () => {
-  const { user, setEmail, setIsVerified, sendEmail, verifyEmailCode } =
-    signUpStore((state) => ({
-      user: state.user,
-      setEmail: state.user.setEmail,
-      setIsVerified: state.user.setIsVerified,
-      sendEmail: state.sendEmail,
-      verifyEmailCode: state.verifyEmailCode,
-    }));
+const EmailInput = ({ emailInput, setEmailInput, statusMsg, setStatusMsg }) => {
+  const { user, setEmail, setIsVerified, sendEmail, verifyEmailCode } = signUpStore(state => ({
+    user: state.user,
+    setEmail: state.user.setEmail,
+    setIsVerified: state.user.setIsVerified,
+    sendEmail: state.sendEmail,
+    verifyEmailCode: state.verifyEmailCode,
+  }));
 
-  const [emailInput, setEmailInput] = useState("");
   const [currency, setCurrency] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
-  const [statusMsg, setStatusMsg] = useState("아이디(이메일)를 입력하세요.");
   const [authenticCode, setAuthenticCode] = useState("");
   const [expiryTime, setExpiryTime] = useState(null);
   const [remainingTime, setRemainingTime] = useState(null);
@@ -53,20 +51,6 @@ const EmailInput = () => {
       customDomainRef.current.focus();
     }
   }, [isCustomDomain]);
-
-  useEffect(() => {
-    if (emailInput.length > 0) {
-      if (isCustomDomain && currency.length > 0) {
-        setStatusMsg("사용할 수 있는 아이디입니다.");
-      } else if (!isCustomDomain && currency.length > 0) {
-        setStatusMsg("사용할 수 있는 아이디입니다.");
-      } else {
-        setStatusMsg("아이디(이메일)를 입력하세요.");
-      }
-    } else {
-      setStatusMsg("아이디(이메일)를 입력하세요.");
-    }
-  }, [emailInput, currency, isCustomDomain]);
 
   useEffect(() => {
     if (expiryTime) {
@@ -91,13 +75,14 @@ const EmailInput = () => {
   }, [expiryTime]);
 
   const handleEmailChange = (event) => {
+    setIsEmailSent(false);
     setEmailInput(event.target.value);
   };
 
   const handleCurrencyChange = (event) => {
     const value = event.target.value;
     setCurrency(value);
-
+    setIsEmailSent(false);
     if (value === "custom") {
       setIsCustomDomain(true);
       setCurrency("");
@@ -118,11 +103,8 @@ const EmailInput = () => {
   };
 
   const confirmCode = async () => {
-    fullEmail = isCustomDomain
-      ? `${emailInput}@${currency}`
-      : `${emailInput}@${currency}`;
+    fullEmail = isCustomDomain ? `${emailInput}@${currency}` : `${emailInput}@${currency}`;
     const result = await verifyEmailCode(fullEmail, authenticCode);
-    // 코드 수정 필요 (임시)
     if (result === "$SUCCESS") {
       setIsVerified(true);
       setExpiryTime(null); // 인증이 완료되면 타이머 중지
@@ -132,25 +114,28 @@ const EmailInput = () => {
   };
 
   const processEmailAndFetch = async () => {
-    fullEmail = isCustomDomain
-      ? `${emailInput}@${currency}`
-      : `${emailInput}@${currency}`;
-    console.log(fullEmail);
+    if (emailInput.length === 0 || currency.length === 0) {
+      setStatusMsg("아이디와 도메인을 모두 입력해주세요.");
+      return;
+    }
+
+    fullEmail = isCustomDomain ? `${emailInput}@${currency}` : `${emailInput}@${currency}`;
     const result = await sendEmail(fullEmail);
 
     if (result === "$OK") {
       alert("인증 메일이 발송되었습니다!");
+      setStatusMsg(null);
       setIsEmailSent(true);
       setIsVerified(false);
       setEmail(fullEmail);
       const now = new Date().getTime();
       setExpiryTime(now + 180000); // 현재 시간 + 3분
-    } else if (result === "$FAIL") {
-      setStatusMsg("중복된 아이디입니다. 다른 아이디로 시도해주세요.");
-      alert("인증 메일 발송에 실패했습니다. 다시 시도해주세요.");
     } else {
-      // 예기치 않은 결과 처리
-      console.error("예기치 않은 결과:", result);
+      if (result.response.data.header.message === "이미 사용중인 이메일입니다.") {
+        setStatusMsg("중복된 아이디입니다. 다른 아이디로 시도해주세요.");
+      } else {
+        setStatusMsg("잘못된 요청입니다. 다시 시도해주세요.");
+      }
     }
   };
 
@@ -161,6 +146,8 @@ const EmailInput = () => {
     { value: "nate.com", label: "nate.com", display: "nate" },
     { value: "custom", label: "", display: "직접입력" },
   ];
+
+  const isButtonDisabled = (!(emailInput.length > 0 && (currency.length > 0 || isCustomDomain))) || isEmailSent;
 
   return (
     <>
@@ -203,12 +190,14 @@ const EmailInput = () => {
         </TextField>
       </InputEmail>
       <CheckEmail>
-        <StatusMessageForm statusMsg={statusMsg} />
+        <div>
+          {statusMsg && <StatusMessageForm statusMsg={statusMsg} />}
+        </div>
         <ColorBtn
           variant="contained"
           onClick={processEmailAndFetch}
-          disabled={statusMsg !== "사용할 수 있는 아이디입니다."}
-          style={{ width: "55%" }}
+          disabled={isButtonDisabled}
+          style={{ width: "45%" }}
         >
           인증 메일 발송
         </ColorBtn>
@@ -220,7 +209,7 @@ const EmailInput = () => {
         onChange={handleCodeChange}
         disabled={
           user.isVerified || !isEmailSent || remainingTime === "시간 만료"
-        } // 인증 완료 시, 인증 메일 발송 전 비활성화
+        }
         InputProps={{
           endAdornment: (
             <>

@@ -190,7 +190,7 @@ const ConfirmBtn = styled.div`
   font-size: 1.25rem;
 `;
 
-const SelectPlayerView = ({ teamId = "1000" }) => {
+const SelectPlayerView = ({ teamId = "1000" }, step) => {
   const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
   const { fetchPlayerList } = usePlayerStore();
   const navigate = useNavigate();
@@ -227,7 +227,6 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
   const [modalState, setModalState] = useState("");
 
   const {
-    step,
     user: { players, setPlayers },
   } = useSignUpStore();
 
@@ -313,7 +312,7 @@ const SelectPlayerView = ({ teamId = "1000" }) => {
             ))}
         </BtnWrapper>
       </Content>
-      {step != 3 && (
+      {step !== "3" && (
         <Footer>
           <ConfirmBtnWrapper>
             <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>

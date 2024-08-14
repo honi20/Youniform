@@ -5,6 +5,7 @@ const FrameContainer = styled.div`
   display: flex;
   height: calc(100% - 40px);
 `;
+
 const Wrapper = styled.div`
   padding-left: 3%;
   display: flex;
@@ -13,6 +14,7 @@ const Wrapper = styled.div`
   margin: 10px;
   overflow-y: auto;
 `;
+
 const FrameImgContainer = styled.div`
   flex: 0 0 30%;
   aspect-ratio: 6/4.5;

@@ -68,6 +68,15 @@ const PhotoCardCreator = () => {
           originY: "center",
           left: selectCanvas.getWidth() / 2,
           top: selectCanvas.getHeight() / 2,
+          selectable: false,  // 프레임을 선택 불가로 설정
+          evented: false,
+          hasControls: false,  // 컨트롤 핸들러를 비활성화
+          hasBorders: false,   // 경계선을 비활성화
+          lockMovementX: true, // X축으로 이동 불가
+          lockMovementY: true, // Y축으로 이동 불가
+          lockScalingX: true,  // X축 크기 조정 불가
+          lockScalingY: true,  // Y축 크기 조정 불가
+          lockRotation: true,  // 회전 불가
         });
         selectCanvas.add(img);
         selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
@@ -339,12 +348,6 @@ const PhotoCardCreator = () => {
           onClose={closeConfirmModal}
         />
       </St.Div>
-      <input
-        type="file"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
       <input
         type="file"
         ref={fileInputRef}

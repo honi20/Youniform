@@ -55,7 +55,7 @@ const signUpStore = create((set, get) => ({
       }
     } catch (error) {
       console.error("이메일 발송 중 오류 발생:", error);
-      return "$FAIL";
+      return error;
     }
   },
   verifyEmailCode: async (email, authenticCode) => {
@@ -112,7 +112,7 @@ const signUpStore = create((set, get) => ({
           nickname: user.nickname,
           introduce: user.introduce,
           team: "MONSTERS",
-          players: user.players,
+          players: (user.players.length === 1 && user.players[0] === 0) ? null : userplayers,
         },
       });
       console.log("Success to fetch Local SignUp");
