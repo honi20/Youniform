@@ -6,11 +6,13 @@ import useDiaryStore from "@stores/diaryStore";
 import Loading from "@components/Share/Loading";
 
 const Div = styled.div`
+  position: relative;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: auto;
+  width: 100%;
 `;
 const Container = styled.div`
   /* border: 5px solid red; */
