@@ -57,6 +57,7 @@ const Friend = ({ friend, setSelectedFriend }) => {
   const { deleteFriend } = useFriendStore();
   const { user, fetchUser } = useUserStore();
   const [isModalOpen, setModalOpen] = useState(false);
+  
   useEffect(() => {
     const loadUserDate = () => {
       if (!user || user.length == 0) {

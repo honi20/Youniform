@@ -30,6 +30,7 @@ const TagSection = styled.div`
   display: flex;
   background-color: #f8f8f8;
   border-bottom: 1px solid #f5f5f5;
+  margin-bottom: 5px;
 `;
 const ArticleSection = styled.div`
   flex: 1;
@@ -92,9 +93,17 @@ const Tag = styled.div`
 `;
 const Article = styled.div`
   padding: 2%;
-  /* border: 1px solid black; */
-  height: 8rem;
+  border: 0.5px solid #dadada;
+  border-radius: 15px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  background-color: white;
   display: flex;
+  margin: 0 5%;
+  overflow-y: auto;
+  cursor: pointer;
+  &:not(:first-child) {
+    margin: 4% 5%;
+  }
 `;
 const ArticleImg = styled.div`
   aspect-ratio: 1;
@@ -117,9 +126,8 @@ const Header = styled.div`
 const Title = styled.div`
   border: 1px solid pink;
   width: 100%;
-  height: 50%;
+  height: 50px;
   color: #6d6d6d;
-  font-family: "Pretendard";
   font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.4;
@@ -131,12 +139,12 @@ const Title = styled.div`
 `;
 const Footer = styled.div`
   border: 1px solid purple;
-  height: 25%;
+  height: 25px;
   color: #6d6d6d;
   font-family: "Pretendard";
   font-size: 1rem;
   display: flex;
-  justify-content: end;
+  /* justify-content: end; */
 `;
 const NewsView = () => {
   // CAROSEL SETTINGS
@@ -188,7 +196,7 @@ const NewsView = () => {
       setNewsList(getPlayerNews(selectedTagId));
     }
   }, [selectedTagId, getTotalNews, getPlayerNews, news]);
-
+  console.log(newsList);
   // useEffect(() => {
   //   const handleScroll = () => {
   //     const bottom =
@@ -252,12 +260,11 @@ const NewsView = () => {
       <ArticleSection>
         {newsList &&
           newsList.map((news, index) => (
-            <Article key={index}>
-              <ArticleImg />
+            <Article key={index} onClick={() => console.log(news.link)}>
               <ArticleContent>
-                <Header>미디어</Header>
                 <Title>{news.title}</Title>
-                <Footer>날짜</Footer>
+                <Header>{news.description}</Header>
+                <Footer>{news.pubDate}</Footer>
               </ArticleContent>
             </Article>
           ))}

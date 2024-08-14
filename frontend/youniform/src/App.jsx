@@ -112,6 +112,7 @@ function App() {
                 <Route index element={<PostView />} />
                 <Route path=":postId" element={<PostDetailView />} />
                 <Route path="write" element={<WritePostView />} />
+                <Route path="write/:postId" element={<WritePostView />} />
                 <Route path="friend/:nickname" element={<MyPost />} />
               </Route>
               <Route path="/search" element={<SearchView />} />

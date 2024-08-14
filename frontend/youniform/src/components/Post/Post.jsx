@@ -160,11 +160,7 @@ const Post = ({ post }) => {
       return () => clearFriend();
     }
   }, [selectedUser, clearFriend]);
-  // useEffect(() => {
-  //   if (!user){
-  //     fetchUser();
-  //   }
-  // }, [user, fetchUser]);
+
   useEffect(() => {
     const loadUser = async () => {
       await fetchUser();

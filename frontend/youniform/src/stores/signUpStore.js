@@ -63,7 +63,6 @@ const signUpStore = create((set, get) => ({
     console.log(authenticCode);
     try {
       const res = await axios({
-        
         method: "get",
         url: `${API_URL}/users/email/verify`,
         params: {
@@ -74,7 +73,7 @@ const signUpStore = create((set, get) => ({
       if (res.data.header.httpStatusCode === 200) {
         console.log("이메일 인증번호 확인 성공");
         console.log(res.data);
-        return "$SUCCESS"
+        return "$SUCCESS";
       }
     } catch (error) {
       console.log("Failed to verifyEmailCode", error);
@@ -97,11 +96,11 @@ const signUpStore = create((set, get) => ({
       console.log(err);
       return "$FAIL";
     }
-  },
+},
   fetchLocalSignUp: async () => {
     try {
       const { user } = get();
-      console.log(user);
+
       const res = await axios({
         method: "post",
         url: `${API_URL}/users/signup/local`,

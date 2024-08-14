@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
-import ShareIcon from '@assets/Modal/ShareIcon.svg?react';
-import Instagram from '@assets/Modal/InstagramLogo.png';
-import X from '@assets/Modal/XLogo.png';
+import React, { useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
+import ShareIcon from "@assets/Modal/ShareIcon.svg?react";
+import Instagram from "@assets/Modal/InstagramLogo.png";
+import X from "@assets/Modal/XLogo.png";
 import { TwitterShareButton } from "react-share";
 
 const ModalBackdrop = styled.div`
-  position: fixed;  // Changed from absolute to fixed
-  top: 0;           // Make sure it covers the whole screen
-  left: 0;          // Set to top-left corner
+  position: fixed; // Changed from absolute to fixed
+  top: 0; // Make sure it covers the whole screen
+  left: 50%;
+  transform: translate(-50%, 0); // Set to top-left corner */
   width: 100%;
   max-width: 400px;
-  height: 100%;     // Make sure it covers the whole screen
+  height: 100%; // Make sure it covers the whole screen
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
@@ -71,8 +72,8 @@ const IconCircle = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  border: 2px solid #D9D9D9;
-  overflow: hidden; 
+  border: 2px solid #d9d9d9;
+  overflow: hidden;
   cursor: pointer;
   background-color: ${({ copied }) => (copied ? "#120078" : "white")};
   animation: ${({ copied }) => copied && `${animateBackground} 0.5s forwards`};
@@ -108,65 +109,68 @@ const ShareModal = ({ isOpen, onClose }) => {
 
   const copyToClipboard = () => {
     const currentUrl = window.location.href;
-    navigator.clipboard.writeText(currentUrl)
+    navigator.clipboard
+      .writeText(currentUrl)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       })
       .catch((err) => {
-        console.error('클립보드 복사 실패:', err);
+        console.error("클립보드 복사 실패:", err);
       });
   };
 
   useEffect(() => {
     Kakao.cleanup();
-    Kakao.init('effa2e35c7eae72bf635ecdf75d2e618');
+    Kakao.init("effa2e35c7eae72bf635ecdf75d2e618");
     console.log(Kakao.isInitialized());
   }, []);
 
   const shareToKakao = async () => {
     Kakao.Share.sendDefault({
-      objectType: 'feed',
+      objectType: "feed",
       content: {
-        title: '나의 다이어리를 구경해봐~',
-        description: '아메리카노, 빵, 케익',
+        title: "나의 다이어리를 구경해봐~",
+        description: "아메리카노, 빵, 케익",
         imageUrl:
-          'https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+          "https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg",
         link: {
-          mobileWebUrl: 'https://developers.kakao.com',
-          webUrl: 'https://developers.kakao.com',
+          mobileWebUrl: "https://developers.kakao.com",
+          webUrl: "https://developers.kakao.com",
         },
       },
       itemContent: {
-        profileText: 'Kakao',
-        profileImageUrl: 'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
-        titleImageUrl: 'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
-        titleImageText: 'Cheese cake',
-        titleImageCategory: 'Cake',
+        profileText: "Kakao",
+        profileImageUrl:
+          "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
+        titleImageUrl:
+          "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
+        titleImageText: "Cheese cake",
+        titleImageCategory: "Cake",
         items: [
-          { item: 'Cake1', itemOp: '1000원' },
-          { item: 'Cake2', itemOp: '2000원' },
-          { item: 'Cake3', itemOp: '3000원' },
-          { item: 'Cake4', itemOp: '4000원' },
-          { item: 'Cake5', itemOp: '5000원' },
+          { item: "Cake1", itemOp: "1000원" },
+          { item: "Cake2", itemOp: "2000원" },
+          { item: "Cake3", itemOp: "3000원" },
+          { item: "Cake4", itemOp: "4000원" },
+          { item: "Cake5", itemOp: "5000원" },
         ],
-        sum: '총 결제금액',
-        sumOp: '15000원',
+        sum: "총 결제금액",
+        sumOp: "15000원",
       },
       social: { likeCount: 10, commentCount: 20 },
       buttons: [
         {
-          title: '웹으로 이동',
+          title: "웹으로 이동",
           link: {
-            mobileWebUrl: 'https://developers.kakao.com',
-            webUrl: 'https://developers.kakao.com',
+            mobileWebUrl: "https://developers.kakao.com",
+            webUrl: "https://developers.kakao.com",
           },
         },
         {
-          title: '앱으로 이동',
+          title: "앱으로 이동",
           link: {
-            mobileWebUrl: 'https://developers.kakao.com',
-            webUrl: 'https://developers.kakao.com',
+            mobileWebUrl: "https://developers.kakao.com",
+            webUrl: "https://developers.kakao.com",
           },
         },
       ],
@@ -185,7 +189,11 @@ const ShareModal = ({ isOpen, onClose }) => {
           </IconWrapper>
           <IconWrapper>
             <IconCircle>
-              <img src={Instagram} alt="Instagram Logo" onClick={shareToKakao} />
+              <img
+                src={Instagram}
+                alt="Instagram Logo"
+                onClick={shareToKakao}
+              />
             </IconCircle>
             <SubText>Instagram</SubText>
           </IconWrapper>
