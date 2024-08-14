@@ -2,7 +2,6 @@ import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
 import ImgSvg from "@assets/Post/img_box.svg?react";
 
-
 export const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -12,11 +11,16 @@ export const Wrapper = styled.div`
   /* border: 5px solid black; */
 `;
 export const ChatToggleSection = styled.div`
-  ${Font.Large};
+  ${Font.Medium};
   width: 100%;
   height: 50px;
+  border-bottom: 1px solid #dbdbdb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   /* border: 1px solid red; */
-  border-bottom: 1px solid #DBDBDB;
+  padding: 0 10px;
+  gap: 5px;
 `;
 
 export const ChatSection = styled.div`
@@ -123,12 +127,20 @@ export const ChatTextarea = ({ content, setContent }) => {
 export const SubmitIcon = () => {
   const theme = useTheme();
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M18.0698 8.50965L9.50978 4.22965C3.75978 1.34965 1.39978 3.70965 4.27978 9.45965L5.14978 11.1996C5.39978 11.7096 5.39978 12.2996 5.14978 12.8096L4.27978 14.5396C1.39978 20.2896 3.74978 22.6496 9.50978 19.7696L18.0698 15.4896C21.9098 13.5696 21.9098 10.4296 18.0698 8.50965ZM14.8398 12.7496H9.43977C9.02978 12.7496 8.68977 12.4096 8.68977 11.9996C8.68977 11.5896 9.02978 11.2496 9.43977 11.2496H14.8398C15.2498 11.2496 15.5898 11.5896 15.5898 11.9996C15.5898 12.4096 15.2498 12.7496 14.8398 12.7496Z" fill={theme.primary}/>
-</svg>
-
-  )
-}
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M18.0698 8.50965L9.50978 4.22965C3.75978 1.34965 1.39978 3.70965 4.27978 9.45965L5.14978 11.1996C5.39978 11.7096 5.39978 12.2996 5.14978 12.8096L4.27978 14.5396C1.39978 20.2896 3.74978 22.6496 9.50978 19.7696L18.0698 15.4896C21.9098 13.5696 21.9098 10.4296 18.0698 8.50965ZM14.8398 12.7496H9.43977C9.02978 12.7496 8.68977 12.4096 8.68977 11.9996C8.68977 11.5896 9.02978 11.2496 9.43977 11.2496H14.8398C15.2498 11.2496 15.5898 11.5896 15.5898 11.9996C15.5898 12.4096 15.2498 12.7496 14.8398 12.7496Z"
+        fill={theme.primary}
+      />
+    </svg>
+  );
+};
 
 export const SubmitBtn = ({ onClick }) => {
   return (
@@ -138,12 +150,12 @@ export const SubmitBtn = ({ onClick }) => {
   );
 };
 
-export const ImgBtn = ({ onClick}) => {
+export const ImgBtn = ({ onClick }) => {
   return (
     <div onClick={onClick}>
-      <ImgSvg/>
+      <ImgSvg />
     </div>
-  )
+  );
 };
 
 export const IconWrapper = styled.div`

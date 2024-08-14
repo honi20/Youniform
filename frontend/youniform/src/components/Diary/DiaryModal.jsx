@@ -55,13 +55,13 @@ const StampSetting = styled.div`
   display: flex;
   align-items: center;
   flex: 1;
+  /* background: #f5f5f5; */
 `;
 const StampSlider = styled.div`
   display: flex;
   gap: 10px;
   padding: 10px 20px;
   align-items: center;
-  width: 365px;
   border-radius: 12px;
   background: #f5f5f5;
 `;
@@ -72,6 +72,7 @@ const ScopeContainer = styled.div`
   height: 150px;
   margin: 0 20px;
   padding: 10px 0;
+  /* background: #f5f5f5; */
 `;
 const ScopeSetting = styled.div`
   ${Font.Small};
