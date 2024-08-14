@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import * as St from "./ChatViewStyle";
 import Message from "@components/Main/Chat/Message";
 import styled from "styled-components";
-import DownIcon from "@assets/chevron-down.svg?react";
-import UpIcon from "@assets/chevron-up.svg?react";
-import SelectSvg from "@assets/selectedIcon.svg?react";
+import DownIcon from "@assets/Main/chevron-down.svg?react";
+import UpIcon from "@assets/Main/chevron-up.svg?react";
+import SelectSvg from "@assets/Main/selectedIcon.svg?react";
 import useChatStore from "@stores/chatStore";
 import useUserStore from "@stores/userStore";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const ToggleBtn = styled.div`
-  width: 70%;
+  /* width: 70%; */
   height: 100%;
   display: flex;
   justify-content: center;
@@ -30,9 +30,10 @@ const ToggleList = styled.div`
   display: ${(props) => (props.$isOn ? "flex" : "none")};
   position: absolute;
   z-index: 1;
-  top: 10%;
-  /* left: 15%; */
-  width: 40%;
+  top: 95px;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, 0);
   border: 1px solid #737373;
   background-color: white;
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -46,6 +47,7 @@ const ToggleItem = styled.div`
   display: ${(props) => (props.$isOn ? "flex" : "none")};
   padding: 0.63rem 1rem;
   align-items: center;
+  /* justify-content: sp; */
   gap: 0.5rem;
   align-self: stretch;
   border-radius: 0.5rem;
@@ -64,97 +66,155 @@ const ToggleItem = styled.div`
 const SelectIcon = styled(SelectSvg)`
   display: ${(props) => (props.$isChecked ? "block" : "none")};
 `;
+const ImgBox = styled.img`
+  border: 1px solid black;
+  max-width: 50px;
+  margin-bottom: 10px;
+`;
 const ChatView = () => {
   const {
-    messages,
     content,
-    isChatListVisible,
     chatRooms,
     selectedRoom,
     connect,
     disconnect,
-    toggleChatListVisibility,
     setContent,
     sendMessage,
     setSelectedRoom,
     fetchChatRoom,
+    sendImage,
+    fetchChatRoomMessage,
   } = useChatStore();
   const { fetchUser, user } = useUserStore();
+  const messages = useChatStore((state) => state.messages);
   const chatBoxRef = useRef(null);
   const { roomId } = useParams();
-  const imageUrl = "test";
+  const navigate = useNavigate();
+  // const imageUrl = useRef(null);
 
+  ///// useEffect
   useEffect(() => {
     const initChat = async () => {
       await fetchUser(); // 사용자 정보를 먼저 가져옴
       fetchChatRoom(); // 채팅방 리스트를 가져옴
       if (roomId) {
-        console.log(roomId);
         setSelectedRoom(roomId);
-        connect(selectedRoom); // 사용자 ID 또는 필요한 파라미터를 connect에 전달
+        connect(parseInt(roomId, 10));
       }
     };
-
     initChat();
     return () => {
       disconnect();
     };
-  }, [fetchUser, connect, disconnect]);
+  }, [fetchUser, connect, disconnect, roomId]);
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      sendMessage();
+  useEffect(() => {
+    if (roomId) {
+      fetchChatRoomMessage();
     }
-  };
+  }, [roomId, fetchChatRoomMessage]);
 
-  const toggleChatList = () => {
-    setChatListVisible((prev) => !prev);
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  ///// function
+  const handleKeyDown = (event) => {
+    console.log("Key pressed:", event.key); // 키 이벤트를 확인하기 위한 로그
+    if (event.key === "Enter") {
+      event.preventDefault(); // 기본 Enter 동작 방지 (예: 줄바꿈)
+      handleSubmitBtn();
+    }
   };
 
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = (isOn) => {
     setIsOn((prevIsOn) => !prevIsOn);
-    console.log(isOn);
+    console.log("토글얌얌", isOn);
   };
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(roomId);
+
   const handleToggleBtn = (btnIndex) => {
-    handleToggle(isOn);
-    console.log(btnIndex);
+    navigate(`/chat/${btnIndex}`);
+    setIsOn(false);
     setSelected(btnIndex);
+    setSelectedRoom(btnIndex); // 선택된 방 ID를 설정
+    connect(btnIndex); // 연결할 방 ID를 올바르게 설정
+  };
+
+  const [filePreview, setFilePreview] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddPhotoClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleSubmitBtn = () => {
+    sendMessage(user.nickname, fileInputRef.current.files[0]);
+    sendImage();
   };
   return (
     <St.Wrapper>
       <St.ChatToggleSection>
-        <ToggleBtn onClick={toggleChatListVisibility}>
-          {isChatListVisible ? <UpIcon /> : <DownIcon />}
+        <div onClick={handleToggle}>
+          {chatRooms &&
+            chatRooms.length > 0 &&
+            chatRooms.filter((room) => room.roomId == roomId)[0].roomName}
+        </div>
+        <ToggleBtn onClick={handleToggle}>
+          {isOn ? <UpIcon /> : <DownIcon />}
         </ToggleBtn>
-        <ToggleList $isOn={isChatListVisible}>
+        <ToggleList $isOn={isOn}>
           {chatRooms.map((room, index) => (
             <ToggleItem
-              $isOn={isChatListVisible}
-              $isChecked={selectedRoom === room.roomId}
+              $isOn={isOn}
+              $isChecked={selectedRoom == room.roomId}
               key={index}
-              onClick={() => setSelectedRoom(room.roomId)}
+              onClick={() => handleToggleBtn(room.roomId)}
             >
               {room.roomName}
-              <SelectIcon $isChecked={selectedRoom === room.roomId} />
+              <SelectIcon $isChecked={selectedRoom == room.roomId} />
             </ToggleItem>
           ))}
         </ToggleList>
       </St.ChatToggleSection>
       <St.ChatSection ref={chatBoxRef}>
-        {messages.map((msg, index) => {
-          return (
-            <St.ChatContainer
-              key={index}
-              $isUser={user.nickname === msg.nickname}
-            >
-              <Message isUser={user.nickname === msg.nickname} msg={msg} />
-            </St.ChatContainer>
-          );
-        })}
+        {messages &&
+          messages.length > 0 &&
+          messages.map((msg, index) => {
+            return (
+              <St.ChatContainer
+                key={index}
+                $isUser={user.nickname === msg.nickname}
+              >
+                <Message isUser={user.nickname === msg.nickname} msg={msg} />
+              </St.ChatContainer>
+            );
+          })}
       </St.ChatSection>
+      {filePreview && <ImgBox src={filePreview} alt="Preview" />}
       <St.InputSection>
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
         <St.InputContaier>
           <St.ChatTextarea
             content={content}
@@ -162,12 +222,8 @@ const ChatView = () => {
             onKeyDown={handleKeyDown}
           />
           <St.IconWrapper>
-            <button
-              type="button"
-              onClick={() => sendMessage(user.nickname, imageUrl)}
-            >
-              Submit
-            </button>
+            <St.ImgBtn onClick={handleAddPhotoClick} />
+            <St.SubmitBtn onClick={handleSubmitBtn}></St.SubmitBtn>
           </St.IconWrapper>
         </St.InputContaier>
       </St.InputSection>

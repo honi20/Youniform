@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { format, subYears, addYears } from 'date-fns';
-import styled from 'styled-components';
-
+import React, { useState, useEffect, useRef } from "react";
+import { format, subYears, addYears } from "date-fns";
+import styled from "styled-components";
 import SvgIcon from "@mui/material/SvgIcon";
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const MonthRow = styled.div`
   display: flex;
@@ -23,7 +22,7 @@ const IconArea = styled.div`
 const CircleIcon = styled.div`
   width: 15px;
   height: 15px;
-  background-color: #FFEAEE;
+  background-color: ${(props) => props.theme.secondary};
   border: 1.5px solid #787878;
   border-radius: 50%;
 `;
@@ -65,7 +64,13 @@ const DropdownItem = styled.div`
   }
 `;
 
-const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSelect }) => {
+const RenderMonth = ({
+  curMonth,
+  prevMonth,
+  nextMonth,
+  onYearSelect,
+  onMonthSelect,
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -74,14 +79,18 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSele
   };
 
   const handleYearChange = (direction) => {
-    if (direction === 'prev') {
+    if (direction === "prev") {
       onYearSelect(subYears(curMonth, 1));
-    } else if (direction === 'next') {
+    } else if (direction === "next") {
       onYearSelect(addYears(curMonth, 1));
     }
   };
 
   const handleMonthSelect = (month) => {
+    const formattedDate = format(
+      new Date(curMonth.getFullYear(), month - 1),
+      "yyyy-MM"
+    );
     onMonthSelect(month);
     setShowDropdown(false);
   };
@@ -98,48 +107,63 @@ const RenderMonth = ({ curMonth, prevMonth, nextMonth, onYearSelect, onMonthSele
 
   useEffect(() => {
     if (showDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showDropdown]);
 
   const koMonths = [
-    '1월', '2월', '3월', '4월', '5월', '6월',
-    '7월', '8월', '9월', '10월', '11월', '12월'
+    "1월",
+    "2월",
+    "3월",
+    "4월",
+    "5월",
+    "6월",
+    "7월",
+    "8월",
+    "9월",
+    "10월",
+    "11월",
+    "12월",
   ];
 
   return (
     <MonthRow>
       <IconArea>
-        <CircleIcon/>
-        <CircleIcon/>
-        <CircleIcon/>
+        <CircleIcon />
+        <CircleIcon />
+        <CircleIcon />
       </IconArea>
       <div onClick={() => prevMonth()}>◀</div>
       <SelectBox onClick={toggleDropdown}>
         <span className="text">
-          <span className='text year'>
-            {format(curMonth, 'yyyy')}년
-          </span>
-          <span className="text month">
-            {format(curMonth, 'M')}월
-          </span>
+          <span className="text year">{format(curMonth, "yyyy")}년</span>
+          <span className="text month">{format(curMonth, "M")}월</span>
         </span>
         {showDropdown && (
           <Dropdown ref={dropdownRef} onClick={handleDropdownClick}>
             <div>
-              <SvgIcon onClick={() => handleYearChange('prev')} component={KeyboardArrowLeftIcon} />
-              <span>{format(curMonth, 'yyyy')}</span>
-              <SvgIcon onClick={() => handleYearChange('next')} component={KeyboardArrowRightIcon} />
+              <SvgIcon
+                onClick={() => handleYearChange("prev")}
+                component={KeyboardArrowLeftIcon}
+              />
+              <span>{format(curMonth, "yyyy")}</span>
+              <SvgIcon
+                onClick={() => handleYearChange("next")}
+                component={KeyboardArrowRightIcon}
+              />
             </div>
             <MonthGrid>
               {koMonths.map((month, index) => (
-                <DropdownItem key={index} onClick={() => handleMonthSelect(index + 1)}>
+                <DropdownItem
+                  key={index}
+                  onClick={() => handleMonthSelect(index + 1)}
+                >
                   {month}
                 </DropdownItem>
               ))}

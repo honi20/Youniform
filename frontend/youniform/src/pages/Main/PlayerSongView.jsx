@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import VideoIcon from "@assets/Video_duotone_line.svg?react";
-import HeadsetIcon from "@assets/Headphones_fill.svg?react";
+import VideoIcon from "@assets/Main/Video_duotone_line.svg?react";
+import HeadsetIcon from "@assets/Main/Headphones_fill.svg?react";
+import usePlayerStore from "@stores/playerStore";
 
 const LyricsDisplay = styled.div`
   height: 77%;
@@ -50,7 +51,12 @@ const LinkContainer = styled.div`
   /* border: 1px solid blue; */
 `;
 
-const PlayerSongView = ({ active }) => {
+const PlayerSongView = ({ active, playerId }) => {
+  const { playerSongs, fetchPlayerSongs } = usePlayerStore();
+  useEffect(() => {
+    fetchPlayerSongs(playerId);
+    console.log(playerSongs[0]);
+  }, [playerId, fetchPlayerSongs]);
   return (
     <>
       <LyricsDisplay>
@@ -60,7 +66,15 @@ const PlayerSongView = ({ active }) => {
           {active === 0 ? " 등장곡" : " 응원가"}
         </Title>
         <Character>캐릭터</Character>
-        <Lyrics>가사</Lyrics>
+        <Lyrics>
+          {playerSongs && playerSongs.length > 0
+            ? active === 0
+              ? playerSongs[0].lyrics
+              : playerSongs.length > 1
+              ? playerSongs[1].lyrics
+              : "No song available"
+            : "Loading songs..."}
+        </Lyrics>
       </LyricsDisplay>
       <Footer>
         <LinkContainer onClick={() => console.log("유튜브링크")}>

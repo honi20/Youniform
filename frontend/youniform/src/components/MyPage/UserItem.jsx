@@ -16,13 +16,11 @@ const IconWrapper = styled(FlexBox)`
   background-color: #9d9d9d1a;
   margin-bottom: 10px;
 `;
-
 const UserItemContainer = styled(FlexBox)`
-  ${Font.Small}
+  ${Font.Tiny}
   width: 32%;
   flex-direction: column;
 `;
-
 const UserItem = ({ icon: Icon, text, onClick }) => (
   <UserItemContainer onClick={onClick}>
     <IconWrapper>

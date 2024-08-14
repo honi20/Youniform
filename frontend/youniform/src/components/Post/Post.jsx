@@ -3,17 +3,19 @@ import styled from "styled-components";
 import * as Font from "@/typography";
 import ProfileModal from "../Modal/ProfileModal";
 import { getApiClient } from "@stores/apiClient";
+
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
-  margin: 0 8%;
+  margin: 0 5%;
   overflow-y: auto;
   cursor: pointer;
   &:not(:first-child) {
-    margin: 4% 8%;
+    margin: 4% 5%;
   }
+  /* height: calc(100vh - 120px); */
 `;
 const Header = styled.div`
   ${Font.Medium};
@@ -47,6 +49,11 @@ const Content = styled.div`
   font-weight: 400;
   margin: 1% 5%;
   /* border: 1px solid green; */
+  & img {
+    /* height: 100%; */
+    width: 100%;
+    object-fit: cover;
+  }
 `;
 const TagContainer = styled.div`
   flex-wrap: wrap;
@@ -125,23 +132,24 @@ const Post = ({ post }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
-  const { friend, loading, error, fetchFriend, clearFriend } = useUserStore();
+  const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } =
+    useUserStore();
   const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
-    console.log(tag);
-    // setSelectedTag(tag.tagId);
+    console.log(tag, "포스트 포함 태그 검색");
     const encodedQuery = encodeURIComponent(tag.contents);
-    navigate(`/search?type=tag&q=${encodedQuery}`);
+    navigate(`/search?tagId=${tag.tagId}&q=${encodedQuery}`);
   };
   const convertBrToNewLine = (htmlString) => {
     return htmlString.split("<br>").join("\n");
   };
 
   const htmlContent = convertBrToNewLine(post.contents);
+
   useEffect(() => {
-    console.log(post.isLiked);
     setLike(post.isLiked);
   }, [setLike]);
+
   const handleProfileClick = async () => {
     setSelectedUser(post.userId);
     await fetchFriend(post.userId);
@@ -153,19 +161,24 @@ const Post = ({ post }) => {
     }
   }, [selectedUser, clearFriend]);
 
+  useEffect(() => {
+    const loadUser = async () => {
+      await fetchUser();
+    };
+    if (!user) {
+      loadUser();
+    }
+  }, [user, fetchUser]);
   const handleLike = async () => {
-    console.log("좋아요 버튼 클릭");
-    setLike((prev) => !prev);
+    const newLike = !like;
+    setLike(newLike);
+    console.log(newLike);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
-        data: {
-          isLiked: like,
-        },
+        isLiked: newLike,
       });
       console.log(res.data.header.message);
-      console.log(res.data.body);
-      set({ monthlyDiaries: res.data.body.diaryList });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -175,12 +188,16 @@ const Post = ({ post }) => {
       <Container>
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
-            <ProfileImg src={post.imageUrl} />
+            <ProfileImg src={post.profileImg} />
             {post.nickname}
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
         <Content>
+          <img
+            onClick={() => navigate(`/post/${post.postId}`)}
+            src={post.imageUrl}
+          />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
             {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
@@ -190,17 +207,18 @@ const Post = ({ post }) => {
             ))}
           </div>
           <TagContainer>
-            {post.tags.map((tag) => {
-              return (
-                <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
-                  # {tag.contents}
-                </Tag>
-              );
-            })}
+            {post &&
+              post.tags.map((tag) => {
+                return (
+                  <Tag key={tag.tagId} onClick={() => handleTagClick(tag)}>
+                    # {tag.contents}
+                  </Tag>
+                );
+              })}
           </TagContainer>
         </Content>
         <Footer>
-          <CommentContainer onClick={() => console.log("댓글창")}>
+          <CommentContainer onClick={() => navigate(`/post/${post.postId}`)}>
             <ChatIcon />
             {post.commentCount ? (
               <CommentInfo>댓글 {post.commentCount}개 보기</CommentInfo>
@@ -213,7 +231,6 @@ const Post = ({ post }) => {
               display: "flex",
               gap: "10%",
               justifyContent: "center",
-              // border: "1px solid black",
             }}
           >
             <HeartContainer onClick={handleLike}>
@@ -222,11 +239,14 @@ const Post = ({ post }) => {
           </div>
         </Footer>
       </Container>
-      <ProfileModal
-        user={friend}
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {isModalOpen && (
+        <ProfileModal
+          friend={friend}
+          user={user}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </>
   );
 };

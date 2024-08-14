@@ -73,7 +73,7 @@ const ArrowRight = () => {
   const navigate = useNavigate();
   
   const showBinder = () => {
-    navigate(`/photo-card/binder`);
+    navigate(`/photo-card/binder`, { state: { from: 'photo-card' } });
   };
 
   return (

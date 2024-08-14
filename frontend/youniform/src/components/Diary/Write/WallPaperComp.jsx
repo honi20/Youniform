@@ -4,7 +4,7 @@ import styled from "styled-components";
 const WallpaperContainer = styled.div`
   display: flex;
   height: calc(100% - 40px);
-  border: 1px solid red;
+  /* border: 1px solid red; */
 `;
 const Wrapper = styled.div`
   padding-left: 3%;
@@ -28,18 +28,23 @@ const WallpaperImg = styled.img`
   object-fit: cover;
 `;
 
-const WallPaperComp = ({ wallpapers, onImageClick }) => {
+const WallPaperComp = ({ backgrounds, onImageClick }) => {
   return (
     <WallpaperContainer>
       <Wrapper>
-        {wallpapers.map((imageUrl, index) => (
-          <WallpaperImgContainer
-            key={index}
-            onClickCapture={() => onImageClick(imageUrl)}
-          >
-            <WallpaperImg src={imageUrl} alt={`Wallpaper ${index + 1}`} />
-          </WallpaperImgContainer>
-        ))}
+        {backgrounds &&
+          backgrounds.map((background, index) => (
+            <WallpaperImgContainer
+              key={index}
+              onClickCapture={() => onImageClick(background)}
+            >
+              <WallpaperImg
+                src={background.imgUrl}
+                alt={`background ${index + 1}`}
+                // crossOrigin="anonymous"
+              />
+            </WallpaperImgContainer>
+          ))}
       </Wrapper>
     </WallpaperContainer>
   );

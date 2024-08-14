@@ -1,15 +1,15 @@
 import styled from "styled-components";
-import ProfileUrl from "@assets/profile.png";
 
 export const Diary = styled.div`
   // layout
   box-sizing: border-box;
-  width: 90%;
+  max-width: 90%;
+  width: 398px;
   height: auto;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  // style
+  background-color: white;
   border-radius: 1rem;
   border: 1px solid #b5b5b5;
   margin-top: 3%;
@@ -32,7 +32,7 @@ export const DiaryHeader = styled.div`
   background-color: #fff;
   /* border: 1px solid black; */
 `;
-export const Profile = styled.div`
+export const Profile = styled.img`
   // layout
   width: 2rem;
   height: 2rem;
@@ -40,7 +40,6 @@ export const Profile = styled.div`
   align-items: center;
   margin-left: 0.5rem;
   // style
-  background-image: url(${(props) => props.profileUrl || ProfileUrl});
   background-size: cover;
   background-position: center;
   border-radius: 50%;
@@ -112,7 +111,7 @@ export const DiaryContent = styled.div`
 `;
 export const DiaryImageContainer = styled.div`
   display: flex;
-  border: 5px solid blue;
+  /* border: 5px solid blue; */
   height: 95%;
   justify-content: center;
   /* align-items: center; */
@@ -126,25 +125,17 @@ export const DiaryImageContainer = styled.div`
 
 export const DiaryText = styled.div`
   display: flex;
-  border: 1px solid yellow;
+  /* border: 1px solid yellow; */
   /* height: 40px; */
 `;
 export const DiaryTags = styled.div`
   display: flex;
-  border: 1px solid pink;
+  /* border: 1px solid pink; */
   /* height: 40px; */
 `;
 export const DiaryDate = styled.div`
-  display: flex;
-  align-items: center;
-  border: 1px solid pink;
-  height: 40px;
+  font-weight: 500;
   color: #848484;
-  font-family: "Pretendard";
-  /* font-size: 0.9375rem; */
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
   margin: 0 10px;
 `;
 export const DiaryLine = styled.div`
@@ -155,21 +146,10 @@ export const DiaryLine = styled.div`
 // Footer
 export const DiaryFooter = styled.div`
   display: flex;
-  /* border: 1px solid black; */
   height: auto;
   justify-content: space-between;
   align-items: center;
   padding: 3% 5%;
-  /* & > div {
-        display: flex;
-        align-items: center;
-    }
-    & > div > div {
-        font-family: 'Pretendard';
-        font-style: normal;
-        font-weight: 400;
-        /* border: 1px solid black;
-    } */
 `;
 export const CanvasContainer = styled.div`
   height: 502px;
