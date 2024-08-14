@@ -57,7 +57,7 @@ public class SignupReq {
                 .playPushAlert(true)
                 .createdAt(LocalDateTime.now())
                 .lastWriteDiary(LocalDateTime.now())
-                .team(Team.builder().id(1L).build())
+                .team(Team.builder().id(1000L).build())
                 .build();
     }
 

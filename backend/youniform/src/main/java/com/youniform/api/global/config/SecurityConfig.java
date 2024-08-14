@@ -48,7 +48,7 @@ public class SecurityConfig {
                                         "/api/users/verify", "/api/users/email/send",
                                         "/api/users/email/verify", "/api/users/check/email",
                                         "/api/users/password/reset", "/api/users/password/send",
-                                        "/api/players/list/**",
+                                        "/api/players/list/**", "/wss/**",
                                         "/docs/**", "/swagger-ui/**", "/v3-docs/**", "/h2-console/**").permitAll()
 //                        .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()

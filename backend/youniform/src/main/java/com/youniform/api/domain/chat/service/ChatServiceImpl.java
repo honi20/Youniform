@@ -187,6 +187,7 @@ public class ChatServiceImpl implements ChatService {
         ChatPart chatPart = chatPartRepository.findById(new ChatPartPK(userId, roomId))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
         chatPart.updateLastReadTime(lastReadTime);
+
         chatPartRepository.save(chatPart);
     }
 

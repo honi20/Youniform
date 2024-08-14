@@ -34,6 +34,8 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
 
+        log.info("Connected sessionId: {}", sessionId);
+
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         Long roomId = chatService.getRoomIdFromSessionId(sessionId);
 
@@ -43,12 +45,15 @@ public class WebSocketEventListener {
 
         // 초기 접속 시 접속자 수 브로드캐스트
         chatService.broadcastUserCount(roomId);
+        log.info("Connected userId: {}, roomId: {}", userId, roomId);
     }
 
     @EventListener
     public void handleSessionDisconnected(SessionDisconnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
+
+        log.info("Disconnected sessionId: {}", sessionId);
 
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         Long roomId = chatService.getRoomIdFromSessionId(sessionId);
@@ -59,12 +64,16 @@ public class WebSocketEventListener {
 
         // 접속자 수 브로드캐스트
         chatService.broadcastUserCount(roomId);
+
+        log.info("Disconnected userId: {}, roomId: {}", userId, roomId);
     }
 
     @Scheduled(fixedRate = 1000)
     public void checkUserHeartbeats() {
         Set<String> keys = longRedisTemplate.keys("chat:user:*:session:*");
         long currentTime = System.currentTimeMillis();
+
+        log.info("Check user heartbeats");
 
         for (String key : keys) {
             Long lastHeartbeatTime = longRedisTemplate.opsForValue().get(key);
@@ -87,5 +96,7 @@ public class WebSocketEventListener {
                 longRedisTemplate.delete("session:" + sessionId);
             }
         }
+
+        log.info("Check user heartbeats completed");
     }
 }

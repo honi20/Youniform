@@ -31,8 +31,11 @@ public class WebSocketController {
     @MessageMapping("/{roomId}")
     @SendTo("/sub/{roomId}")
     public ChatMessage processChatMessage(@DestinationVariable Long roomId, @Payload ChatMessage chatMessage) {
+        log.info("웹소켓1 : roomId: {}, chatMessage: {}", roomId);
+
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
+        log.info("웹소켓2 : processChatMessage() userId: {}", userId);
         return chatService.processChatMessage(roomId, chatMessage, userId);
     }
 

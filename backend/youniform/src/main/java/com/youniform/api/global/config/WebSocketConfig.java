@@ -28,11 +28,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.setApplicationDestinationPrefixes("/pub");
         config.enableSimpleBroker("/sub");
+
+        log.info("WebSocketConfig configureMessageBroker");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/stomp/chat")
+        registry.addEndpoint("/api/stomp/chat")
                 .setAllowedOriginPatterns("*")
                 .setHandshakeHandler(new DefaultHandshakeHandler() {
                     @Override
@@ -40,9 +42,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         // 토큰에서 userId 추출
                         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
+                        log.info("WebSocketConfig determineUser userId: {}", userId);
+
                         return userId::toString;
                     }
                 });
+
+        log.info("WebSocketConfig registerStompEndpoints");
 //        프론트와 테스트 시 해제
 //                .withSockJS();
     }
@@ -52,5 +58,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.setMessageSizeLimit(8192)
                 .setSendBufferSizeLimit(8192)
                 .setSendTimeLimit(10000);
+
+        log.info("WebSocketConfig configureWebSocketTransport log");
     }
 }

@@ -2,7 +2,9 @@ package com.youniform.api.domain.photocard.service;
 
 import com.youniform.api.domain.photocard.dto.*;
 import com.youniform.api.domain.photocard.entity.Photocard;
+import com.youniform.api.domain.photocard.entity.PhotocardResource;
 import com.youniform.api.domain.photocard.repository.PhotocardRepository;
+import com.youniform.api.domain.photocard.repository.PhotocardResourceRepository;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.exception.CustomException;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 
@@ -23,6 +26,8 @@ public class PhotocardServiceImpl implements PhotocardService {
 	private final PhotocardRepository photocardRepository;
 
 	private final UserRepository userRepository;
+
+	private final PhotocardResourceRepository resourceRepository;
 
 	private final S3Service s3Service;
 
@@ -91,5 +96,22 @@ public class PhotocardServiceImpl implements PhotocardService {
 				.toList();
 
 		return new PhotocardListRes(photocardList);
+	}
+
+	@Override
+	public PhotocardResourceListRes findPhotocardResources() {
+		List<PhotocardResource> list = resourceRepository.findAll();
+
+		List<PhotocardResourceDto> resourceList = list.stream()
+				.collect(Collectors.groupingBy(PhotocardResource::getType))
+				.entrySet().stream()
+				.map(typeEntry -> PhotocardResourceDto.toDto(
+						typeEntry.getKey(),
+						typeEntry.getValue().stream()
+								.map(PhotocardResource::getImgUrl)
+								.collect(Collectors.toList())))
+				.toList();
+
+		return new PhotocardResourceListRes(resourceList);
 	}
 }
