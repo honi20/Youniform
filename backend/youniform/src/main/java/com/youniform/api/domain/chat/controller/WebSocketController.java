@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,24 +31,39 @@ public class WebSocketController {
     // 채팅방에 메시지 전송 및 저장
     @MessageMapping("/{roomId}")
     @SendTo("/sub/{roomId}")
-    public ChatMessage processChatMessage(@DestinationVariable Long roomId, @Payload ChatMessage chatMessage) {
-        log.info("웹소켓1 : roomId: {}, chatMessage: {}", roomId);
+    public ChatMessage processChatMessage(@DestinationVariable Long roomId,
+                                          @Payload ChatMessage chatMessage,
+                                          SimpMessageHeaderAccessor headerAccessor) {
+        String authHeader = headerAccessor.getFirstNativeHeader("Authorization");
 
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
+            log.info("웹소켓1 : processChatMessage() userId: {}", userId);
 
-        log.info("웹소켓2 : processChatMessage() userId: {}", userId);
-        return chatService.processChatMessage(roomId, chatMessage, userId);
+            return chatService.processChatMessage(roomId, chatMessage, userId);
+        } else {
+            log.warn("Authorization 헤더가 없음 또는 잘못된 형식");
+            throw new IllegalArgumentException("Authorization 헤더가 유효하지 않습니다.");
+        }
     }
 
     // 하트비트 측정
     @MessageMapping("/heartbeat")
-    public void processHeartbeat() {
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-        String sessionId = SecurityContextHolder.getContext().getAuthentication().getName();
+    public void processHeartbeat(SimpMessageHeaderAccessor headerAccessor) {
+        log.info("heartbeat 연결 성공!!");
+        String sessionId = headerAccessor.getSessionId();
 
-        long currentTimeMillis = System.currentTimeMillis();
-        String redisKey = "chat:user:" + userId + ":session:" + sessionId;
+        String authHeader = headerAccessor.getFirstNativeHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
 
-        longRedisTemplate.opsForValue().set(redisKey, currentTimeMillis, 1, TimeUnit.MINUTES);
+            long currentTimeMillis = System.currentTimeMillis();
+            String redisKey = "chat:user:" + userId + ":session:" + sessionId;
+
+            longRedisTemplate.opsForValue().set(redisKey, currentTimeMillis, 1, TimeUnit.MINUTES);
+            log.info("longRedisTemplate 설정끝!");
+        }
     }
 }

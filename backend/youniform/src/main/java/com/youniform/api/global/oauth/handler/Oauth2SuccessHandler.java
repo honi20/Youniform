@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.user.dto.SignupReq;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
-import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;

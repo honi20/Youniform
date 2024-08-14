@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -33,42 +33,61 @@ public class WebSocketEventListener {
     public void handleSessionConnected(SessionConnectedEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         log.info("Connected sessionId: {}", sessionId);
 
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-        Long roomId = chatService.getRoomIdFromSessionId(sessionId);
+        String authHeader = headerAccessor.getFirstNativeHeader("Authorization");
+        if (authHeader == null) {
+            log.error("Authorization 헤더가 없음");
+            throw new IllegalArgumentException("Authorization 헤더가 없음");
+        } else if (!authHeader.startsWith("Bearer ")) {
+            log.error("잘못된 Authorization 헤더 형식: {}", authHeader);
+            throw new IllegalArgumentException("Authorization 헤더가 유효하지 않습니다.");
+        } else {
+            String token = authHeader.substring(7);
+            log.info("JWT Token: {}", token);
 
-        // Redis에 sessionId와 roomId 매핑 저장 (초기 연결 시)
-        longRedisTemplate.opsForValue().set("session:" + sessionId, roomId, 5, TimeUnit.MINUTES);
-        longRedisTemplate.opsForValue().set("chat:user:" + userId + ":session:" + sessionId, System.currentTimeMillis(), 5, TimeUnit.MINUTES);
+            try {
+                Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
+                log.info("웹소켓1 : processChatMessage() userId: {}", userId);
+                Long roomId = chatService.getRoomIdFromSessionId(sessionId);
 
-        // 초기 접속 시 접속자 수 브로드캐스트
-        chatService.broadcastUserCount(roomId);
-        log.info("Connected userId: {}, roomId: {}", userId, roomId);
+                longRedisTemplate.opsForValue().set("session:" + sessionId, roomId, 5, TimeUnit.MINUTES);
+                longRedisTemplate.opsForValue().set("chat:user:" + userId + ":session:" + sessionId, System.currentTimeMillis(), 5, TimeUnit.MINUTES);
+
+                chatService.broadcastUserCount(roomId);
+                log.info("Connected userId: {}, roomId: {}", userId, roomId);
+            } catch (Exception e) {
+                log.error("JWT 토큰 처리 중 오류 발생", e);
+
+                throw new IllegalArgumentException("JWT 토큰이 유효하지 않습니다.", e);
+            }
+        }
     }
 
     @EventListener
     public void handleSessionDisconnected(SessionDisconnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         log.info("Disconnected sessionId: {}", sessionId);
 
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
         Long roomId = chatService.getRoomIdFromSessionId(sessionId);
 
-        // Redis에서 세션 정보 삭제
-        longRedisTemplate.delete("chat:user:" + userId + ":session:" + sessionId);
-        longRedisTemplate.delete("session:" + sessionId);
-
-        // 접속자 수 브로드캐스트
-        chatService.broadcastUserCount(roomId);
-
-        log.info("Disconnected userId: {}, roomId: {}", userId, roomId);
+        String authHeader = headerAccessor.getFirstNativeHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
+            longRedisTemplate.delete("chat:user:" + userId + ":session:" + sessionId);
+            longRedisTemplate.delete("session:" + sessionId);
+            chatService.broadcastUserCount(roomId);
+            log.info("Disconnected userId: {}, roomId: {}", userId, roomId);
+        }
     }
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 10000)
     public void checkUserHeartbeats() {
         Set<String> keys = longRedisTemplate.keys("chat:user:*:session:*");
         long currentTime = System.currentTimeMillis();
