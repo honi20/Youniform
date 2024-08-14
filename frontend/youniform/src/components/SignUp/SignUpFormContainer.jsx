@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Outlet } from 'react-router-dom';
+// import { Outlet } from 'react-router-dom';
+import EmailInput from './Step1/EmailInput';
+import PasswordInput from './Step1/PasswordInput';
 
 const SignUpFormBox = styled.div`
   display: table-row;
@@ -11,7 +13,8 @@ const SignUpFormBox = styled.div`
 const SignUpFormContainer = () => {
   return (
     <SignUpFormBox>
-      <Outlet />
+      <EmailInput />
+      <PasswordInput />
     </SignUpFormBox>
   );
 };

@@ -36,6 +36,7 @@ const DiaryDetailView = ({ diaries }) => {
       setIsScrolled(false);
     }
   };
+  
   return (
     <>
       {loading ? (
