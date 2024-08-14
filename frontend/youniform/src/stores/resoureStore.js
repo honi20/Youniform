@@ -1,14 +1,17 @@
 import { create } from "zustand";
 import { getApiClient } from "@stores/apiClient";
 
-const useResourceStore = create((set) => ({
+const useResourceStore = create((set, get) => ({
   loading: null,
   error: null,
   stampList: [],
   backgrounds: {},
   stickers: {},
   themes: {},
-
+  selectedColor: "WHITE",
+  setSelectedColor: (category) => set({ selectedColor: category }),
+  selectedCategory: "BASEBALL",
+  setSelectedCategory: (category) => set({ selectedCategory: category }),
   setResources: (resourceList) => {
     const resources = {
       backgrounds: {},
@@ -22,7 +25,7 @@ const useResourceStore = create((set) => ({
       categories.forEach((category) => {
         const { category: categoryName, items } = category;
 
-        if (type === "BACKGOUND") {
+        if (type === "BACKGROUND") {
           resources.backgrounds[categoryName] = items;
         } else if (type === "STICKER") {
           resources.stickers[categoryName] = items;
@@ -36,6 +39,7 @@ const useResourceStore = create((set) => ({
       ...state,
       ...resources,
     }));
+    return resources;
   },
 
   fetchResources: async () => {
@@ -46,14 +50,15 @@ const useResourceStore = create((set) => ({
       console.log(res.data.header);
       console.log(res.data.body);
       const resourceList = res.data.body.resourceList;
-
+      const resources = get().setResources(resourceList);
       set((state) => ({
         ...state,
-        ...state.setResources(resourceList),
+        ...resources, // Spread the resources object directly into state
         loading: false,
       }));
     } catch (error) {
       console.error("Failed to fetch resources:", error);
+      set({ loading: false, error: error.message });
     }
   },
 

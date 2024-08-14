@@ -21,7 +21,8 @@ import BasicModal from "@components/Modal/BasicModal";
 import DiaryModal from "@components/Diary/DiaryModal";
 import useDiaryStore from "@stores/diaryStore";
 import useResourceStore from "@stores/resoureStore";
-
+import CategoryComp from "../../components/Diary/Write/CategoryComp";
+// import html2canvas from "html2canvas"
 const ToggleBtn = styled.div`
   /* width: 50%; */
   height: 100%;
@@ -54,8 +55,15 @@ const WriteDiaryView = () => {
   const navigate = useNavigate();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
-  const { stampList, fetchStampList, resources, fetchResources } =
-    useResourceStore();
+  const { backgrounds, stickers, themes, fetchResources, fetchStampList } =
+    useResourceStore((state) => ({
+      backgrounds: state.backgrounds,
+      stickers: state.stickers,
+      themes: state.themes,
+      fetchResources: state.fetchResources,
+      fetchStampList: state.fetchStampList,
+    }));
+  const { stampList, selectedCategory, selectedColor } = useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
@@ -70,31 +78,31 @@ const WriteDiaryView = () => {
   }, [diaryId, fetchDiary]);
 
   useEffect(() => {
-    const fetchStamp = () => {
-      if (stampList.length == 0) {
-        fetchStampList();
-      }
-    };
-    fetchStamp();
-  }, [fetchStampList, stampList]);
+    fetchResources();
+    fetchStampList();
+  }, [fetchResources, fetchStampList]);
 
-  useEffect(() => {
-    const loadResources = () => {
-      if (!resources || resources.length == 0) {
-        fetchResources();
-      }
-    };
-    loadResources();
-  }, [fetchResources, resources]);
+  // useEffect(() => {
+  //   const loadResources = () => {
+  //     if (!backgrounds || backgrounds.length == 0) {
+  //       fetchResources();
+  //     }
+  //   };
+  //   loadResources();
+  //   console.log(backgrounds);
+  // }, [fetchResources, backgrounds]);
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
   };
 
-  const handleImageClick = async (selectedImg) => {
-    console.log(selectedImg);
+  const handleImageClick = async (background) => {
+    console.log(background);
     if (selectCanvas) {
-      fabric.Image.fromURL(selectedImg, (img) => {
+      fabric.Image.fromURL(background.imgUrl, (img) => {
+        if (background.imgUrl.startsWith("http")) {
+          img.set({ crossOrigin: "anonymous" });
+        }
         img.scaleToWidth(selectCanvas.getWidth());
         img.scaleToHeight(selectCanvas.getHeight());
         img.set({
@@ -111,10 +119,13 @@ const WriteDiaryView = () => {
     }
   };
 
-  const handleStickerClick = async (selectedSticker) => {
-    console.log(selectedSticker);
+  const handleStickerClick = async (sticker) => {
     if (selectCanvas) {
-      fabric.Image.fromURL(selectedSticker, (img) => {
+      fabric.Image.fromURL(sticker.imgUrl, (img) => {
+        if (sticker.imgUrl.startsWith("http")) {
+          img.set({ crossOrigin: "anonymous" });
+        }
+        // img.crossOrigin = "anonymous";
         img.scaleToHeight(100);
         img.set({
           left: selectCanvas.getWidth() / 2,
@@ -125,6 +136,7 @@ const WriteDiaryView = () => {
         selectCanvas.add(img);
         selectCanvas.renderAll();
       });
+      console.log("cors 테스트 중", selectCanvas);
     }
   };
 
@@ -159,24 +171,38 @@ const WriteDiaryView = () => {
       );
     }
   };
+  const filteredBackgrounds = selectedColor
+    ? Object.values(backgrounds[selectedColor] || [])
+    : [];
+  const filteredStickers = selectedCategory
+    ? Object.values(stickers[selectedCategory] || [])
+    : [];
+
   const renderContent = () => {
+    console.log(themes);
+    console.log(filteredBackgrounds, selectedColor);
     switch (selectedBtn) {
       case 0:
         return (
           <>
             <ColorChipComp />
             <WallPaperComp
-              wallpapers={Object.values(wallpapers).map((mod) => mod.default)}
+              backgrounds={
+                filteredBackgrounds ? filteredBackgrounds : backgrounds
+              }
               onImageClick={handleImageClick}
             />
           </>
         );
       case 1:
         return (
-          <StickerComp
-            stickers={Object.values(stickers).map((mod) => mod.default)}
-            onImageClick={handleStickerClick}
-          />
+          <>
+            <CategoryComp />
+            <StickerComp
+              stickers={filteredStickers ? filteredStickers : stickers}
+              onImageClick={handleStickerClick}
+            />
+          </>
         );
       case 2:
         return (
@@ -240,6 +266,9 @@ const WriteDiaryView = () => {
         const json = selectCanvas.toJSON();
 
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
+        // const imageRef = useRef(null)
+        // html2canvas
+        console.log(diaryImgUrl);
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
         console.log("diaryDate: ", diaryDate ? diaryDate : date);
         console.log("contents: ", json);
