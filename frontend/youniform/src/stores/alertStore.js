@@ -9,56 +9,56 @@ const useAlertStore = create((set) => ({
   alerts: [],
   currentAlert: null,
 
-  subscribe: async () => {
-    set({ loading: true, error: null });
+  // subscribe: async () => {
+  //   set({ loading: true, error: null });
 
-    const lastEventId = localStorage.getItem('lastEventId') || '';
-    const eventSource = new EventSourcePolyfill(`${API_URL}/alerts/subscribe`, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        'Last-Event-ID': lastEventId,
-      },
-      heartbeatTimeout: 600000,
-    });
+  //   const lastEventId = localStorage.getItem('lastEventId') || '';
+  //   const eventSource = new EventSourcePolyfill(`${API_URL}/alerts/subscribe`, {
+  //     headers: {
+  //       "Content-Type": "text/event-stream",
+  //       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+  //       'Last-Event-ID': lastEventId,
+  //     },
+  //     heartbeatTimeout: 600000,
+  //   });
 
-    eventSource.addEventListener('sse-connect', (event) => {
-      try {
-        if (event.data.startsWith('{') || event.data.startsWith('[')) {
-          const newNotification = JSON.parse(event.data);
-          set((state) => ({
-            alerts: [...state.alerts, newNotification],
-            currentAlert: {...newNotification},
-            loading: false,
-          }));
-          console.log(newNotification);
-        } else {
-          // JSON이 아닌 경우, 텍스트로 처리
-          console.log("Received text data:", event.data);
-        }
-      } catch (error) {
-        console.error("Failed to parse JSON:", error);
-        console.log("Received data:", event.data); // 데이터 확인을 위해 로깅
-      }
-    });
+  //   eventSource.addEventListener('sse-connect', (event) => {
+  //     try {
+  //       if (event.data.startsWith('{') || event.data.startsWith('[')) {
+  //         const newNotification = JSON.parse(event.data);
+  //         set((state) => ({
+  //           alerts: [...state.alerts, newNotification],
+  //           currentAlert: {...newNotification},
+  //           loading: false,
+  //         }));
+  //         console.log(newNotification);
+  //       } else {
+  //         // JSON이 아닌 경우, 텍스트로 처리
+  //         console.log("Received text data:", event.data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to parse JSON:", error);
+  //       console.log("Received data:", event.data); // 데이터 확인을 위해 로깅
+  //     }
+  //   });
 
-    eventSource.addEventListener('heartbeat', (event) => {
-      console.log("Heartbeat received:", event.data);
-      // 이 메시지는 타임아웃을 방지하기 위한 하트비트입니다.
-    });
+  //   eventSource.addEventListener('heartbeat', (event) => {
+  //     console.log("Heartbeat received:", event.data);
+  //     // 이 메시지는 타임아웃을 방지하기 위한 하트비트입니다.
+  //   });
 
-    // 오류 처리 및 재연결 로직
-    eventSource.onerror = (error) => {
-      console.log("Failed to subscribe to alerts", error);
-      set({ error: "Failed to subscribe to alerts", loading: false });
-      eventSource.close();
-      // 재연결 로직 추가 가능
-    };
+  //   // 오류 처리 및 재연결 로직
+  //   eventSource.onerror = (error) => {
+  //     console.log("Failed to subscribe to alerts", error);
+  //     set({ error: "Failed to subscribe to alerts", loading: false });
+  //     eventSource.close();
+  //     // 재연결 로직 추가 가능
+  //   };
 
-    return () => {
-      eventSource.close();
-    };
-  },
+  //   return () => {
+  //     eventSource.close();
+  //   };
+  // },
 
   // 모달 닫기
   clearCurrentAlert: () => set({ currentAlert: null }), 
