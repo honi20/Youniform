@@ -57,7 +57,7 @@ const Friend = ({ friend, setSelectedFriend }) => {
   const { deleteFriend } = useFriendStore();
   const { user, fetchUser } = useUserStore();
   const [isModalOpen, setModalOpen] = useState(false);
-  
+
   useEffect(() => {
     const loadUserDate = () => {
       if (!user || user.length == 0) {
@@ -66,8 +66,8 @@ const Friend = ({ friend, setSelectedFriend }) => {
       }
     };
     loadUserDate();
-  }, [user, fetchUser]);
-  
+  }, [fetchUser, user]);
+
   const handleDeleteBtn = () => {
     console.log("친구삭제");
     deleteFriend(friend.userId);
@@ -77,7 +77,7 @@ const Friend = ({ friend, setSelectedFriend }) => {
     setSelectedFriend(friend);
     setModalOpen(true);
   };
-  console.log(friend);
+  // console.log(friend);
   return (
     <Container>
       <div style={{ display: "flex", flex: "1" }} onClick={handleProfileClick}>

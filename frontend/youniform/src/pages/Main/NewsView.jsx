@@ -1,28 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { carouselTest } from "@assets";
-import defaultImg from "@assets/carousel/test_1.jpg";
 import { useParams } from "react-router-dom";
 import usePlayerStore from "../../stores/playerStore";
 import useNewsStore from "../../stores/newsStore";
-
+import parse from "html-react-parser";
+import * as Font from "@/typography";
 const Div = styled.div`
   width: 100%;
   height: calc(100vh - 120px);
   overflow-y: auto;
 `;
-const Main = styled.div`
-  box-sizing: border-box;
-  min-height: 40vh;
-  height: 25rem;
-  max-height: 50vh;
-  width: 100%;
-`;
 const TagSection = styled.div`
-  /* height: 10vh; */
   height: 50px;
   position: sticky;
   top: 0;
@@ -34,47 +22,7 @@ const TagSection = styled.div`
 `;
 const ArticleSection = styled.div`
   flex: 1;
-  /* border: 1px solid green; */
   font-size: 2rem;
-`;
-const CustomSlider = styled(Slider)`
-  height: 100%;
-  .slick-slide {
-    padding: 0 10px; /* 각 슬라이드 사이에 여백 추가 */
-  }
-
-  .slick-slide div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .slick-list {
-    overflow: hidden;
-  }
-`;
-const CardNews = styled.div`
-  width: 100%;
-  min-height: 40vh;
-  height: 25rem;
-  max-height: 50vh;
-  /* border: 1px solid black; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  /* background-color: aliceblue; */
-  box-sizing: border-box;
-  /* aspect-ratio: 5 / 6; */
-  /* padding-left: 7%; */
-`;
-const Image = styled.img`
-  width: 100%;
-  height: 97%; // Maintain aspect ratio
-  object-fit: cover;
-  box-sizing: border-box;
-  /* border: 1px solid red; */
-  border-radius: 1.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 const Tag = styled.div`
   margin: auto 1%;
@@ -93,43 +41,49 @@ const Tag = styled.div`
 `;
 const Article = styled.div`
   padding: 2%;
-  border: 0.5px solid #dadada;
-  border-radius: 15px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
   display: flex;
+  width: 90%;
   margin: 0 5%;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
   overflow-y: auto;
+  max-height: ${(props) => (props.expanded ? "1000px" : "150px")};
   cursor: pointer;
-  &:not(:first-child) {
-    margin: 4% 5%;
+  &:first-child {
+    border-top: 1px solid black;
   }
 `;
-const ArticleImg = styled.div`
-  aspect-ratio: 1;
-  margin: 2.5%;
-  background-image: url(${defaultImg});
-  background-size: cover;
-  background-position: center;
-  border-radius: 1rem;
-`;
+
 const ArticleContent = styled.div`
-  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
-const Header = styled.div`
-  border: 1px solid green;
-  height: 25%;
-  color: #6d6d6d;
-  font-family: "Pretendard";
+const ArticleHeader = styled.div`
+  display: flex;
+`;
+const Content = styled.div`
+  ${Font.Small};
+  font-weight: 400;
+  padding: 7px 0;
+  border-top: 1px solid #d3d3d3;
+`;
+const ToggleButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0.5rem;
+  width: 40px;
+  cursor: pointer;
   font-size: 1rem;
+  background-color: white;
 `;
 const Title = styled.div`
-  border: 1px solid pink;
+  ${Font.Medium};
   width: 100%;
-  height: 50px;
-  color: #6d6d6d;
-  font-size: 1.2rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.4;
   display: -webkit-box; /* Flexbox for WebKit-based browsers */
   -webkit-line-clamp: 2;
@@ -138,25 +92,10 @@ const Title = styled.div`
   text-overflow: ellipsis;
 `;
 const Footer = styled.div`
-  border: 1px solid purple;
-  height: 25px;
-  color: #6d6d6d;
-  font-family: "Pretendard";
-  font-size: 1rem;
+  ${Font.XSmall};
   display: flex;
-  /* justify-content: end; */
 `;
 const NewsView = () => {
-  // CAROSEL SETTINGS
-  // const settings = {
-  //   centerMode: true,
-  //   infinite: true,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1,
-  //   centerPadding: "40px",
-  // };
-  // const images = Object.values(carouselTest).map((mod) => mod.default);
-
   const { playerId } = useParams();
   const { playerList, fetchPlayerList } = usePlayerStore();
   const [newsList, setNewsList] = useState([]);
@@ -165,14 +104,15 @@ const NewsView = () => {
   const { news, fetchTotalNews, getTotalNews, getPlayerNews } = useNewsStore();
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
-
+  const [expanded, setExpanded] = useState(false);
+  const [expandedIndex, setExpandedIndex] = useState(null);
   useEffect(() => {
     const loadPlayerList = async () => {
       if (!playerList || playerList.length == 0) {
-        const res = await fetchPlayerList();
-        await fetchTotalNews(res);
-        console.log(news);
+        await fetchPlayerList();
       }
+      await fetchTotalNews(playerList);
+      console.log(news);
     };
     loadPlayerList();
   }, [playerList, fetchPlayerList, fetchTotalNews]);
@@ -197,43 +137,20 @@ const NewsView = () => {
     }
   }, [selectedTagId, getTotalNews, getPlayerNews, news]);
   console.log(newsList);
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const bottom =
-  //       containerRef.current.scrollHeight ===
-  //       containerRef.current.scrollTop + containerRef.current.clientHeight;
-
-  //     if (bottom && !loading) {
-  //       setLoading(true);
-  //       fetchTotalNews(playerList).finally(() => setLoading(false));
-  //     }
-  //   };
-
-  //   const container = containerRef.current;
-  //   container.addEventListener("scroll", handleScroll);
-
-  //   return () => container.removeEventListener("scroll", handleScroll);
-  // }, [playerList, loading, fetchTotalNews]);
 
   const handleTagClick = (tagId) => {
     setSelectedTagId(tagId);
   };
+  const handleArticleClick = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index); // Toggle expansion
+  };
+  const parseText = (text) => {
+    // 줄바꿈을 <br /> 태그로 변환
+    const formattedText = text.replace(/\n/g, "<br />");
 
-  // useEffect(() => {
-  //   const loadNews = async () => {
-  //     console.log(news.length);
-  //     if (news.length == 0) {
-  //       console.log("test");
-  //       const searchPlayer = playerList.filter(
-  //         (player) => player.playerId == selectedTagId
-  //       )[0];
-  //       console.log(searchPlayer);
-  //       await fetchTotalNews();
-  //     }
-  //   };
-  //   loadNews();
-  //   console.log(news);
-  // }, [fetchNews, news]);
+    // HTML을 JSX로 변환
+    return parse(formattedText);
+  };
 
   return (
     <Div ref={containerRef}>
@@ -260,11 +177,30 @@ const NewsView = () => {
       <ArticleSection>
         {newsList &&
           newsList.map((news, index) => (
-            <Article key={index} onClick={() => console.log(news.link)}>
+            <Article
+              key={index}
+              expanded={expandedIndex === index}
+              onClick={() => handleArticleClick(index)}
+            >
               <ArticleContent>
-                <Title>{news.title}</Title>
-                <Header>{news.description}</Header>
-                <Footer>{news.pubDate}</Footer>
+                <ArticleHeader>
+                  <div>
+                    <Title>{parseText(news.title)}</Title>
+                    <Footer>{news.pubDate}</Footer>
+                  </div>
+                  <ToggleButton
+                    expanded={expanded}
+                    onClick={() => setExpanded((prev) => !prev)}
+                  >
+                    {expandedIndex === index ? "-" : "+"}
+                  </ToggleButton>
+                </ArticleHeader>
+
+                {expandedIndex === index && (
+                  <>
+                    <Content>{parseText(news.description)}</Content>
+                  </>
+                )}
               </ArticleContent>
             </Article>
           ))}

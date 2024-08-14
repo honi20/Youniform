@@ -266,9 +266,6 @@ const WriteDiaryView = () => {
         const json = selectCanvas.toJSON();
 
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
-        // const imageRef = useRef(null)
-        // html2canvas
-        console.log(diaryImgUrl);
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
         console.log("diaryDate: ", diaryDate ? diaryDate : date);
         console.log("contents: ", json);

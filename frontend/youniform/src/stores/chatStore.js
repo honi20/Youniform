@@ -9,11 +9,8 @@ const useChatStore = create((set, get) => ({
   selectedRoom: null,
   client: null, // WebSocket 클라이언트
   isConnected: false, // WebSocket 연결 상태
-  //경덕
-  // 하트비트 타이머 ID
-  heartbeatInterval: null,
-  // 현재 접속자 수
-  connectedUsers: 0,
+  heartbeatInterval: null, // 하트비트 타이머 ID
+  connectedUsers: 0, // 현재 접속자 수
 
   connect: () => {
     const { client, selectedRoom, isConnected, fetchChatRoomMessage } = get();
@@ -42,6 +39,28 @@ const useChatStore = create((set, get) => ({
         set({ isConnected: true });
         fetchChatRoomMessage();
 
+        // 하트비트 전송 시작
+        const intervalId = setInterval(() => {
+          if (newClient && newClient.connected) {
+            newClient.publish({
+              destination: `/app/heartbeat/${selectedRoom}`,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({}), // 하트비트 메시지의 body는 빈 JSON
+            });
+          }
+        }, 5000);
+        set({ heartbeatInterval: intervalId });
+
+        // 방의 사용자 수 변동 구독
+        newClient.subscribe(`/sub/${selectedRoom}/userCount`, (message) => {
+          const userCount = JSON.parse(message.body);
+          console.log("Current user count:", userCount);
+          set({ connectedUsers: userCount });
+        });
+
+        // 채팅 메시지 수신 구독
         newClient.subscribe(`/sub/${selectedRoom}`, (message) => {
           try {
             const receivedMessage = JSON.parse(message.body);
@@ -61,6 +80,10 @@ const useChatStore = create((set, get) => ({
       onDisconnect: () => {
         set({ isConnected: false });
         console.log("websocket 연결 해제");
+        if (heartbeatInterval) {
+          clearInterval(heartbeatInterval); // 하트비트 타이머 중지
+        }
+        set({ client: null, heartbeatInterval: null });
       },
     });
 
@@ -72,8 +95,9 @@ const useChatStore = create((set, get) => ({
     const { client, heartbeatInterval } = get();
     if (client) {
       client.deactivate();
-      // 경덕
-      // clearInterval(heartbeatInterval); // 하트비트 타이머 중지
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval); // 하트비트 타이머 중지
+      }
       set({ client: null, isConnected: false, heartbeatInterval: null });
     }
   },
@@ -108,6 +132,7 @@ const useChatStore = create((set, get) => ({
       console.log("Failed to fetch chat room messages", error);
     }
   },
+
   toggleChatListVisibility: () =>
     set((state) => ({ isChatListVisible: !state.isChatListVisible })),
 
@@ -150,6 +175,7 @@ const useChatStore = create((set, get) => ({
       set({ content: "" });
     }
   },
+
   sendImage: async (file) => {
     const { selectedRoom } = get();
     if (!selectedRoom || !file) return;
@@ -177,11 +203,6 @@ const useChatStore = create((set, get) => ({
     if (!selectedRoom) return;
 
     const apiClient = getApiClient();
-    // const lastMessage = messages[0];
-    // const beforeTimestamp = lastMessage
-    //   ? new Date(lastMessage.messageTime).toISOString()
-    //   : new Date().toISOString();
-
     try {
       const res = await apiClient.get(
         `/chats/messages/${selectedRoom}/previous`,
@@ -191,10 +212,6 @@ const useChatStore = create((set, get) => ({
         }
       );
       console.log(res.data.body);
-      // const newMessages = res.data.body.messages;
-      // set((state) => ({
-      //   messages: [...state.messages, ...newMessages],
-      // }));
     } catch (error) {
       console.log("Failed to fetch previous messages", error);
     }
