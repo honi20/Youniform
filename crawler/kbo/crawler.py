@@ -325,6 +325,9 @@ def init():
     player["WO"]["변상권"] = 307
     player["WO"]["박주홍"] = 308
 
+def sendAlert(player_id):
+    requests.get("https://youniform.site/api/alerts/player/" + str(player_id))
+
 def game_info_crawling(response, game_id):
     try:
         soup = BeautifulSoup(response.text, "html.parser")
@@ -442,13 +445,11 @@ def send_pitcher_alert(current_inning, players, away_team, home_team):
     pattern = r"^\d{1,2}(회초)"
 
     if re.search(pattern, current_inning):
-        print(player[home_team][players["home_pitcher"][0]])
-        print(home_team + " 투수 : " + players["home_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
-        requests.get("http://i11a308.p.ssafy.io:8080/api/alerts/" + str(player[home_team][players["home_pitcher"][0]]))
+        print(player[home_team][players["home_pitcher"][0]] + home_team + " 투수 : " + players["home_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        sendAlert(player[home_team][players["home_pitcher"][0]])
     else:
-        print(player[away_team][players["away_pitcher"][0]])
-        print(away_team + " 투수 : " + players["away_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
-        requests.get("http://i11a308.p.ssafy.io:8080/api/alerts/" + str(player[away_team][players["away_pitcher"][0]]))
+        print(player[away_team][players["away_pitcher"][0]] + away_team + " 투수 : " + players["away_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        sendAlert(player[away_team][players["away_pitcher"][0]])
 
 def send_hitter_alert(current_inning, current_player, away_team, home_team):
     inning = re.search(r"^\d{1,2}(회초)", current_inning)
@@ -462,13 +463,11 @@ def send_hitter_alert(current_inning, current_player, away_team, home_team):
         result = re.search(r"\d+번타자\s*(\S+)", current_player).group(1)
 
     if inning:
-        print(player[away_team][result])
-        print(away_team + " 타자 : " + result + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
-        requests.get("http://i11a308.p.ssafy.io:8080/api/alerts/" + str(player[away_team][result]))
+        print(player[away_team][result] + away_team + " 타자 : " + result + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        sendAlert(player[away_team][result])
     else:
-        print(player[home_team][result])
-        print(home_team + " 타자 : " + result + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
-        requests.get("http://i11a308.p.ssafy.io:8080/api/alerts/" + str(player[home_team][result]))
+        print(player[home_team][result] + home_team + " 타자 : " + result + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        sendAlert(player[home_team][result])
 
 def crawling(game_id):
     init()

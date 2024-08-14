@@ -9,7 +9,6 @@ def kbo_crawling_scheduler():
         "20240810WOHH0"
     ]
     for game_id in game_id_list:
-        print(game_id)
         run_kbo_crawler.delay(game_id)
 
 kbo_crawling_scheduler()
