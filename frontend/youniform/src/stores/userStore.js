@@ -58,6 +58,7 @@ const useUserStore = create((set, get) => ({
       handleLoginSuccess(accessToken);
       return "$OK";
     } catch (err) {
+      // if (err.response.data.)
       console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }

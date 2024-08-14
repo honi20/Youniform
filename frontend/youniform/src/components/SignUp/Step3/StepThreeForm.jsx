@@ -51,7 +51,10 @@ const StepThreeForm = () => {
         ))}
       </StepIndicatorBox>
       <SelectPlayerView
-      step="3"
+        step="3"
+      />
+      <NextStepButton
+        step="3"
       />
     </>
   );

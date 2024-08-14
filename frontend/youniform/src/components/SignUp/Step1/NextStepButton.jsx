@@ -41,11 +41,12 @@ const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
       case "3":
         if (user.players.length > 0) {
           const res = await fetchLocalSignUp();
-          navigate(`/sign-up/step-4`);
+          if (res === "$SUCCESS") {
+            navigate(`/sign-up/step-4`);
+          }
         }
         break;
       case "4":
-        setStep(1);
         navigate(`/`);
         return;
     }
@@ -57,7 +58,7 @@ const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
 
   return (
     <NextStepBtn onClick={handleNextStep}>
-      {step === 4 ? "홈으로" : "다음 단계로"}
+      {step === '4' ? "홈으로" : "다음 단계로"}
     </NextStepBtn>
   );
 };

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useUserStore from "./userStore";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const signUpStore = create((set, get) => ({
@@ -100,7 +101,6 @@ const signUpStore = create((set, get) => ({
   fetchLocalSignUp: async () => {
     try {
       const { user } = get();
-
       const res = await axios({
         method: "post",
         url: `${API_URL}/users/signup/local`,
@@ -112,12 +112,18 @@ const signUpStore = create((set, get) => ({
           nickname: user.nickname,
           introduce: user.introduce,
           team: "MONSTERS",
-          players: (user.players.length === 1 && user.players[0] === 0) ? null : userplayers,
+          players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
         },
       });
       console.log("Success to fetch Local SignUp");
-      console.log(res.data.header);
-      console.log(res.data.body);
+      if (res.data.header.httpStatusCode === 200) {
+        const accessToken = res.data.body.accessToken;
+        const { setAccessToken } = useUserStore.getState();
+        setAccessToken(accessToken);
+        console.log('Access Token:', accessToken);
+        console.log(res.data.body.accessToken);
+        return "$SUCCESS"
+      }
     } catch (err) {
       console.log("Failed to fetch Local SignUp", err);
     }
