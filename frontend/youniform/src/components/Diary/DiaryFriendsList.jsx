@@ -1,27 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import useFriendStore from '@stores/friendStore';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import useFriendStore from "@stores/friendStore";
+import useDiaryStore from "@stores/diaryStore";
+import useUserStore from "@stores/userStore";
 
-// test
-import User1 from '../../assets/Test/User/user_1.png';
-import User2 from '../../assets/Test/User/user_2.png';
-import User3 from '../../assets/Test/User/user_3.png';
-import User4 from '../../assets/Test/User/user_4.png';
-import User5 from '../../assets/Test/User/user_5.png';
-import User6 from '../../assets/Test/User/user_6.png';
-import useDiaryStore from '../../stores/diaryStore';
-
-const UserInfo = [
-  { id: 1, imgSrc: User1, nickName: '하츄핑', updateStatus: false },
-  { id: 2, imgSrc: User2, nickName: '낭만고양이', updateStatus: false },
-  { id: 3, imgSrc: User3, nickName: '스마트정대리', updateStatus: true },
-  { id: 4, imgSrc: User4, nickName: 'krozv', updateStatus: true },
-  { id: 5, imgSrc: User5, nickName: '테스트용긴유저네임', updateStatus: false },
-  { id: 6, imgSrc: User6, nickName: '망곰베어스', updateStatus: true },
-];
-
+// Styled Components 정의
 const ListContainer = styled.div`
-  background-color: #EDEDED;
+  background-color: #ededed;
   width: 100%;
   height: 100%;
   overflow-x: auto;
@@ -57,10 +42,11 @@ const UserCard = styled.div`
   position: relative;
   height: 100px;
   width: 80px;
-  background-color: ${props => props.$isSelected ? '#D9D9D9' : 'transparent'};
+  background-color: ${(props) =>
+    props.$isSelected ? "#D9D9D9" : "transparent"};
   cursor: pointer;
   transition: background-color 0.3s ease;
-  opacity: ${props => (props.$noneSelected || props.$isSelected) ? 1 : 0.3};
+  opacity: ${(props) => (props.$noneSelected || props.$isSelected ? 1 : 0.3)};
 `;
 
 const UserImage = styled.img`
@@ -87,10 +73,10 @@ const UpdateStatusCircle = styled.div`
   right: 13px;
   width: 13px;
   height: 13px;
-  background-color: #F97D93;
+  background-color: #f97d93;
   border: 1.5px solid white;
   border-radius: 50%;
-  display: ${props => props.$updateStatus ? 'block' : 'none'};
+  display: ${(props) => (props.$updateStatus ? "block" : "none")};
 `;
 
 const VerticalBar = styled.div`
@@ -103,46 +89,87 @@ const VerticalBar = styled.div`
 
 const DiaryFriendsList = ({ onUserClick }) => {
   const [selectedUserIndex, setSelectedUserIndex] = useState(null);
-  const { friends } = useFriendStore();
-  const { fetchFriendsDiaries } = useDiaryStore();
+  const [selectedSelf, setSelectedSelf] = useState(false);
+  const { friends, diaryFriends, fetchDiaryFriends } = useFriendStore();
+  const { fetchUser, user } = useUserStore();
+  const {
+    selectedUser,
+    setSelectedUser,
+    monthlyDiaries,
+    fetchMonthlyDiaries,
+    fetchFriendsDiaries,
+  } = useDiaryStore();
 
-  // useEffect(() => {
-  //   fetchFriends();
-  // }, [fetchFriends]);
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
-  const handleUserClick = async (index) => {
-    // UserInfo[index].updateStatus = false;
-    setSelectedUserIndex(index);
-    if (onUserClick) {
-      onUserClick(friends[index]);
+  useEffect(() => {
+    fetchDiaryFriends();
+  }, [fetchDiaryFriends]);
+
+  const handleUserClick = async (type, index = null) => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const formattedDate = `${year}-${month}`;
+
+    if (type === "friend") {
+      setSelectedSelf(false);
+      setSelectedUserIndex(index);
+      setSelectedUser(diaryFriends[index].friendId);
+      if (onUserClick) {
+        // onUserClick(diaryFriends[index]);
+      }
+      await fetchFriendsDiaries(diaryFriends[index].friendId, formattedDate);
+    } else if (type === "self") {
+      setSelectedSelf(true);
+      setSelectedUserIndex(null);
+      setSelectedUser(null);
+      if (onUserClick) {
+        // onUserClick();
+      }
+      await fetchMonthlyDiaries(formattedDate);
     }
-    await fetchFriendsDiaries();
-
   };
 
   return (
-    <ListContainer>
-      <FriendsList>
-        {/* Login User */}
-        <UserCard>
-          
-        </UserCard>
-        <VerticalBar />
-        {/* Friends List */}
-        {friends.map((user, index) => (
-          <UserCard
-            key={user.friendId}
-            $isSelected={index === selectedUserIndex}
-            $noneSelected={selectedUserIndex === null}
-            onClick={() => handleUserClick(index)}
-          >
-            <UserImage src={user.imgUrl} alt={user.nickname} />
-            <UpdateStatusCircle $updateStatus={user.updateStatus} />
-            <UserName>{user.nickname}</UserName>
-          </UserCard>
-        ))};
-      </FriendsList>
-    </ListContainer>
+    <>
+      {user && monthlyDiaries && (
+        <ListContainer>
+          <FriendsList>
+            {/* Login User */}
+            <UserCard
+              $isSelected={selectedSelf}
+              $noneSelected={selectedUserIndex === null && !selectedSelf}
+              onClick={() => handleUserClick("self")}
+            >
+              <UserImage src={user.profileUrl} alt={user.nickname} />
+              {user.diaryUpdated && (
+                <UpdateStatusCircle $updateStatus={user.updateStatus} />
+              )}
+              <UserName>{user.nickname}</UserName>
+            </UserCard>
+            <VerticalBar />
+            {/* Friends List */}
+            {diaryFriends.map((user, index) => (
+              <UserCard
+                key={user.friendId}
+                $isSelected={index === selectedUserIndex}
+                $noneSelected={selectedUserIndex === null && !selectedSelf}
+                onClick={() => handleUserClick("friend", index)}
+              >
+                <UserImage src={user.imgUrl} alt={user.nickname} />
+                {user.diaryUpdated && (
+                  <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
+                )}
+                <UserName>{user.nickname}</UserName>
+              </UserCard>
+            ))}
+          </FriendsList>
+        </ListContainer>
+      )}
+    </>
   );
 };
 

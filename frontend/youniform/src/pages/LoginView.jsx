@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useUserStore from "@stores/userStore";
 import usePhotoCardStore from "@stores/photoCardStore";
+import useAlertStore from '@stores/alertStore';
 
-import GoogleIcon from "../assets/login/google.png";
-import KakaoIcon from "../assets/login/kakao.png";
-import NaverIcon from "../assets/login/naver.png";
+import GoogleIcon from "@assets/login/google.png";
+import KakaoIcon from "@assets/login/kakao.png";
+import NaverIcon from "@assets/login/naver.png";
 
 import { styled as muiStyled } from "@mui/material/styles";
 import { TextField, MenuItem, Button } from "@mui/material";
@@ -133,6 +134,7 @@ const LoginView = () => {
   const [emailInput, setEmailInput] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [currency, setCurrency] = useState("");
+  // const subscribe = useAlertStore(state => state.subscribe);
 
   const navigate = useNavigate();
 
@@ -205,11 +207,13 @@ const LoginView = () => {
     } else if (result === "$OK") {
       await fetchPhotoCardList();
       await setTotalPages(photoCards / 4 + 1);
+      // subscribe();
       console.log(`로그인 성공`);
+      console.log(`sse 연결 성공`)
       navigate("/");
     }
   };
- 
+
   // console.log(accessToken);
 
   return (
@@ -307,9 +311,7 @@ const LoginView = () => {
         </InputForm>
         {/* 이메일 / 비밀번호 찾기 */}
         <FindBox>
-          <StyledLink to="find-email">이메일 찾기</StyledLink>
-          <VerticalBar />
-          <StyledLink to="find-password">비밀번호 찾기</StyledLink>
+          <StyledLink to="/find-password">비밀번호 찾기</StyledLink>
           <VerticalBar />
           <StyledLink to="/sign-up">회원가입</StyledLink>
         </FindBox>
@@ -321,7 +323,7 @@ const LoginView = () => {
             <Bar />
           </SocialLoginText>
           <LoginLinkIcon>
-            <LoginIcon src={KakaoIcon}></LoginIcon>
+            <LoginIcon src={KakaoIcon} onClick={handleLoginClick}></LoginIcon>
             <LoginIcon src={NaverIcon}></LoginIcon>
             <LoginIcon src={GoogleIcon}></LoginIcon>
           </LoginLinkIcon>

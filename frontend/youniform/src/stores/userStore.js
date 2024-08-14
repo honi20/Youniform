@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { getApiClient } from "@stores/apiClient";
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080";
+const API_URL = import.meta.env.VITE_API_URL;
 const useUserStore = create((set, get) => ({
   user: null,
   friend: null,
@@ -15,11 +15,9 @@ const useUserStore = create((set, get) => ({
   fetchUser: async () => {
     set({ loading: true, error: null });
     const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
+    // console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users`);
-      console.log(response.data.header.message);
-      console.log(response.data.body);
       set({ user: response.data.body, loading: false });
     } catch (error) {
       console.log("Failed to fetch user", error);
@@ -35,6 +33,8 @@ const useUserStore = create((set, get) => ({
     console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users/${userId}`);
+      console.log("유저 정보 조회에 성공했습니다.");
+      console.log(response.data.body);
       set({ friend: response.data.body, loading: false });
     } catch (error) {
       console.log("Failed to fetch friend", error);
@@ -45,23 +45,71 @@ const useUserStore = create((set, get) => ({
 
   fetchLogin: async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/api/users/signin/local`, {
+      const response = await axios.post(`${API_URL}/users/signin/local`, {
         email,
         password,
       });
-      console.log(response.data.body);
+      console.log(response.data);
       const { accessToken } = response.data.body;
       set({ accessToken });
       const handleLoginSuccess = (accessToken) => {
         localStorage.setItem("accessToken", accessToken);
       };
-      handleLoginSuccess(response.data.body.accessToken);
+      handleLoginSuccess(accessToken);
       return "$OK";
     } catch (err) {
       console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }
   },
+
+  findPassword: async (email) => {
+    try {
+      const response = await axios.post(`${API_URL}/users/password/send`, {
+        email,
+      });
+      console.log(response.data.header.message);
+      console.log(response);
+      if (response.data.header.httpStatusCode === 200) {
+        return "$OK";
+      }
+    } catch (err) {
+      console.log("Failed to fetchLogin", err);
+      return "$FAIL";
+    }
+  },
+
+  resetPassword: async (uuid, verifyCode, pw, confirmPw) => {
+    console.log(uuid);
+    console.log(verifyCode);
+    console.log(pw);
+    console.log(confirmPw);
+    try {
+      const response = await axios.patch(`${API_URL}/users/password/reset`, {
+        uuid: uuid,
+        verify: verifyCode,
+        password: pw,
+        confirmPassword: confirmPw,
+      });
+      console.log(response);
+      console.log(response.data.header.message);
+      if (response.data.header.httpStatusCode === 200) {
+        return "$SUCCESS";
+      }
+    } catch (err) {
+      console.log("Failed to fetchLogin", err);
+      return "$FAIL";
+    }
+  },
+
+  changePassword: async (curPw, newPw, confirmPw) => {
+    try {
+      const response = await axios.patch(`${API_URL}/users/password`);
+      console.log(response);
+    } catch (error) {
+      console.log(error);      
+    }
+  }
 }));
 
 export default useUserStore;

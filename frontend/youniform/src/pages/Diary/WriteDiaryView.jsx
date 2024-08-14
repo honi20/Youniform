@@ -1,25 +1,48 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
 import { wallpapers, stickers, fonts } from "@assets";
-
-import DecoIcon from "@assets/DecoIcon.svg?react";
-import ExampleIcon from "@assets/ExIcon.svg?react";
-import DownloadIcon from "@assets/Img_out-box_Fill.svg?react";
-import InitializeIcon from "@assets/Refresh.svg?react";
-import SaveIcon from "@assets/Save_fill.svg?react";
+import styled from "styled-components";
+import DecoIcon from "@assets/Main/DecoIcon.svg?react";
+import ExampleIcon from "@assets/Main/ExIcon.svg?react";
+import DownloadIcon from "@assets/Main/Img_out-box_Fill.svg?react";
+import InitializeIcon from "@assets/Main/Refresh.svg?react";
+import SaveIcon from "@assets/Main/Save_fill.svg?react";
+import DownIcon from "@assets/Main/chevron-down.svg?react";
+import UpIcon from "@assets/Main/chevron-up.svg?react";
 
 import FontComp from "@components/Diary/Write/FontComp";
 import WallPaperComp from "@components/Diary/Write/WallPaperComp";
 import StickerComp from "@components/Diary/Write/StickerComp";
 import CanvasComp from "@components/Diary/Write/CanvasComp";
-import ColorChipComp from "../../components/Diary/Write/ColorChipComp";
+import ColorChipComp from "@components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
-
+import DiaryModal from "@components/Diary/DiaryModal";
 import useDiaryStore from "@stores/diaryStore";
+import useResourceStore from "@stores/resoureStore";
+import CategoryComp from "../../components/Diary/Write/CategoryComp";
+// import html2canvas from "html2canvas"
+const ToggleBtn = styled.div`
+  /* width: 50%; */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  // typo
+  font-family: "Pretendard";
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  cursor: pointer;
+`;
 
+const toggle = (isOn) => {
+  return (
+    <div style={{ display: "flex" }}>{isOn ? <UpIcon /> : <DownIcon />}</div>
+  );
+};
 const WriteDiaryView = () => {
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
@@ -28,9 +51,21 @@ const WriteDiaryView = () => {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [date, setDate] = useState(null);
   const [update, setUpdate] = useState(false);
-  const { diaryId } = useParams();
+  const { diaryId, diaryDate } = useParams();
+  const navigate = useNavigate();
   const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
     useDiaryStore();
+  const { backgrounds, stickers, themes, fetchResources, fetchStampList } =
+    useResourceStore((state) => ({
+      backgrounds: state.backgrounds,
+      stickers: state.stickers,
+      themes: state.themes,
+      fetchResources: state.fetchResources,
+      fetchStampList: state.fetchStampList,
+    }));
+  const { stampList, selectedCategory, selectedColor } = useResourceStore();
+  const [isOn, setIsOn] = useState(false); // 초기 상태 off
+  const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
   useEffect(() => {
     if (diaryId) {
@@ -42,22 +77,32 @@ const WriteDiaryView = () => {
     }
   }, [diaryId, fetchDiary]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  useEffect(() => {
+    fetchResources();
+    fetchStampList();
+  }, [fetchResources, fetchStampList]);
 
-  const openSaveModal = () => setIsSaveModalOpen(true);
-  const closeSaveModal = () => setIsSaveModalOpen(false);
-
-  const navigate = useNavigate();
+  // useEffect(() => {
+  //   const loadResources = () => {
+  //     if (!backgrounds || backgrounds.length == 0) {
+  //       fetchResources();
+  //     }
+  //   };
+  //   loadResources();
+  //   console.log(backgrounds);
+  // }, [fetchResources, backgrounds]);
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
   };
 
-  const handleImageClick = async (selectedImg) => {
-    console.log(selectedImg);
+  const handleImageClick = async (background) => {
+    console.log(background);
     if (selectCanvas) {
-      fabric.Image.fromURL(selectedImg, (img) => {
+      fabric.Image.fromURL(background.imgUrl, (img) => {
+        if (background.imgUrl.startsWith("http")) {
+          img.set({ crossOrigin: "anonymous" });
+        }
         img.scaleToWidth(selectCanvas.getWidth());
         img.scaleToHeight(selectCanvas.getHeight());
         img.set({
@@ -74,10 +119,13 @@ const WriteDiaryView = () => {
     }
   };
 
-  const handleStickerClick = async (selectedSticker) => {
-    console.log(selectedSticker);
+  const handleStickerClick = async (sticker) => {
     if (selectCanvas) {
-      fabric.Image.fromURL(selectedSticker, (img) => {
+      fabric.Image.fromURL(sticker.imgUrl, (img) => {
+        if (sticker.imgUrl.startsWith("http")) {
+          img.set({ crossOrigin: "anonymous" });
+        }
+        // img.crossOrigin = "anonymous";
         img.scaleToHeight(100);
         img.set({
           left: selectCanvas.getWidth() / 2,
@@ -88,6 +136,7 @@ const WriteDiaryView = () => {
         selectCanvas.add(img);
         selectCanvas.renderAll();
       });
+      console.log("cors 테스트 중", selectCanvas);
     }
   };
 
@@ -122,24 +171,38 @@ const WriteDiaryView = () => {
       );
     }
   };
+  const filteredBackgrounds = selectedColor
+    ? Object.values(backgrounds[selectedColor] || [])
+    : [];
+  const filteredStickers = selectedCategory
+    ? Object.values(stickers[selectedCategory] || [])
+    : [];
+
   const renderContent = () => {
+    console.log(themes);
+    console.log(filteredBackgrounds, selectedColor);
     switch (selectedBtn) {
       case 0:
         return (
           <>
             <ColorChipComp />
             <WallPaperComp
-              wallpapers={Object.values(wallpapers).map((mod) => mod.default)}
+              backgrounds={
+                filteredBackgrounds ? filteredBackgrounds : backgrounds
+              }
               onImageClick={handleImageClick}
             />
           </>
         );
       case 1:
         return (
-          <StickerComp
-            stickers={Object.values(stickers).map((mod) => mod.default)}
-            onImageClick={handleStickerClick}
-          />
+          <>
+            <CategoryComp />
+            <StickerComp
+              stickers={filteredStickers ? filteredStickers : stickers}
+              onImageClick={handleStickerClick}
+            />
+          </>
         );
       case 2:
         return (
@@ -176,7 +239,6 @@ const WriteDiaryView = () => {
     try {
       const formData = await saveDiaryObject();
       let newId = "";
-
       if (diaryId) {
         console.log("다이어리 수정");
         await updateDiary(diaryId, formData);
@@ -184,49 +246,37 @@ const WriteDiaryView = () => {
         console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
-      console.log("Diary ID:", diaryId);
       await moveToDetailPage(newId ? newId : diaryId);
     } catch (error) {
       console.error("Error saving diary object:", error);
     }
   };
-  // const saveCanvas = () => {
-  //   if (selectCanvas) {
-  //     const json = selectCanvas.toJSON();
-  //     const dataStr =
-  //       "data:text/json;charset=utf-8," +
-  //       encodeURIComponent(JSON.stringify(json));
-  //     const downloadAnchorNode = document.createElement("a");
-  //     downloadAnchorNode.setAttribute("href", dataStr);
-  //     downloadAnchorNode.setAttribute("download", "canvas.json");
-  //     document.body.appendChild(downloadAnchorNode);
-  //     downloadAnchorNode.click();
-  //     downloadAnchorNode.remove();
-  //   }
-  // };
+
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
   };
+  const [scope, setScope] = useState("ALL");
+  const [stampId, setStampId] = useState(1);
+
   const saveDiaryObject = async () => {
     try {
       if (selectCanvas) {
         const json = selectCanvas.toJSON();
-        // const jsonBlob = await fetch(json).then((res) => res.blob());
-        const jsonBlob = new Blob([JSON.stringify(json)], {
-          type: "application/json",
-        });
 
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
-
+        console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        console.log("contents: ", json);
+        console.log("scope: ", scope);
+        console.log("stamp: ", stampId);
         const formData = new FormData();
         const dto = {
-          diaryDate: date,
+          diaryDate: diaryDate ? diaryDate : date, // 날짜 바뀌는 거 확인하기
           contents: json,
-          scope: "ALL",
-          stampId: 1,
+          scope: scope,
+          stampId: stampId,
         };
 
         const dtoBlob = new Blob([JSON.stringify(dto)], {
@@ -278,7 +328,27 @@ const WriteDiaryView = () => {
   };
   return (
     <>
-      <St.SaveBtn onClick={openSaveModal}>
+      <St.StampContainer onClick={() => handleToggle(isOn)}>
+        {stampList.length > 0 && (
+          <img
+            style={{ width: "50px", height: "50px" }}
+            src={
+              stampId
+                ? stampList.find((stamp) => stamp.stampId === stampId).imgUrl
+                : stampList[0].imgUrl
+            }
+          ></img>
+        )}
+        {diaryId ? diary.diaryDate : diaryDate}
+        <ToggleBtn>{toggle(isOn)}</ToggleBtn>
+      </St.StampContainer>
+      <DiaryModal
+        isOn={isOn}
+        setIsOn={setIsOn}
+        setScope={setScope}
+        setStampId={setStampId}
+      />
+      <St.SaveBtn onClick={() => setIsSaveModalOpen(true)}>
         <St.IconContainer>
           <SaveIcon />
         </St.IconContainer>
@@ -304,7 +374,10 @@ const WriteDiaryView = () => {
                 </St.IconContainer>
                 <St.IconFont>꾸미기</St.IconFont>
               </St.Btn>
-              <St.Btn $decorated={isDecorated} onClick={openModal}>
+              <St.Btn
+                $decorated={isDecorated}
+                onClick={() => setIsModalOpen(true)}
+              >
                 <St.IconContainer>
                   <ExampleIcon />
                 </St.IconContainer>
@@ -351,7 +424,7 @@ const WriteDiaryView = () => {
         <BasicModal
           state="DiarySaved"
           isOpen={isSaveModalOpen}
-          onClose={closeSaveModal}
+          onClose={() => setIsSaveModalOpen(false)}
           onButtonClick={handleAfterSave}
         />
       </St.Div>

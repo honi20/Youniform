@@ -1,12 +1,15 @@
 // 최애선수 서비스 메인홈
 import React, { useEffect, useState } from "react";
-import styled, { ThemeProvider } from "styled-components";
+import styled from "styled-components";
 import PlayerComp from "@components/Main/Player/PlayerComp";
-import MessageIcon from "@assets/mainview/Message_light.svg?react";
-import ChatIcon from "@assets/mainview/Chat_alt_2_light.svg?react";
-import HeartIcon from "@assets/mainview/Add_ring_light.svg?react";
+import MessageIcon from "@assets/Main/Message_light.svg?react";
+import ChatIcon from "@assets/Main/Chat_alt_2_light.svg?react";
+import HeartIcon from "@assets/Main/Add_ring_light.svg?react";
 import { useNavigate } from "react-router-dom";
 import usePlayerStore from "@stores/playerStore";
+import Loading from "@components/Share/Loading";
+import Error from "@components/Share/Error";
+import useUserStore from "@stores/userStore";
 
 const Div = styled.div`
   display: flex;
@@ -17,6 +20,7 @@ const Div = styled.div`
   height: calc(100vh - 120px); // navbar + header
   background-color: #f8f8f8;
 `;
+
 const Container = styled.div`
   /* margin-top: 3%; */
   /* border: 1px solid black; */
@@ -57,28 +61,51 @@ const TextContainer = styled.div`
 const MainView = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const navigate = useNavigate();
-  const { playerList, fetchPlayerList } = usePlayerStore();
+  const { playerList, fetchPlayerList, loading, error } = usePlayerStore();
+  const { user, fetchUser } = useUserStore();
 
   useEffect(() => {
-    fetchPlayerList();
-  }, [fetchPlayerList]);
+    const loadPlayList = () => {
+      if (!playerList || playerList.length == 0) {
+        fetchPlayerList();
+      }
+    };
+    loadPlayList();
+  }, [fetchPlayerList, playerList]);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      if (!user || user.length == 0) {
+        await fetchUser();
+      }
+    };
+    loadUser();
+  }, [fetchUser, user]);
 
   const handleSelectPlayer = (playerId) => {
     setSelectedPlayer(playerId);
     console.log(playerId);
   };
+  console.log(playerList.length);
+  const handleNews = () => {
+    navigate(`/news/${playerList[selectedPlayer].playerId}`);
+  };
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <Error message={error} />;
+  }
   return (
     <Div>
       <PlayerComp
+        count={playerList.length}
         onSelectPlayer={handleSelectPlayer}
         player={playerList[selectedPlayer]}
       />
       <Container>
-        <Btn
-          onClick={() =>
-            navigate(`/news/${playerList[selectedPlayer].playerId}`)
-          }
-        >
+        <Btn onClick={handleNews}>
           <IconWrapper>
             <MessageIcon />
           </IconWrapper>

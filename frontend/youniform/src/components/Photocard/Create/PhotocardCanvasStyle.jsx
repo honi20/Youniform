@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ProfileUrl from "@assets/profile.png";
+import ProfileUrl from "@assets/photocard/profile.png";
 
 export const Diary = styled.div`
   box-sizing: border-box;
@@ -60,7 +60,8 @@ export const TextContainer = styled.div`
 `;
 
 export const Btn = styled.div`
-  background-color: ${(props) => (props.$isShare ? props.theme.primary : "#E3E3E3")};
+  background-color: ${(props) =>
+    props.$isShare ? props.theme.primary : "#E3E3E3"};
   color: ${(props) => (props.$isShare ? "#FFFFFF" : "#000000")};
   /* border-bottom: 1px solid #E3E3E3; */
   /* border: 1px solid black; */

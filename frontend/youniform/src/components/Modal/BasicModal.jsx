@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import CheckIcon from "../../assets/CheckIcon.svg?react";
-import AlarmIcon from "../../assets/AlarmIcon.svg?react";
+import CheckIcon from "@assets/Modal/CheckIcon.svg?react";
+import AlarmIcon from "@assets/Modal/AlarmIcon.svg?react";
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -15,8 +15,8 @@ const ModalBackdrop = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 5;
-  /* border: 1px solid black; */
 `;
+
 const Container = styled.div`
   border-radius: 1.25rem;
   width: 80%;
@@ -26,8 +26,21 @@ const Container = styled.div`
   padding: 5%;
   flex-direction: column;
   align-items: center;
+  position: relative;
 `;
+
+const CloseButton = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 15px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #000;
+`;
+
 const IconContainer = styled.div``;
+
 const Title = styled.div`
   color: #000;
   text-align: center;
@@ -39,8 +52,8 @@ const Title = styled.div`
   margin-top: 1rem;
   word-wrap: break-word;
   word-break: keep-all;
-  /* border: 1px solid black; */
 `;
+
 const Subtitle = styled.div`
   margin-top: 0.5rem;
   color: #9c9c9c;
@@ -50,13 +63,14 @@ const Subtitle = styled.div`
   font-weight: 400;
   line-height: normal;
 `;
+
 const BtnContainer = styled.div`
   margin-top: 1rem;
   display: flex;
   width: 90%;
   justify-content: space-around;
-  /* border: 1px solid black; */
 `;
+
 const Btn = styled.div`
   width: 7rem;
   height: 2.5rem;
@@ -64,16 +78,15 @@ const Btn = styled.div`
   border-radius: 0.625rem;
   background-color: ${(props) => props.$bgcolor || "black"};
   color: ${(props) => props.$color || "black"};
-
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: "Pretendard";
   font-size: 1rem;
-  /* font-style: normal; */
   font-weight: 700;
   line-height: normal;
 `;
+
 const stateMap = {
   UserNotFound: {
     icon: <AlarmIcon />,
@@ -156,9 +169,64 @@ const stateMap = {
     title: "포토카드가 생성되었습니다.",
     btn: [0],
   },
+  PhotoCardSelectWarning: {
+    icon: <AlarmIcon />,
+    title: "삭제할 포토카드를 선택하세요.",
+    btn: [0],
+  },
+  CheckFriendRequest: {
+    icon: <AlarmIcon />,
+    title: "친구 요청을 수락하시겠습니까?",
+    subtitle: "다이어리 '친구 공개'를 통해 공유가 가능합니다.",
+    btn: [6, 7],
+  },
+  AcceptFriendRequest: {
+    icon: <CheckIcon />,
+    title: "친구 요청이 수락되었습니다.",
+    btn: [0],
+  },
+  AddFriend: {
+    icon: <CheckIcon />,
+    title: "친구 신청이 완료되었습니다.",
+    btn: [0],
+  },
+  DeclineFriendRequest: {
+    icon: <CheckIcon />,
+    title: "친구 신청이 거절되었습니다.",
+    btn: [0],
+  },
+  EmailSentSuccess: {
+    icon: <CheckIcon />,
+    title: "메일 발송 성공",
+    subtitle: "비밀번호 재설정 링크를 이메일로 발송했습니다.",
+    btn: [0],
+  },
+  EmailSentFailure: {
+    icon: <AlarmIcon />,
+    title: "메일 발송 실패",
+    subtitle: "회원가입 시 등록한 이메일을 입력해주세요.",
+    btn: [0],
+  },
+  ResetPassword: {
+    icon: <CheckIcon />,
+    title: "비밀번호 재설정 성공",
+    subtitle: "변경된 비밀번호로 로그인하세요.",
+    btn: [0],
+  },
+  ResetPasswordFailure: {
+    icon: <AlarmIcon />,
+    title: "비밀번호 재설정 실패",
+    subtitle: "정확한 인증 코드를 입력하세요.",
+    btn: [0],
+  },
+  PostDeleted: {
+    icon: <AlarmIcon />,
+    title: "포스트를 삭제하시겠습니까?",
+    subtitle: "삭제된 포스트는 다시 볼 수 없습니다.",
+    btn: [1, 3],
+  },
 };
-// btn 종류
-// 0: 확인 1: 취소(색깔 다름) 2: 변경 3: 삭제 4: 초기화
+
 const buttonMap = {
   0: { bgcolor: "#262F66", color: "white", label: "확인" },
   1: { bgcolor: "#C5C8DA", color: "black", label: "취소" },
@@ -166,17 +234,33 @@ const buttonMap = {
   3: { bgcolor: "#262F66", color: "white", label: "삭제" },
   4: { bgcolor: "#262F66", color: "white", label: "초기화" },
   5: { bgcolor: "#262F66", color: "white", label: "생성" },
-  5: { bgcolor: "#262F66", color: "white", label: "생성" },
+  6: { bgcolor: "#C5C8DA", color: "black", label: "거절" },
+  7: { bgcolor: "#262F66", color: "white", label: "수락" },
 };
 
-const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
+const BasicModal = ({
+  state,
+  isOpen,
+  onClose,
+  onButtonClick,
+  nickname,
+  selectedAlert,
+}) => {
   if (!isOpen) return null;
 
-  // const nickname = nickname;
   const renderIcon = (state) => {
-    const icon = stateMap[state]?.icon || <AlarmIcon />;
-    return icon;
+    if (state === "CheckFriendRequest" && selectedAlert?.senderProfileUrl) {
+      return (
+        <img
+          src={selectedAlert.senderProfileUrl}
+          alt="Profile"
+          style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+        />
+      );
+    }
+    return stateMap[state]?.icon || <AlarmIcon />;
   };
+
   const renderTitle = (state, nickname) => {
     const title =
       typeof stateMap[state]?.title === "function"
@@ -184,18 +268,19 @@ const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
         : stateMap[state].title || <></>;
     return title;
   };
+
   const renderSubtitle = (state) => {
     const subtitle = stateMap[state]?.subtitle || <></>;
     return subtitle;
   };
+
   const handleBtnClick = (index) => {
-    // onButtonClick 함수 연결
     if (onButtonClick) {
       onButtonClick(index);
     }
-    // modal 창 닫음
     onClose();
   };
+
   const renderBtn = (state) => {
     const btnArray = stateMap[state]?.btn || [];
     return btnArray.map((btnType, index) => {
@@ -212,9 +297,13 @@ const BasicModal = ({ state, isOpen, onClose, onButtonClick, nickname }) => {
       );
     });
   };
+
   return (
     <ModalBackdrop>
       <Container>
+        {state === "CheckFriendRequest" && (
+          <CloseButton onClick={() => onClose(selectedAlert)}>×</CloseButton>
+        )}
         <IconContainer>{renderIcon(state)}</IconContainer>
         <Title>{renderTitle(state, nickname)}</Title>
         <Subtitle>{renderSubtitle(state)}</Subtitle>

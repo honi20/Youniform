@@ -1,103 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { carouselTest } from "@assets";
-import defaultImg from "@assets/carousel/test_1.jpg";
-
+import { useParams } from "react-router-dom";
+import usePlayerStore from "../../stores/playerStore";
+import useNewsStore from "../../stores/newsStore";
+import parse from "html-react-parser";
+import * as Font from "@/typography";
 const Div = styled.div`
   width: 100%;
   height: calc(100vh - 120px);
   overflow-y: auto;
 `;
-const Main = styled.div`
-  box-sizing: border-box;
-  min-height: 40vh;
-  height: 25rem;
-  max-height: 50vh;
-  width: 100%;
-`;
 const TagSection = styled.div`
-  height: 10vh;
+  height: 50px;
   position: sticky;
   top: 0;
   overflow: hidden;
   display: flex;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #f5f5f5;
+  margin-bottom: 5px;
 `;
 const ArticleSection = styled.div`
   flex: 1;
-  border: 1px solid green;
   font-size: 2rem;
 `;
-const articles = [
-  {
-    id: 1,
-    title:
-      "'또 역전승!!! 전반기 1위 KIA, 김도영 리드오프 홈런이야야이 삼성 4연패",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-  {
-    id: 2,
-    title: "김도영 짱짱",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-  {
-    id: 3,
-    title: "최!강!기!아!",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-  {
-    id: 4,
-    title: "기아 우승 가보자구",
-    media: "마니아 타임즈",
-    date: "2024-07-04",
-  },
-];
-const CustomSlider = styled(Slider)`
-  height: 100%;
-  .slick-slide {
-    padding: 0 10px; /* 각 슬라이드 사이에 여백 추가 */
-  }
-
-  .slick-slide div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .slick-list {
-    overflow: hidden;
-  }
-`;
-const CardNews = styled.div`
-  width: 100%;
-  min-height: 40vh;
-  height: 25rem;
-  max-height: 50vh;
-  /* border: 1px solid black; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  /* background-color: aliceblue; */
-  box-sizing: border-box;
-  /* aspect-ratio: 5 / 6; */
-  /* padding-left: 7%; */
-`;
-const Image = styled.img`
-  width: 100%;
-  height: 97%; // Maintain aspect ratio
-  object-fit: cover;
-  box-sizing: border-box;
-  /* border: 1px solid red; */
-  border-radius: 1.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-`;
 const Tag = styled.div`
-  /* border: 1px solid red; */
   margin: auto 1%;
   width: auto;
   border-radius: 5rem;
@@ -110,41 +37,53 @@ const Tag = styled.div`
   color: ${(props) => (props.selected ? "white" : "#2E3138")};
   background-color: ${(props) =>
     props.selected ? props.theme.primary : "white"};
-  font-family: "Pretendard";
   font-weight: 600;
 `;
 const Article = styled.div`
   padding: 2%;
-  /* border: 1px solid black; */
-  height: 8rem;
+  background-color: white;
+  display: flex;
+  width: 90%;
+  margin: 0 5%;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+  overflow-y: auto;
+  max-height: ${(props) => (props.expanded ? "1000px" : "150px")};
+  cursor: pointer;
+  &:first-child {
+    border-top: 1px solid black;
+  }
+`;
+
+const ArticleContent = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+const ArticleHeader = styled.div`
   display: flex;
 `;
-const ArticleImg = styled.div`
-  aspect-ratio: 1;
-  margin: 2.5%;
-  background-image: url(${defaultImg});
-  background-size: cover;
-  background-position: center;
-  border-radius: 1rem;
+const Content = styled.div`
+  ${Font.Small};
+  font-weight: 400;
+  padding: 7px 0;
+  border-top: 1px solid #d3d3d3;
 `;
-const ArticleContent = styled.div`
-  height: 100%;
-`;
-const Header = styled.div`
-  border: 1px solid green;
-  height: 25%;
-  color: #6d6d6d;
-  font-family: "Pretendard";
+const ToggleButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0.5rem;
+  width: 40px;
+  cursor: pointer;
   font-size: 1rem;
+  background-color: white;
 `;
 const Title = styled.div`
-  border: 1px solid pink;
+  ${Font.Medium};
   width: 100%;
-  height: 50%;
-  color: #6d6d6d;
-  font-family: "Pretendard";
-  font-size: 1.2rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.4;
   display: -webkit-box; /* Flexbox for WebKit-based browsers */
   -webkit-line-clamp: 2;
@@ -153,32 +92,69 @@ const Title = styled.div`
   text-overflow: ellipsis;
 `;
 const Footer = styled.div`
-  border: 1px solid purple;
-  height: 25%;
-  color: #6d6d6d;
-  font-family: "Pretendard";
-  font-size: 1rem;
+  ${Font.XSmall};
   display: flex;
-  justify-content: end;
 `;
 const NewsView = () => {
-  const settings = {
-    centerMode: true,
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    centerPadding: "40px",
-  };
-  const images = Object.values(carouselTest).map((mod) => mod.default);
-  const tags = ["All", ...["이대호", "문교원", "정근우"]];
-  const [selectedTag, setSelectedTag] = useState("All");
+  const { playerId } = useParams();
+  const { playerList, fetchPlayerList } = usePlayerStore();
+  const [newsList, setNewsList] = useState([]);
+  const [tags, setTags] = useState(["All"]);
+  const [selectedTagId, setSelectedTagId] = useState(playerId || 0);
+  const { news, fetchTotalNews, getTotalNews, getPlayerNews } = useNewsStore();
+  const [loading, setLoading] = useState(false);
+  const containerRef = useRef(null);
+  const [expanded, setExpanded] = useState(false);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  useEffect(() => {
+    const loadPlayerList = async () => {
+      if (!playerList || playerList.length == 0) {
+        await fetchPlayerList();
+      }
+      await fetchTotalNews(playerList);
+      console.log(news);
+    };
+    loadPlayerList();
+  }, [playerList, fetchPlayerList, fetchTotalNews]);
 
-  const handleTagClick = (tag) => {
-    setSelectedTag(tag);
+  useEffect(() => {
+    if (playerList && playerList.length > 0) {
+      setTags([
+        { id: 0, name: "All" },
+        ...playerList.map((player) => ({
+          id: player.playerId,
+          name: player.name,
+        })),
+      ]);
+    }
+  }, [playerList]);
+
+  useEffect(() => {
+    if (selectedTagId === 0) {
+      setNewsList(getTotalNews());
+    } else {
+      setNewsList(getPlayerNews(selectedTagId));
+    }
+  }, [selectedTagId, getTotalNews, getPlayerNews, news]);
+  console.log(newsList);
+
+  const handleTagClick = (tagId) => {
+    setSelectedTagId(tagId);
   };
+  const handleArticleClick = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index); // Toggle expansion
+  };
+  const parseText = (text) => {
+    // 줄바꿈을 <br /> 태그로 변환
+    const formattedText = text.replace(/\n/g, "<br />");
+
+    // HTML을 JSX로 변환
+    return parse(formattedText);
+  };
+
   return (
-    <Div>
-      <Main>
+    <Div ref={containerRef}>
+      {/* <Main>
         <CustomSlider {...settings}>
           {images.map((image, index) => (
             <CardNews key={index}>
@@ -186,29 +162,49 @@ const NewsView = () => {
             </CardNews>
           ))}
         </CustomSlider>
-      </Main>
+      </Main> */}
       <TagSection>
         {tags.map((tag, index) => (
           <Tag
             key={index}
-            selected={tag === selectedTag}
-            onClick={() => handleTagClick(tag)}
+            selected={tag.id == selectedTagId}
+            onClick={() => handleTagClick(tag.id)}
           >
-            {tag}
+            {tag.name}
           </Tag>
         ))}
       </TagSection>
       <ArticleSection>
-        {articles.map((article, index) => (
-          <Article key={index}>
-            <ArticleImg />
-            <ArticleContent>
-              <Header>미디어</Header>
-              <Title>{article.title}</Title>
-              <Footer>날짜</Footer>
-            </ArticleContent>
-          </Article>
-        ))}
+        {newsList &&
+          newsList.map((news, index) => (
+            <Article
+              key={index}
+              expanded={expandedIndex === index}
+              onClick={() => handleArticleClick(index)}
+            >
+              <ArticleContent>
+                <ArticleHeader>
+                  <div>
+                    <Title>{parseText(news.title)}</Title>
+                    <Footer>{news.pubDate}</Footer>
+                  </div>
+                  <ToggleButton
+                    expanded={expanded}
+                    onClick={() => setExpanded((prev) => !prev)}
+                  >
+                    {expandedIndex === index ? "-" : "+"}
+                  </ToggleButton>
+                </ArticleHeader>
+
+                {expandedIndex === index && (
+                  <>
+                    <Content>{parseText(news.description)}</Content>
+                  </>
+                )}
+              </ArticleContent>
+            </Article>
+          ))}
+        {loading && <div>Loading...</div>}
       </ArticleSection>
     </Div>
   );

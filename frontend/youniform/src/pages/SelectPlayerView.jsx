@@ -1,12 +1,15 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import CheckIcon from "../assets/Done_round_light.svg?react";
-import BasicModal from "../components/Modal/BasicModal";
-import useSignUpStore from "../stores/signUpStore";
-
+import CheckIcon from "@assets/etc/Done_round_light.svg?react";
+import BasicModal from "@components/Modal/BasicModal";
+import useSignUpStore from "@stores/signUpStore";
+import { getApiClient } from "@stores/apiClient";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import usePlayerStore from "../stores/playerStore";
 const Div = styled.div`
   width: 100%;
-  height: calc(100vh - 120px);
+  height: ${(props) => (props.$step === "3" ? "100%" : "calc(100vh - 120px)")};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,22 +60,21 @@ const Content = styled.div`
   gap: 10px;
   overflow-y: auto;
   padding: 1% 0;
-  /* border: 1px solid blue; */
 `;
 
 const BtnWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  /* border: 1px solid red; */
+  justify-content: flex-start;
+  padding-left: 4%;
 `;
 
 const BtnItem = styled.div`
   width: 30%;
   aspect-ratio: 1/1;
   margin: 1%;
-  /* border: 1px solid black; */
+  align-items: flex-start;
 `;
 
 const Btn = styled.div`
@@ -188,26 +190,45 @@ const ConfirmBtn = styled.div`
   font-size: 1.25rem;
 `;
 
-const SelectPlayerView = () => {
-  const playersInfo = [
-    { id: 0, name: "없음" },
-    { id: 1, number: "1", position: "내야수", name: "유태웅" },
-    { id: 2, number: "2", position: "외야수", name: "최수현" },
-    { id: 3, number: "4", position: "내야수", name: "서동욱" },
-    { id: 4, number: "5", position: "내야수", name: "문교원" },
-    { id: 6, number: "8", position: "내야수", name: "정근우" },
-    { id: 7, number: "10", position: "내야수", name: "이대호" },
-    { id: 8, number: "11", position: "투수", name: "이대은" },
-    { id: 9, number: "12", position: "포수", name: "박재욱" },
-    { id: 10, number: "13", position: "투수", name: "장원삼" },
-    { id: 11, number: "15", position: "외야수", name: "국해성" },
-    { id: 12, number: "16", position: "내야수", name: "정성훈" },
-  ];
+const SelectPlayerView = ({ teamId = "1000", step }) => {
+  const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
+  const { fetchPlayerList } = usePlayerStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchPlayerInfo = async (teamId) => {
+      const API_URL = import.meta.env.VITE_API_URL;
+      try {
+        const res = await axios({
+          method: "get",
+          url: `${API_URL}/players/list/1000`, // teanId = 최강야구여서 1000번으로 고정
+        });
+
+        const { body, header } = res.data;
+        console.log(body);
+        console.log(header.message);
+
+        setPlayerList((prevList) => {
+          if (prevList.length === 1) {
+            return [...prevList, ...body.playerList];
+          } else {
+            const newList = [{ playerId: 0, name: "없음" }];
+            return [...newList, ...body.playerList];
+          }
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPlayerInfo();
+  }, [teamId]);
+
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalState, setModalState] = useState("");
 
-  const { step, user, user: { players, setPlayers } } = useSignUpStore();
+  const {
+    user: { players, setPlayers },
+  } = useSignUpStore();
 
   useEffect(() => {
     setPlayers(selectedPlayers);
@@ -233,25 +254,46 @@ const SelectPlayerView = () => {
         }
       }
     });
+    console.log(selectedPlayers);
   };
 
   const handleConfirmClick = () => {
-    console.log(selectedPlayers);
-    if (selectedPlayers.length == 0) {
-      setModalState("PlayerChangeWarning");
-    } else {
-      setModalState("FavoriteChanged");
-    }
+    setModalState(
+      selectedPlayers.length === 0 ? "PlayerChangeWarning" : "FavoriteChanged"
+    );
     setIsModalOpen(true);
   };
 
   const handleModalButtonClick = (buttonType) => {
     console.log("Button clicked:", buttonType);
+    if (buttonType == 2) {
+      console.log("변경 요청 보내기", selectedPlayers);
+      changePlayer();
+    }
     setIsModalOpen(false);
   };
 
+  const changePlayer = async () => {
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.patch(`users/favorite`, {
+        teamId: 1000,
+        players: selectedPlayers,
+      });
+      console.log(res.data);
+      const { body, header } = res.data;
+
+      console.log(body);
+      console.log(header.message);
+      await fetchPlayerList();
+      navigate("/");
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+    }
+  };
+
   return (
-    <Div>
+    <Div $step={step}>
       <Header>
         <Title>좋아하는 선수를</Title>
         <Title>선택하세요.</Title>
@@ -259,23 +301,24 @@ const SelectPlayerView = () => {
       </Header>
       <Content>
         <BtnWrapper>
-          {playersInfo.map((info) => (
-            <PlayerButton
-              key={info.id}
-              player={info}
-              selected={selectedPlayers.includes(info.id)}
-              onClick={() => handleClick(info.id)}
-            />
-          ))}
+          {playerList &&
+            playerList.map((player) => (
+              <PlayerButton
+                key={player.playerId}
+                player={player}
+                selected={selectedPlayers.includes(player.playerId)}
+                onClick={() => handleClick(player.playerId)}
+              />
+            ))}
         </BtnWrapper>
       </Content>
-      {step != 3 &&
+      {step !== "3" && (
         <Footer>
           <ConfirmBtnWrapper>
             <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>
           </ConfirmBtnWrapper>
         </Footer>
-      }
+      )}
       {isModalOpen && (
         <BasicModal
           state={modalState}

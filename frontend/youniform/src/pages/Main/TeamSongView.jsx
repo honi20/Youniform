@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components";
-import VideoIcon from "@assets/Video_duotone_line.svg?react";
-import HeadsetIcon from "@assets/Headphones_fill.svg?react";
-import DownIcon from "@assets/chevron-down.svg?react";
-import UpIcon from "@assets/chevron-up.svg?react";
-import SelectSvg from "@assets/selectedIcon.svg?react";
+import VideoIcon from "@assets/Main/Video_duotone_line.svg?react";
+import HeadsetIcon from "@assets/Main/Headphones_fill.svg?react";
+import DownIcon from "@assets/Main/chevron-down.svg?react";
+import UpIcon from "@assets/Main/chevron-up.svg?react";
+import SelectSvg from "@assets/Main/selectedIcon.svg?react";
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -178,7 +178,6 @@ const LinkContainer = styled.div`
   align-items: center;
   padding: 0 1rem;
   gap: 0.3rem;
-  /* border: 1px solid blue; */
 `;
 
 const TeamSongView = ({ songs, active }) => {

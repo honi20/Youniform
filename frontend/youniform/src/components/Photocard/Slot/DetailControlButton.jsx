@@ -26,10 +26,10 @@ const Label = styled.div`
   color: black;
 `;
 
-const DetailControlButton = ({ icon: Icon, label, savePhotocard }) => {
+const DetailControlButton = ({ icon: Icon, label, onClick }) => {
   return (
     <Circle
-      onClick={savePhotocard}>
+      onClick={onClick}>
       <IconWrapper>
         <Icon />
       </IconWrapper>

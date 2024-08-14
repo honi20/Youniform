@@ -7,8 +7,8 @@ export const createApiClient = (accessToken) => {
     throw new Error("Access token is required to create an API client.");
   }
 
-  console.log("createApiClient: API 클라이언트를 생성합니다.");
-  console.log(API_URL);
+  // console.log("createApiClient: API 클라이언트를 생성합니다.");
+  // console.log(API_URL);
   return axios.create({
     baseURL: API_URL,
     headers: {
@@ -16,7 +16,10 @@ export const createApiClient = (accessToken) => {
     },
   });
 };
-
+export const isLoggedIn = () => {
+  const accessToken = getAccessToken();
+  return !!accessToken; // accessToken이 있으면 true, 없으면 false를 반환
+};
 const getAccessToken = () => {
   return (
     localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
@@ -37,7 +40,7 @@ const setAccessToken = (token) => {
 export const getApiClient = () => {
   const accessToken = getAccessToken();
   if (accessToken) {
-    console.log("getApiClient: accesToken이 존재합니다.", accessToken);
+    console.log("getApiClient: accesToken이 존재합니다.");
   }
   const apiClient = createApiClient(accessToken);
 

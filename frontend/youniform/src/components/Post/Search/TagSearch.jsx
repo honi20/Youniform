@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { getApiClient } from "@stores/apiClient";
 const SearchResult = styled.div`
   /* border: 1px solid black; */
   height: 50px;
@@ -19,7 +19,6 @@ const TagSearch = ({ query, search, setSearch }) => {
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    // searchTag(query)
     if (search) {
       searchTag(query);
       setSearch(false);
@@ -27,21 +26,18 @@ const TagSearch = ({ query, search, setSearch }) => {
     console.log(search);
   }, [search]);
 
-  const API_URL = "http://i11a308.p.ssafy.io:8080";
   const searchTag = async (query) => {
     if (query) {
       console.log("태그 검색 시작");
+      const apiClient = getApiClient();
       try {
-        const res = await axios.get(`${API_URL}/tags`, {
-          // headers: {
-          //   Authorization: "Bearer your_token_here",
-          // },
+        const res = await apiClient.get(`/tags`, {
           params: {
             name: query,
-            // lastPostId: "",
           },
         });
         console.log(res.data.header.message);
+        console.log(res.data.body.tags)
         setResults(res.data.body.tags);
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
@@ -49,21 +45,21 @@ const TagSearch = ({ query, search, setSearch }) => {
     }
   };
   const handleClickTag = (result) => {
-    console.log(result.contents);
+    console.log(result);
     const encodedQuery = encodeURIComponent(result.contents);
+    navigate(`/search?tagId=${result.tagId}&q=${encodedQuery}`);
     setResults([]);
-    navigate(`/search?type=tag&q=${encodedQuery}`);
   };
   return (
     <div>
-      {results ? (
+      {results.length > 0 ? (
         results.map((result, index) => (
           <SearchResult key={index} onClick={() => handleClickTag(result)}>
-            # {result.contents} {query}
+            # {result.contents}
           </SearchResult>
         ))
       ) : (
-        <>검색 결과 없음</>
+        <SearchResult>검색 결과 없음</SearchResult>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL = "http://i11a308.p.ssafy.io:8080/api";
+const API_URL = import.meta.env.VITE_API_URL;
 const signUpStore = create((set, get) => ({
   // 진행 단계
   step: 1,
@@ -55,10 +55,12 @@ const signUpStore = create((set, get) => ({
       }
     } catch (error) {
       console.error("이메일 발송 중 오류 발생:", error);
-      return "$FAIL";
+      return error;
     }
   },
   verifyEmailCode: async (email, authenticCode) => {
+    console.log(email);
+    console.log(authenticCode);
     try {
       const res = await axios({
         method: "get",
@@ -68,7 +70,15 @@ const signUpStore = create((set, get) => ({
           verifyCode: authenticCode,
         },
       });
-    } catch (error) {}
+      if (res.data.header.httpStatusCode === 200) {
+        console.log("이메일 인증번호 확인 성공");
+        console.log(res.data);
+        return "$SUCCESS";
+      }
+    } catch (error) {
+      console.log("Failed to verifyEmailCode", error);
+      return "$FAIL";
+    }
   },
   verifyNickname: async () => {
     try {
@@ -86,11 +96,11 @@ const signUpStore = create((set, get) => ({
       console.log(err);
       return "$FAIL";
     }
-  },
+},
   fetchLocalSignUp: async () => {
     try {
       const { user } = get();
-      console.log(user);
+
       const res = await axios({
         method: "post",
         url: `${API_URL}/users/signup/local`,
@@ -102,12 +112,14 @@ const signUpStore = create((set, get) => ({
           nickname: user.nickname,
           introduce: user.introduce,
           team: "MONSTERS",
-          players: user.players,
+          players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
         },
       });
-      console.log("Success to fetch Local SignUp");
-      console.log(res.data.header);
-      console.log(res.data.body);
+      if (res.data.header.httpStatusCode === 200) {
+        console.log("Success to fetch Local SignUp");
+        console.log(res.data.body.accessToken);
+        return "$SUCCESS";
+      }
     } catch (err) {
       console.log("Failed to fetch Local SignUp", err);
     }

@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import Profile from "@components/MyPage/Profile";
 import styled from "styled-components";

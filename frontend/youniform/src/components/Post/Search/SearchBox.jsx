@@ -63,7 +63,9 @@ const SearchBox = ({ query, type, setType, search, setSearch }) => {
           <UserSearch query={query} search={search} setSearch={setSearch} />
         );
       default:
-        return <div>tag</div>;
+        return (
+          <TagSearch query={query} search={search} setSearch={setSearch} />
+        );
     }
   };
 
