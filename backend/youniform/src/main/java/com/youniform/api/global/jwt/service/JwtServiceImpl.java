@@ -8,6 +8,7 @@ import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.redis.RedisUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtServiceImpl implements JwtService {
     //== jwt.yml에 설정된 값 가져오기 ==//
     @Value("${jwt.secret}")
@@ -132,5 +134,10 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public Long getUserId(SecurityContext securityContext) {
         return (Long) securityContext.getAuthentication().getPrincipal();
+    }
+
+    @Override
+    public Long getUserIdFromRedis(String uuid) {
+        return (Long) redisUtils.getData(uuid);
     }
 }

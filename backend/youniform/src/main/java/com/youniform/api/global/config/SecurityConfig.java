@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -44,22 +45,24 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                                 .requestMatchers(
-                                        "/api/users/signup/**", "/api/users/signin/local",
-                                        "/api/users/verify", "/api/users/email/send",
+                                        "/api/users/signup/**", "/api/users/signin/local", "/api/alerts/*",
+                                        "/api/users/verify", "/api/users/email/send", "/api/login/oauth2/**",
                                         "/api/users/email/verify", "/api/users/check/email",
                                         "/api/users/password/reset", "/api/users/password/send",
-                                        "/api/players/list/**", "/wss/**",
+                                        "/api/players/list/**", "/wss/**", "/api/stomp/chat/**",
                                         "/docs/**", "/swagger-ui/**", "/v3-docs/**", "/h2-console/**").permitAll()
 //                        .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
+                        .authorizationEndpoint(authEndPoint -> authEndPoint
+                                .baseUri("/api/users/signin/social"))
+                        .redirectionEndpoint(redirection -> redirection
+                                .baseUri("/api/users/oauth2/code/*"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService))
                         .successHandler(oauth2SuccessHandler)
-                        .authorizationEndpoint(authEndPoint -> authEndPoint
-                                .baseUri("/users/signin/social")))
-        ;
+                );
 
         http.addFilterBefore(jwtBearerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

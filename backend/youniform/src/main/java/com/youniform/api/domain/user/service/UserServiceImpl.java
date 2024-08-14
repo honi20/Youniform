@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     private final ChatPartRepository chatPartRepository;
 
     @Value("${BUCKET_URL}")
-    private String bucketURl;
+    private String bucketUrl;
 
     @Transactional
     @Override
@@ -119,34 +119,36 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setTeam("MONSTERS");
-        Users users = userRepository.save(user.toEntity(uuid));
+        Users users = userRepository.save(user.toEntity(uuid, bucketUrl));
 
-        user.getPlayers().forEach(playerId -> {
-            Player player = playerRepository.findById(playerId)
-                    .orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
+        if(user.getPlayers() != null) {
+            user.getPlayers().forEach(playerId -> {
+                Player player = playerRepository.findById(playerId)
+                        .orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
 
-            UserPlayer userPlayer = UserPlayer.builder()
-                    .userPlayerPK(new UserPlayerPK(users.getId(), playerId))
-                    .user(users)
-                    .player(player)
-                    .pushAlert(true)
-                    .build();
+                UserPlayer userPlayer = UserPlayer.builder()
+                        .userPlayerPK(new UserPlayerPK(users.getId(), playerId))
+                        .user(users)
+                        .player(player)
+                        .pushAlert(true)
+                        .build();
 
-            userPlayerRepository.save(userPlayer);
+                userPlayerRepository.save(userPlayer);
 
-            // 최애 채팅방
-            ChatRoom chatRoom = chatRoomRepository.findById(playerId)
-                    .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+                // 최애 채팅방
+                ChatRoom chatRoom = chatRoomRepository.findById(playerId)
+                        .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
-            ChatPart chatPart = ChatPart.builder()
-                    .chatPartPK(new ChatPartPK(users.getId(), chatRoom.getId()))
-                    .user(users)
-                    .room(chatRoom)
-                    .lastReadTime(LocalDateTime.now())
-                    .build();
+                ChatPart chatPart = ChatPart.builder()
+                        .chatPartPK(new ChatPartPK(users.getId(), chatRoom.getId()))
+                        .user(users)
+                        .room(chatRoom)
+                        .lastReadTime(LocalDateTime.now())
+                        .build();
 
-            chatPartRepository.save(chatPart);
-        });
+                chatPartRepository.save(chatPart);
+            });
+        }
 
         // 팀 채팅방
         ChatRoom teamChatRoom = chatRoomRepository.findById(1000L)
@@ -193,16 +195,16 @@ public class UserServiceImpl implements UserService {
         user.updateNickname(req.getNickname());
 
         if (!file.isEmpty()) {
-            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketURl + "profile/no_profile.png")) {
+            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketUrl + "profile/no_profile.png")) {
                 s3Service.fileDelete(user.getProfileUrl());
             }
             String imgUrl = s3Service.upload(file, "profile");
             user.updateProfileUrl(imgUrl);
         } else {
-            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketURl + "profile/no_profile.png")) {
+            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketUrl + "profile/no_profile.png")) {
                 s3Service.fileDelete(user.getProfileUrl());
             }
-            user.updateProfileUrl(bucketURl + "profile/no_profile.png");
+            user.updateProfileUrl(bucketUrl + "profile/no_profile.png");
         }
 
         userRepository.save(user);
