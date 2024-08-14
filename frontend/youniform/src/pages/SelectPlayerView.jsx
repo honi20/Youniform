@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import usePlayerStore from "../stores/playerStore";
 const Div = styled.div`
   width: 100%;
-  height: calc(100vh - 120px);
+  height: ${(props) => (props.$step ? "100%" : "calc(100vh - 120px)")};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -190,7 +190,7 @@ const ConfirmBtn = styled.div`
   font-size: 1.25rem;
 `;
 
-const SelectPlayerView = ({ teamId = "1000" }, step) => {
+const SelectPlayerView = ({ teamId = "1000", step }) => {
   const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
   const { fetchPlayerList } = usePlayerStore();
   const navigate = useNavigate();
@@ -293,7 +293,7 @@ const SelectPlayerView = ({ teamId = "1000" }, step) => {
   };
 
   return (
-    <Div>
+    <Div $step={step}>
       <Header>
         <Title>좋아하는 선수를</Title>
         <Title>선택하세요.</Title>
