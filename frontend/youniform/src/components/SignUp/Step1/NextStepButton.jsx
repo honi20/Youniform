@@ -48,7 +48,7 @@ const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
         break;
       case "4":
         window.dispatchEvent(new Event("storage"));
-        navigate(`/`);
+        navigate(`/main`);
         return;
     }
 

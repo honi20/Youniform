@@ -44,7 +44,7 @@ const NextStepButton = ({ step, email, providerType, profileImage }) => {
         }
         break;
       case "3":
-        navigate(`/`);
+        navigate(`/main`);
         return;
     }
 
