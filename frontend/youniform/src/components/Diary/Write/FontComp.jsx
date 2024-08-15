@@ -52,7 +52,11 @@ const Font = styled.div`
 const getFontName = (path) => {
   const parts = path.split("/");
   const fileName = parts[parts.length - 1];
-  return fileName.split(".")[0];
+  const baseName = fileName.split(".")[0];
+  
+  const cleanName = baseName.replace(/[-].*$/, ""); // '-' 또는 '_' 뒤의 모든 것을 제거
+
+  return cleanName;
 };
 
 const fontNameMapping = {
