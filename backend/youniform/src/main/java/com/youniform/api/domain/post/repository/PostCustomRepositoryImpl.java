@@ -37,6 +37,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
+						post.user.team.imgUrl.as("teamUrl"),
 						likePost.likePostPK.isNotNull()
 				))
 				.from(post)
@@ -77,6 +78,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
+						post.user.team.imgUrl.as("teamUrl"),
 						likePost.likePostPK.isNotNull()
 				))
 				.from(post)
@@ -118,6 +120,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
+						post.user.team.imgUrl.as("teamUrl"),
 						likePost.likePostPK.isNotNull()
 				))
 				.from(post)
@@ -159,6 +162,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
+						post.user.team.imgUrl.as("teamUrl"),
 						likePost.likePostPK.isNotNull()
 				))
 				.from(post)
@@ -199,6 +203,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
+						post.user.team.imgUrl.as("teamUrl"),
 						likePost.likePostPK.isNotNull()
 				))
 				.from(post)

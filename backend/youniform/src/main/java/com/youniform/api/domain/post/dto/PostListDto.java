@@ -25,4 +25,6 @@ public class PostListDto {
     private String userId;
 
     private Boolean isLiked;
+
+    private String teamUrl;
 }
