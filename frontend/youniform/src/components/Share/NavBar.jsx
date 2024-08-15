@@ -67,19 +67,19 @@ const NavBar = () => {
   const theme = useTheme();
   const {monthlyDiaries, fetchMonthlyDiaries} = useDiaryStore()
   const [writed, setWrited] = useState(false)
-  const today = new Date()
-  console.log(today)
+
+  const formatDate = (day) => format(day, "yyyy-MM-dd");
+  const formattedDate = formatDate(new Date());
   useEffect(() => {
+    // console.log('juyeon navbar test')
     setCurrentPath(location.pathname);
-    if (!monthlyDiaries){
+    if (!monthlyDiaries || monthlyDiaries.length == 0){
       fetchMonthlyDiaries();
     }
     
-    monthlyDiaries.some((diary) => diary.diaryDate == true)
-  }, [location.pathname, fetchMonthlyDiaries]);
-  console.log(monthlyDiaries)
-  const formatDate = (day) => format(day, "yyyy-MM-dd");
-  const formattedDate = formatDate(new Date());
+    setWrited(monthlyDiaries.some((diary) => diary.diaryDate == formattedDate))
+  }, [location.pathname, fetchMonthlyDiaries, monthlyDiaries]);
+  
 
   return (
     <Nav>
@@ -96,7 +96,7 @@ const NavBar = () => {
         </StyledLink>
       </LinkDiv>
       <LinkDiv>
-        {currentPath === "/diary" ? (
+        {currentPath === "/diary" && !writed ? (
           <StyledLink to={`/diary/write/${formattedDate}`}>
             <CustomBtn theme={theme}>
               <AddCircleIcon />
