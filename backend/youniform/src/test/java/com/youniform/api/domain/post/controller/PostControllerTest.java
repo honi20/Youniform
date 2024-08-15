@@ -1011,7 +1011,7 @@ public class PostControllerTest {
                         .createdAt("2시간 전")
                         .updatedAt(null)
                         .userId(UUID)
-                        .imgUrl("https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
+                        .imgUrl("https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
                         .nickname("User1")
                 .build());
         comments.add(CommentDto.builder()
@@ -1020,15 +1020,15 @@ public class PostControllerTest {
                 .createdAt("1시간 전")
                 .updatedAt("5분 전")
                 .userId("1604b772-adc0-4212-8a90-81186c57f100")
-                .imgUrl("https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
+                .imgUrl("https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
                 .nickname("User2")
                 .build());
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
         when(postService.findPost(any(), any()))
-                .thenReturn(new PostDetailsRes(1L, UUID, "https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
-                        "User1", "https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
+                .thenReturn(new PostDetailsRes(1L, UUID, "https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
+                        "User1", "https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
                         "최강 몬스터즈 진짜 최고!!'", tags, LocalDate.now(), true, comments, true));
 
         //when

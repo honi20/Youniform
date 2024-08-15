@@ -183,7 +183,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private String extractS3KeyFromUrl(String url) {
-        return url.replace("https://youniforms3.s3.ap-northeast-2.amazonaws.com/", "");
+        return url.replace("https://dsfjel9nvktdp.cloudfront.net/", "");
     }
 
     @Override
