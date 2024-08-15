@@ -193,7 +193,7 @@ const ConfirmBtn = styled.div`
 
 const SelectPlayerView = ({ teamId = "1000", step }) => {
   const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
-  const { fetchPlayerList } = usePlayerStore();
+  const { fetchPlayerList, fetchSignUpPlayerList } = usePlayerStore();
   const navigate = useNavigate();
   useEffect(() => {
     const fetchPlayerInfo = async (teamId) => {

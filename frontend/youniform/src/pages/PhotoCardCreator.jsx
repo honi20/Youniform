@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
+import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
 import { frames, stickers, fonts } from "@assets";
 import usePhotoCardStore from "@stores/photoCardStore";
+import useResourceStore from "@stores/resoureStore";
 
 import DecoIcon from "@assets/Main/DecoIcon.svg?react";
 import ExampleIcon from "@assets/Main/ExIcon.svg?react";
@@ -18,12 +20,38 @@ import StickerComp from "@components/Diary/Write/StickerComp";
 import ColorChipComp from "@components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
 import PhotocardCanvas from "@components/Photocard/Create/PhotocardCanvas";
+import CategoryComp from "@components/Diary/Write/CategoryComp";
+
+const ToggleBtn = styled.div`
+  /* width: 50%; */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  // typo
+  font-family: "Pretendard";
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  cursor: pointer;
+`;
 
 const PhotoCardCreator = () => {
   const navigate = useNavigate();
 
   const { createPhotoCard, fetchPhotoCardList } = usePhotoCardStore();
-
+  const { backgrounds, stickers, templates, themes, fetchResources, fetchStampList } =
+    useResourceStore((state) => ({
+      backgrounds: state.backgrounds,
+      stickers: state.stickers,
+      templates: state.templates,
+      themes: state.themes,
+      fetchResources: state.fetchResources,
+      fetchStampList: state.fetchStampList,
+    }));
+  const { stampList, selectedCategory, selectedColor } = useResourceStore();
+  
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
   const [isDecorated, setIsDecorated] = useState(false);
@@ -138,6 +166,14 @@ const PhotoCardCreator = () => {
     }
   };
 
+  const filteredTemplates = selectedColor
+    ? Object.values(templates[selectedColor] || [])
+    : [];
+
+  const filteredStickers = selectedCategory
+    ? Object.values(stickers[selectedCategory] || [])
+    : [];
+
   const renderContent = () => {
     switch (selectedBtn) {
       case 0:
@@ -145,17 +181,20 @@ const PhotoCardCreator = () => {
           <>
             <ColorChipComp />
             <FrameComp
-              wallpapers={Object.values(frames).map((mod) => mod.default)}
+              wallpapers={Object.values(templates).map((mod) => mod.default)}
               onImageClick={handleImageClick}
             />
           </>
         );
       case 1:
         return (
-          <StickerComp
-            stickers={Object.values(stickers).map((mod) => mod.default)}
-            onImageClick={handleStickerClick}
-          />
+          <>
+            <CategoryComp />
+            <StickerComp
+              stickers={filteredStickers ? filteredStickers : stickers}
+              onImageClick={handleStickerClick}
+            />
+          </>
         );
       case 2:
         return (

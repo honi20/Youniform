@@ -26,6 +26,7 @@ const ChangePasswordContainer = styled.div`
   width: 100%;
   padding: 10% 0;
   gap: 5%;
+  align-items: center;
 `;
 
 const ChangePasswordView = () => {
@@ -137,7 +138,7 @@ const ChangePasswordView = () => {
   return (
     <ChangePasswordContainer>
       <LogoWithTitle state="ChangePassword" />
-      <FormControl sx={{ width: "100%" }} variant="outlined">
+      <FormControl sx={{ width: "80%" }} variant="outlined">
         <TextField
           autoComplete="off"
           label="새 비밀번호"
@@ -165,7 +166,7 @@ const ChangePasswordView = () => {
           fullWidth
         />
       </FormControl>
-      <FormControl sx={{ width: "100%" }} variant="outlined">
+      <FormControl sx={{ width: "80%" }} variant="outlined">
         <TextField
           autoComplete="off"
           label="새 비밀번호"
@@ -193,7 +194,7 @@ const ChangePasswordView = () => {
           fullWidth
         />
       </FormControl>
-      <FormControl sx={{ width: "100%" }} variant="outlined">
+      <FormControl sx={{ width: "80%" }} variant="outlined">
         <TextField
           autoComplete="off"
           label="새 비밀번호 확인"

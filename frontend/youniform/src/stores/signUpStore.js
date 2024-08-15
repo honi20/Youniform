@@ -45,6 +45,12 @@ const signUpStore = create((set, get) => ({
     setPlayers: (players) =>
       set((state) => ({ user: { ...state.user, players } })),
   },
+
+  setAccessToken: (token) => {
+    localStorage.setItem("accessToken", token);
+    console.log("Access Token saved to localStorage:", token);
+  },
+
   sendEmail: async (email) => {
     try {
       const res = await axios({
@@ -120,8 +126,9 @@ const signUpStore = create((set, get) => ({
       console.log("Success to fetch Local SignUp");
       if (res.data.header.httpStatusCode === 200) {
         const accessToken = res.data.body.accessToken;
-        const { setAccessToken } = useUserStore.getState();
+        const { setAccessToken } = get();
         setAccessToken(accessToken);
+        
         console.log('Access Token:', accessToken);
         console.log(res.data.body.accessToken);
         return "$SUCCESS"
@@ -150,7 +157,7 @@ const signUpStore = create((set, get) => ({
       console.log("Success to fetch Local SignUp");
       if (res.data.header.httpStatusCode === 200) {
         const accessToken = res.data.body.accessToken;
-        const { setAccessToken } = useUserStore.getState();
+        const { setAccessToken } = get();
         setAccessToken(accessToken);
         console.log('Access Token:', accessToken);
         console.log(res.data.body.accessToken);

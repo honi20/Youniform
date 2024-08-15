@@ -66,6 +66,7 @@ const useUserStore = create((set, get) => ({
         localStorage.setItem("accessToken", accessToken);
       };
       handleLoginSuccess(accessToken);
+      window.dispatchEvent(new Event("storage"));
       return "$OK";
     } catch (err) {
       // if (err.response.data.)

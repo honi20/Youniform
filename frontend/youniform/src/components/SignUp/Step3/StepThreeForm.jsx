@@ -3,6 +3,10 @@ import styled from "styled-components";
 import SelectPlayerView from "@pages/SelectPlayerView";
 import NextStepButton from "../Step1/NextStepButton";
 
+const StepThree = styled.div`
+  height: 100%;
+`;
+
 const EmptyBox = styled.div`
   height: 1.5rem;
 `;
@@ -40,7 +44,7 @@ const StepThreeForm = () => {
   const step = 3;
   
   return (
-    <>
+    <StepThree>
       <EmptyBox />
       <StepIndicatorBox $step={step}>
         {[1, 2, 3, 4].map((num, index) => (
@@ -56,7 +60,7 @@ const StepThreeForm = () => {
       <NextStepButton
         step="3"
       />
-    </>
+    </StepThree>
   );
 };
 

@@ -8,6 +8,7 @@ const useResourceStore = create((set, get) => ({
   backgrounds: {},
   stickers: {},
   themes: {},
+  templates: {},
   selectedColor: "WHITE",
   setSelectedColor: (category) => set({ selectedColor: category }),
   selectedCategory: "BASEBALL",
@@ -17,6 +18,7 @@ const useResourceStore = create((set, get) => ({
       backgrounds: {},
       stickers: {},
       themes: {},
+      templates: {},
     };
 
     resourceList.forEach((resource) => {
@@ -31,6 +33,8 @@ const useResourceStore = create((set, get) => ({
           resources.stickers[categoryName] = items;
         } else if (type === "THEME") {
           resources.themes[categoryName] = items;
+        } else if (type === "TEMPLATE") {
+          resources.template[categoryName] = items;
         }
       });
     });
