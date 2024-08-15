@@ -18,23 +18,18 @@ const useResourceStore = create((set, get) => ({
       backgrounds: {},
       stickers: {},
       themes: {},
-      templates: {},
     };
 
     resourceList.forEach((resource) => {
       const { type, categories } = resource;
-
       categories.forEach((category) => {
         const { category: categoryName, items } = category;
-
         if (type === "BACKGROUND") {
           resources.backgrounds[categoryName] = items;
         } else if (type === "STICKER") {
           resources.stickers[categoryName] = items;
         } else if (type === "THEME") {
           resources.themes[categoryName] = items;
-        } else if (type === "TEMPLATE") {
-          resources.template[categoryName] = items;
         }
       });
     });
@@ -44,6 +39,9 @@ const useResourceStore = create((set, get) => ({
       ...resources,
     }));
     return resources;
+  },
+  setTemplates: (templates) => {
+    set({ templates })
   },
 
   fetchResources: async () => {
@@ -77,6 +75,23 @@ const useResourceStore = create((set, get) => ({
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
       set({ loading: false, error: err.message });
+    }
+  },
+
+  fetchPhotocardResources: async () => {
+    console.log("포토카드 리소스 로딩 중");
+    set({ loading: true, error: null });
+    const apiClient = getApiClient();
+    try {
+        const res = await apiClient.get(`/photocards/resources`);
+        console.log("포토카드 리소스 조회에 성공했습니다.");
+        console.log(res.data);
+        const resourceList = res.data.body.resourceList[0].imgUrlList;
+        get().setTemplates(resourceList);
+        set({ loading: false });
+    } catch (error) {
+        console.error("포토카드 리소스 조회에 실패했습니다:", error);
+        set({ loading: false, error: error.message });
     }
   },
 }));

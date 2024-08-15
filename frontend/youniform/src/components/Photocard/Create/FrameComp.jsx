@@ -30,17 +30,21 @@ const FrameImg = styled.img`
 `;
 
 const FrameComp = ({ wallpapers, onImageClick }) => {
+  const validWallpapers = Array.isArray(wallpapers) ? wallpapers : [];
+
   return (
     <FrameContainer>
       <Wrapper>
-        {wallpapers.map((imageUrl, index) => (
+      {validWallpapers.map((imageUrl) => {
+        return (
           <FrameImgContainer
-            key={index}
+            key={imageUrl}
             onClickCapture={() => onImageClick(imageUrl)}
           >
-            <FrameImg src={imageUrl} alt={`Frame ${index + 1}`} />
+            <FrameImg src={imageUrl} alt={`Frame ${imageUrl}`} />
           </FrameImgContainer>
-        ))}
+        );
+      })}
       </Wrapper>
     </FrameContainer>
   );
