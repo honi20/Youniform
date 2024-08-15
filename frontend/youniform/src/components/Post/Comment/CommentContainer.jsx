@@ -22,7 +22,7 @@ const Ellipsis = styled.div`
   justify-content: center;
   align-items: center;
   color: gray;
-  opacity: ${(props) => (props.visible ? 1 : 0)};
+  opacity: ${(props) => (props.$visible ? 1 : 0)};
   transition: opacity 0.1s ease;
 `;
 const FlexBox = styled.div`
@@ -146,15 +146,12 @@ const CommentContainer = ({ postId, user }) => {
     const { scrollTop, scrollHeight, clientHeight } = event.target;
     const isAtTop = scrollTop === 0;
     const isAtBottom = scrollTop + clientHeight >= scrollHeight;
-    console.log(scrollTop, clientHeight, scrollHeight);
+    // console.log(scrollTop, clientHeight, scrollHeight);
     setShowEllipsis({
       top: !isAtTop,
       bottom: !isAtBottom,
     });
   };
-  useEffect(() => {
-    console.log("showEllipsis updated:", showEllipsis);
-  }, [showEllipsis]);
 
   useEffect(() => {
     if (!isInitialRender.current) {
@@ -180,8 +177,10 @@ const CommentContainer = ({ postId, user }) => {
       await updateComment(commentId, content);
       // setComments
       setEditedComment(null);
+      fetchPost(postId)
     } else if (action === "delete") {
       await deleteComment(commentId);
+      fetchPost(postId)
     }
   };
 
@@ -221,6 +220,7 @@ const CommentContainer = ({ postId, user }) => {
                             handleCommentAction({
                               action: "update",
                               commentId: editedComment.commentId,
+                              postId: post.postId,
                               content: editedComment.contents,
                             });
                           }
@@ -233,6 +233,7 @@ const CommentContainer = ({ postId, user }) => {
                           handleCommentAction({
                             action: "update",
                             commentId: editedComment.commentId,
+                            postId: post.postId,
                             content: editedComment.contents,
                           })
                         }
@@ -248,7 +249,7 @@ const CommentContainer = ({ postId, user }) => {
                     <UpperContainer>{comment.contents}</UpperContainer>
                       <LowerContainer>
                         {comment.createdAt}
-                        {user.nickname === comment.nickname && 
+                        {user && comment && user.nickname === comment.nickname && 
                         <>
                           &nbsp;
                           <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
@@ -258,6 +259,7 @@ const CommentContainer = ({ postId, user }) => {
                               handleCommentAction({
                                 action: "delete",
                                 commentId: comment.commentId,
+                                postId: post.postId
                               })
                             }
                           >
@@ -272,7 +274,7 @@ const CommentContainer = ({ postId, user }) => {
             </Comment>
           ))}
       </ScrollableView>
-      {showEllipsis && <Ellipsis visible={showEllipsis.bottom}>...</Ellipsis>}
+      {showEllipsis && <Ellipsis $visible={showEllipsis.bottom}>...</Ellipsis>}
       <CreateComment>
         <ChatIcon />
         <CommentTextarea content={content} setContent={setContent} />
