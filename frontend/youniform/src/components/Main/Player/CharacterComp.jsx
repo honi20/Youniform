@@ -12,8 +12,6 @@ const MainContainer = styled.div`
 `;
 const CharacterContainer = styled.img`
   flex: 1; // 남는 공간에 모두 할당
-  /* margin-top: 20%; */
-  /* width: 120px; */
   z-index: 0;
   position: absolute;
   display: flex;
