@@ -446,10 +446,12 @@ def send_pitcher_alert(current_inning, players, away_team, home_team):
     pattern = r"^\d{1,2}(회초)"
 
     if re.search(pattern, current_inning):
-        print(str(player[home_team][players["home_pitcher"][0]]) + home_team + " 투수 : " + players["home_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        print(player[home_team][players["home_pitcher"][0]])
+        print(home_team + " 투수 : " + players["home_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
         sendAlert(player[home_team][players["home_pitcher"][0]])
     else:
-        print(str(player[away_team][players["away_pitcher"][0]]) + away_team + " 투수 : " + players["away_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        print(player[away_team][players["away_pitcher"][0]])
+        print(away_team + " 투수 : " + players["away_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
         sendAlert(player[away_team][players["away_pitcher"][0]])
 
 def send_hitter_alert(current_inning, current_player, away_team, home_team):
@@ -464,10 +466,12 @@ def send_hitter_alert(current_inning, current_player, away_team, home_team):
         result = re.search(r"\d+번타자\s*(\S+)", current_player).group(1)
 
     if inning:
-        print(str(player[away_team][result]) + away_team + " 타자 : " + result + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        print(player[away_team][result])
+        print(away_team + " 타자 : " + result + ", 등장시간 : " + str(datetime.now().strftime("%H:%M")))
         sendAlert(player[away_team][result])
     else:
-        print(str(player[home_team][result]) + home_team + " 타자 : " + result + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        print(player[home_team][result])
+        print(home_team + " 타자 : " + result + ", 등장시간 : " + str(datetime.now().strftime("%H:%M")))
         sendAlert(player[home_team][result])
 
 def crawling(game_id):
