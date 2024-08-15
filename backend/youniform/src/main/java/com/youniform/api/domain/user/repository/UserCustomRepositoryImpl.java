@@ -60,7 +60,8 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 						users.playPushAlert,
 						users.team.imgUrl,
 						likePost.likePostPK.postId.countDistinct(),
-						friend1.friendPK.friendId.countDistinct()
+						friend1.friendPK.friendId.countDistinct(),
+						users.providerType
 				))
 				.from(users)
 				.leftJoin(likePost).on(users.id.eq(likePost.user.id))
