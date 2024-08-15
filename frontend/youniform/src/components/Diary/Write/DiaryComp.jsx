@@ -78,7 +78,7 @@ const DiaryComp = ({ state, diary }) => {
       </St.DiaryContent>
       <St.DiaryFooter>
         <St.BtnContainer>
-          {diary && diary.nickname == user.nickname && 
+          {diary && user &&  diary.nickname == user.nickname && 
           <St.BtnGroup>
             <St.Btn onClick={() => navigate("./update")}>수정</St.Btn>
             <St.Btn onClick={() => setIsModalOpen(true)}>삭제</St.Btn>

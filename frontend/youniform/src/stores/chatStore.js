@@ -11,7 +11,7 @@ const useChatStore = create((set, get) => ({
   isConnected: false, // WebSocket 연결 상태
   heartbeatInterval: null, // 하트비트 타이머 ID
   connectedUsers: 0, // 현재 접속자 수
-
+  type: null,
   connect: () => {
     const { client, selectedRoom, isConnected, fetchChatRoomMessage } = get();
     if (!selectedRoom) {
@@ -159,6 +159,7 @@ const useChatStore = create((set, get) => ({
       nickname,
       imageUrl,
       content,
+      type: type,
       messageTime: formattedDate,
     };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
@@ -22,6 +22,7 @@ import DiaryModal from "@components/Diary/DiaryModal";
 import useDiaryStore from "@stores/diaryStore";
 import useResourceStore from "@stores/resoureStore";
 import CategoryComp from "../../components/Diary/Write/CategoryComp";
+import ImageComp from "../../components/Diary/Write/ImageComp";
 // import html2canvas from "html2canvas"
 const ToggleBtn = styled.div`
   /* width: 50%; */
@@ -63,10 +64,12 @@ const WriteDiaryView = () => {
       fetchResources: state.fetchResources,
       fetchStampList: state.fetchStampList,
     }));
+    const [uploadedImage, setUploadedImage] = useState(null);
+const fileInputRef = useRef(null);
   const { stampList, selectedCategory, selectedColor } = useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
-
+  // const fileInputRef = useRef(null);
   useEffect(() => {
     if (diaryId) {
       fetchDiary(diaryId);
@@ -166,6 +169,26 @@ const WriteDiaryView = () => {
       selectCanvas.renderAll();
     }
   };
+  const handleImageSelect = (imageUrl) => {
+    if (selectCanvas) {
+      fabric.Image.fromURL(imageUrl, (img) => {
+        // const desiredWidth = 200; // 원하는 가로 크기
+            const desiredHeight = 200; // 원하는 세로 크기
+            
+            // img.scaleToWidth(desiredWidth);
+            img.scaleToHeight(desiredHeight);
+        img.set({
+          left: selectCanvas.getWidth() / 2,
+          top: selectCanvas.getHeight() / 2,
+          originX: "center",
+          originY: "center",
+        });
+        selectCanvas.add(img);
+        selectCanvas.renderAll();
+      });
+    }
+  };
+  
   const handleResetClick = () => {
     if (selectCanvas) {
       selectCanvas.clear();
@@ -218,7 +241,7 @@ const WriteDiaryView = () => {
       case 3:
         return <div>테마</div>; // 테마 컴포지션
       case 4:
-        return <div>사진</div>; // 사진 컴포지션
+        return <ImageComp onImageSelect={handleImageSelect}/>;
       case 5:
         // 프레임
         return;
@@ -432,6 +455,7 @@ const WriteDiaryView = () => {
           onButtonClick={handleAfterSave}
         />
       </St.Div>
+      
     </>
   );
 };

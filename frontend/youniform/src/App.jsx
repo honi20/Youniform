@@ -13,6 +13,7 @@ import SignUpView from "./pages/SignUpView";
 import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "@pages/Main/NewsView";
 import TotalSongView from "@pages/Main/TotalSongView";
+import SongView from "@pages/Main/SongView";
 import PlayerSongView from "@pages/Main/PlayerSongView";
 import TeamSongView from "@pages/Main/TeamSongView";
 import ChatView from "@pages/Main/ChatView";
@@ -165,6 +166,7 @@ function App() {
               <Route path="/song" element={<TotalSongView />}>
                 <Route path="player/:playerId" element={<PlayerSongView />} />
                 <Route path="team/:teamId" element={<TeamSongView />} />
+                <Route path="team-song/:teamSongId" element={<SongView />} />
               </Route>
               {/* 채팅 관련 */}
               <Route path="/chat/:roomId" element={<ChatView />} />

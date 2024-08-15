@@ -22,17 +22,18 @@ const Div = styled.div`
 `;
 
 const Container = styled.div`
-  /* margin-top: 3%; */
-  /* border: 1px solid black; */
   width: 100%;
+  max-width: 400px;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  flex: 1;
+  margin-top: 20px;
+  /* flex: 1; */
+  /* border: 1px solid black; */
 `;
 const Btn = styled.div`
-  height: 120px;
-  width: 120px;
+  height: 100px;
+  width: 100px;
   border-radius: 100%;
   background-color: white;
   display: flex;
@@ -49,6 +50,7 @@ const IconWrapper = styled.div`
   justify-content: center;
   width: 50px;
   height: 50px;
+  /* border: 1px solid black; */
 `;
 const TextContainer = styled.div`
   color: #262f66;
@@ -61,17 +63,19 @@ const TextContainer = styled.div`
 const MainView = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
   const navigate = useNavigate();
-  const { playerList, fetchPlayerList, loading, error } = usePlayerStore();
+  const { team, fetchTeamList, playerList, fetchPlayerList, loading, error } = usePlayerStore();
   const { user, fetchUser } = useUserStore();
 
   useEffect(() => {
-    const loadPlayList = () => {
-      if (!playerList || playerList.length == 0) {
-        fetchPlayerList();
-      }
-    };
+    const loadPlayList = async () => {
+      if ((!playerList || playerList.length == 0) || (!team || team.length == 0)) {
+        await fetchPlayerList();
+        await fetchTeamList();
+      };
+      console.log('fetch', playerList, team)
+    }
     loadPlayList();
-  }, [fetchPlayerList, playerList]);
+  }, [fetchPlayerList, fetchTeamList]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -84,11 +88,9 @@ const MainView = () => {
 
   const handleSelectPlayer = (playerId) => {
     setSelectedPlayer(playerId);
-    console.log(playerId);
   };
-  console.log(playerList.length);
   const handleNews = () => {
-    navigate(`/news/${playerList[selectedPlayer].playerId}`);
+    navigate(`/news/${playerList.length == 0 ? '1000' : playerList[selectedPlayer].playerId}`);
   };
   if (loading) {
     return <Loading />;
@@ -102,7 +104,7 @@ const MainView = () => {
       <PlayerComp
         count={playerList.length}
         onSelectPlayer={handleSelectPlayer}
-        player={playerList[selectedPlayer]}
+        player={playerList.length == 0 ? team : playerList[selectedPlayer]}
       />
       <Container>
         <Btn onClick={handleNews}>
@@ -113,7 +115,7 @@ const MainView = () => {
         </Btn>
         <Btn
           onClick={() =>
-            navigate(`/chat/${playerList[selectedPlayer].playerId}`)
+            navigate(`/chat/${playerList.length==0? 1000 : playerList[selectedPlayer].playerId}`)
           }
         >
           <IconWrapper>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import * as Font from "@/typography";
 import ProfileModal from "../Modal/ProfileModal";
 import { getApiClient } from "@stores/apiClient";
-
+import parse from "html-react-parser";
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
@@ -183,6 +183,12 @@ const Post = ({ post }) => {
       console.error(err.response ? err.response.data : err.message);
     }
   };
+  const parseText = (text) => {
+    // 줄바꿈을 <br /> 태그로 변환
+    const formattedText = text.replace(/\n/g, "<br />");
+    // HTML을 JSX로 변환
+    return parse(formattedText);
+  };
   return (
     <>
       <Container>
@@ -199,12 +205,13 @@ const Post = ({ post }) => {
             src={post.imageUrl}
           />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
-            {htmlContent.split("\n").map((line, index) => (
+          {parseText(post.contents)}
+            {/* {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
                 {line}
                 <br />
               </React.Fragment>
-            ))}
+            ))} */}
           </div>
           <TagContainer>
             {post &&
