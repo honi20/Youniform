@@ -200,7 +200,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void broadcastUserCount(Long roomId) {
-        Set<String> keys = redisUtils.keys("room:" + roomId + ":session:*");
+        Set<String> keys = redisUtils.keys("room:" + roomId + ":user:*");
 
         String userCount = String.valueOf(keys.size());
 
