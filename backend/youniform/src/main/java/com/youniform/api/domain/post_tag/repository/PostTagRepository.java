@@ -12,6 +12,6 @@ public interface PostTagRepository extends JpaRepository<PostTag, PostTagPK> {
     @Modifying
     @Transactional
     @Query("DELETE FROM PostTag pt " +
-            "WHERE pt.postTagPK.postId =: id")
+            "WHERE pt.postTagPK.postId = :id")
     void deletePostTagsByPostId(@Param("id") Long postId);
 }

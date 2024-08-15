@@ -2,6 +2,7 @@ package com.youniform.api.global.config;
 
 import com.youniform.api.global.jwt.filter.JwtBearerAuthenticationFilter;
 import com.youniform.api.global.oauth.PrincipalOauth2UserService;
+import com.youniform.api.global.oauth.handler.Oauth2FailureHandler;
 import com.youniform.api.global.oauth.handler.Oauth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,8 @@ public class SecurityConfig {
 
     private final Oauth2SuccessHandler oauth2SuccessHandler;
 
+    private final Oauth2FailureHandler oauth2FailureHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -44,9 +47,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                                 .requestMatchers(
-                                            "/api/users/signup/**", "/api/users/signin/local", "/api/alerts/[0-9]+",
+                                        "/api/users/signup/**", "/api/users/signin/local", "/api/alerts/player/**",
                                         "/api/users/verify", "/api/users/email/send", "/api/login/oauth2/**",
-                                        "/api/users/email/verify", "/api/users/check/email",
+                                        "/api/users/oauth2/code/**", "/api/users/email/verify", "/api/users/check/email",
                                         "/api/users/password/reset", "/api/users/password/send",
                                         "/api/players/list/**", "/wss/**", "/api/stomp/chat/**",
                                         "/docs/**", "/swagger-ui/**", "/v3-docs/**", "/h2-console/**").permitAll()
@@ -60,7 +63,8 @@ public class SecurityConfig {
                                 .baseUri("/api/users/oauth2/code/*"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService))
-                        .successHandler(oauth2SuccessHandler))
+                        .successHandler(oauth2SuccessHandler)
+                        .failureHandler(oauth2FailureHandler))
         ;
 
         http.addFilterBefore(jwtBearerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

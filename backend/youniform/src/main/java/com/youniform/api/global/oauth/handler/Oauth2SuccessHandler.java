@@ -1,27 +1,29 @@
 package com.youniform.api.global.oauth.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youniform.api.domain.user.dto.SignupReq;
 import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
-import com.youniform.api.global.dto.ResponseDto;
+import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.jwt.entity.JwtRedis;
 import com.youniform.api.global.jwt.service.JwtService;
 import com.youniform.api.global.oauth.PrincipalDetails;
 import com.youniform.api.global.redis.RedisUtils;
-import com.youniform.api.global.statuscode.SuccessCode;
+import com.youniform.api.global.statuscode.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtService jwtService;
@@ -30,13 +32,18 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        log.info("성공성공!!");
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        Users user = userRepository.findByEmail((String) oAuth2User.getAttributes().get("email"));
+        Users user = userRepository.findByEmail(((PrincipalDetails)authentication.getPrincipal()).getPassword());
         if(user == null) {
             user = ((PrincipalDetails)oAuth2User).getUser();
             sendSignUpUserInfo(response, user);
         }else {
-            sendAccessToken(response, user);
+            if(Objects.equals(((PrincipalDetails) authentication.getPrincipal()).getUser().getProviderType(), user.getProviderType())){
+                sendAccessToken(response, user);
+            }else{
+                response.sendRedirect("http://localhost:5173/signup/error?providerType=" + user.getProviderType());
+            }
         }
     }
 
@@ -54,9 +61,15 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .profileUrl(user.getProfileUrl())
                     .build();
 
-            ResponseDto<Object> res = ResponseDto.success(SuccessCode.USER_SIGNUP_USER, result);
-            ObjectMapper mapper = new ObjectMapper();
-            response.getWriter().write(mapper.writeValueAsString(res));
+//            ResponseDto<Object> res = ResponseDto.success(SuccessCode.USER_SIGNUP_USER, result);
+//            ObjectMapper mapper = new ObjectMapper();
+//            response.getWriter().write(mapper.writeValueAsString(res));
+
+            redisUtils.setDataWithExpiration(result.getEmail()+"_signin_key", result, System.currentTimeMillis() + (10_000));
+
+//            response.sendRedirect("https://youniform/signup/info?key=" + result.getEmail());
+            response.sendRedirect("http://localhost:5173/signup/info?key=" + result.getEmail());
+            log.info("redirect 성공!!!!!!!!!!!!!" + result.getEmail());
         }
     }
 
@@ -75,9 +88,11 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build();
             redisUtils.setData(uuid, jwtRedis);
 
-            ResponseDto<Object> res = ResponseDto.success(SuccessCode.USER_SIGNUP_EXIST, jwtService.createAccessToken(uuid));
-            ObjectMapper mapper = new ObjectMapper();
-            response.getWriter().write(mapper.writeValueAsString(res));
+//            ResponseDto<Object> res = ResponseDto.success(SuccessCode.USER_SIGNUP_EXIST, jwtService.createAccessToken(uuid));
+//            ObjectMapper mapper = new ObjectMapper();
+//            response.getWriter().write(mapper.writeValueAsString(res));
+            String accessToken = jwtService.createAccessToken(uuid);
+            response.sendRedirect("http://localhost:5173/signup/exist?key=" + accessToken);
         }
     }
 }

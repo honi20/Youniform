@@ -81,7 +81,7 @@ public class AlertController {
 		return new ResponseEntity<>(ResponseDto.success(ALERT_DELETED, null), HttpStatus.OK);
 	}
 
-	@GetMapping("/{playerId}")
+	@GetMapping("/player/{playerId}")
 	public ResponseEntity<?> alertPlayer(@PathVariable("playerId") Long playerId) {
 		alertService.sendPlayerAppearance(playerId);
 

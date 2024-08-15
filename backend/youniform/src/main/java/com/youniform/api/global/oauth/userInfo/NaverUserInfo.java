@@ -26,6 +26,9 @@ public class NaverUserInfo implements Oauth2UserInfo {
 
     @Override
     public String getName() {
+        if(attributes.get("name") == null){
+            return "youniform_" + (System.currentTimeMillis()/1000);
+        }
         return (String) attributes.get("name");
     }
 

@@ -33,6 +33,8 @@ public interface ChatService {
 
     void updateLastReadTime(Long userId, Long roomId, LocalDateTime lastReadTime);
 
+    Long getUserIdFromSessionId(String sessionId);
+
     Long getRoomIdFromSessionId(String sessionId);
 
     void broadcastUserCount(Long roomId);

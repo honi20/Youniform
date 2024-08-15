@@ -1,6 +1,7 @@
 package com.youniform.api.global.oauth.userInfo;
 
 import java.util.Map;
+import java.util.Random;
 
 public class GoogleUserInfo implements Oauth2UserInfo {
 
@@ -26,6 +27,9 @@ public class GoogleUserInfo implements Oauth2UserInfo {
 
     @Override
     public String getName() {
+        if(attributes.get("name") == null){
+            return "youniform_" + (System.currentTimeMillis()/1000);
+        }
         return (String) attributes.get("name");
     }
 

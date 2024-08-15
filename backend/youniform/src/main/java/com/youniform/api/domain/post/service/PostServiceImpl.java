@@ -92,7 +92,7 @@ public class PostServiceImpl implements PostService {
         List<TagDto> tagDtoList = new ArrayList<>();
 
         if(!file.isEmpty()) {
-            if(!post.getImgUrl().isEmpty()) {
+            if(post.getImgUrl() != null && !post.getImgUrl().isEmpty()) {
                 s3Service.fileDelete(post.getImgUrl());
             }
             String imgUrl = s3Service.upload(file, "post");
@@ -130,7 +130,7 @@ public class PostServiceImpl implements PostService {
             throw new CustomException(POST_DELETE_FORBIDDEN);
         }
 
-        if(!post.getImgUrl().isEmpty()) {
+        if(post.getImgUrl() != null && !post.getImgUrl().isEmpty()) {
             s3Service.fileDelete(post.getImgUrl());
         }
 
