@@ -27,7 +27,7 @@ export const SaveBtn = styled.div`
   width: 3rem;
   height: 3rem;
   right: 4%;
-  top: 1px;
+  top: 3px;
   margin-top: 1px;
   display: flex;
   justify-content: center;
@@ -168,15 +168,15 @@ export const IconFont = styled.div`
 export const StampContainer = styled.div`
   position: absolute;
   z-index: 10;
-  width: 100%;
+  width: 70%;
+  margin-left: 15%;
   height: 50px;
-  /* right: calc(50vw - 75px); */
   top: 1px;
   margin-top: 1px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  /* border: 1px solid black; */
+  border: 1px solid black;
 `;
 export * from "./WriteDiaryStyle";

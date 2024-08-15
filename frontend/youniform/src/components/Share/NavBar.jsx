@@ -11,6 +11,7 @@ import DiaryIcon from "@assets/NavBar/diary.svg?react";
 import HomeIcon from "@assets/NavBar/home.svg?react";
 import MyPageIcon from "@assets/NavBar/my_page.svg?react";
 import PhotoCardIcon2 from "@assets/NavBar/photo_card2.svg?react";
+import useDiaryStore from "../../stores/diaryStore";
 
 const Nav = styled.nav`
   background: #ffffff;
@@ -64,10 +65,19 @@ const NavBar = () => {
   const location = useLocation();
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const theme = useTheme();
+  const {monthlyDiaries, fetchMonthlyDiaries} = useDiaryStore()
+  const [writed, setWrited] = useState(false)
+  const today = new Date()
+  console.log(today)
   useEffect(() => {
     setCurrentPath(location.pathname);
-  }, [location.pathname]);
-
+    if (!monthlyDiaries){
+      fetchMonthlyDiaries();
+    }
+    
+    monthlyDiaries.some((diary) => diary.diaryDate == true)
+  }, [location.pathname, fetchMonthlyDiaries]);
+  console.log(monthlyDiaries)
   const formatDate = (day) => format(day, "yyyy-MM-dd");
   const formattedDate = formatDate(new Date());
 
