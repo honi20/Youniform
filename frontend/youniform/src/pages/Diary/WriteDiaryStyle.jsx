@@ -168,14 +168,15 @@ export const IconFont = styled.div`
 export const StampContainer = styled.div`
   position: absolute;
   z-index: 10;
-  width: auto;
+  width: 100%;
   height: 50px;
-  right: calc(50vw - 75px);
+  /* right: calc(50vw - 75px); */
   top: 1px;
   margin-top: 1px;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 10px;
   /* border: 1px solid black; */
 `;
 export * from "./WriteDiaryStyle";

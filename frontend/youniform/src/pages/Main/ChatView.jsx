@@ -84,12 +84,14 @@ const ChatView = () => {
     fetchChatRoom,
     sendImage,
     fetchChatRoomMessage,
+    fetchPreviousMessages,
   } = useChatStore();
   const { fetchUser, user } = useUserStore();
   const messages = useChatStore((state) => state.messages);
   const chatBoxRef = useRef(null);
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const loaderRef = useRef(null);
   // const imageUrl = useRef(null);
 
   ///// useEffect
@@ -119,7 +121,26 @@ const ChatView = () => {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
   }, [messages]);
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting) {
+  //         fetchPreviousMessages();
+  //       }
+  //     },
+  //     { root: chatBoxRef.current, threshold: 1.0 }
+  //   );
 
+  //   if (loaderRef.current) {
+  //     observer.observe(loaderRef.current);
+  //   }
+
+  //   return () => {
+  //     if (loaderRef.current) {
+  //       observer.unobserve(loaderRef.current);
+  //     }
+  //   };
+  // }, [fetchPreviousMessages]);
   ///// function
   const handleKeyDown = (event) => {
     console.log("Key pressed:", event.key); // 키 이벤트를 확인하기 위한 로그
@@ -206,6 +227,7 @@ const ChatView = () => {
               </St.ChatContainer>
             );
           })}
+        <div ref={loaderRef}></div>
       </St.ChatSection>
       {filePreview && <ImgBox src={filePreview} alt="Preview" />}
       <St.InputSection>
