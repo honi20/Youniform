@@ -120,6 +120,7 @@ const Header = () => {
     localStorage.removeItem('accessToken');
     setIsToken(null);
     await fetchUser();
+    navigate("/");
   };
 
   useEffect(() => {
@@ -154,7 +155,7 @@ const Header = () => {
         );
       case currentPath === "/photo-card/binder":
         return <InnerHead></InnerHead>;
-      case ["/", "/photo-card", "/diary", "/post"].includes(currentPath):
+      case ["/main", "/photo-card", "/diary", "/post"].includes(currentPath):
         return (
           <InnerHead>
             <Logo>

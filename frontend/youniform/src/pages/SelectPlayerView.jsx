@@ -287,7 +287,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
       console.log(body);
       console.log(header.message);
       await fetchPlayerList();
-      navigate("/");
+      navigate("/main");
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
