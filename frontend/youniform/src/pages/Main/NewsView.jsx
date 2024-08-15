@@ -5,6 +5,7 @@ import usePlayerStore from "../../stores/playerStore";
 import useNewsStore from "../../stores/newsStore";
 import parse from "html-react-parser";
 import * as Font from "@/typography";
+import { ElderlyWomanSharp } from "@mui/icons-material";
 const Div = styled.div`
   width: 100%;
   height: calc(100vh - 120px);
@@ -165,15 +166,6 @@ const NewsView = () => {
   };
   return (
     <Div ref={containerRef}>
-      {/* <Main>
-        <CustomSlider {...settings}>
-          {images.map((image, index) => (
-            <CardNews key={index}>
-              <Image src={image} alt={`Slide ${index}`} />
-            </CardNews>
-          ))}
-        </CustomSlider>
-      </Main> */}
       <TagSection>
         {tags.map((tag, index) => (
           <Tag
@@ -196,8 +188,8 @@ const NewsView = () => {
               <ArticleContent>
                 <ArticleHeader>
                   <div>
-                    <Title>{parseText(news.title)}</Title>
-                    <Footer>{news.pubDate}</Footer>
+                    {news.title ? <Title>{parseText(news.title)}</Title> : null}
+                    {news.pubDate ? <Footer>{news.pubDate}</Footer> : null}
                   </div>
                   <ToggleButton
                     $expanded={expanded}
@@ -209,9 +201,10 @@ const NewsView = () => {
 
                 {expandedIndex === index && (
                   <>
-                    <Content onClick={() => moveToLink(news.link)}>
+                    {news.description ? <Content onClick={() => moveToLink(news.link)}>
                       {parseText(news.description)}
                     </Content>
+                    : null}
                   </>
                 )}
               </ArticleContent>
