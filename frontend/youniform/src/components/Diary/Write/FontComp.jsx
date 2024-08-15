@@ -64,9 +64,9 @@ const fontNameMapping = {
   Galmuri14: "갈무리14",
   NanumSquareRoundR: "나눔스퀘어",
   RascalMedium: "J개구쟁이",
-  "MangoDdobak-R": "또박체",
+  "MangoDdobak": "또박체",
   TheJamsil: "더잠실체",
-  "NotoSansKR-VariableFont_wght": "Noto Sans",
+  "NotoSansKR": "Noto Sans",
 };
 
 const getKoreanFontName = (fontName) => {
