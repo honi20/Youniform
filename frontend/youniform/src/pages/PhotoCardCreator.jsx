@@ -21,7 +21,7 @@ import ColorChipComp from "@components/Diary/Write/ColorChipComp";
 import BasicModal from "@components/Modal/BasicModal";
 import PhotocardCanvas from "@components/Photocard/Create/PhotocardCanvas";
 import CategoryComp from "@components/Diary/Write/CategoryComp";
-
+import ExampleModal from "../components/Photocard/Create/ExampleComp";
 const ToggleBtn = styled.div`
   /* width: 50%; */
   height: 100%;
@@ -61,9 +61,7 @@ const PhotoCardCreator = () => {
   const [diary, setDiary] = useState(null);
 
   const fileInputRef = useRef(null); // 파일 입력 참조
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const [isExampleOn, setIsExampleOn] = useState(false); // 초기 상태 off
   const openSaveModal = () => setIsSaveModalOpen(true);
   const closeSaveModal = () => setIsSaveModalOpen(false);
 
@@ -333,7 +331,7 @@ const PhotoCardCreator = () => {
                 </St.IconContainer>
                 <St.IconFont>꾸미기</St.IconFont>
               </St.Btn>
-              <St.Btn $decorated={isDecorated} onClick={openModal}>
+              <St.Btn $decorated={isDecorated} onClick={() => setIsExampleOn((prev) => !prev)}>
                 <St.IconContainer>
                   <ExampleIcon />
                 </St.IconContainer>
@@ -393,6 +391,10 @@ const PhotoCardCreator = () => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
+      {isExampleOn && <ExampleModal
+          isOn={isExampleOn}
+          setIsOn={setIsExampleOn}
+/>}
     </>
   );
 };
