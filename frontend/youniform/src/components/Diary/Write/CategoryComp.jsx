@@ -36,7 +36,7 @@ const CategoryComp = () => {
       selectedCategory: state.selectedCategory
     })
   );
-  console.log(selectedCategory);
+  // console.log(selectedCategory);
   return (
     <Div>
       {categories.map((elem, index) => {
