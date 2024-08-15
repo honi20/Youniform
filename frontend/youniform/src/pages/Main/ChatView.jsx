@@ -84,7 +84,9 @@ const ChatView = () => {
     fetchChatRoom,
     sendImage,
     fetchChatRoomMessage,
-    fetchPreviousMessages,
+    enterChatRoom,
+    type,
+    setType,
   } = useChatStore();
   const { fetchUser, user } = useUserStore();
   const messages = useChatStore((state) => state.messages);
@@ -101,14 +103,14 @@ const ChatView = () => {
       fetchChatRoom(); // 채팅방 리스트를 가져옴
       if (roomId) {
         setSelectedRoom(roomId);
-        connect(parseInt(roomId, 10));
+        await connect(parseInt(roomId, 10));
       }
     };
     initChat();
     return () => {
       disconnect();
     };
-  }, [fetchUser, connect, disconnect, roomId]);
+  }, [fetchUser, connect, disconnect, roomId, enterChatRoom]);
 
   useEffect(() => {
     if (roomId) {
