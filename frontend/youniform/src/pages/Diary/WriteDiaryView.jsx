@@ -23,6 +23,7 @@ import useDiaryStore from "@stores/diaryStore";
 import useResourceStore from "@stores/resoureStore";
 import CategoryComp from "../../components/Diary/Write/CategoryComp";
 import ImageComp from "../../components/Diary/Write/ImageComp";
+import ThemeComp from "../../components/Diary/Write/ThemeComp";
 // import html2canvas from "html2canvas"
 const ToggleBtn = styled.div`
   /* width: 50%; */
@@ -64,8 +65,6 @@ const WriteDiaryView = () => {
       fetchResources: state.fetchResources,
       fetchStampList: state.fetchStampList,
     }));
-    const [uploadedImage, setUploadedImage] = useState(null);
-const fileInputRef = useRef(null);
   const { stampList, selectedCategory, selectedColor } = useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
@@ -82,6 +81,7 @@ const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchResources();
+    console.log(themes)
     fetchStampList();
   }, [fetchResources, fetchStampList]);
 
@@ -167,6 +167,30 @@ const fileInputRef = useRef(null);
       selectCanvas.renderAll();
     }
   };
+  const handleThemeClick = async (background) => {
+    console.log(background);
+    if (selectCanvas) {
+      fabric.Image.fromURL(background.imgUrl, (img) => {
+        if (background.imgUrl.startsWith("https")) {
+          img.set({ crossOrigin: "anonymous" });
+        }
+        img.scaleToWidth(selectCanvas.getWidth());
+        img.scaleToHeight(selectCanvas.getHeight());
+        img.set({
+          originX: "center",
+          originY: "center",
+          left: selectCanvas.getWidth() / 2,
+          top: selectCanvas.getHeight() / 2,
+        });
+        selectCanvas.setBackgroundImage(
+          img,
+          selectCanvas.renderAll.bind(selectCanvas)
+        );
+      },
+      { crossOrigin: "anonymous" }
+    );
+    }
+  };
   const handleImageSelect = (imageUrl) => {
     if (selectCanvas) {
       fabric.Image.fromURL(imageUrl, (img) => {
@@ -237,7 +261,7 @@ const fileInputRef = useRef(null);
           />
         );
       case 3:
-        return <div>테마</div>; // 테마 컴포지션
+        return <ThemeComp themes={themes["NONE"]} onImageClick={handleThemeClick}/>; // 테마 컴포지션
       case 4:
         return <ImageComp onImageSelect={handleImageSelect}/>;
       case 5:

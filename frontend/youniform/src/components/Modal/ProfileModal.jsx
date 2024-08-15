@@ -6,9 +6,11 @@ import { getApiClient } from "@stores/apiClient";
 const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
   width: 100%;
   height: 100%;
+  max-width: 400px;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
@@ -233,7 +235,7 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
             <BtnContainer onClick={onClose}>{CloseSvg(theme)}</BtnContainer>
           </Header>
           <Profile>
-            <ProfileImg src={friend.profileUrl} />
+            <ProfileImg src={friend.imgUrl ? friend.imgUrl : friend.profileUrl} />
             <ProfileInfo>
               <Nickname>{friend.nickname}</Nickname>
               <Introduce>{friend.introduce}</Introduce>
