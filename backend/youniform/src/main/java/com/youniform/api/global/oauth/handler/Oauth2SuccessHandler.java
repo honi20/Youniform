@@ -42,7 +42,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             if(Objects.equals(((PrincipalDetails) authentication.getPrincipal()).getUser().getProviderType(), user.getProviderType())){
                 sendAccessToken(response, user);
             }else{
-                response.sendRedirect("http://localhost:5173/signup/error?providerType=" + user.getProviderType());
+                response.sendRedirect("https://youniform.site/signup/error?providerType=" + user.getProviderType());
             }
         }
     }
@@ -68,7 +68,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             redisUtils.setDataWithExpiration(result.getEmail()+"_signin_key", result, System.currentTimeMillis() + (10_000));
 
 //            response.sendRedirect("https://youniform/signup/info?key=" + result.getEmail());
-            response.sendRedirect("http://localhost:5173/signup/info?key=" + result.getEmail());
+            response.sendRedirect("https://youniform.site/signup/info?key=" + result.getEmail());
             log.info("redirect 성공!!!!!!!!!!!!!" + result.getEmail());
         }
     }
@@ -92,7 +92,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 //            ObjectMapper mapper = new ObjectMapper();
 //            response.getWriter().write(mapper.writeValueAsString(res));
             String accessToken = jwtService.createAccessToken(uuid);
-            response.sendRedirect("http://localhost:5173/signup/exist?key=" + accessToken);
+            response.sendRedirect("https://youniform.site/signup/exist?key=" + accessToken);
         }
     }
 }

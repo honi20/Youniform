@@ -347,9 +347,7 @@ VALUES ('https://dsfjel9nvktdp.cloudfront.net/template/diary/monsters.png', 'TEM
 
 -- diary resource
 INSERT INTO diary_resource (img_url, type, category)
-VALUES ('https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/nc.png', 'STICKER', 'BASEBALL'),
-       ('https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/samsung.png', 'STICKER', 'BASEBALL'),
-       ('https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/ssg.png', 'STICKER', 'BASEBALL'),
+VALUES ('https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/ssg.png', 'STICKER', 'BASEBALL'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/lg.png', 'STICKER', 'BASEBALL'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/kiwoom.png', 'STICKER', 'BASEBALL'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/baseball_sticker1.png', 'STICKER', 'BASEBALL'),
