@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import ShareIcon from "@assets/Modal/ShareIcon.svg?react";
-import KakaoLogo from "@assets/Modal/KakaoLogo.svg?react";
+import KakaoLogo from "@assets/Modal/KakaoLogo.png";
 import X from "@assets/Modal/XLogo.png";
 import { TwitterShareButton } from "react-share";
 
@@ -107,7 +107,6 @@ const Btn = styled.div`
 
 const ShareModal = ({ diary, isOpen, onClose }) => {
   if (!isOpen) return null;
-
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
@@ -193,12 +192,8 @@ const ShareModal = ({ diary, isOpen, onClose }) => {
             <SubText>링크 복사</SubText>
           </IconWrapper>
           <IconWrapper>
-            <IconCircle style={{ backgroundColor: "#F2DC00" }}>
-              <img
-                src={KakaoLogo}
-                alt="Kakao Logo"
-                style={{ padding: "13px" }}
-              />
+            <IconCircle>
+              <img src={KakaoLogo} alt="Kakao Logo" onClick={shareToKakao}/>
             </IconCircle>
             <SubText>카카오톡</SubText>
           </IconWrapper>

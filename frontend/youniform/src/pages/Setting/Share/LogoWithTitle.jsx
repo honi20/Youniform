@@ -25,9 +25,10 @@ const LoginLogo = styled.div`
 const ChangePasswordContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 100%;
   justify-content: center;
   align-items: center;
+  text-align: center;
   gap: 20px;
 `;
 
@@ -41,12 +42,16 @@ const Title = styled.span`
 const SubTitle = styled.span`
   font-size: 14px;
   margin-bottom: 2rem;
+  line-height: 1.2rem;
 `;
 
 const stateMap = {
   ChangePassword: {
     title: "비밀번호 변경",
-    subtitle: "기존 비밀번호와 변경할 새 비밀번호를 입력해주세요.",
+    subtitle:
+    <>
+      기존 비밀번호와 변경할 <br /> 새 비밀번호를 입력해주세요.
+    </>,
   },
 };
 

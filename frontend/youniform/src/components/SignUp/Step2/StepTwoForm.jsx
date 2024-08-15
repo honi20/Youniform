@@ -146,7 +146,6 @@ const UserInfoContainer = styled.div`
   flex-direction: column;
   width: 90%;
   margin: 0 auto;
-  margin-top: 2rem;
   gap: 0.5rem;
 `;
 
@@ -245,7 +244,7 @@ const StepTwoForm = () => {
         ))}
       </StepIndicatorBox>
       <SignUpText>프로필 입력</SignUpText>
-      <ProfileImgContainer>
+      {/* <ProfileImgContainer>
         <ProfileImgWrapper>
           {profileUrl ? (
             <ProfileImgStyled src={profileUrl} alt="프로필 이미지" />
@@ -265,7 +264,7 @@ const StepTwoForm = () => {
           accept=".jpeg, .jpg, .png, .gif"  // 허용할 파일 확장자 설정
           onChange={handleFileChange} 
         />
-      </ProfileImgContainer>
+      </ProfileImgContainer> */}
       <UserInfoContainer>
         <TextField
           sx={{ width: "100%" }}

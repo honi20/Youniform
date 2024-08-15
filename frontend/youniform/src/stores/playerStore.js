@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { getApiClient } from "@stores/apiClient";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const usePlayerStore = create((set) => ({
   playerList: [],
@@ -33,6 +36,7 @@ const usePlayerStore = create((set) => ({
       set({ loading: false, error: err.message });
     }
   },
+  
   teamSongs: [],
   playerSongs: [],
 

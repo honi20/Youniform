@@ -5,6 +5,7 @@ import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import SettingIcon from "@assets/Header/setting.svg?react";
 import ColorBtn from "../Common/ColorBtn";
 import { clearAccessToken } from "@stores/apiClient";
+import useUserStore from "../../stores/userStore";
 
 const Head = styled.div`
   background-color: #f8f8f8;
@@ -93,6 +94,7 @@ const IconContainer = styled.div`
 `;
 
 const Header = () => {
+  const { fetchUser } = useUserStore();
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -112,9 +114,10 @@ const Header = () => {
     navigate("/login");
   };
 
-  const handleLogoutClick = () => {
-    clearAccessToken();
+  const handleLogoutClick = async () => {
+    localStorage.removeItem('accessToken');
     setIsToken(null);
+    await fetchUser();
   };
 
   useEffect(() => {
@@ -122,9 +125,17 @@ const Header = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    setIsToken(accessToken);
-  }, [setIsToken]);
+    const syncTokenWithStorage = () => {
+      const accessToken = localStorage.getItem("accessToken");
+      setIsToken(accessToken);
+    };
+
+    window.addEventListener("storage", syncTokenWithStorage);
+
+    return () => {
+      window.removeEventListener("storage", syncTokenWithStorage);
+    };
+  }, []);
 
   const renderContent = () => {
     switch (true) {

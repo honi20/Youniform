@@ -7,8 +7,8 @@ export const createApiClient = (accessToken) => {
     throw new Error("Access token is required to create an API client.");
   }
 
-  // console.log("createApiClient: API 클라이언트를 생성합니다.");
-  // console.log(API_URL);
+  console.log("createApiClient: API 클라이언트를 생성합니다.");
+  console.log(API_URL);
   return axios.create({
     baseURL: API_URL,
     headers: {
