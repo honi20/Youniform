@@ -329,7 +329,7 @@ def sendAlert(player_id):
     print("")
     # requests.get("https://youniform.site/api/alerts/player/" + str(player_id))
 
-def game_info_crawling(response, game_id):
+def game_info_crawling(response):
     try:
         soup = BeautifulSoup(response.text, "html.parser")
 
@@ -354,10 +354,8 @@ def game_info_crawling(response, game_id):
                     cleaned_text = cleaned_text.replace("-\n", " ")
                     cleaned_text = cleaned_text.replace("\n---------------------------------------", " ")
                     game_info[inning].append(cleaned_text)
-                if inning in game_info and len(game_info[inning]) > 0 and game_info[inning][0] == "경기종료":
-
-                    print(game_id + " : 경기 종료")
-                    return "경기종료"
+                # if inning in game_info and len(game_info[inning]) > 0 and game_info[inning][0] == "경기종료":
+                #     return "경기종료"
 
             return game_info
     except requests.exceptions.RequestException as e:
@@ -382,26 +380,22 @@ def player_info_crawling(response):
             index = hh[i].find('th').get_text()
             name = hh[i].find('td').find_next('td').get_text()
             home_hitter.append(name)
-            # print(str(index)+"번째 타자 "+str(name))
 
         for i in range(1, len(hp)):
             name = hp[i].find('td').get_text()
             home_pitcher.append(name)
-            # print("홈 투수 "+name)
 
         for i in range(1, len(ah)):
             index = ah[i].find('th').get_text()
             name = ah[i].find('td').find_next('td').get_text()
             away_hitter.append(name)
-            # print(str(index)+"번째 타자 "+str(name))
 
         for i in range(1, len(ap)):
             name = ap[i].find('td').get_text()
             away_pitcher.append(name)
-            # print("어웨이 투수 "+name)
 
     except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+        print(e)
 
     result = dict()
     result['home_hitter'] = home_hitter
@@ -508,7 +502,7 @@ def crawling(game_id):
             pass
 
         # 경기 정보 가져오기
-        game_info = game_info_crawling(response, game_id)
+        game_info = game_info_crawling(response)
 
         # 이닝 정보 가져오기
         inning_info = inning_info_crawling(game_info)
