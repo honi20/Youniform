@@ -153,6 +153,8 @@ const WriteDiaryView = () => {
       const fileName = parts[parts.length - 1];
       return fileName.split(".")[0];
     };
+    await document.fonts.load(`16px ${getFontName(selectedFont)}`);
+    console.log(selectedFont, getFontName(selectedFont))
     if (selectCanvas) {
       console.log(selectedFont);
       const text = new fabric.Textbox("입력하세요.", {
