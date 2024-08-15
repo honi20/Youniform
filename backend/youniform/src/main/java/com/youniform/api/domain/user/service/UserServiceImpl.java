@@ -331,6 +331,10 @@ public class UserServiceImpl implements UserService {
             chatPartRepository.save(newTeamChatPart);
         }
 
+        if (userFavoriteReq.getPlayers() == null || userFavoriteReq.getPlayers().isEmpty()) {
+            return;
+        }
+
         List<UserPlayer> currentPlayers = userPlayerRepository.findByUserId(userId);
         Set<Long> currentPlayerIds = currentPlayers.stream()
                 .map(up -> up.getUserPlayerPK().getPlayerId())
