@@ -35,6 +35,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 				))
 				.from(users)
 				.where(conditionUserId(lastUserId))
+				.where(users.id.eq(userId).not())
 				.orderBy(users.id.desc())
 				.limit(pageable.getPageSize() + 1)
 				.fetch();
