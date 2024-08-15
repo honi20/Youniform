@@ -6,7 +6,7 @@ services:
       - "8379:6379"
 
   celery_worker:
-    build: kbo
+    image: kbo
     container_name: kbo
     command: ["celery", "-A", "app", "worker", "-c", "5", "--loglevel=info", "-Q", "KBO"]
     depends_on:
