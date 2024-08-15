@@ -29,6 +29,8 @@ public class ChatMessage {
 
     private LocalDateTime messageTime;
 
+    private Type type;
+
     public void updateMessageId(Long messageId) {
         this.messageId = messageId;
     }

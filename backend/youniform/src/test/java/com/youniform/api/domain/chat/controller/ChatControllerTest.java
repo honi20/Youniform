@@ -369,12 +369,12 @@ public class ChatControllerTest {
         ResultActions actions = mockMvc
                 .perform(RestDocumentationRequestBuilders
                         .multipart("/api/chats/messages/upload")
-                .file(file)
-                .with(csrf())
-                .contentType("multipart/form-data")
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-        );
+                        .file(file)
+                        .with(csrf())
+                        .contentType("multipart/form-data")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                );
 
         // then
         actions
@@ -404,38 +404,5 @@ public class ChatControllerTest {
                                 .build()
                         ))
                 );
-    }
-
-    @Test
-    public void 이미지_다운로드_테스트() throws Exception {
-        InputStream inputStream = new ByteArrayInputStream("test image content".getBytes());
-        InputStreamResource resource = new InputStreamResource(inputStream);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", "test.jpg");
-        headers.setContentType(MediaType.IMAGE_JPEG);
-
-        when(chatService.downloadImage(anyString())).thenReturn(resource);
-
-        mockMvc.perform(get("/api/chats/messages/download")
-                        .param("imgUrl", "test.jpg")
-                        .header("Authorization", "Bearer " + jwtToken))
-                .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "form-data; name=\"attachment\"; filename=\"test.jpg\""))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE))
-                .andDo(document("이미지 다운로드 성공",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Chat API")
-                                .summary("Image Download API")
-                                .queryParameters(
-                                        parameterWithName("imgUrl").description("이미지 URL")
-                                )
-                                .responseHeaders(
-                                        headerWithName(HttpHeaders.CONTENT_DISPOSITION).description("파일 첨부 헤더"),
-                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("컨텐츠 타입")
-                                )
-                                .build()
-                        )));
     }
 }

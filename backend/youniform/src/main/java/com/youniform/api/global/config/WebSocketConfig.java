@@ -44,6 +44,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     @Override
                     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
                         String token = request.getHeaders().getFirst("Authorization");
+
                         if (token != null && token.startsWith("Bearer ")) {
                             token = token.substring(7);
                             Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
@@ -54,20 +55,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         return null; // 인증 실패 시 연결 차단
                     }
                 });
-//                .setHandshakeHandler(new DefaultHandshakeHandler() {
-//                    @Override
-//                    protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-//                        // 토큰에서 userId 추출
-//
-//                        try {
-//                            Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-//                            return userId::toString;  // Principal로 반환
-//                        } catch (NumberFormatException e) {
-//                            log.error("Invalid userId format: {}", SecurityContextHolder.getContext().getAuthentication().getCredentials(), e);
-//                            throw new IllegalArgumentException("Invalid userId format");
-//                        }
-//                    }
-//                })
 //                .withSockJS();
 
         log.info("WebSocketConfig registerStompEndpoints");
