@@ -142,7 +142,7 @@ const WritePostView = () => {
           tag.length > 10 ? `${tag.slice(2, 12)}` : tag.slice(2)
         )
       ),
-    ];
+    ].slice(0, 10); // 태그 개수를 10개로 제한
     setTags(uniqueTags);
     console.log("해쉬태그", uniqueTags);
   }, [content]);

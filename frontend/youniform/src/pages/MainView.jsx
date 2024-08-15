@@ -17,8 +17,10 @@ const Div = styled.div`
   align-items: center;
   /* margin-top: 50px; */
   width: 100%;
-  height: calc(100vh - 120px); // navbar + header
+  height: calc(100vh - 140px); // navbar + header
   background-color: #f8f8f8;
+  /* border: 1px solid black; */
+  overflow-y: auto;
 `;
 
 const Container = styled.div`

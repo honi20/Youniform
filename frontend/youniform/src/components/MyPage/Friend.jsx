@@ -34,6 +34,10 @@ const Nickname = styled.h3`
   ${Font.Medium};
   /* border: 1px solid black; */
 `;
+const TeamImg = styled.img`
+  /* border: 1px solid black; */
+  height: 20px;
+`
 const Introduce = styled.div`
   ${Font.Small};
   color: #6c727f;
@@ -77,12 +81,16 @@ const Friend = ({ friend, setSelectedFriend }) => {
     setSelectedFriend(friend);
     setModalOpen(true);
   };
+  console.log(friend)
   return (
     <Container>
       <div style={{ display: "flex", flex: "1" }} onClick={handleProfileClick}>
         <ProfileImg src={friend.imgUrl} alt="profile image" />
         <ProfileInfo>
+          <div style={{display:"flex", gap: "2px", alignItems: "center"}}>
           <Nickname>{friend.nickname}</Nickname>
+          <TeamImg src={friend.teamUrl}/>
+          </div>
           <Introduce>{friend.introduce}</Introduce>
         </ProfileInfo>
       </div>
