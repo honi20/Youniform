@@ -1,5 +1,5 @@
 -- team
-INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name, imgUrl)
+INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name, img_url)
 VALUES (1000, '2022-04-18', 12, 1, 11, 91.7, '고척스카이돔', '서울', '최강 몬스터즈',
         'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/monsters.png');
 
@@ -219,7 +219,7 @@ VALUES ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/monday.png', 'STICKER
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/ok.png', 'STICKER', 'CUTE'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/rainny.png', 'STICKER', 'CUTE'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/smile.png', 'STICKER', 'CUTE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/snowy.png	', 'STICKER', 'CUTE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/snowy.png   ', 'STICKER', 'CUTE'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/star1.png', 'STICKER', 'CUTE'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/star2.png', 'STICKER', 'CUTE'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/cute/star3.png', 'STICKER', 'CUTE'),
@@ -333,17 +333,6 @@ VALUES ('https://dsfjel9nvktdp.cloudfront.net/sticker/letter/circle_1.png', 'STI
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/letter/heart_34.png', 'STICKER', 'LETTER'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/letter/heart_35.png', 'STICKER', 'LETTER'),
        ('https://dsfjel9nvktdp.cloudfront.net/sticker/letter/heart_36.png', 'STICKER', 'LETTER');
-
-INSERT INTO diary_resource (img_url, type, category)
-VALUES ('https://dsfjel9nvktdp.cloudfront.net/template/diary/monsters.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/kia.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/samsung.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/doosan.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/hanhwa.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/kt.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/nc.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/lotte.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/ssg.png', 'TEMPLATE', 'NONE');
 
 
 -- diary resource
@@ -489,15 +478,14 @@ VALUES ('https://dsfjel9nvktdp.cloudfront.net/sticker/letter/retro_1.png', 'STIC
 
 -- diary template
 INSERT INTO diary_resource (img_url, type, category)
-VALUES ('https://dsfjel9nvktdp.cloudfront.net/template/diary/monsters.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/kia.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/samsung.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/doosan.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/hanhwa.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/kt.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/nc.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/lotte.png', 'TEMPLATE', 'NONE'),
-       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/ssg.png', 'TEMPLATE', 'NONE'),
+VALUES ('https://dsfjel9nvktdp.cloudfront.net/template/diary/monsters.png', 'THEME', 'NONE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/kia.png', 'THEME', 'NONE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/samsung.png', 'THEME', 'NONE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/doosan.png', 'THEME', 'NONE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/hanhwa.png', 'THEME', 'NONE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/kt.png', 'THEME', 'NONE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/nc.png', 'THEME', 'NONE'),
+       ('https://dsfjel9nvktdp.cloudfront.net/template/diary/lotte.png', 'THEME', 'NONE'),
        ('https://dsfjel9nvktdp.cloudfront.net/template/diary/ssg.png', 'THEME', 'NONE'),
        ('https://dsfjel9nvktdp.cloudfront.net/template/diary/lg.png', 'THEME', 'NONE'),
        ('https://dsfjel9nvktdp.cloudfront.net/template/diary/kiwoom.png', 'THEME', 'NONE');
