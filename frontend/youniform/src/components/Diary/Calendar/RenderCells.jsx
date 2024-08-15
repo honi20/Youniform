@@ -45,7 +45,7 @@ const Cell = styled.div`
   }
 `;
 
-const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
+const RenderCells = ({ user, currentMonth, selectedDate, onDateClick }) => {
   const { fetchDiary, monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
   const navigate = useNavigate();
   const monthStart = startOfMonth(currentMonth);
@@ -80,10 +80,16 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
     return null;
   };
 
-  const handleDateClick = (day, stampSrc) => {
+  const handleDateClick = (day, stampSrc, nickname) => {
     const formatDate = (day) => format(day, "yyyy-MM-dd");
     const formattedDate = formatDate(day);
     console.log(formattedDate);
+    // 친구 다이어리 클릭했을 때
+    if (user) {
+      return;
+    }
+
+    // 내 다이어리 클릭했을 때
     if (!stampSrc) {
       navigate(`/diary/write/${formattedDate}`);
     } else {

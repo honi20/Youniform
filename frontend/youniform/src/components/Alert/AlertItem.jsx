@@ -154,7 +154,7 @@ const DropdownItem = styled.div`
 `;
 
 const AlertItem = ({ alert, checkAlert, openDropdownAlertId, onToggleDropdown }) => {
-  const { markAlertAsRead, deleteAlert } = useAlertStore();
+  const { fetchAlerts, markAlertAsRead, deleteAlert } = useAlertStore();
   
   let alertMessage = "";
 

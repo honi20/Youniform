@@ -41,7 +41,6 @@ const DiaryHomeView = () => {
 
   const handleUserClick = (user) => {
     setSelectedUser(user);
-    console.log(user);
     setCurrentMonth(new Date()); // 현재 월로 설정
   };
 

@@ -6,6 +6,7 @@ import SettingIcon from "@assets/Header/setting.svg?react";
 import ColorBtn from "../Common/ColorBtn";
 import { clearAccessToken } from "@stores/apiClient";
 import useUserStore from "../../stores/userStore";
+import useAlertStore from "../../stores/alertStore";
 
 const Head = styled.div`
   background-color: #f8f8f8;
@@ -52,7 +53,7 @@ const backSvg = (theme) => {
   );
 };
 
-const alarmSvg = (isAlarm, onClick) => {
+const alarmSvg = (hasUnreadAlert, onClick) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +79,7 @@ const alarmSvg = (isAlarm, onClick) => {
         cx="21.25"
         cy="8.75"
         r="2.5"
-        fill={isAlarm ? "#ff1744" : "#848484"}
+        fill={hasUnreadAlert === true ? "#ff1744" : "#848484"}
       />
     </svg>
   );
@@ -95,6 +96,7 @@ const IconContainer = styled.div`
 
 const Header = () => {
   const { fetchUser } = useUserStore();
+  const { alerts, fetchAlerts } = useAlertStore();
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -130,6 +132,11 @@ const Header = () => {
       setIsToken(accessToken);
     };
 
+    // 알림 받아오기
+    if (isToken) {
+      fetchAlerts();
+    }
+
     window.addEventListener("storage", syncTokenWithStorage);
 
     return () => {
@@ -162,13 +169,28 @@ const Header = () => {
           </InnerHead>
         );
       case currentPath === "/my-page":
+        let hasUnreadAlert = false;
+        if (isToken) {
+          hasUnreadAlert = alerts.some(alert => !alert.isRead);
+        }
         return (
-          <InnerHead>
-            <IconContainer>
-              {alarmSvg(isAlarm, () => navigate("/alert"))}
-              <SettingIcon onClick={() => navigate("/setting")} />
-            </IconContainer>
-          </InnerHead>
+          <>
+          {isToken ? (
+            <InnerHead>
+              <IconContainer>
+                {alarmSvg(hasUnreadAlert, () => navigate("/alert"))}
+                <SettingIcon onClick={() => navigate("/setting")} />
+              </IconContainer>
+            </InnerHead>
+            ) : (
+            <InnerHead>
+              <IconContainer>
+                {alarmSvg(hasUnreadAlert, () => navigate("/alert"))}
+                <SettingIcon onClick={() => navigate("/setting")} />
+              </IconContainer>
+            </InnerHead>
+          )}
+          </>
         );
       case currentPath === "/setting":
         return (
