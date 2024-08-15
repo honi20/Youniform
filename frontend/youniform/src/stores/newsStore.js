@@ -14,18 +14,13 @@ const useNewsStore = create((set, get) => ({
     if (!hasMore) return;
     
     console.log("뉴스를 불러옵니다.");
+    const apiClient = getApiClient()
     try {
       const newsPromises = playerList.map((player) => {
-        return axios
-          .get(`https://openapi.naver.com/v1/search/news.json`, {
-            headers: {
-              "X-Naver-Client-Id": NAVER_CLIENT_ID,
-              "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
-            },
+        return apiClient
+          .get(`https://youniform.site/api/news?`, {
             params: {
               query: player.name,
-              display: 10,
-              start: (page - 1) * 10 + 1,
             },
           })
           .then((response) => (
@@ -72,7 +67,7 @@ const useNewsStore = create((set, get) => ({
     try {
       const response = await apiClient(`https://youniform.site/api/news?`, {
         params: {
-          query: team.name,
+          query: "최강몬스터즈",
         },
       });
       console.log(response.data)

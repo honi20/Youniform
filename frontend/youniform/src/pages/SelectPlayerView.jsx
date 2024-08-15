@@ -201,7 +201,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
       try {
         const res = await axios({
           method: "get",
-          url: `${API_URL}/players/list/1000`, // teanId = 최강야구여서 1000번으로 고정
+          url: `${API_URL}/players/list/1000`, // teamId = 최강야구여서 1000번으로 고정
         });
 
         const { body, header } = res.data;
@@ -279,7 +279,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
     try {
       const res = await apiClient.patch(`users/favorite`, {
         teamId: 1000,
-        players: selectedPlayers,
+        players: selectedPlayers.length == 1 && selectedPlayers[0] == 0 ? [] : selectedPlayers,
       });
       console.log(res.data);
       const { body, header } = res.data;

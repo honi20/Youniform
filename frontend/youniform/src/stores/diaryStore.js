@@ -166,7 +166,7 @@ const useDiaryStore = create((set) => ({
     try {
       const res = await apiClient.get(`/diaries/list`, {
         params: {
-          lastDiaryDate: "2024-08-09",
+          lastDiaryDate: "2024-08-01",
           sort: "diaryDate",
         },
       });
