@@ -78,8 +78,8 @@ public class UserServiceImpl implements UserService {
 
     private final ChatPartRepository chatPartRepository;
 
-    @Value("${BUCKET_URL}")
-    private String bucketUrl;
+    @Value("${CLOUD_FRONT}")
+    private String cloudFrontUrl;
 
     @Transactional
     @Override
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setTeam("MONSTERS");
-        Users users = userRepository.save(user.toEntity(uuid, bucketUrl));
+        Users users = userRepository.save(user.toEntity(uuid, cloudFrontUrl));
 
         if(user.getPlayers() != null) {
             user.getPlayers().forEach(playerId -> {
@@ -198,17 +198,12 @@ public class UserServiceImpl implements UserService {
         user.updateIntroduce(req.getIntroduce());
         user.updateNickname(req.getNickname());
 
-        if (!file.isEmpty()) {
-            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketUrl + "profile/no_profile.png")) {
+        if (file != null && !file.isEmpty()) {
+            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(cloudFrontUrl + "profile/no_profile.png")) {
                 s3Service.fileDelete(user.getProfileUrl());
             }
             String imgUrl = s3Service.upload(file, "profile");
             user.updateProfileUrl(imgUrl);
-        } else {
-            if (!user.getProfileUrl().isEmpty() && !user.getProfileUrl().equals(bucketUrl + "profile/no_profile.png")) {
-                s3Service.fileDelete(user.getProfileUrl());
-            }
-            user.updateProfileUrl(bucketUrl + "profile/no_profile.png");
         }
 
         userRepository.save(user);
