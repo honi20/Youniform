@@ -9,9 +9,8 @@ const NextStepBtn = styled.div`
   border-radius: 20px;
   background-color: #262f66;
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;      /* 수평 중앙 정렬 */
+  line-height: 8vh;        /* 높이와 동일하게 설정하여 수직 중앙 정렬 */
   font-size: 1.3rem;
   font-weight: 600;
   cursor: pointer;
@@ -59,7 +58,9 @@ const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
 
   return (
     <NextStepBtn onClick={handleNextStep}>
-      {step === '4' ? "홈으로" : "다음 단계로"}
+      <span>
+        {step === '4' ? "홈으로" : "다음 단계로"}
+      </span>
     </NextStepBtn>
   );
 };

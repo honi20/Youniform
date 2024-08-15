@@ -108,7 +108,7 @@ const Btn = styled.div`
 const ShareModal = ({ diary, isOpen, onClose }) => {
   if (!isOpen) return null;
   const [copied, setCopied] = useState(false);
-
+  const API_KEY = import.meta.env.VITE_KAKAO_API_KEY;
   const copyToClipboard = () => {
     const currentUrl = window.location.href;
     navigator.clipboard
@@ -124,7 +124,7 @@ const ShareModal = ({ diary, isOpen, onClose }) => {
 
   useEffect(() => {
     Kakao.cleanup();
-    Kakao.init("effa2e35c7eae72bf635ecdf75d2e618");
+    Kakao.init(API_KEY);
     console.log(Kakao.isInitialized());
   }, []);
 
@@ -134,9 +134,9 @@ const ShareModal = ({ diary, isOpen, onClose }) => {
     Kakao.Share.sendDefault({
       objectType: "feed",
       content: {
-        title: diary.nickname + "의 다이어리를 구경해봐~",
+        title: diary.diaryDate + ", 오늘의 야구 기록",
         description:
-          '최애 선수부터 현장 기록까지, All-in-One 야구 다이어리 서비스 "유니폼"',
+          '최애 선수부터 현장 기록까지, All-in-One 야구 다이어리 "유니폼"',
         imageUrl: diary.diaryImgUrl,
         link: {
           mobileWebUrl: currentUrl,
@@ -144,22 +144,11 @@ const ShareModal = ({ diary, isOpen, onClose }) => {
         },
       },
       itemContent: {
-        profileText: "Kakao",
+        profileText: diary.nickname,
         profileImageUrl:
-          "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
+          diary.profileUrl,
         titleImageUrl:
           "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
-        titleImageText: "Cheese cake",
-        titleImageCategory: "Cake",
-        items: [
-          { item: "Cake1", itemOp: "1000원" },
-          { item: "Cake2", itemOp: "2000원" },
-          { item: "Cake3", itemOp: "3000원" },
-          { item: "Cake4", itemOp: "4000원" },
-          { item: "Cake5", itemOp: "5000원" },
-        ],
-        sum: "총 결제금액",
-        sumOp: "15000원",
       },
       // social: { likeCount: 10, commentCount: 20 },
       buttons: [
