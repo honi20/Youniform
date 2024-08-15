@@ -102,7 +102,11 @@ const DiaryComp = ({ state, diary }) => {
           }}
         />
       )}
-      <ShareModal diary={diary} isOpen={isShareModalOpen} onClose={closeShareModal} />
+      <ShareModal
+        diary={diary}
+        isOpen={isShareModalOpen}
+        onClose={closeShareModal}
+      />
     </St.Diary>
   );
 };

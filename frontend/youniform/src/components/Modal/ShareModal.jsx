@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import React, { useState } from "react";
+import styled, { keyframes, css } from "styled-components";
 import ShareIcon from "@assets/Modal/ShareIcon.svg?react";
 import KakaoLogo from "@assets/Modal/KakaoLogo.png";
 import X from "@assets/Modal/XLogo.png";
 import { TwitterShareButton } from "react-share";
 
 const ModalBackdrop = styled.div`
-  position: fixed; // Changed from absolute to fixed
-  top: 0; // Make sure it covers the whole screen
-  /* left: 0; // Set to top-left corner */
+  position: fixed;
+  top: 0;
   width: 100%;
   left: 50%;
   transform: translate(-50%, 0);
-
   max-width: 400px;
-  height: 100%; // Make sure it covers the whole screen
+  height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
@@ -63,7 +61,7 @@ const animateBackground = keyframes`
     background-color: white;
   }
   100% {
-    background-color: #4caf50;
+    background-color: #c6c6c6;
   }
 `;
 
@@ -78,9 +76,11 @@ const IconCircle = styled.div`
   overflow: hidden;
   cursor: pointer;
   background-color: ${(props) => (props.$copied ? "#120078" : "white")};
-  animation: ${(props) =>
-    props.$copied && `${animateBackground} 0.5s forwards`};
-
+  ${(props) =>
+    props.$copied &&
+    css`
+      animation: ${animateBackground} 0.5s forwards;
+    `}
   img {
     width: 100%;
     height: 100%;
@@ -107,8 +107,10 @@ const Btn = styled.div`
 
 const ShareModal = ({ diary, isOpen, onClose }) => {
   if (!isOpen) return null;
+
   const [copied, setCopied] = useState(false);
   const API_KEY = import.meta.env.VITE_KAKAO_API_KEY;
+
   const copyToClipboard = () => {
     const currentUrl = window.location.href;
     navigator.clipboard
@@ -122,13 +124,10 @@ const ShareModal = ({ diary, isOpen, onClose }) => {
       });
   };
 
-  useEffect(() => {
+  const shareToKakao = async () => {
     Kakao.cleanup();
     Kakao.init(API_KEY);
-    console.log(Kakao.isInitialized());
-  }, []);
 
-  const shareToKakao = async () => {
     const currentUrl = window.location.href;
 
     Kakao.Share.sendDefault({
@@ -150,7 +149,6 @@ const ShareModal = ({ diary, isOpen, onClose }) => {
         titleImageUrl:
           "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
       },
-      // social: { likeCount: 10, commentCount: 20 },
       buttons: [
         {
           title: "자세히 보기",
@@ -159,16 +157,10 @@ const ShareModal = ({ diary, isOpen, onClose }) => {
             webUrl: currentUrl,
           },
         },
-        // {
-        //   title: '앱으로 이동',
-        //   link: {
-        //     mobileWebUrl: 'https://developers.kakao.com',
-        //     webUrl: 'https://developers.kakao.com',
-        //   },
-        // },
       ],
     });
   };
+
   return (
     <ModalBackdrop>
       <Container>

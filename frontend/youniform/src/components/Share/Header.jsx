@@ -93,7 +93,7 @@ const IconContainer = styled.div`
 `;
 
 const Header = () => {
-  const { fetchUser } = useUserStore();
+  const { clearUser } = useUserStore();
   const { alerts, fetchAlerts } = useAlertStore();
   const theme = useTheme();
   const location = useLocation();
@@ -117,7 +117,7 @@ const Header = () => {
   const handleLogoutClick = async () => {
     localStorage.removeItem('accessToken');
     setIsToken(null);
-    await fetchUser();
+    await clearUser();
     navigate("/");
   };
 
