@@ -63,18 +63,16 @@ const LogoWithTitle = ({ state }) => {
   }
 
   return (
-    <form>
-      <ChangePassword>
-        <LoginLogo>
-          <SportsBaseballIcon />
-          <span>Youniform</span>
-        </LoginLogo>
-        <ChangePasswordContainer>
-          <Title>{currentState.title}</Title>
-          <SubTitle>{currentState.subtitle}</SubTitle>
-        </ChangePasswordContainer>
-      </ChangePassword>
-    </form>
+    <ChangePassword>
+      <LoginLogo>
+        <SportsBaseballIcon />
+        <span>Youniform</span>
+      </LoginLogo>
+      <ChangePasswordContainer>
+        <Title>{currentState.title}</Title>
+        <SubTitle>{currentState.subtitle}</SubTitle>
+      </ChangePasswordContainer>
+    </ChangePassword>
   );
 };
 

@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import LogoWithTitle from "./Share/LogoWithTitle";
+import LogoWithTitle from "@components/Setting/Share/LogoWithTitle";
 import styled from "styled-components";
 import { styled as muiStyled } from "@mui/material/styles";
 import { Margin, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -18,12 +18,14 @@ import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import useUserStore from "@stores/userStore";
 import BasicModal from "@components/Modal/BasicModal";
 import StatusMessageForm from "@components/SignUp/StatusMessageForm";
+import SaveChangesButton from "@components/Setting/Share/SaveChangesButton";
 
 const ChangePasswordContainer = styled.div`
   height: calc(100% - 140px);
   display: flex;
   flex-direction: column;
-  width: 100%;
+  margin: 0 auto;
+  width: 80%;
   padding: 10% 0;
   gap: 5%;
   align-items: center;
@@ -34,6 +36,7 @@ const ChangePasswordView = () => {
   const navigate = useNavigate();
   const { changePassword } = useUserStore();
 
+  const [exPassword, setExPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -41,6 +44,7 @@ const ChangePasswordView = () => {
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [isPwVerified, setIsPwVerified] = useState(false);
+  const [showExPassword, setShowExPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
   
@@ -84,6 +88,9 @@ const ChangePasswordView = () => {
       case "confirmPw":
         setConfirmPassword(value);
         break;
+      case "exPassword":
+        setExPassword(value);
+        break;
     }
   };
 
@@ -117,6 +124,9 @@ const ChangePasswordView = () => {
       case "showConfirmPw":
         setShowConfirmPw(!showConfirmPw);
         break;
+      case "showExPassword":
+        setShowExPassword(!showExPassword);
+        break;
     }
   };
 
@@ -135,10 +145,45 @@ const ChangePasswordView = () => {
     }
   };
 
+  const handleClickSave = () => {
+    if (isPasswordMatch && isPasswordMatch) {
+      if (exPassword.length === 0) {
+        
+      }
+    }
+  };
+
   return (
+    <form>
     <ChangePasswordContainer>
       <LogoWithTitle state="ChangePassword" />
-      <FormControl sx={{ width: "80%" }} variant="outlined">
+      <FormControl sx={{ width: "100%" }} variant="outlined">
+        <TextField
+          autoComplete="off"
+          label="기존 비밀번호"
+          variant="outlined"
+          type={showExPassword ? "text" : "password"}
+          value={exPassword}
+          onChange={handlePwChange("exPassword")}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => handleClickShowPassword("showExPassword")}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                  sx={{ paddingRight: "12px" }}
+                >
+                  {showExPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          fullWidth
+        />
+      </FormControl>
+      <FormControl sx={{ width: "100%" }} variant="outlined">
         <TextField
           autoComplete="off"
           label="새 비밀번호"
@@ -166,35 +211,7 @@ const ChangePasswordView = () => {
           fullWidth
         />
       </FormControl>
-      <FormControl sx={{ width: "80%" }} variant="outlined">
-        <TextField
-          autoComplete="off"
-          label="새 비밀번호"
-          variant="outlined"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={handlePwChange("password")}
-          error={passwordError.length > 0}
-          helperText={passwordError}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => handleClickShowPassword("showPassword")}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                  sx={{ paddingRight: "12px" }}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          fullWidth
-        />
-      </FormControl>
-      <FormControl sx={{ width: "80%" }} variant="outlined">
+      <FormControl sx={{ width: "100%" }} variant="outlined">
         <TextField
           autoComplete="off"
           label="새 비밀번호 확인"
@@ -220,7 +237,20 @@ const ChangePasswordView = () => {
           fullWidth
         />
       </FormControl>
+      {password.length > 0 &&
+        confirmPassword.length > 0 &&
+        isPwVerified &&
+        !isPasswordMatch && (
+          <StatusMessageForm
+            style={{ width: "100%", margin: "0 auto",}}
+            statusMsg="비밀번호 정보가 일치하지 않습니다."
+          />
+        )}
+      <SaveChangesButton 
+      onClick={handleClickSave}
+      type="변경" />
     </ChangePasswordContainer>
+    </form>
   );
 };
 

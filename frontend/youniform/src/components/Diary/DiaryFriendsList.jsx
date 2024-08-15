@@ -119,7 +119,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
       setSelectedUserIndex(index);
       setSelectedUser(diaryFriends[index].friendId);
       if (onUserClick) {
-        // onUserClick(diaryFriends[index]);
+        onUserClick(diaryFriends[index]);
       }
       await fetchFriendsDiaries(diaryFriends[index].friendId, formattedDate);
     } else if (type === "self") {
@@ -127,7 +127,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
       setSelectedUserIndex(null);
       setSelectedUser(null);
       if (onUserClick) {
-        // onUserClick();
+        onUserClick(null);
       }
       await fetchMonthlyDiaries(formattedDate);
     }

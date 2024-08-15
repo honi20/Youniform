@@ -25,7 +25,6 @@ const CalendarBox = styled.div`
 
 const Calendar = ({ user, currentMonth, setCurrentMonth }) => {
   const { selectedUser, fetchFriendsDiaries, fetchMonthlyDiaries } = useDiaryStore();
-  // const [curMonth, setCurMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
@@ -40,6 +39,9 @@ const Calendar = ({ user, currentMonth, setCurrentMonth }) => {
       fetchMonthlyDiaries(formattedDate);
     }
   }, [currentMonth, selectedUser]);
+
+  useEffect(() => {
+  }, []);
 
   const prevMonth = () => {
     console.log(`before month: ${currentMonth}`);
