@@ -37,8 +37,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						post.user.team.imgUrl.as("teamUrl"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
@@ -78,8 +78,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						post.user.team.imgUrl.as("teamUrl"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
@@ -120,8 +120,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						post.user.team.imgUrl.as("teamUrl"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
@@ -162,8 +162,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						post.user.team.imgUrl.as("teamUrl"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
@@ -203,8 +203,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						post.user.team.imgUrl.as("teamUrl"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
