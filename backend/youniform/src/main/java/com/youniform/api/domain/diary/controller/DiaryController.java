@@ -51,7 +51,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable) throws JsonProcessingException {
+	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 100) Pageable pageable) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryListRes response = diaryService.findMyDiaries(userId, diaryListReq, pageable);
@@ -60,7 +60,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/list/{userId}")
-	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userId") String friendUuid) throws JsonProcessingException {
+	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 100) Pageable pageable, @PathVariable("userId") String friendUuid) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryListRes response = diaryService.findDiaries(userId, friendUuid, diaryListReq, pageable);
