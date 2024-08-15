@@ -24,6 +24,7 @@ import useResourceStore from "@stores/resoureStore";
 import CategoryComp from "../../components/Diary/Write/CategoryComp";
 import ImageComp from "../../components/Diary/Write/ImageComp";
 import ThemeComp from "../../components/Diary/Write/ThemeComp";
+import ExampleModal from "../../components/Diary/Write/ExampleModal";
 // import html2canvas from "html2canvas"
 const ToggleBtn = styled.div`
   /* width: 50%; */
@@ -49,7 +50,6 @@ const WriteDiaryView = () => {
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
   const [isDecorated, setIsDecorated] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [date, setDate] = useState(null);
   const [update, setUpdate] = useState(false);
@@ -67,6 +67,7 @@ const WriteDiaryView = () => {
     }));
   const { stampList, selectedCategory, selectedColor } = useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
+  const [isExampleOn, setIsExampleOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
   // const fileInputRef = useRef(null);
   useEffect(() => {
@@ -426,7 +427,7 @@ const WriteDiaryView = () => {
               </St.Btn>
               <St.Btn
                 $decorated={isDecorated}
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsExampleOn((prev) => !prev)}
               >
                 <St.IconContainer>
                   <ExampleIcon />
@@ -477,6 +478,10 @@ const WriteDiaryView = () => {
           onClose={() => setIsSaveModalOpen(false)}
           onButtonClick={handleAfterSave}
         />
+        {isExampleOn && <ExampleModal
+          isOn={isExampleOn}
+          setIsOn={setIsExampleOn}
+/>}
       </St.Div>
       
     </>
