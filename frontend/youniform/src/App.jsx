@@ -63,6 +63,7 @@ import SocialSignUpView from "./pages/SocialSignUpView";
 import SocialStepOneForm from "./components/Social/Step1/SocialStepOneForm";
 import SocialStepTwoForm from "./components/Social/Step2/SocialStepTwoForm";
 import LanDingView from './pages/LandingView';
+import AuthError from "./components/Social/AuthError";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -124,6 +125,7 @@ function ContentWithHeader({ contentHeight }) {
           <Route path="/reset-password/:uuid" element={<ResetPasswordView />} />
           <Route exact path="/signup/info" element={<AuthLogin />} />
           <Route exact path="/signup/exist" element={<AuthLoginExsist />} />
+          <Route exact path="/signup/error" element={<AuthError />} />
           {/* SignUp */}
           <Route path="/sign-up/*" element={<SignUpView />}>
             <Route index element={<StepOneForm />} />
