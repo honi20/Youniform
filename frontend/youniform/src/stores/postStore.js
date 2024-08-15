@@ -164,7 +164,6 @@ const usePostStore = create((set) => ({
     try {
       const res = await apiClient.delete(`/comments/${commentId}`);
       console.log(res.data.header.message);
-      console.log(res.data.body);
       set((state) => {
         const postComments = state.comments[postId] || [];
         console.log(postComments);

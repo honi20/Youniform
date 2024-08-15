@@ -4,7 +4,8 @@ import SelectPlayerView from "@pages/SelectPlayerView";
 import NextStepButton from "../Step1/NextStepButton";
 
 const StepThree = styled.div`
-  height: 100%;
+  height: calc(120vh);
+  /* border: 5px solid red; */
 `;
 
 const EmptyBox = styled.div`
