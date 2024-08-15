@@ -24,10 +24,11 @@ const Header = styled.div`
     font-size: 2rem;
     font-weight: 400;
     letter-spacing: -3.5px;
+    margin-right: 5px;
   }
   & p {
     font-size: 1.5rem;
-    margin-left: 5px;
+    /* margin-left: 5px; */
     -webkit-text-stroke-width: 0.7px;
     -webkit-text-stroke-color: var(--Schemes-On-Primary, white);
 
@@ -62,10 +63,13 @@ const FooterWrapper = styled.div`
   /* border: 1px solid red; */
 `;
 const InfoComp = ({ player }) => {
+  console.log('test', player)
   return (
     <>
       {player && (
         <InfoContainer>
+          {player.backNum ? 
+          <>
           <Header>
             <h1>{player.backNum}</h1>
             <p>{player.name}</p>
@@ -103,6 +107,45 @@ const InfoComp = ({ player }) => {
               ) : null
             )}
           </Footer>
+          </>
+          :<>
+          <Header>
+            <p> {player.name}</p>
+          </Header>
+          <Content>
+            <div>{player.foundation}</div>
+            <div>
+              {player.homeGround}
+            </div>
+            <div>
+              {player.hometown}
+              </div>
+          </Content>
+          <Footer>
+            {Object.entries({
+              
+              순위: player.rank,
+              승: player.win,
+              승률: player.winningRate,
+              경기: player.matchCount,
+          
+            }).map(([label, value]) =>
+              value !== null ? (
+                <FooterWrapper key={label}>
+                  <HeartSvg />
+                  <div
+                    key={label}
+                    style={{
+                      marginLeft: "10px",
+                    }}
+                  >
+                    {label} {value}
+                  </div>
+                </FooterWrapper>
+              ) : null
+            )}
+          </Footer>
+          </>}
         </InfoContainer>
       )}
     </>

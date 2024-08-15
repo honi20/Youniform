@@ -4,7 +4,7 @@ import * as Font from "@/typography";
 import ProfileModal from "@components/Modal/ProfileModal";
 import { getApiClient } from "@stores/apiClient";
 import Loading from "@components/Share/Loading";
-
+import parse from "html-react-parser";
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
@@ -257,6 +257,12 @@ const PostDetailView = () => {
         break;
     }
   };
+  const parseText = (text) => {
+    // 줄바꿈을 <br /> 태그로 변환
+    const formattedText = text.replace(/\n/g, "<br />");
+    // HTML을 JSX로 변환
+    return parse(formattedText);
+  };
   return (
     <>
       {post ? (
@@ -322,12 +328,7 @@ const PostDetailView = () => {
               {post.imageUrl && (
                 <img src={post.imageUrl} alt={post.postId}></img>
               )}
-              {htmlContent.split("\n").map((line, index) => (
-                <React.Fragment key={index}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))}
+              {parseText(post.contents)}
             </div>
             <TagContainer>
               {post &&

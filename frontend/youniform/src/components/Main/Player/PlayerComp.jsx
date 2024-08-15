@@ -48,6 +48,13 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
       setIsOn(isOn);
     }
   };
+  const handleSong = async () => {
+    console.log(player)
+    if (player.foundation){
+      navigate(`/song/team/1000`)
+    } else
+    navigate(`/song/player/${player.playerId}`)
+  }
   // 선정한 플레이어 개수에 따라서 folder 개수 달라져야함
   const folderTop = (count) => {
     return (
@@ -141,7 +148,7 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
           </St.SwitchContainer>
         </St.BtnContainer>
       </St.Container>
-      <St.Container onClick={() => navigate(`/song/player/${player.playerId}`)}>
+      <St.Container onClick={handleSong}>
         <St.TextContainer>
           <St.Title>응원가 & 등장곡</St.Title>
           <St.Description>최애의 응원가와 등장곡을 들어봅시다!</St.Description>

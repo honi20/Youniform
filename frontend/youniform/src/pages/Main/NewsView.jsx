@@ -98,37 +98,45 @@ const Footer = styled.div`
 `;
 const NewsView = () => {
   const { playerId } = useParams();
-  const { playerList, fetchPlayerList } = usePlayerStore();
+  const { playerList, fetchPlayerList, team, fetchTeamList } = usePlayerStore();
   const [newsList, setNewsList] = useState([]);
   const [tags, setTags] = useState(["All"]);
   const [selectedTagId, setSelectedTagId] = useState(playerId || 0);
-  const { news, fetchTotalNews, getTotalNews, getPlayerNews } = useNewsStore();
+  const { news, fetchTotalNews, getTotalNews, getPlayerNews, fetchNews } = useNewsStore();
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(null);
   useEffect(() => {
     const loadPlayerList = async () => {
-      if (!playerList || playerList.length == 0) {
+      if ((!playerList || playerList.length == 0) && (!team || team.length == 0)) {
         await fetchPlayerList();
-      }
+        await fetchTeamList();
+      };
+      if (playerList.length != 0){
       await fetchTotalNews(playerList);
+      }
+      fetchNews(team)
       // console.log(news);
     };
     loadPlayerList();
-  }, [playerList, fetchPlayerList, fetchTotalNews]);
+  }, [playerList, fetchPlayerList, fetchTotalNews, fetchNews, fetchTeamList]);
 
   useEffect(() => {
     if (playerList && playerList.length > 0) {
       setTags([
-        { id: 0, name: "All" },
+        { id: 0, name: team.name },
         ...playerList.map((player) => ({
           id: player.playerId,
           name: player.name,
         })),
       ]);
+    } else {
+      setTags([
+        { id: 0, name: team.name },
+      ]);
     }
-  }, [playerList]);
+  }, [playerList, team]);
 
   useEffect(() => {
     if (selectedTagId === 0) {

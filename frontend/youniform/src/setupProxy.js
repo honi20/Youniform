@@ -1,11 +1,12 @@
-// const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-// module.exports = (app) => {
-//   app.use(
-//     "/ws",
-//     createProxyMiddleware("/api", {
-//       target: "https://openapi.naver.com",
-//       changeOrigin: true,
-//     })
-//   );
-// };
+module.exports = (app) => {
+  app.use(
+    "/ws",
+    createProxyMiddleware("/api", {
+      target: "https://openapi.naver.com",
+      changeOrigin: true,
+    })
+    
+  );
+};

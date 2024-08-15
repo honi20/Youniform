@@ -23,35 +23,36 @@ const SongContainer = styled.div`
   font-style: normal;
   font-weight: 600;
 `;
-const ExpandRightSvg = () => {
-  const theme = useTheme();
-  const color = theme.primary;
-  return (
-    <svg
-      width="21"
-      height="24"
-      viewBox="0 0 21 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M8.25197 6L13.2314 12L8.25197 18"
-        stroke={color}
-        strokeWidth="2"
-      />
-    </svg>
-  );
-};
+
 const TeamSongComp = ({ songs }) => {
+  const theme = useTheme()
+  const ExpandRightSvg = () => {
+    const color = theme.primary;
+    return (
+      <svg
+        width="21"
+        height="24"
+        viewBox="0 0 21 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M8.25197 6L13.2314 12L8.25197 18"
+          stroke={color}
+          strokeWidth="2"
+        />
+      </svg>
+    );
+  };
   const navigate = useNavigate();
   const goToSongPage = (id) => {
-    navigate(`/team-song/${id}`);
+    navigate(`/song/team-song/${id}`);
   };
   return (
     <>
       <SongsWrapper>
         {songs.map((song) => (
-          <SongContainer key={song.id} onClick={() => goToSongPage(song.id)}>
+          <SongContainer key={song.teamSongId} onClick={() => goToSongPage(song.teamSongId)}>
             {song.title}
             {ExpandRightSvg()}
           </SongContainer>

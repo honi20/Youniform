@@ -5,6 +5,20 @@ const usePlayerStore = create((set) => ({
   playerList: [],
   loading: false,
   error: null,
+  team: [],
+  fetchTeamList: async () => {
+    set({loading: true, error: null})
+    const apiClient = getApiClient();
+    try {
+      const res = await apiClient.get(`/teams/favorite`);
+      console.log(res.data.header.message);
+      console.log(res.data.body);
+      set({ team: res.data.body, loading: false });
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+      set({ loading: false, error: err.message });
+    }
+  },
   fetchPlayerList: async () => {
     set({ loading: true, error: null });
     const apiClient = getApiClient();

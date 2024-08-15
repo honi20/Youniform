@@ -44,7 +44,7 @@ const CharacterComp = ({ player, index }) => {
         case 0:
           return (
             <CharacterContainer
-              src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/main_pitcher1.png"
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/main_pitcher1.png"
               alt="Pitcher 1"
               style={{ height: "180px"}}
             />
@@ -52,14 +52,14 @@ const CharacterComp = ({ player, index }) => {
         case 1:
           return (
             <CharacterContainer
-              src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/main_pitcher2.png"
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/main_pitcher2.png"
               alt="Pitcher 2"
               style={{ height: "180px"}}
             />
           );
         default:
           return <CharacterContainer
-          src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/main_pitcher1.png"
+          src="https://dsfjel9nvktdp.cloudfront.net/asset/main_pitcher1.png"
           alt="Pitcher 1"
           style={{ height: "180px"}}
         />;
@@ -69,7 +69,7 @@ const CharacterComp = ({ player, index }) => {
         case 0:
           return (
             <CharacterContainer
-              src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/main_hitter1.png"
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/main_hitter1.png"
               alt="Player 1"
               style={{ height: "240px", top: "-20px"}}
             />
@@ -77,7 +77,7 @@ const CharacterComp = ({ player, index }) => {
         case 1:
           return (
             <CharacterContainer
-              src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/main_hitter2.png"
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/main_hitter2.png"
               alt="Player 2"
               style={{ height: "170px"}}
             />
@@ -85,7 +85,7 @@ const CharacterComp = ({ player, index }) => {
         case 2:
           return (
             <CharacterContainer
-              src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/main_hitter3.png"
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/main_hitter3.png"
               alt="Player 3"
               style={{ height: "170px"}}
             />
@@ -97,7 +97,10 @@ const CharacterComp = ({ player, index }) => {
   };
   return (
     <MainContainer>
-      <div>{player && renderImages()}</div>
+      <div>{player && player.imgUrl ? <CharacterContainer
+      src={player.imgUrl}
+      style={{height: "100px", marginTop: "40px"}}/>
+ : renderImages()}</div>
       <PlayerNameContainer>{player ? player.name : ""}</PlayerNameContainer>
     </MainContainer>
   );
