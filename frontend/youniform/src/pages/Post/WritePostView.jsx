@@ -6,6 +6,7 @@ import useUserStore from "@stores/userStore";
 import Loading from "@components/Share/Loading";
 import ImgSvg from "@assets/Post/img_box.svg?react";
 import DoneSvg from "@assets/Post/done.svg?react";
+import CloseSvg from "@assets/Post/Close_round_light.svg?react"
 import { getApiClient } from "@stores/apiClient";
 import usePostStore from "@stores/postStore";
 const Container = styled.div`
@@ -31,7 +32,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   margin-left: 15px;
-  /* border: 1px solid pink; */
 `;
 const ProfileImg = styled.img`
   height: 30px;
@@ -51,7 +51,26 @@ const Content = styled.textarea`
   resize: none;
   border-radius: 5px;
 `;
-
+const ImageContainer = styled.div`
+  padding: 5 27px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  /* background-color: red; */
+`
+const ImgBox = styled.img`
+  height: 60px;
+`;
+const DeleteBtn = styled.button`
+  position: absolute;
+  top: 5px;
+  left: 27px;
+  background: transparent;
+  background-color: #b4b4b4;
+  border: 1px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+`;
 const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -60,17 +79,12 @@ const TagsContainer = styled.div`
   padding: 10px 0;
 `;
 const Tag = styled.span`
-  /* background-color: ${(props) => props.theme.primary || "#2196F3"}; */
   color: #848484;
-  border: 1px solid #848484;
+  border: 1px solid #f6f6f6;
   padding: 5px 10px;
   border-radius: 15px;
 `;
-const ImgBox = styled.img`
-  border: 1px solid black;
-  max-width: 50px;
-  margin-bottom: 10px;
-`;
+
 const Footer = styled.div`
   height: 70px;
   display: flex;
@@ -209,7 +223,11 @@ const WritePostView = () => {
   const handleAddPhotoClick = () => {
     fileInputRef.current.click();
   };
-
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setFilePreview(null);
+  };
+  
   if (loading || !user) {
     return <Loading />;
   }
@@ -227,7 +245,14 @@ const WritePostView = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          {filePreview && <ImgBox src={filePreview} alt="Preview" />}
+          <ImageContainer>
+          {filePreview && <><ImgBox src={filePreview} alt="Preview" >
+          </ImgBox>
+          <DeleteBtn onClick={handleRemoveImage}>
+            <CloseSvg/>
+          </DeleteBtn>
+          </>}
+          </ImageContainer>
           <input
             type="file"
             ref={fileInputRef}

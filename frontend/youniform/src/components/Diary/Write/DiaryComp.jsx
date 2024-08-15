@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useDiaryStore from "@stores/diaryStore";
 import BasicModal from "@components/Modal/BasicModal";
 import ShareModal from "@components/Modal/ShareModal";
+import useUserStore from "../../../stores/userStore";
 
 const ImageContainer = styled.div`
   height: 502px;
@@ -16,9 +17,17 @@ const DiaryComp = ({ state, diary }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { deleteDiary } = useDiaryStore();
+  const { user, fetchUser} = useUserStore();
 
   const openShareModal = () => setIsShareModalOpen(true);
   const closeShareModal = () => setIsShareModalOpen(false);
+
+  useEffect(() => {
+    if(!user){
+      fetchUser();
+          }     
+           console.log(user)
+  }, [user, fetchUser])
 
   const handleDeleteBtn = async (diaryId) => {
     console.log("다이어리 삭제", diaryId);
@@ -69,11 +78,13 @@ const DiaryComp = ({ state, diary }) => {
       </St.DiaryContent>
       <St.DiaryFooter>
         <St.BtnContainer>
+          {diary && diary.nickname == user.nickname && 
           <St.BtnGroup>
             <St.Btn onClick={() => navigate("./update")}>수정</St.Btn>
             <St.Btn onClick={() => setIsModalOpen(true)}>삭제</St.Btn>
           </St.BtnGroup>
-          <St.BtnGroup>
+            }
+          <St.BtnGroup style={{marginLeft:"auto"}}>
             <St.Btn onClick={openShareModal} $isShare={true}>
               공유
             </St.Btn>

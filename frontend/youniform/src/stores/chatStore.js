@@ -127,7 +127,7 @@ const useChatStore = create((set, get) => ({
       console.log(res.data.body.messages.content);
 
       set({ messages: res.data.body.messages.content });
-      console.log(messages);
+      // console.log(messages);
     } catch (error) {
       console.log("Failed to fetch chat room messages", error);
     }
@@ -199,19 +199,29 @@ const useChatStore = create((set, get) => ({
   },
 
   fetchPreviousMessages: async () => {
-    const { selectedRoom, messages } = get();
+    const { selectedRoom, messages, setMessages } = get();
     if (!selectedRoom) return;
 
     const apiClient = getApiClient();
     try {
+      // Fetch the ID of the earliest message loaded
+      const earliestMessageId = messages.length > 0 ? messages[0].id : 0;
+      console.log(earliestMessageId);
       const res = await apiClient.get(
         `/chats/messages/${selectedRoom}/previous`,
         {
-          messageId: 0,
-          size: 10,
+          params: {
+            messageId: earliestMessageId, // Last loaded message ID
+            size: 10, // Number of messages to load
+          },
         }
       );
-      console.log(res.data.body);
+
+      // Assuming the response is in `res.data.body` and it's an array of messages
+      const previousMessages = res.data.body || [];
+
+      // Prepend the fetched messages to the current message list
+      setMessages((prevMessages) => [...previousMessages, ...prevMessages]);
     } catch (error) {
       console.log("Failed to fetch previous messages", error);
     }

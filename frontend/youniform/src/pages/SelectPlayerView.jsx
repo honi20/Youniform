@@ -166,6 +166,7 @@ const Footer = styled.div`
   height: 15%;
   display: flex;
   align-items: start;
+  padding: 10px;
   /* border: 1px solid red; */
 `;
 

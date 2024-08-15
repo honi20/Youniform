@@ -72,16 +72,12 @@ const SearchBar = ({ searchQuery, setSearchQuery, type, setSearch }) => {
   };
 
   const performSearch = (query) => {
-    // console.log("Searching for:", query);
     setSearch(true);
     setPlaceholder("");
   };
   const handleClick = () => {
     if (searchQuery) {
       setPlaceholder("");
-      // setSearchQuery("");
-      // Navigate()
-      console.log("test");
     }
   };
 

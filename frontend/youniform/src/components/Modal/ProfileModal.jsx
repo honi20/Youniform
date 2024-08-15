@@ -14,7 +14,7 @@ const ModalBackdrop = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 5;
+  z-index: 11;
   /* border: 1px solid black; */
 `;
 const Container = styled.div`
@@ -188,7 +188,7 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   };
   const FriendComponent = ({ friend, addFriend }) => {
     const { isFriend } = friend;
-    console.log(isFriend);
+    console.log(friend, isFriend);
     switch (isFriend) {
       case "NOT_FRIEND":
         return (
@@ -215,7 +215,13 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
           />
         );
       default:
-        return null;
+        return (
+          <UserItem
+            icon={GroupIcon}
+            text="친구 신청"
+            onClick={() => addFriend(friend)}
+          />
+        );
     }
   };
   return (

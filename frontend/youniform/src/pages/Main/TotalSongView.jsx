@@ -173,10 +173,15 @@ const TotalSongView = () => {
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
 
-  const handleToggleBtn = (playeId) => {
+  const handleToggleBtn = (id) => {
     setIsOn(false);
-    setPlayer(playerList.find((p) => p.playerId == playerId));
-    navigate(`/song/player/${playeId}`);
+    if (id === 'team'){
+      setPlayer(null);
+      navigate(`/song/team/1000`)
+    } else {
+    setPlayer(playerList.find((p) => p.playerId == id));
+    navigate(`/song/player/${id}`);
+    }
   };
   const [activeBtn, setActiveBtn] = useState(0);
   const handleBtnClick = (btnIndex) => {

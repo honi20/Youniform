@@ -41,14 +41,14 @@ const Tag = styled.div`
 `;
 const Article = styled.div`
   padding: 2%;
-  background-color: white;
+  /* background-color: white; */
   display: flex;
   width: 90%;
   margin: 0 5%;
   justify-content: space-between;
   border-bottom: 1px solid black;
   overflow-y: auto;
-  max-height: ${(props) => (props.expanded ? "1000px" : "150px")};
+  max-height: ${(props) => (props.$expanded ? "1000px" : "150px")};
   cursor: pointer;
   &:first-child {
     border-top: 1px solid black;
@@ -75,10 +75,11 @@ const ToggleButton = styled.button`
   justify-content: center;
   border: none;
   padding: 0.5rem;
-  width: 40px;
+  width: 20px;
   cursor: pointer;
   font-size: 1rem;
-  background-color: white;
+  border: none;
+  background-color: #f8f8f8;
 `;
 const Title = styled.div`
   ${Font.Medium};
@@ -112,7 +113,7 @@ const NewsView = () => {
         await fetchPlayerList();
       }
       await fetchTotalNews(playerList);
-      console.log(news);
+      // console.log(news);
     };
     loadPlayerList();
   }, [playerList, fetchPlayerList, fetchTotalNews]);
@@ -136,7 +137,7 @@ const NewsView = () => {
       setNewsList(getPlayerNews(selectedTagId));
     }
   }, [selectedTagId, getTotalNews, getPlayerNews, news]);
-  console.log(newsList);
+  // console.log(newsList);
 
   const handleTagClick = (tagId) => {
     setSelectedTagId(tagId);
@@ -151,7 +152,9 @@ const NewsView = () => {
     // HTML을 JSX로 변환
     return parse(formattedText);
   };
-
+  const moveToLink = (link) => {
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
   return (
     <Div ref={containerRef}>
       {/* <Main>
@@ -179,7 +182,7 @@ const NewsView = () => {
           newsList.map((news, index) => (
             <Article
               key={index}
-              expanded={expandedIndex === index}
+              $expandedexpanded={expandedIndex === index}
               onClick={() => handleArticleClick(index)}
             >
               <ArticleContent>
@@ -189,7 +192,7 @@ const NewsView = () => {
                     <Footer>{news.pubDate}</Footer>
                   </div>
                   <ToggleButton
-                    expanded={expanded}
+                    $expanded={expanded}
                     onClick={() => setExpanded((prev) => !prev)}
                   >
                     {expandedIndex === index ? "-" : "+"}
@@ -198,7 +201,9 @@ const NewsView = () => {
 
                 {expandedIndex === index && (
                   <>
-                    <Content>{parseText(news.description)}</Content>
+                    <Content onClick={() => moveToLink(news.link)}>
+                      {parseText(news.description)}
+                    </Content>
                   </>
                 )}
               </ArticleContent>

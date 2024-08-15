@@ -22,7 +22,7 @@ const RecommendContainer = styled.div`
 const SearchView = () => {
   const location = useLocation();
   const queryParams = useRef(queryString.parse(location.search));
-  const [searchType, setSearchType] = useState("");
+  const [searchType, setSearchType] = useState("tag");
   const [searchQuery, setSearchQuery] = useState("");
   const [tagId, setTagId] = useState("");
   useEffect(() => {
@@ -109,7 +109,7 @@ const SearchView = () => {
             <p>친구를 추천드립니다</p>
             {recommendFriends.map((friend) => (
               <Friend
-                key={friend.friendId}
+                key={friend.userId}
                 friend={friend}
                 setSelectedFriend={setSelectedFriend}
               ></Friend>

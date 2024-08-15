@@ -28,7 +28,6 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
     };
   }, [fetchUser, user]);
 
-  console.log(user);
   const handleFolderClick = (index) => {
     console.log(index);
     setSelectedFolder(index);
@@ -116,7 +115,7 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
       <St.Folder>
         {folderTop(count)}
         <St.Player>
-          <CharacterComp player={player} />
+          <CharacterComp player={player} index={selectedFolder} />
           <InfoComp player={player} />
         </St.Player>
       </St.Folder>

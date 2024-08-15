@@ -77,7 +77,6 @@ const Friend = ({ friend, setSelectedFriend }) => {
     setSelectedFriend(friend);
     setModalOpen(true);
   };
-  // console.log(friend);
   return (
     <Container>
       <div style={{ display: "flex", flex: "1" }} onClick={handleProfileClick}>

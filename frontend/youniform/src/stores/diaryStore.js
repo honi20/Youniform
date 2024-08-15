@@ -12,6 +12,7 @@ const useDiaryStore = create((set) => ({
   selectedUser: null,
   setSelectedUser: (id) => set({ selectedUser: id }),
   loading: false,
+  error: null,
   diaries: [],
   diary: [],
   monthlyDiaries: [],
@@ -105,6 +106,7 @@ const useDiaryStore = create((set) => ({
       set({ diary: res.data.body, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
+      set({ error: err.message, loading: false });
     }
   },
   addDiary: async (formData) => {
