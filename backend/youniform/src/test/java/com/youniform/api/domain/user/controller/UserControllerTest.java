@@ -418,6 +418,7 @@ public class UserControllerTest {
                         .teamImage("최애 팀 이미지 url")
                         .introduce("자기소개")
                         .profileUrl("프로필 이미지 url")
+                        .provider("local")
                         .build()
         );
         ResultActions actions = mockMvc.perform(
@@ -463,7 +464,9 @@ public class UserControllerTest {
                                                         .description("회원이 좋아요한 게시글 수"),
                                                 fieldWithPath("body.friendCount").type(JsonFieldType.NUMBER)
                                                         .optional()
-                                                        .description("친구 수")
+                                                        .description("친구 수"),
+                                                fieldWithPath("body.provider").type(JsonFieldType.STRING)
+                                                        .description("가입 타입")
                                         )
                                 )
                                 .responseSchema(Schema.schema("내 정보 조회 Response"))
