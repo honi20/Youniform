@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
     public String signup(SignupReq user) {
         String uuid = UUID.randomUUID().toString();
 
-        if(userRepository.findByNickname(user.getNickname()) != null){
+        if (userRepository.findByNickname(user.getNickname()) != null) {
             throw new CustomException(ALREADY_EXIST_USER);
         }
 
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
         user.setTeam("MONSTERS");
         Users users = userRepository.save(user.toEntity(uuid, cloudFrontUrl));
 
-        if(user.getPlayers() != null) {
+        if (user.getPlayers() != null) {
             user.getPlayers().forEach(playerId -> {
                 Player player = playerRepository.findById(playerId)
                         .orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
@@ -313,9 +313,6 @@ public class UserServiceImpl implements UserService {
 
             user.updateTeam(newTeam);
 
-            ChatPart currentTeamChatRoom = chatPartRepository.findById(new ChatPartPK(user.getId(), currentTeam.getId()))
-                    .orElseThrow(() -> new CustomException(CHATPART_NOT_FOUND));
-
             chatPartRepository.deleteById(new ChatPartPK(userId, currentTeam.getId()));
 
             ChatRoom newTeamChatRoom = chatRoomRepository.findById(newTeam.getId())
@@ -331,24 +328,22 @@ public class UserServiceImpl implements UserService {
             chatPartRepository.save(newTeamChatPart);
         }
 
-        if (userFavoriteReq.getPlayers() == null || userFavoriteReq.getPlayers().isEmpty()) {
-            return;
-        }
-
         List<UserPlayer> currentPlayers = userPlayerRepository.findByUserId(userId);
         Set<Long> currentPlayerIds = currentPlayers.stream()
                 .map(up -> up.getUserPlayerPK().getPlayerId())
                 .collect(Collectors.toSet());
 
-        Set<Long> newPlayerIdSet = Set.copyOf(userFavoriteReq.getPlayers());
+        Set<Long> newPlayerIdSet = userFavoriteReq.getPlayers() != null ? Set.copyOf(userFavoriteReq.getPlayers()) : Set.of();
 
         List<UserPlayer> playersToRemove = currentPlayers.stream()
                 .filter(up -> !newPlayerIdSet.contains(up.getUserPlayerPK().getPlayerId()))
                 .collect(Collectors.toList());
 
-        List<Long> playersToAdd = userFavoriteReq.getPlayers().stream()
+        List<Long> playersToAdd = userFavoriteReq.getPlayers() != null
+                ? userFavoriteReq.getPlayers().stream()
                 .filter(pid -> !currentPlayerIds.contains(pid))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : List.of();
 
         userPlayerRepository.deleteAll(playersToRemove);
 
@@ -417,7 +412,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(VERIFY_NOT_MATCH);
         }
 
-        redisUtils.deleteData(req.getEmail()+"_verify");
+        redisUtils.deleteData(req.getEmail() + "_verify");
     }
 
     @Override
