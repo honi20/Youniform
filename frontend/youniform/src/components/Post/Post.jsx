@@ -83,6 +83,11 @@ const Footer = styled.div`
   padding: 1%;
   border-top: 1px solid #9c9c9c;
 `;
+const TeamImg = styled.img`
+  /* border: 1px solid black; */
+  height: 20px;
+  margin-left: 2px;
+`
 const CommentContainer = styled.div`
   gap: 1%;
   display: flex;
@@ -195,8 +200,8 @@ const Post = ({ post }) => {
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
             <ProfileImg src={post.profileImg} />
-            {post.nickname} {post.teamImage}
-            <img src={post.teamImage}/>
+            {post.nickname} 
+            <TeamImg src={post.teamUrl}/>
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>

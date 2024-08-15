@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
+import { getApiClient } from "@stores/apiClient";
 
-const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
-const NAVER_CLIENT_SECRET = import.meta.env.VITE_NAVER_CLIENT_SECRET;
 
 const useNewsStore = create((set, get) => ({
   news: {}, // 선수별 뉴스 저장하는 객체 { [playerId]: [] }
@@ -69,15 +68,11 @@ const useNewsStore = create((set, get) => ({
     console.log("test", team)
     if (team){
       console.log("팀 뉴스 조회")
+      const apiClient = getApiClient();
     try {
-      const response = await axios.get(`https://openapi.naver.com/v1/search/news.json`, {
-        headers: {
-          "X-Naver-Client-Id": NAVER_CLIENT_ID,
-          "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
-        },
+      const response = await apiClient(`https://youniform.site/api/news?`, {
         params: {
           query: team.name,
-          display: 10,
         },
       });
       console.log(response.data)
