@@ -16,7 +16,7 @@ const DiaryComp = ({ state, diary }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const { deleteDiary } = useDiaryStore();
+  const { deleteDiary, fetchMonthlyDiaries } = useDiaryStore();
   const { user, fetchUser} = useUserStore();
 
   const openShareModal = () => setIsShareModalOpen(true);
@@ -32,6 +32,7 @@ const DiaryComp = ({ state, diary }) => {
   const handleDeleteBtn = async (diaryId) => {
     console.log("다이어리 삭제", diaryId);
     await deleteDiary(diaryId);
+    fetchMonthlyDiaries();
     navigate("/diary");
   };
 

@@ -54,7 +54,7 @@ const WriteDiaryView = () => {
   const [update, setUpdate] = useState(false);
   const { diaryId, diaryDate } = useParams();
   const navigate = useNavigate();
-  const { diary, fetchDiary, addDiary, updateDiary, initializeDiary } =
+  const { diary, fetchDiary, addDiary, updateDiary, initializeDiary, fetchMonthlyDiaries } =
     useDiaryStore();
   const { backgrounds, stickers, themes, fetchResources, fetchStampList } =
     useResourceStore((state) => ({
@@ -130,7 +130,6 @@ const fileInputRef = useRef(null);
         if (sticker.imgUrl.startsWith("http")) {
           img.set({ crossOrigin: "anonymous" });
         }
-        // img.crossOrigin = "anonymous";
         img.scaleToHeight(100);
         img.set({
           left: selectCanvas.getWidth() / 2,
@@ -143,7 +142,6 @@ const fileInputRef = useRef(null);
       },
       { crossOrigin: "anonymous" }
     );
-      console.log("cors 테스트 중", selectCanvas);
     }
   };
 
@@ -273,6 +271,7 @@ const fileInputRef = useRef(null);
         console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
+      await fetchMonthlyDiaries();
       await moveToDetailPage(newId ? newId : diaryId);
     } catch (error) {
       console.error("Error saving diary object:", error);
