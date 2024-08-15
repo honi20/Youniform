@@ -28,9 +28,8 @@ const Title = styled.div`
   /* border: 1px solid black; */
 `;
 const Character = styled.div`
-  /* border: 1px solid blue; */
   height: 40%;
-  /* position: absolute; */
+  /* border: 1px solid red; */
 `;
 const Lyrics = styled.div`
   ${Font.Medium}
@@ -40,6 +39,7 @@ const Lyrics = styled.div`
   text-align: center;
   height: 45%;
   overflow-y: auto;
+  /* border: 1px solid black; */
 `;
 const Footer = styled.div`
   height: 7%;
@@ -67,7 +67,7 @@ const CharacterContainer = styled.img`
   left: 50%;
   height: 200px;
   width: 200px;
-  /* top: 10px; */
+  max-height: 100%;
   transform: translate(-50%, 0);
   align-items: center;
   position: relative;

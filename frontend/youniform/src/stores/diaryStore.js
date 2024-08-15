@@ -161,7 +161,7 @@ const useDiaryStore = create((set) => ({
   initializeDiary: () => {
     set({ diary: [] });
   },
-  mydiary: [],
+  myDiary: [],
   fetchMyDiary: async () => {
     const apiClient = getApiClient();
     try {
@@ -173,7 +173,7 @@ const useDiaryStore = create((set) => ({
       });
       console.log(res.data.header.message);
       console.log(res.data.body.diaryList.content);
-      set({ mydiary: res.data.body.diaryList.content });
+      set({ myDiary: res.data.body.diaryList.content });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
