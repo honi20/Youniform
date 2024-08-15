@@ -235,8 +235,6 @@ const WriteDiaryView = () => {
     : [];
 
   const renderContent = () => {
-    // console.log(themes);
-    // console.log(filteredBackgrounds, selectedColor);
     switch (selectedBtn) {
       case 0:
         return (
@@ -291,23 +289,48 @@ const WriteDiaryView = () => {
     setDate(currentDate);
   }, []);
 
-  const handleAfterSave = async () => {
-    try {
-      const formData = await saveDiaryObject();
-      let newId = "";
-      if (diaryId) {
-        console.log("다이어리 수정");
-        await updateDiary(diaryId, formData);
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const handleAfterSave = async () => {
+  try {
+    // 배경 이미지가 없는 경우 기본 이미지를 설정
+    if (!selectCanvas.backgroundImage) {
+      const defaultImage = backgrounds["WHITE"].find(
+        (img) => img.resourceId == 1
+      );
+
+      if (defaultImage) {
+        // handleImageClick이 완료될 때까지 대기
+        await handleImageClick(defaultImage);
+        
+        // 일정 시간 대기 (예: 1초)
+        await sleep(1000);
       } else {
-        console.log("다이어리 생성");
-        newId = await addDiary(formData);
+        throw new Error("Default background image not found.");
       }
-      await fetchMonthlyDiaries();
-      await moveToDetailPage(newId ? newId : diaryId);
-    } catch (error) {
-      console.error("Error saving diary object:", error);
     }
-  };
+
+    // handleImageClick이 완료되고 대기 후 다이어리 저장 로직 실행
+    const formData = await saveDiaryObject();
+    let newId = "";
+
+    if (diaryId) {
+      console.log("다이어리 수정");
+      await updateDiary(diaryId, formData);
+    } else {
+      console.log("다이어리 생성");
+      newId = await addDiary(formData);
+    }
+
+    // 다이어리 저장 후 데이터 갱신 및 상세 페이지로 이동
+    await fetchMonthlyDiaries();
+    await moveToDetailPage(newId ? newId : diaryId);
+
+  } catch (error) {
+    console.error("Error saving diary object:", error);
+  }
+};
+
 
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
@@ -316,40 +339,83 @@ const WriteDiaryView = () => {
   };
   const [scope, setScope] = useState("ALL");
   const [stampId, setStampId] = useState(1);
-
   const saveDiaryObject = async () => {
     try {
       if (selectCanvas) {
         const json = selectCanvas.toJSON();
-
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
-        console.log("diaryDate: ", diaryDate ? diaryDate : date);
+  
+        // console.log("diaryDate: ", diaryDate ? diaryDate : date);
         console.log("contents: ", json);
-        console.log("scope: ", scope);
-        console.log("stamp: ", stampId);
+        // console.log("scope: ", scope);
+        // console.log("stamp: ", stampId);
+  
         const formData = new FormData();
         const dto = {
-          diaryDate: diaryDate ? diaryDate : date, // 날짜 바뀌는 거 확인하기
+          diaryDate: diaryDate ? diaryDate : date,
           contents: json,
           scope: scope,
           stampId: stampId,
         };
-
+  
         const dtoBlob = new Blob([JSON.stringify(dto)], {
           type: "application/json",
         });
         formData.append("file", imageBlob, "canvas.png");
         formData.append("dto", dtoBlob);
-
+  
         console.log("FormData contents:");
         logFormData(formData);
+  
         return formData;
+      } else {
+        throw new Error("selectCanvas is not defined.");
       }
     } catch (error) {
+      console.error("Error saving diary object:", error.message);
       throw new Error("Error saving diary object: " + error.message);
     }
   };
+  
+  // const saveDiaryObject = async () => {
+  //   try {
+  //     if (selectCanvas) {
+  //       // console.log(backgrounds["WHITE"].filter((img)=>img.resourceId == 1)[0])
+  //       if (!selectCanvas.backgroundImage) {
+  //         // console.log(backgrounds)
+  //         await handleImageClick(backgrounds["WHITE"].filter((img)=>img.resourceId == 1)[0])
+  //     } try {
+  //       const json = selectCanvas.toJSON();
+
+  //       const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
+  //       const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
+  //       console.log("diaryDate: ", diaryDate ? diaryDate : date);
+  //       console.log("contents: ", json);
+  //       console.log("scope: ", scope);
+  //       console.log("stamp: ", stampId);
+  //       const formData = new FormData();
+  //       const dto = {
+  //         diaryDate: diaryDate ? diaryDate : date, // 날짜 바뀌는 거 확인하기
+  //         contents: json,
+  //         scope: scope,
+  //         stampId: stampId,
+  //       };
+
+  //       const dtoBlob = new Blob([JSON.stringify(dto)], {
+  //         type: "application/json",
+  //       });
+  //       formData.append("file", imageBlob, "canvas.png");
+  //       formData.append("dto", dtoBlob);
+
+  //       console.log("FormData contents:");
+  //       logFormData(formData);
+  //       return formData;
+  //     }
+  //   } catch (error) {
+  //     throw new Error("Error saving diary object: " + error.message);
+  //   }
+  // };
 
   const moveToDetailPage = async (diaryId) => {
     try {
