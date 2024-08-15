@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fabric } from "fabric";
 
@@ -36,6 +36,7 @@ const CanvasComp = ({
   diary,
   update,
 }) => {
+  const [initialRender, setInitialRender] = useState(false)
   useEffect(() => {
     console.log("decorated: ", decorated);
     console.log("캔버스 초기화");
@@ -64,10 +65,12 @@ const CanvasComp = ({
       initCanvas.off("object:modified", bringToFront);
       initCanvas.dispose();
     };
+    
   }, []);
   useEffect(() => {
-    if (selectCanvas && diary) {
+    if (!initialRender && selectCanvas && diary) {
       loadCanvasFromJSON(selectCanvas, diary);
+      setInitialRender(true)
     }
   }, [selectCanvas, diary]);
 
@@ -83,7 +86,6 @@ const CanvasComp = ({
   }, [selectCanvas, decorated, diary]);
 
   return (
-    // {update ? : }
     <CanvasContainer $decorated={decorated}>
       <canvas id="canvas"></canvas>
     </CanvasContainer>
