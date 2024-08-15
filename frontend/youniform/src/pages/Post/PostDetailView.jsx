@@ -87,7 +87,11 @@ const Footer = styled.div`
   border-bottom: 1px solid #9c9c9c;
   /* border: 1px solid black; */
 `;
-
+const TeamImg = styled.img`
+  /* border: 1px solid black; */
+  height: 20px;
+  margin-left: 2px;
+`
 import Chatsvg from "@assets/Post/chat.svg?react";
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
@@ -271,6 +275,7 @@ const PostDetailView = () => {
             <HeaderWrapper onClick={handleProfileClick}>
               <ProfileImg src={post.profileImg} />
               {post.nickname}
+              <TeamImg src={post.teamUrl}/>
             </HeaderWrapper>
             <FlexBox>
               {editedPost && editedPost.postId === post.postId ? (

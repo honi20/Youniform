@@ -177,6 +177,6 @@ export const StampContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 `;
 export * from "./WriteDiaryStyle";
