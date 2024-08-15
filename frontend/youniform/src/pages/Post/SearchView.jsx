@@ -18,6 +18,10 @@ const RecommendContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: 5% 5%;
+  height: calc(100vh - 120px);
+  padding-bottom: 60px;
+  /* border: 5px solid black; */
+  overflow-y: auto;
 `;
 const SearchView = () => {
   const location = useLocation();
