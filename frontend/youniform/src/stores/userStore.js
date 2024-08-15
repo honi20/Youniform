@@ -112,6 +112,25 @@ const useUserStore = create((set, get) => ({
       return "$FAIL";
     }
   },
+
+  changePassword: async (curPw, newPw, confirmPw) => {
+    try {
+      const apiClient = getApiClient();
+      const response = await apiClient.patch(`${API_URL}/users/password`, {
+        currentPassword: curPw,
+        newPassword: newPw,
+        confirmPassword: confirmPw,
+      });
+      console.log(response);
+      console.log(response.data.header.message);
+      if (response.data.header.httpStatusCode === 200) {
+        return "$SUCCESS";
+      }
+    } catch (err) {
+      console.log("Failed to fetchLogin", err);
+      return "$FAIL";
+    }
+  },
 }));
 
 export default useUserStore;

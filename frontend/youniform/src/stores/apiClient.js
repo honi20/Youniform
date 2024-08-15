@@ -22,7 +22,7 @@ export const isLoggedIn = () => {
 };
 const getAccessToken = () => {
   return (
-    localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
+    localStorage.getItem("accessToken")
   );
 };
 export const clearAccessToken = () => {
@@ -31,10 +31,8 @@ export const clearAccessToken = () => {
 const setAccessToken = (token) => {
   if (token) {
     localStorage.setItem("accessToken", token);
-    sessionStorage.setItem("accessToken", token);
   } else {
     localStorage.removeItem("accessToken");
-    sessionStorage.removeItem("accessToken");
   }
 };
 export const getApiClient = () => {

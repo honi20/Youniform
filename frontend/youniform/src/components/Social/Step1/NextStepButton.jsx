@@ -21,7 +21,7 @@ const NextStepBtn = styled.div`
 `;
 
 const NextStepButton = ({ step, email, providerType, profileImage }) => {
-  const { user, fetchLocalSignUp } = useSignUpStore();
+  const { user, fetchSocialSignUp } = useSignUpStore();
   const navigate = useNavigate();
 
   const handleNextStep = async () => {
@@ -30,7 +30,6 @@ const NextStepButton = ({ step, email, providerType, profileImage }) => {
       case "1":
         user.providerType = providerType;
         user.email = email;
-        console.log(user.profileUrl);
         if (user.email && user.providerType && user.isNicknameUnique && [...user.introduce].length <= 20) {
           navigate(`/social/sign-up/step-2`);
           return;
@@ -38,7 +37,7 @@ const NextStepButton = ({ step, email, providerType, profileImage }) => {
         break;
       case "2":
         if (user.players.length > 0) {
-          const res = await fetchLocalSignUp();
+          const res = await fetchSocialSignUp();
           if (res === "$SUCCESS") {
             navigate(`/social/sign-up/step-3`);
           }

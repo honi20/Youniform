@@ -30,6 +30,8 @@ const signUpStore = create((set, get) => ({
       set((state) => ({ user: { ...state.user, password: val } })),
     setConfirmPw: (val) =>
       set((state) => ({ user: { ...state.user, confirmPw: val } })),
+    setProfileUrl: (val) =>
+      set((state) => ({ user: { ...state.user, profileUrl: val } })),
     setNickname: (val) =>
       set((state) => ({ user: { ...state.user, nickname: val } })),
     setIntroduce: (val) =>
@@ -108,7 +110,7 @@ const signUpStore = create((set, get) => ({
           email: user.email,
           password: user.password,
           providerType: "local",
-          profileUrl: user.profileUrl,
+          profileUrl: null,
           nickname: user.nickname,
           introduce: user.introduce,
           team: "MONSTERS",
@@ -128,7 +130,7 @@ const signUpStore = create((set, get) => ({
       console.log("Failed to fetch Local SignUp", err);
     }
   },
-  fetchLocalSignUp: async () => {
+  fetchSocialSignUp: async () => {
     try {
       const { user } = get();
       const res = await axios({
