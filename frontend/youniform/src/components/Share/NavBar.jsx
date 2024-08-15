@@ -80,10 +80,17 @@ const NavBar = () => {
   }, [location.pathname, fetchMonthlyDiaries, monthlyDiaries]);
 
   // 특정 경로에서 NavBar를 숨기기 위한 조건 설정
-  const hideNavBarPaths = ["/", "/login", "/signup", "/find-password", "/find-email",
-    "/reset-password/*", "/sign-up/*", "/social/sign-up/*", "/select-player"
-  ]; // 숨기고 싶은 경로들
-  const shouldHideNavBar = hideNavBarPaths.includes(currentPath);
+  const shouldHideNavBar =
+    currentPath === "/" ||
+    currentPath === "/login" ||
+    currentPath.startsWith("/signup") ||
+    currentPath.startsWith("/find-password") ||
+    currentPath.startsWith("/find-email") ||
+    currentPath.startsWith("/reset-password")
+    currentPath.startsWith("/social/sign-up") ||
+    currentPath.startsWith("/sign-up") ||
+    currentPath.startsWith("/select-player")
+    ;
 
   if (shouldHideNavBar) {
     return null; // 특정 경로에서 NavBar를 숨김
