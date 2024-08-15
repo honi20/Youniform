@@ -276,10 +276,11 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
 
   const changePlayer = async () => {
     const apiClient = getApiClient();
+    // console.log(selectedPlayers.length == 1 & selectedPlayers[0] == 0 ? [] : selectedPlayers)
     try {
       const res = await apiClient.patch(`users/favorite`, {
         teamId: 1000,
-        players: selectedPlayers,
+        players: selectedPlayers.length == 1 & selectedPlayers[0] == 0 ? [] : selectedPlayers,
       });
       console.log(res.data);
       const { body, header } = res.data;

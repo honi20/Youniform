@@ -96,10 +96,10 @@ const CharacterComp = ({ player, index }) => {
   return (
     <MainContainer>
       <div>{player && player.imgUrl ? <CharacterContainer
-      src={player.imgUrl}
-      style={{height: "100px", marginTop: "40px"}}/>
+      src="https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/monsters.png"
+      style={{height: "160px", marginTop: "40px"}}/>
  : renderImages()}</div>
-      <PlayerNameContainer>{player ? player.name : ""}</PlayerNameContainer>
+      <PlayerNameContainer>{player && player.imgUrl ? null : player.name}</PlayerNameContainer>
     </MainContainer>
   );
 };

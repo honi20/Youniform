@@ -103,7 +103,7 @@ const NewsView = () => {
   const [newsList, setNewsList] = useState([]);
   const [tags, setTags] = useState(["All"]);
   const [selectedTagId, setSelectedTagId] = useState(playerId || 0);
-  const { news, fetchTotalNews, getTotalNews, getPlayerNews, fetchNews } = useNewsStore();
+  const { news, fetchTotalNews, getTotalNews, getPlayerNews, fetchTeamNews } = useNewsStore();
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
@@ -117,11 +117,10 @@ const NewsView = () => {
       if (playerList.length != 0){
       await fetchTotalNews(playerList);
       }
-      fetchNews(team)
-      // console.log(news);
+      fetchTeamNews(team)
     };
     loadPlayerList();
-  }, [playerList, fetchPlayerList, fetchTotalNews, fetchNews, fetchTeamList]);
+  }, [playerList, fetchPlayerList, fetchTotalNews, fetchTeamNews, fetchTeamList]);
 
   useEffect(() => {
     if (playerList && playerList.length > 0) {

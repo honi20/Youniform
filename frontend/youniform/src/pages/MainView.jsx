@@ -123,7 +123,6 @@ const MainView = () => {
           </IconWrapper>
           <TextContainer>응원 채팅</TextContainer>
         </Btn>
-        {/* 선수 설정 반영되게 바꾸어야함 */}
         <Btn onClick={() => navigate("/select-player")}>
           <IconWrapper>
             <HeartIcon />

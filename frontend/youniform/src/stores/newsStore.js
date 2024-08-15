@@ -19,6 +19,7 @@ const useNewsStore = create((set, get) => ({
     console.log("뉴스를 불러옵니다.");
     try {
       const newsPromises = playerList.map((player) => {
+        console.log(player)
         return axios
           .get(`/v1/search/news.json`, {
             headers: {
@@ -63,7 +64,8 @@ const useNewsStore = create((set, get) => ({
   },
 
   // 특정 선수의 뉴스 가져오기
-  fetchNews: async (player, page = 1) => {
+  fetchTeamNews: async (team) => {
+    console.log(team)
     try {
       const response = await axios.get(`/v1/search/news.json`, {
         headers: {
@@ -71,16 +73,15 @@ const useNewsStore = create((set, get) => ({
           "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
         },
         params: {
-          query: player.name,
+          query: team.name,
           display: 10,
-          start: (page - 1) * 10 + 1,
         },
       });
-      console.log(response.data.items);
+      console.log(response.data);
       set((state) => ({
         news: {
           ...state.news,
-          [player.playerId]: (state.news[player.playerId] || []).concat(
+          [team.name]: (state.news[team.name] || []).concat(
             response.data.items
           ),
         },
