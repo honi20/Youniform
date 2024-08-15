@@ -342,8 +342,8 @@ const LoginView = () => {
           </SocialLoginText>
           <LoginLinkIcon>
             <LoginIcon src={KakaoIcon} onClick={() => handleSocialLogin(kakao)} alt="Kakao Login"></LoginIcon>
-            <LoginIcon src={NaverIcon} onClick={() => handleSocialLogin(kakao)} alt="Naver Login"></LoginIcon>
-            <LoginIcon src={GoogleIcon} onClick={() => handleSocialLogin(kakao)} alt="Google Login"></LoginIcon>
+            <LoginIcon src={NaverIcon} onClick={() => handleSocialLogin(naver)} alt="Naver Login"></LoginIcon>
+            <LoginIcon src={GoogleIcon} onClick={() => handleSocialLogin(google)} alt="Google Login"></LoginIcon>
           </LoginLinkIcon>
         </SocialLogin>
       </LoginContent>
