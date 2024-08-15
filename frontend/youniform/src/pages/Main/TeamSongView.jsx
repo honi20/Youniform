@@ -6,6 +6,7 @@ import DownIcon from "@assets/Main/chevron-down.svg?react";
 import UpIcon from "@assets/Main/chevron-up.svg?react";
 import SelectSvg from "@assets/Main/selectedIcon.svg?react";
 import usePlayerStore from "../../stores/playerStore";
+import { useParams } from "react-router-dom";
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -212,7 +213,6 @@ const TeamSongView = ({ }) => {
   };
   return (
     <Wrapper>
-      주ㅡ연테스트트트트ㅡㅌ
       <OuterContainer>
         <BlurredBorder />
         <ContentWrapper>
@@ -250,7 +250,7 @@ const TeamSongView = ({ }) => {
           <LyricsDisplay>
             <Title>
               <VideoIcon />
-              {teamSongs[selected].title}
+              {/* {teamSongs && teamSongs[selected].title} */}
             </Title>
             <Character>캐릭터</Character>
             <Lyrics>가사</Lyrics>

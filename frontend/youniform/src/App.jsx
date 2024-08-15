@@ -163,11 +163,12 @@ function App() {
               <Route path="/select-player" element={<SelectPlayerView />} />
               <Route path="/news/:playerId" element={<NewsView />} />
               {/* 노래 관련 */}
-              <Route path="/song" element={<TotalSongView />}>
+              <Route path="/song/*">
+              <Route index element={<TotalSongView />} />
                 <Route path="player/:playerId" element={<PlayerSongView />} />
-                <Route path="team/:teamId" element={<TeamSongView />} />
+                <Route path="team/:teamId" element={<TotalSongView />} />
                 <Route path="team-song/:teamSongId" element={<SongView />} />
-              </Route>
+            </Route>
               {/* 채팅 관련 */}
               <Route path="/chat/:roomId" element={<ChatView />} />
               <Route path="/setting/*">

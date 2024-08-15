@@ -7,7 +7,7 @@ import PlayerSongView from "./PlayerSongView";
 import TeamSongComp from "@components/Main/Player/TeamSongComp";
 import { useNavigate, useParams } from "react-router-dom";
 import usePlayerStore from "@stores/playerStore";
-
+import { Outlet } from "react-router-dom";
 const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -207,7 +207,6 @@ const TotalSongView = () => {
       </>
     );
   };
-  console.log(playerId)
   const renderTeamSongs = () => {
     switch (activeBtn){
     case 0:
@@ -264,6 +263,7 @@ const TotalSongView = () => {
         </ContentWrapper>
       </OuterContainer>
     </Wrapper>
+    
   );
 };
 

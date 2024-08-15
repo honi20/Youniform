@@ -86,14 +86,14 @@ const PlayerSongView = ({ active, playerId }) => {
       case 0:
         return (
           <CharacterContainer
-              src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/player_appearance_song.png"
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/player_appearance_song.png"
               alt="Appearance_song"
             />
         )
         case 1:
           return (
             <CharacterContainer
-              src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/player_cheering_song.png"
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/player_cheering_song.png"
               alt="Cheering_song"
             />
           )
