@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import BasicModal from "../Modal/BasicModal";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const AuthError = () => {
     const [data, setData] = useState(null);
@@ -29,6 +26,7 @@ const AuthError = () => {
       const fetchData = async () => {
         try {
           const key = new URL(window.location.href).searchParams.get('providerType');
+          console.log(key);
           switch (key) {
               case "kakao":
                 state = "AuthKakaoError"
@@ -54,17 +52,14 @@ const AuthError = () => {
         fetchData(); // 함수 호출
     }, [navigate]);
 
-    if (loading) {
-        return <div>Loading...</div>; // 로딩 중일 때 표시할 내용
-    } else {
-        return 
-        <BasicModal
-          state={state}
-          onButtonClick ={handleAfterClick}
-          isOpen={isModalOpen}
-          onClose={closeModal}
-        />
-    }
+    return (
+      <BasicModal
+        state={state}
+        onButtonClick ={handleAfterClick}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
+    );  
 };
 
 export default AuthError;
