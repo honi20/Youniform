@@ -195,7 +195,8 @@ const Post = ({ post }) => {
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
             <ProfileImg src={post.profileImg} />
-            {post.nickname}
+            {post.nickname} {post.teamImage}
+            <img src={post.teamImage}/>
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
