@@ -48,7 +48,6 @@ const useDiaryStore = create((set) => ({
       const res = await apiClient.get(`/diaries/monthly`, {
         params: {
           calendarDate: formattedDate,
-          calendarDate: formattedDate,
         },
       });
       console.log(res.data.header.message);
