@@ -56,6 +56,11 @@ import SSEAlertModal from "@/components/Modal/SSEAlertModal";
 import PlayerPushAlarm from "@/pages/Setting/PlayerPushAlarm";
 import useAlertStore from '@stores/alertStore';
 import { isLoggedIn } from '@stores/apiClient';
+import AuthLogin from "./components/Social/AuthLogin";
+import AuthLoginExsist from "./components/Social/AuthLoginExsist";
+import SocialSignUpView from "./pages/SocialSignUpView";
+import SocialStepOneForm from "./components/Social/Step1/SocialStepOneForm";
+import SocialStepTwoForm from "./components/Social/Step2/SocialStepTwoForm";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -103,6 +108,8 @@ function App() {
                 path="/reset-password/:uuid"
                 element={<ResetPasswordView />}
               />
+              <Route exact path='/signup/info' element={<AuthLogin />} />
+              <Route exact path='/signup/exist' element={<AuthLoginExsist />} />
               {/* Photocard */}
               <Route path="/photo-card" element={<PhotoCardView />}>
                 <Route index element={<BinderCover />} />
@@ -145,6 +152,12 @@ function App() {
                 <Route path="step-2" element={<StepTwoForm />} />
                 <Route path="step-3" element={<StepThreeForm />} />
                 <Route path="step-4" element={<SignUpSuccess />} />
+              </Route>
+              <Route path="/social/sign-up/*" element={<SocialSignUpView />}>
+                <Route index element={<SocialStepOneForm />} />
+                <Route path="step-1" element={<SocialStepOneForm />} />
+                <Route path="step-2" element={<SocialStepTwoForm />} />
+                <Route path="step-3" element={<SignUpSuccess />} />
               </Route>
               <Route path="/select-player" element={<SelectPlayerView />} />
               <Route path="/news/:playerId" element={<NewsView />} />
