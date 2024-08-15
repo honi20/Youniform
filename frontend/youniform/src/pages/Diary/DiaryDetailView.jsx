@@ -13,9 +13,13 @@ const Div = styled.div`
   align-items: center;
   height: auto;
   width: 100%;
+  border: 1px solid black;
+  justify-content: center;
 `;
 const Container = styled.div`
-  /* border: 5px solid red; */
+  border: 5px solid red;
+  display: flex;
+  
 `;
 const ScrollableDiaryView = styled.div`
   flex: 1 1 auto;
@@ -43,6 +47,7 @@ const DiaryDetailView = ({ diaries }) => {
   if (error) {
     return <Error message={error} />;
   }
+  console.log(diaries)
   return (
     <>
         <Div>

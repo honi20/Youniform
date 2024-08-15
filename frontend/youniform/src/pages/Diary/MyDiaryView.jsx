@@ -19,38 +19,35 @@ const MyDiaryView = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { myDiary, fetchMyDiary, friendDiary } = useDiaryStore();
   const { nickname } = useParams();
+  const [ diaries, setDiaries ] = useState([])
   useEffect(() => {
-    if (nickname) {
-      console.log(nickname);
-    } else {
-      fetchMyDiary();
-    }
-  }, [fetchMyDiary]);
+    const fetchData = async () => {
+      if (nickname) {
+        console.log(nickname);
+      } else {
+        await fetchMyDiary();
+      }
+    };
+    fetchData();
+  }, [fetchMyDiary, nickname]);
+
+  useEffect(() => {
+    setDiaries(nickname ? friendDiary : myDiary);
+  }, [nickname, friendDiary, myDiary]);
 
   const handleScroll = (event) => {
-    if (event.target.scrollTop > 0) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
+    setIsScrolled(event.target.scrollTop > 0);
   };
-  const diariesToShow = nickname ? friendDiary : myDiary;
 
-  if (friendDiary.length == 0 || myDiary.length == 0) {
-    console.log("없음");
-    return (
-      <EmptyState
-        icon={EmptyIcon}
-        state="noDiaries"
-        // icon=
-      />
-    );
+  if (!diaries || diaries.length === 0) {
+    console.log(diaries);
+    return <EmptyState icon={EmptyIcon} state="noDiaries" />;
   }
   return (
     <div>
       <Container>
         <ScrollableDiaryView onScroll={handleScroll}>
-          <DiaryDetailView diaries={diariesToShow} />
+          <DiaryDetailView diaries={diaries} />
         </ScrollableDiaryView>
       </Container>
     </div>

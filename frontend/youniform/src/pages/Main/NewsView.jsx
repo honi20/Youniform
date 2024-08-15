@@ -175,7 +175,7 @@ const NewsView = () => {
             selected={tag.id == selectedTagId}
             onClick={() => handleTagClick(tag.id)}
           >
-            {tag.name} {selectedTagId}
+            {tag.name} 
           </Tag>
         ))}
       </TagSection>
