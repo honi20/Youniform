@@ -90,6 +90,7 @@ const VerticalBar = styled.div`
 const DiaryFriendsList = ({ onUserClick }) => {
   const [selectedUserIndex, setSelectedUserIndex] = useState(null);
   const [selectedSelf, setSelectedSelf] = useState(false);
+  const [updateTrigger, setUpdateTrigger] = useState(false);  // 추가된 상태
   const { friends, diaryFriends, fetchDiaryFriends } = useFriendStore();
   const { fetchUser, user } = useUserStore();
   const {
@@ -131,6 +132,12 @@ const DiaryFriendsList = ({ onUserClick }) => {
       }
       await fetchMonthlyDiaries(formattedDate);
     }
+
+    // Fetch friends diaries and then refresh the diary friends to update the status circle
+    await fetchDiaryFriends();
+
+    // Update state to trigger re-render
+    setUpdateTrigger((prev) => !prev); // 이 줄이 추가되어 강제로 리렌더링합니다.
   };
 
   return (
@@ -145,9 +152,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
               onClick={() => handleUserClick("self")}
             >
               <UserImage src={user.profileUrl} alt={user.nickname} />
-              {user.diaryUpdated && (
-                <UpdateStatusCircle $updateStatus={user.updateStatus} />
-              )}
+              <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
               <UserName>{user.nickname}</UserName>
             </UserCard>
             <VerticalBar />
@@ -160,9 +165,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
                 onClick={() => handleUserClick("friend", index)}
               >
                 <UserImage src={user.imgUrl} alt={user.nickname} />
-                {user.diaryUpdated && (
-                  <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
-                )}
+                <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
                 <UserName>{user.nickname}</UserName>
               </UserCard>
             ))}
