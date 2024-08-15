@@ -21,6 +21,7 @@ const DiaryHomeView = () => {
   const [calendarHeight, setCalendarHeight] = useState("auto");
   const [selectedUser, setSelectedUser] = useState(0);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [renderTrigger, setRenderTrigger] = useState(false);
   const diaryHomeRef = useRef(null);
 
   useEffect(() => {
@@ -42,12 +43,14 @@ const DiaryHomeView = () => {
   const handleUserClick = (user) => {
     setSelectedUser(user);
     setCurrentMonth(new Date()); // 현재 월로 설정
+    // 렌더링 강제화
+    setRenderTrigger((prev) => !prev);
   };
 
   return (
     <DiaryHome ref={diaryHomeRef}>
       <FriendsContainer>
-        <DiaryFriendsList onUserClick={handleUserClick} />
+        <DiaryFriendsList onUserClick={handleUserClick} key={renderTrigger} />
       </FriendsContainer>
       <CalendarContainer style={{ height: calendarHeight }}>
         <Calendar

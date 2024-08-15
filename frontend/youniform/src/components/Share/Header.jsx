@@ -7,15 +7,13 @@ import ColorBtn from "../Common/ColorBtn";
 import { clearAccessToken } from "@stores/apiClient";
 import useUserStore from "../../stores/userStore";
 import useAlertStore from "../../stores/alertStore";
+import LogoIcon from "@assets/Header/logo.svg?react";
 
 const Head = styled.div`
   background-color: #f8f8f8;
-  /* position: fixed; */
   top: 0;
-  /* width: 100%; */
   height: 50px;
   display: flex;
-  /* border: 1px solid orange; */
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
@@ -159,8 +157,7 @@ const Header = () => {
         return (
           <InnerHead>
             <Logo>
-              <SportsBaseballIcon />
-              <strong>Youniform</strong>
+              <LogoIcon />
             </Logo>
             {isToken ? (
               <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
