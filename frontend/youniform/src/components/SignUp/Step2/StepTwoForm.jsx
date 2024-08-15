@@ -158,9 +158,9 @@ const validateNickname = (nickname) => {
 const StepTwoForm = () => {
   const { user, verifyNickname } = useSignUpStore();
   const { nickname, introduce, isNicknameUnique,
-    setNickname, setIntroduce, setIsNicknameUnique, } = user;
+    setNickname, setIntroduce, setIsNicknameUnique,
+    profileUrl, setProfileUrl } = user;
 
-  const [profileImage, setProfileImage] = useState(ProfileImg);
   const [statusMsg, setStatusMsg] = useState(null);
   const [introduceStatusMsg, setIntroduceStatusMsg] = useState(null);
   const [typingTimeout, setTypingTimeout] = useState(null);
@@ -215,7 +215,7 @@ const StepTwoForm = () => {
   };
 
   const handleDeleteIconClick = () => {
-    setProfileImage(ProfileImg);
+    setProfileUrl(null);
   };
 
   const handleFileChange = (event) => {
@@ -225,7 +225,7 @@ const StepTwoForm = () => {
       if (validExtensions.includes(file.type)) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setProfileImage(reader.result);
+          setProfileUrl(reader.result);
         };
         reader.readAsDataURL(file);
       } else {
@@ -247,7 +247,11 @@ const StepTwoForm = () => {
       <SignUpText>프로필 입력</SignUpText>
       <ProfileImgContainer>
         <ProfileImgWrapper>
-          <ProfileImgStyled src={profileImage} alt="프로필 이미지" />
+          {profileUrl ? (
+            <ProfileImgStyled src={profileUrl} alt="프로필 이미지" />
+          ) : (
+            <ProfileImgStyled src={ProfileImg} alt="프로필 이미지" />
+          )}
         </ProfileImgWrapper>
         <IconWrapper style={{ left: '14%' }} onClick={handleAddIconClick}>
           <AddIconStyled />

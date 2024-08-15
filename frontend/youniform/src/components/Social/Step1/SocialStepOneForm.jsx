@@ -94,8 +94,13 @@ const SignUpText = styled.div`
   color: #262F66;
   text-align: center;
   margin-top: 2.2rem;
-  margin-bottom: 2rem;
   letter-spacing: -1px;
+`;
+
+const SubTitle = styled.span`
+  color: #262F66;
+  font-size: 14px;
+  margin-bottom: 2rem;
 `;
 
 const AddIconStyled = styled(AddIcon)`
@@ -159,7 +164,8 @@ const validateNickname = (nickname) => {
 const SocialStepOneForm = () => {
   const { user, verifyNickname } = useSignUpStore();
   const { nickname, introduce, isNicknameUnique,
-    setNickname, setIntroduce, setIsNicknameUnique } = user;
+    setNickname, setIntroduce, setIsNicknameUnique,
+    setProfileUrl } = user;
   const location = useLocation();
   const { data } = location.state || {};
   const [profileImage, setProfileImage] = useState(ProfileImg);
@@ -176,7 +182,7 @@ const SocialStepOneForm = () => {
       }
       if (data.body.profileUrl) {
         console.log(data.body.profileUrl);
-        setProfileImage(data.body.profileUrl); // 프로필 이미지 초기값 설정
+        setProfileUrl(data.body.profileUrl); // 프로필 이미지 초기값 설정
       }
     }
   }, [data]);
@@ -263,24 +269,7 @@ const SocialStepOneForm = () => {
         ))}
       </StepIndicatorBox>
       <SignUpText>회원가입</SignUpText>
-      <SignUpText>프로필 입력</SignUpText>
-      <ProfileImgContainer>
-        <ProfileImgWrapper>
-          <ProfileImgStyled src={profileImage} alt="프로필 이미지" />
-        </ProfileImgWrapper>
-        <IconWrapper style={{ left: '14%' }} onClick={handleAddIconClick}>
-          <AddIconStyled />
-        </IconWrapper>
-        <IconWrapper style={{ right: '-34%' }} onClick={handleDeleteIconClick}>
-          <DeleteIconStyled />
-        </IconWrapper>
-        <VisuallyHiddenInput 
-          type="file" 
-          id="upload-input" 
-          accept=".jpeg, .jpg, .png, .gif"  // 허용할 파일 확장자 설정
-          onChange={handleFileChange} 
-        />
-      </ProfileImgContainer>
+      <SubTitle>기본 정보를 입력해주세요.</SubTitle>
       <UserInfoContainer>
         <TextField
           sx={{ width: "100%" }}

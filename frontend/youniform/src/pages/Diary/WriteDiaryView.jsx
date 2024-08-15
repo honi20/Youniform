@@ -99,51 +99,47 @@ const WriteDiaryView = () => {
   const handleImageClick = async (background) => {
     console.log(background);
     if (selectCanvas) {
-      fabric.Image.fromURL(
-        background.imgUrl,
-        (img) => {
-          if (background.imgUrl.startsWith("http")) {
-            img.set({ crossOrigin: "anonymous" });
-          }
-          img.scaleToWidth(selectCanvas.getWidth());
-          img.scaleToHeight(selectCanvas.getHeight());
-          img.set({
-            originX: "center",
-            originY: "center",
-            left: selectCanvas.getWidth() / 2,
-            top: selectCanvas.getHeight() / 2,
-          });
-          selectCanvas.setBackgroundImage(
-            img,
-            selectCanvas.renderAll.bind(selectCanvas)
-          );
-        },
-        { crossOrigin: "anonymous" }
-      );
+      fabric.Image.fromURL(background.imgUrl, (img) => {
+        if (background.imgUrl.startsWith("https")) {
+          img.set({ crossOrigin: "anonymous" });
+        }
+        img.scaleToWidth(selectCanvas.getWidth());
+        img.scaleToHeight(selectCanvas.getHeight());
+        img.set({
+          originX: "center",
+          originY: "center",
+          left: selectCanvas.getWidth() / 2,
+          top: selectCanvas.getHeight() / 2,
+        });
+        selectCanvas.setBackgroundImage(
+          img,
+          selectCanvas.renderAll.bind(selectCanvas)
+        );
+      },
+      { crossOrigin: "anonymous" }
+    );
     }
   };
 
   const handleStickerClick = async (sticker) => {
     if (selectCanvas) {
-      fabric.Image.fromURL(
-        sticker.imgUrl,
-        (img) => {
-          if (sticker.imgUrl.startsWith("http")) {
-            img.set({ crossOrigin: "anonymous" });
-          }
-          // img.crossOrigin = "anonymous";
-          img.scaleToHeight(100);
-          img.set({
-            left: selectCanvas.getWidth() / 2,
-            top: selectCanvas.getHeight() / 2,
-            originX: "center",
-            originY: "center",
-          });
-          selectCanvas.add(img);
-          selectCanvas.renderAll();
-        },
-        { crossOrigin: "anonymous" }
-      );
+      fabric.Image.fromURL(sticker.imgUrl, (img) => {
+        if (sticker.imgUrl.startsWith("http")) {
+          img.set({ crossOrigin: "anonymous" });
+        }
+        // img.crossOrigin = "anonymous";
+        img.scaleToHeight(100);
+        img.set({
+          left: selectCanvas.getWidth() / 2,
+          top: selectCanvas.getHeight() / 2,
+          originX: "center",
+          originY: "center",
+        });
+        selectCanvas.add(img);
+        selectCanvas.renderAll();
+      },
+      { crossOrigin: "anonymous" }
+    );
       console.log("cors 테스트 중", selectCanvas);
     }
   };
