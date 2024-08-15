@@ -46,6 +46,7 @@ const toggle = (isOn) => {
     <div style={{ display: "flex" }}>{isOn ? <UpIcon /> : <DownIcon />}</div>
   );
 };
+
 const WriteDiaryView = () => {
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
