@@ -15,7 +15,7 @@ spring:
       connection-timeout: 30000
       max-lifetime: 1800000
 
-  #  sql:
+#    sql:
 #    init:
 #      mode: always
 #      data-locations: classpath:sql/data_prod.sql
