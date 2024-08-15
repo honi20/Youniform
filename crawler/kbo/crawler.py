@@ -441,11 +441,11 @@ def send_pitcher_alert(current_inning, players, away_team, home_team):
 
     if re.search(pattern, current_inning):
         print(player[home_team][players["home_pitcher"][0]])
-        print(home_team + " 투수 : " + players["home_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        print(home_team + " 투수 : " + players["home_pitcher"][0] + ", 등장시간 : " + str(datetime.now().strftime("%H:%M")))
         sendAlert(player[home_team][players["home_pitcher"][0]])
     else:
         print(player[away_team][players["away_pitcher"][0]])
-        print(away_team + " 투수 : " + players["away_pitcher"][0] + ", 등장시간 : " + datetime.now().strftime("%H:%M"))
+        print(away_team + " 투수 : " + players["away_pitcher"][0] + ", 등장시간 : " + str(datetime.now().strftime("%H:%M")))
         sendAlert(player[away_team][players["away_pitcher"][0]])
 
 def send_hitter_alert(current_inning, current_player, away_team, home_team):
