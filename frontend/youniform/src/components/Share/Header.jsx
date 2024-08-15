@@ -92,6 +92,30 @@ const IconContainer = styled.div`
   gap: 5px;
 `;
 
+const LogoutButton = styled.button`
+  color: #ffffff;
+  padding: 0.5em 1.2em;
+  font-size: 15px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  border-radius: 0.5em;
+  background: #262f66;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    background: #7e7e7e;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    background: #7e7e7e;
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2);
+  }
+`;
+
 const Header = () => {
   const { clearUser } = useUserStore();
   const { alerts, fetchAlerts } = useAlertStore();
@@ -159,11 +183,7 @@ const Header = () => {
             <Logo>
               <LogoIcon />
             </Logo>
-            {isToken ? (
-              <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
-            ) : (
-              <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
-            )}
+            <LogoutButton onClick={handleLogoutClick}>LOGOUT</LogoutButton>
           </InnerHead>
         );
       case currentPath === "/my-page":

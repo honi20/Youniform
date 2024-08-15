@@ -208,7 +208,7 @@ const LoginView = () => {
     if (result == "$FAIL") {
       alert("로그인에 실패하였습니다.");
     } else if (result === "$OK") {
-      await fetchPhotoCardList();
+    await fetchPhotoCardList();
       await setTotalPages(photoCards / 4 + 1);
       // subscribe();
       console.log(`로그인 성공`);
@@ -229,7 +229,10 @@ const LoginView = () => {
     window.location.href = google;
   };
 
-  // console.log(accessToken);
+  const handleSocialLogin = (url) => {
+    // 소셜 로그인 제공자의 인증 URL로 리디렉션
+    window.location.href = url;
+  };
 
   return (
     <LoginViewContainer>
@@ -338,9 +341,9 @@ const LoginView = () => {
             <Bar />
           </SocialLoginText>
           <LoginLinkIcon>
-            <LoginIcon src={KakaoIcon} onClick={LoginKakao}></LoginIcon>
-            <LoginIcon src={NaverIcon} onClick={LoginNaver}></LoginIcon>
-            <LoginIcon src={GoogleIcon} onClick={LoginGoogle}></LoginIcon>
+            <LoginIcon src={KakaoIcon} onClick={() => handleSocialLogin(kakao)} alt="Kakao Login"></LoginIcon>
+            <LoginIcon src={NaverIcon} onClick={() => handleSocialLogin(kakao)} alt="Naver Login"></LoginIcon>
+            <LoginIcon src={GoogleIcon} onClick={() => handleSocialLogin(kakao)} alt="Google Login"></LoginIcon>
           </LoginLinkIcon>
         </SocialLogin>
       </LoginContent>

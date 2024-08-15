@@ -17,7 +17,8 @@ const AuthLoginExsist = () => {
                 localStorage.setItem("accessToken", token);
                 navigate('/main'); // 데이터를 전달하며 페이지 이동
             } catch (err) {
-                
+                console.log("에러 발생");
+                console.log(err);
             } finally {
                 setLoading(false); // 로딩 완료
             }

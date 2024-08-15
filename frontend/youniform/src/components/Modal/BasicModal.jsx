@@ -227,6 +227,30 @@ const stateMap = {
     subtitle: "삭제된 포스트는 다시 볼 수 없습니다.",
     btn: [1, 3],
   },
+  AuthKakaoError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 카카오 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
+  AuthNaverError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 네이버 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
+  AuthGoogleError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 구글 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
+  AuthLocalError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 로컬 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
 };
 
 const buttonMap = {
