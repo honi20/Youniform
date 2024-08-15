@@ -1,11 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import VideoIcon from "@assets/Main/Video_duotone_line.svg?react";
 import HeadsetIcon from "@assets/Main/Headphones_fill.svg?react";
 import usePlayerStore from "@stores/playerStore";
 import parse from "html-react-parser";
 import * as Font from "@/typography"
-import { useParams } from "react-router-dom";
+import DownIcon from "@assets/Main/chevron-down.svg?react";
+import UpIcon from "@assets/Main/chevron-up.svg?react";
+
+import { useNavigate, useParams } from "react-router-dom";
+const Wrapper = styled.div`
+  height: calc(100vh - 120px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
+const OuterContainer = styled.div`
+  position: relative;
+  width: 95%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BlurredBorder = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1.5rem;
+  border: 1px solid #262f66;
+  filter: blur(2px);
+  z-index: 0;
+`;
+
+const ContentWrapper = styled.div`
+  position: relative;
+  z-index: 1;
+  border-radius: 1.5rem;
+  width: 95%;
+  height: 95%;
+
+  /* display: flex; */
+`;
 const LyricsDisplay = styled.div`
   height: 77%;
   cursor: default;
@@ -74,8 +115,8 @@ const NavToggle = styled.div`
   height: 8%;
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: default;
-  /* border: 1px solid black; */
 `;
 const ToggleBtn = styled.div`
   width: 70%;
@@ -152,93 +193,76 @@ const SongView = () => {
       // HTML을 JSX로 변환
       return parse(formattedText);
     };
-    const renderCharacter = () => {
-      switch (active) {
-        case 0:
-          return (
-            <CharacterContainer
-                src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/player_appearance_song.png"
-                alt="Appearance_song"
-              />
-          )
-          case 1:
-            return (
-              <CharacterContainer
-                src="https://youniforms3.s3.ap-northeast-2.amazonaws.com/asset/player_cheering_song.png"
-                alt="Cheering_song"
-              />
-            )
-      }
-    }
+   
     const moveToLink = (link) => {
       window.open(link, "_blank", "noopener,noreferrer");
     };
+    const navigate = useNavigate()
+    const [isOn, setIsOn] = useState(false); // 초기 상태 off
+    const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
+    console.log(teamSongs)
+    const handleToggleBtn = (id) => {
+      setIsOn(false);
+      navigate(`/song/team-song/${id}`);
+    };
     return (
       <>
-      
+       <Wrapper>
+      <OuterContainer>
+        <BlurredBorder />
+        <ContentWrapper>
+      <LyricsDisplay>
       <NavToggle>
             <ToggleBtn onClick={() => handleToggle(isOn)}>
-            {playerList.length > 0 &&
-              (playerId == null 
-                ? "팀 이름"  // 여기에 실제 팀 이름을 넣어야 합니다
-                : playerList.find((p) => p.playerId == playerId)?.name)}
+            {teamSongs.find((song) => song.teamSongId == teamSongId)?.title}
             {toggle(isOn)}
             </ToggleBtn>
             <ToggleList $isOn={isOn}>
+            {teamSongs.map((song) => (
             <ToggleItem
-              $isOn={isOn}
-              $isChecked={playerId === 'team'}
-              key="team"
-              onClick={() => handleToggleBtn('team')}
+             $isOn={isOn}
+             $isChecked={teamSongId === song.teamSongId}
+             key={song.teamSongId}
+             onClick={() => handleToggleBtn(song.teamSongId)}
             >
-              {"전체 팀"}  
-              <SelectIcon $isChecked={playerId == 'team'} />
-            </ToggleItem>
-              {playerList.map((player) => (
-                <ToggleItem
-                  $isOn={isOn}
-                  $isChecked={playerId === player.playerId}
-                  key={player.playerId}
-                  onClick={() => handleToggleBtn(player.playerId)}
-                >
-                  {player.name}
-                  <SelectIcon $isChecked={playerId == player.playerId} />
-                </ToggleItem>
-              ))}
+            {song.title}
+            </ToggleItem>))
+}
             </ToggleList>
           </NavToggle>
-        <LyricsDisplay>
           <Title>
             <VideoIcon />
-            {playerSongs && playerSongs.length > 0 
-            ? 
-            active === 0 
-              ? 
-              playerSongs.filter((song) => song.type == "APPEARANCE")[0].title 
-              : 
-              playerSongs.filter((song) => song.type == "CHEERING")[0].title
-            :
-            <>No Song</>}
+            {teamSongs && teamSongs.length > 0
+                  ? 
+                  teamSongs.filter((song) => song.teamSongId == teamSongId)[0].title
+                  : 
+                  <>No Song</>
+            } 
           </Title>
-          <Character>
-          {renderCharacter()}
-          </Character>
-          <Lyrics>
-            {playerSongs && playerSongs.length > 0
-              ? active === 0
-                ? parseText(playerSongs.filter((song) => song.type == "APPEARANCE")[0].lyrics)
-                : playerSongs.length > 1
-                ? parseText(playerSongs.filter((song) => song.type == "CHEERING")[0].lyrics)
-                : "No song available"
-              : "No song available"}
-          </Lyrics>
-        </LyricsDisplay>
-        <Footer>
-          <LinkContainer onClick={() => moveToLink(playerSongs[active].link)}>
-            <HeadsetIcon />
-            노래 듣기
-          </LinkContainer>
-        </Footer>
+        <Character>
+        <CharacterContainer
+              src="https://dsfjel9nvktdp.cloudfront.net/asset/player_appearance_song.png"
+              alt="Appearance_song"
+            />
+        </Character>
+        <Lyrics>
+          {teamSongs && teamSongs.length > 0
+                  ? 
+                  parseText(teamSongs.filter((song) => song.teamSongId == teamSongId)[0].lyrics)
+                  : 
+                  <>No song available</>
+            } 
+        </Lyrics>
+      </LyricsDisplay>
+      <Footer>
+        {/* <LinkContainer onClick={() => moveToLink(playerSongs[active].link)}>
+          <HeadsetIcon />
+          노래 듣기
+        </LinkContainer> */}
+      </Footer>
+      </ContentWrapper>
+      </OuterContainer>
+      </Wrapper>
       </>
     );
   };

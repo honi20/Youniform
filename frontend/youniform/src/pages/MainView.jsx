@@ -112,7 +112,7 @@ const MainView = () => {
             <MessageIcon />
           </IconWrapper>
           <TextContainer>야구 뉴스</TextContainer>
-        </Btn>
+  </Btn>
         <Btn
           onClick={() =>
             navigate(`/chat/${playerList.length==0? 1000 : playerList[selectedPlayer].playerId}`)
