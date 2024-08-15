@@ -15,7 +15,7 @@ const AuthLoginExsist = () => {
             try {
                 const token = new URL(window.location.href).searchParams.get('key');
                 localStorage.setItem("accessToken", token);
-                navigate('/'); // 데이터를 전달하며 페이지 이동
+                navigate('/main'); // 데이터를 전달하며 페이지 이동
             } catch (err) {
                 
             } finally {
