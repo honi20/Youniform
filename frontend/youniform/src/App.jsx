@@ -53,6 +53,7 @@ import AlertView from "./pages/AlertView";
 import ResetPasswordView from "./pages/ResetPasswordView";
 import TestView from "@pages/Diary/TestView";
 import SSEAlertModal from "@/components/Modal/SSEAlertModal";
+import PlayerPushAlarm from "@/pages/Setting/PlayerPushAlarm";
 import useAlertStore from '@stores/alertStore';
 import { isLoggedIn } from '@stores/apiClient';
 
@@ -161,7 +162,10 @@ function App() {
                   element={<ChangePasswordView />}
                 />
                 <Route path="theme" element={<ChangeTheme />} />
-                <Route path="notifications" element={<PushAlarm />} />
+                <Route path="notifications">
+                  <Route index element={<PushAlarm />} />
+                  <Route path="player" element={<PlayerPushAlarm />} />
+                </Route>
                 <Route path="permissions" element={<Permissions />} />
                 <Route path="contact" element={<Contact />} />
                 <Route path="terms" element={<Terms />} />

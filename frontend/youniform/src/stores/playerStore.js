@@ -49,6 +49,19 @@ const usePlayerStore = create((set) => ({
       set({ loading: false, error: err.message });
     }
   },
+  updatePlayerPushAlert: async (playerId, pushAlert) => {
+    set({ loading: true, error: null });
+    const apiClient = getApiClient();
+    try {
+      await apiClient.patch(`/players/alert/${playerId}`, { pushAlert });
+      console.log(`Player ${playerId} pushAlert status updated to ${pushAlert}`);
+      // fetchPlayerList to refresh the player list with updated pushAlert state
+      set({ loading: false });
+    } catch (error) {
+      console.error("Failed to update player pushAlert status:", error);
+      set({ loading: false, error: error.message });
+    }
+  },
 }));
 
 export default usePlayerStore;

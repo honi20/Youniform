@@ -9,6 +9,11 @@ const useUserStore = create((set, get) => ({
   loading: false,
   error: null,
   accessToken: null,
+  pushAlert: null,
+  playPushAlert: null,
+  setPushAlert: (value) => set({ pushAlert: value }),
+  setPlayPushAlert: (value) => set({ playPushAlert: value }),
+
   setAccessToken: (token) => set({ accessToken: token }),
   clearAccessToken: () => set({ accessToken: null }),
 
@@ -18,7 +23,12 @@ const useUserStore = create((set, get) => ({
     // console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users`);
-      set({ user: response.data.body, loading: false });
+      set({ 
+        user: response.data.body, 
+        pushAlert: response.data.body.pushAlert,
+        playPushAlert: response.data.body.playPushAlert,
+        loading: false 
+      });
     } catch (error) {
       console.log("Failed to fetch user", error);
       set({ loading: false, error: error.message });
