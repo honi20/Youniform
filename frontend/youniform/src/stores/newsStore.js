@@ -1,10 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const NEWS_URL = import.meta.env.VITE_NEWS_URL;
 const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
 const NAVER_CLIENT_SECRET = import.meta.env.VITE_NAVER_CLIENT_SECRET;
-const HOST = import.meta.env.VIT_HOST;
 
 const useNewsStore = create((set, get) => ({
   news: {}, // 선수별 뉴스 저장하는 객체 { [playerId]: [] }
@@ -19,9 +17,8 @@ const useNewsStore = create((set, get) => ({
     console.log("뉴스를 불러옵니다.");
     try {
       const newsPromises = playerList.map((player) => {
-        console.log(player)
         return axios
-          .get(`/v1/search/news.json`, {
+          .get(`https://openapi.naver.com/v1/search/news.json`, {
             headers: {
               "X-Naver-Client-Id": NAVER_CLIENT_ID,
               "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
@@ -32,18 +29,22 @@ const useNewsStore = create((set, get) => ({
               start: (page - 1) * 10 + 1,
             },
           })
-          .then((response) => ({
+          .then((response) => (
+            {
             playerId: player.playerId,
-            news: response.data.items,
+            news: response.data.items || [],
             total: response.data.total,
           }));
-      });
+      }
+    );
+    
 
       const results = await Promise.all(newsPromises);
       const newsMap = results.reduce((acc, { playerId, news }) => {
         acc[playerId] = (acc[playerId] || []).concat(news);
         return acc;
       }, {});
+
 
       const totalNews = results.reduce(
         (total, { total: playerTotal }) => total + playerTotal,
@@ -65,9 +66,11 @@ const useNewsStore = create((set, get) => ({
 
   // 특정 선수의 뉴스 가져오기
   fetchTeamNews: async (team) => {
-    console.log(team)
+    console.log("test", team)
+    if (team){
+      console.log("팀 뉴스 조회")
     try {
-      const response = await axios.get(`/v1/search/news.json`, {
+      const response = await axios.get(`https://openapi.naver.com/v1/search/news.json`, {
         headers: {
           "X-Naver-Client-Id": NAVER_CLIENT_ID,
           "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
@@ -77,19 +80,18 @@ const useNewsStore = create((set, get) => ({
           display: 10,
         },
       });
-      console.log(response.data);
+      console.log(response.data)
       set((state) => ({
         news: {
           ...state.news,
-          [team.name]: (state.news[team.name] || []).concat(
-            response.data.items
-          ),
+          [1000]: (state.news[1000] || []).concat(response.data.items || []),
         },
       }));
     } catch (error) {
       console.error("Failed to fetch news:", error);
     }
-  },
+  }
+},
 
   // 특정 선수의 뉴스 반환
   getPlayerNews: (playerId) => {
@@ -98,8 +100,7 @@ const useNewsStore = create((set, get) => ({
 
   // 전체 선수의 뉴스를 합친 총 뉴스 반환
   getTotalNews: () => {
-    const allNews = Object.values(get().news).flat();
-    return allNews;
+    return Object.values(get().news).flat();
   },
 }));
 

@@ -108,6 +108,7 @@ const NewsView = () => {
   const containerRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(null);
+  
   useEffect(() => {
     const loadPlayerList = async () => {
       if ((!playerList || playerList.length == 0) && (!team || team.length == 0)) {
@@ -117,10 +118,13 @@ const NewsView = () => {
       if (playerList.length != 0){
       await fetchTotalNews(playerList);
       }
-      fetchTeamNews(team)
+      if (team.length != 0){
+        console.log('test', team)
+        await fetchTeamNews(team);
+      }
     };
     loadPlayerList();
-  }, [playerList, fetchPlayerList, fetchTotalNews, fetchTeamNews, fetchTeamList]);
+  }, [playerList, fetchPlayerList, fetchTotalNews, fetchTeamNews, fetchTeamList, team]);
 
   useEffect(() => {
     if (playerList && playerList.length > 0) {
@@ -137,10 +141,9 @@ const NewsView = () => {
       ]);
     }
   }, [playerList, team]);
-
   useEffect(() => {
     if (selectedTagId === 0) {
-      setNewsList(getTotalNews());
+      setNewsList(getPlayerNews(1000));
     } else {
       setNewsList(getPlayerNews(selectedTagId));
     }
@@ -172,7 +175,7 @@ const NewsView = () => {
             selected={tag.id == selectedTagId}
             onClick={() => handleTagClick(tag.id)}
           >
-            {tag.name}
+            {tag.name} {selectedTagId}
           </Tag>
         ))}
       </TagSection>
