@@ -53,7 +53,7 @@ VALUES ('최강'),
 
 -- post
 INSERT INTO POST(user_id, img_url, contents, date)
-VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/post/upload_2024-08-06_22_42_06.png',
+VALUES (123, 'https://dsfjel9nvktdp.cloudfront.net/post/upload_2024-08-06_22_42_06.png',
         '최강 몬스터즈 진짜 최고!!', current_date),
     (124, null, '최강 몬스터즈', current_date);
 

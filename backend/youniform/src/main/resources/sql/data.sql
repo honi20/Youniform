@@ -6,13 +6,13 @@ VALUES (1000, CURRENT_DATE, 3, 1, 2, 66.6, '홈그라운드', '서울', '팀 이
 INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_write_diary, team_id, email, introduce,
                    nickname, password, profile_url, provider_type, uuid)
 VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@google.com', '자기소개111', 'User1', '$2a$10$0EMRXBOjq3aEqYROBSC44O36f8YrhiJ35d4A/IgcRhrrhSM6C9Tf6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
        (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@test.com', '자기소개222', 'dubebedu', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100'),
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100'),
        (125, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@test.com', '자기소개222', 'bebebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f101'),
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f101'),
        (126, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@test.com', '자기소개222', '123bebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f102');
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f102');
 
 -- stamp
 INSERT INTO DIARY_STAMP (stamp_id, img_url)
@@ -71,7 +71,7 @@ VALUES ('최강야구'),
        ('최강몬스터즈');
 
 INSERT INTO POST(user_id, img_url, contents, date)
-VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png',
+VALUES (123, 'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png',
         '최강 몬스터즈 진짜 최고!!', current_date),
        (124, null, '최강 몬스터즈1', current_date),
        (124, null, '최강 몬스터즈2', current_date),

@@ -33,6 +33,9 @@ public class S3Service {
     @Value("${BUCKET_URL}")
     private String bucketURl;
 
+    @Value("${CLOUD_FRONT}")
+    private String cloudFrontUrl;
+
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         if(multipartFile.isEmpty() || Objects.isNull(multipartFile.getOriginalFilename())) {
@@ -71,7 +74,11 @@ public class S3Service {
             is.close();
         }
 
-        return amazonS3Client.getUrl(bucket, s3FileName).toString();
+        return generateCloudFrontUrl(s3FileName);
+    }
+
+    private String generateCloudFrontUrl(String s3FileName) {
+        return cloudFrontUrl + s3FileName;
     }
 
     public InputStream download(String fileName) throws IOException {
