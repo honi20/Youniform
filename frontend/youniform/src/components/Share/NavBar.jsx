@@ -65,26 +65,34 @@ const NavBar = () => {
   const location = useLocation();
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const theme = useTheme();
-  const {monthlyDiaries, fetchMonthlyDiaries} = useDiaryStore()
-  const [writed, setWrited] = useState(false)
+  const { monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
+  const [writed, setWrited] = useState(false);
 
   const formatDate = (day) => format(day, "yyyy-MM-dd");
   const formattedDate = formatDate(new Date());
+
   useEffect(() => {
-    // console.log('juyeon navbar test')
     setCurrentPath(location.pathname);
-    if (!monthlyDiaries || monthlyDiaries.length == 0){
+    if (!monthlyDiaries || monthlyDiaries.length === 0) {
       fetchMonthlyDiaries();
     }
-    
-    setWrited(monthlyDiaries.some((diary) => diary.diaryDate == formattedDate))
+    setWrited(monthlyDiaries.some((diary) => diary.diaryDate === formattedDate));
   }, [location.pathname, fetchMonthlyDiaries, monthlyDiaries]);
-  
+
+  // 특정 경로에서 NavBar를 숨기기 위한 조건 설정
+  const hideNavBarPaths = ["/", "/login", "/signup", "/find-password", "/find-email",
+    "/reset-password/*", "/sign-up/*", "/social/sign-up/*", "/select-player"
+  ]; // 숨기고 싶은 경로들
+  const shouldHideNavBar = hideNavBarPaths.includes(currentPath);
+
+  if (shouldHideNavBar) {
+    return null; // 특정 경로에서 NavBar를 숨김
+  }
 
   return (
     <Nav>
       <LinkDiv>
-        <StyledLink to="/">
+        <StyledLink to="/main">
           <HomeIcon />
           <p>홈</p>
         </StyledLink>

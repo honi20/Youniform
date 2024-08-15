@@ -213,7 +213,7 @@ const LoginView = () => {
       // subscribe();
       console.log(`로그인 성공`);
       console.log(`sse 연결 성공`)
-      navigate("/");
+      navigate("/main");
     }
   };
 
