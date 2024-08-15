@@ -326,7 +326,7 @@ def init():
     player["WO"]["박주홍"] = 308
 
 def sendAlert(player_id):
-    requests.get("https://youniform.site/api/alerts/player/" + str(player_id))
+    # requests.get("https://youniform.site/api/alerts/player/" + str(player_id))
 
 def game_info_crawling(response, game_id):
     try:
