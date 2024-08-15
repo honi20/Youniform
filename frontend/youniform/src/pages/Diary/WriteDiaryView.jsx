@@ -151,7 +151,10 @@ const WriteDiaryView = () => {
     const getFontName = (path) => {
       const parts = path.split("/");
       const fileName = parts[parts.length - 1];
-      return fileName.split(".")[0];
+      const baseName = fileName.split(".")[0];
+  const cleanName = baseName.replace(/[-].*$/, ""); 
+
+  return cleanName;
     };
     await document.fonts.load(`16px ${getFontName(selectedFont)}`);
     console.log(selectedFont, getFontName(selectedFont))
