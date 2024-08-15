@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -46,22 +47,41 @@ public class WebSocketController {
         }
     }
 
-    // 하트비트 측정
-    @MessageMapping("/heartbeat")
-    public void processHeartbeat(SimpMessageHeaderAccessor headerAccessor) {
-        log.info("heartbeat 연결 성공!!");
+    // 하트비트 처리
+    @MessageMapping("/heartbeat/{roomId}")
+    public void processHeartbeat(@DestinationVariable Long roomId, SimpMessageHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
+        log.info("session id 접수 완료"+ sessionId);
 
         String authHeader = headerAccessor.getFirstNativeHeader("Authorization");
+        Long userId = null;
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            Long userId = (Long) jwtService.getAuthentication(token).getPrincipal();
+            userId = (Long) jwtService.getAuthentication(token).getPrincipal();
+            log.info("하트비트 처리: userId: {}, sessionId: {}, roomId: {}", userId, sessionId, roomId);
+        } else {
+            log.info("헤더 없음!");
+            throw new IllegalArgumentException("Authorization 헤더가 유효하지 않습니다.");
+        }
 
+        if (userId != null) {
+            log.info("userId 있음!!");
             long currentTimeMillis = System.currentTimeMillis();
-            String redisKey = "chat:user:" + userId + ":session:" + sessionId;
 
-            longRedisTemplate.opsForValue().set(redisKey, currentTimeMillis, 1, TimeUnit.MINUTES);
-            log.info("longRedisTemplate 설정끝!");
+            String userSessionKey = "chat:user:" + userId + ":session:" + sessionId;
+            String sessionRoomKey = "session:" + sessionId;
+
+            // Redis에 현재 시간과 roomId 저장 또는 갱신
+            longRedisTemplate.opsForValue().set(userSessionKey, currentTimeMillis, 1, TimeUnit.MINUTES);
+            longRedisTemplate.opsForValue().set(sessionRoomKey, roomId, 1, TimeUnit.MINUTES);
+
+            log.info("Heartbeat received and stored for userId: {}, sessionId: {}, roomId: {}", userId, sessionId, roomId);
+
+            // 방의 유저 수 갱신 및 브로드캐스트
+            chatService.broadcastUserCount(roomId);
+        } else {
+            log.warn("Heartbeat 처리 중 UserId를 찾을 수 없습니다. SessionId: {}", sessionId);
         }
     }
 }

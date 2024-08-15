@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -95,6 +96,7 @@ public class ChatServiceImpl implements ChatService {
 
         List<ChatMessageDto> chatMessageDtos = slicedMessages.getContent()
                 .stream()
+                .sorted(Comparator.comparing(ChatMessage::getMessageTime))
                 .map(ChatMessageDto::toDto)
                 .collect(Collectors.toList());
 
@@ -108,6 +110,7 @@ public class ChatServiceImpl implements ChatService {
 
         List<ChatMessageDto> chatMessageDtos = slicedMessages.getContent()
                 .stream()
+                .sorted(Comparator.comparing(ChatMessage::getMessageTime))
                 .map(ChatMessageDto::toDto)
                 .collect(Collectors.toList());
 
@@ -121,6 +124,7 @@ public class ChatServiceImpl implements ChatService {
 
         List<ChatMessageDto> chatMessageDtos = slicedMessages.getContent()
                 .stream()
+                .sorted(Comparator.comparing(ChatMessage::getMessageTime).reversed())
                 .map(ChatMessageDto::toDto)
                 .collect(Collectors.toList());
 
@@ -192,6 +196,19 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public Long getUserIdFromSessionId(String sessionId) {
+        Set<String> keys = longRedisTemplate.keys("chat:user:*:session:" + sessionId);
+
+        if (keys != null && !keys.isEmpty()) {
+            String key = keys.iterator().next(); // 해당 세션 ID의 첫 번째 키를 가져옴
+            String[] parts = key.split(":");
+            return Long.valueOf(parts[2]); // userId 추출
+        }
+
+        return null;
+    }
+
+    @Override
     public Long getRoomIdFromSessionId(String sessionId) {
         return longRedisTemplate.opsForValue().get("session:" + sessionId);
     }
@@ -199,10 +216,11 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void broadcastUserCount(Long roomId) {
         Set<String> keys = longRedisTemplate.keys("session:*");
-        int connectedUsers = (int) keys.stream()
+
+        long userCount = keys.stream()
                 .filter(key -> roomId.equals(longRedisTemplate.opsForValue().get(key)))
                 .count();
 
-        messagingTemplate.convertAndSend("/sub/" + roomId + "/userCount", connectedUsers);
+        messagingTemplate.convertAndSend("/sub/" + roomId + "/userCount", userCount);
     }
 }

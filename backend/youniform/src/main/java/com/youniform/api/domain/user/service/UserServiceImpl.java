@@ -113,6 +113,10 @@ public class UserServiceImpl implements UserService {
     public String signup(SignupReq user) {
         String uuid = UUID.randomUUID().toString();
 
+        if(userRepository.findByNickname(user.getNickname()) != null){
+            throw new CustomException(ALREADY_EXIST_USER);
+        }
+
         if (user.getProviderType().equals("local")) {
             String password = passwordEncoder.encode(user.getPassword());
             user.setPassword(password);
