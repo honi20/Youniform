@@ -183,6 +183,10 @@ const WritePostView = () => {
     return formData;
   };
   const handleSave = async () => {
+    if (!content.trim()) {  // content가 비어 있거나 공백만 있는 경우
+      alert("내용을 입력해주세요.");  // 사용자에게 경고 메시지 표시
+      return;  // 저장을 시도하지 않음
+    }
     try {
       const formData = await createFormData();
       let newPostId = "";
