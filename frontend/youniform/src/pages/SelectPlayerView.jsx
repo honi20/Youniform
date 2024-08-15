@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import usePlayerStore from "../stores/playerStore";
 const Div = styled.div`
   width: 100%;
-  height: ${(props) => (props.$step ? "100%" : "calc(100vh - 120px)")};
+  height: ${(props) => (props.$step ? "calc(100vh - 120px)" : "calc(100vh - 120px)")};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -276,11 +276,10 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
 
   const changePlayer = async () => {
     const apiClient = getApiClient();
-    // console.log(selectedPlayers.length == 1 & selectedPlayers[0] == 0 ? [] : selectedPlayers)
     try {
       const res = await apiClient.patch(`users/favorite`, {
         teamId: 1000,
-        players: selectedPlayers.length == 1 & selectedPlayers[0] == 0 ? [] : selectedPlayers,
+        players: selectedPlayers,
       });
       console.log(res.data);
       const { body, header } = res.data;

@@ -8,7 +8,7 @@ export const createApiClient = (accessToken) => {
   }
 
   console.log("createApiClient: API 클라이언트를 생성합니다.");
-  console.log(API_URL);
+  // console.log(API_URL);
   return axios.create({
     baseURL: API_URL,
     headers: {

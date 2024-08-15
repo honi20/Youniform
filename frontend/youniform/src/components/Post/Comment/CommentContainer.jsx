@@ -128,12 +128,19 @@ const CommentContainer = ({ postId, user }) => {
   const [content, setContent] = useState("");
   const post = usePostStore((state) => state.post); // 현재 포스트 가져오기
   const comments = usePostStore((state) => state.comments[postId] || []); // 현재 포스트의 댓글 목록 가져오기
-  const { addComment, updateComment, deleteComment } = usePostStore();
+  const { addComment, updateComment, deleteComment, fetchPost } = usePostStore();
   const [showEllipsis, setShowEllipsis] = useState(true);
   const [editedComment, setEditedComment] = useState(null);
   // const { user, fetchUser } = useUserStore();
   const scrollableRef = useRef(null);
   const isInitialRender = useRef(true);
+  useEffect(() => {
+    if (!isInitialRender.current) {
+      fetchPost(postId);
+    } else {
+      isInitialRender.current = false;
+    }
+  }, [postId, updateComment]);
   // 스크롤 시 발동하는 함수
   const handleScroll = (event) => {
     const { scrollTop, scrollHeight, clientHeight } = event.target;

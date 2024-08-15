@@ -17,6 +17,7 @@ const NextStepBtn = styled.div`
   margin-top: 10px;
   margin-bottom: 120px;
   z-index: 1;
+  /* border: 1px solid black; */
 `;
 
 const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {

@@ -206,8 +206,8 @@ const fileInputRef = useRef(null);
     : [];
 
   const renderContent = () => {
-    console.log(themes);
-    console.log(filteredBackgrounds, selectedColor);
+    // console.log(themes);
+    // console.log(filteredBackgrounds, selectedColor);
     switch (selectedBtn) {
       case 0:
         return (

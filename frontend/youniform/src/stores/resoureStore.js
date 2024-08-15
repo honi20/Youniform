@@ -72,7 +72,7 @@ const useResourceStore = create((set, get) => ({
     try {
       const res = await apiClient.get(`/diaries/stamps`);
       console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.body);
       set({ stampList: res.data.body.stampList, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);

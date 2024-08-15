@@ -23,6 +23,7 @@ const Div = styled.div`
 `;
 
 const loadCanvasFromJSON = (canvas, json) => {
+  console.log('test')
   canvas.loadFromJSON(json, () => {
     canvas.renderAll();
   });
@@ -66,7 +67,6 @@ const CanvasComp = ({
   }, []);
   useEffect(() => {
     if (selectCanvas && diary) {
-      console.log("캔버스 로드");
       loadCanvasFromJSON(selectCanvas, diary);
     }
   }, [selectCanvas, diary]);

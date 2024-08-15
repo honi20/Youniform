@@ -293,7 +293,7 @@ const PostDetailView = () => {
                 </>
               ) : (
                 <LowerContainer>
-                  {user.nickname === post.nickname && (
+                  {post && user.nickname === post.nickname && (
                     <>
                       &nbsp;
                       <Btn
