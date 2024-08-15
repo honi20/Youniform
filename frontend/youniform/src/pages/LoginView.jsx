@@ -135,6 +135,9 @@ const LoginView = () => {
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [currency, setCurrency] = useState("");
   // const subscribe = useAlertStore(state => state.subscribe);
+  const kakao = import.meta.env.VITE_KAKAO_URL;
+  const naver = import.meta.env.VITE_NAVER_URL;
+  const google = import.meta.env.VITE_GOOGLE_URL;
 
   const navigate = useNavigate();
 
@@ -212,6 +215,18 @@ const LoginView = () => {
       console.log(`sse 연결 성공`)
       navigate("/");
     }
+  };
+
+  const LoginKakao = () => {
+    window.location.href = kakao;
+  };
+
+  const LoginNaver = () => {
+    window.location.href = naver;
+  };
+
+  const LoginGoogle = () => {
+    window.location.href = google;
   };
 
   // console.log(accessToken);
@@ -323,9 +338,9 @@ const LoginView = () => {
             <Bar />
           </SocialLoginText>
           <LoginLinkIcon>
-            <LoginIcon src={KakaoIcon} onClick={handleLoginClick}></LoginIcon>
-            <LoginIcon src={NaverIcon}></LoginIcon>
-            <LoginIcon src={GoogleIcon}></LoginIcon>
+            <LoginIcon src={KakaoIcon} onClick={LoginKakao}></LoginIcon>
+            <LoginIcon src={NaverIcon} onClick={LoginNaver}></LoginIcon>
+            <LoginIcon src={GoogleIcon} onClick={LoginGoogle}></LoginIcon>
           </LoginLinkIcon>
         </SocialLogin>
       </LoginContent>

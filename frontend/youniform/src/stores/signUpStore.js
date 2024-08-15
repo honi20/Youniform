@@ -128,6 +128,36 @@ const signUpStore = create((set, get) => ({
       console.log("Failed to fetch Local SignUp", err);
     }
   },
+  fetchLocalSignUp: async () => {
+    try {
+      const { user } = get();
+      const res = await axios({
+        method: "post",
+        url: `${API_URL}/users/signup/${user.providerType}`,
+        data: {
+          email: user.email,
+          password: user.password,
+          providerType: user.providerType,
+          profileUrl: user.profileUrl,
+          nickname: user.nickname,
+          introduce: user.introduce,
+          team: "MONSTERS",
+          players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
+        },
+      });
+      console.log("Success to fetch Local SignUp");
+      if (res.data.header.httpStatusCode === 200) {
+        const accessToken = res.data.body.accessToken;
+        const { setAccessToken } = useUserStore.getState();
+        setAccessToken(accessToken);
+        console.log('Access Token:', accessToken);
+        console.log(res.data.body.accessToken);
+        return "$SUCCESS"
+      }
+    } catch (err) {
+      console.log("Failed to fetch Local SignUp", err);
+    }
+  },
 }));
 
 export default signUpStore;
