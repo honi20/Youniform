@@ -50,6 +50,8 @@ const useDiaryStore = create((set) => ({
           calendarDate: formattedDate,
         },
       });
+      console.log("데이터 형식 출력");
+      console.log(formattedDate);
       console.log(res.data.header.message);
       console.log(res.data.body);
       set({ monthlyDiaries: res.data.body.diaryList });
@@ -59,6 +61,7 @@ const useDiaryStore = create((set) => ({
   },
 
   fetchFriendsDiaries: async (id, formattedDate) => {
+    console.log(id);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries/monthly/${id}`, {
@@ -66,6 +69,7 @@ const useDiaryStore = create((set) => ({
           calendarDate: formattedDate,
         },
       });
+      console.log("fetchFriendsDiaries");
       console.log(res.data.header.message);
       console.log(res.data.body);
       set({ monthlyDiaries: res.data.body.diaryList });

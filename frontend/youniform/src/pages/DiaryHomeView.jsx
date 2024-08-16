@@ -43,8 +43,6 @@ const DiaryHomeView = () => {
   const handleUserClick = (user) => {
     setSelectedUser(user);
     setCurrentMonth(new Date()); // 현재 월로 설정
-    // 렌더링 강제화
-    setRenderTrigger((prev) => !prev);
   };
 
   return (
