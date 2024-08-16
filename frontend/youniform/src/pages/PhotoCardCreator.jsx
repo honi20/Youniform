@@ -41,26 +41,30 @@ const PhotoCardCreator = () => {
   const navigate = useNavigate();
 
   const { createPhotoCard, fetchPhotoCardList } = usePhotoCardStore();
-  const { backgrounds, stickers, templates, themes, fetchResources, fetchPhotocardResources } =
-    useResourceStore((state) => ({
-      backgrounds: state.backgrounds,
-      stickers: state.stickers,
-      templates: state.templates,
-      themes: state.themes,
-      fetchResources: state.fetchResources,
-      fetchStampList: state.fetchStampList,
-      fetchPhotocardResources: state.fetchPhotocardResources,
-    }));
+  const {
+    backgrounds,
+    stickers,
+    templates,
+    themes,
+    fetchResources,
+    fetchPhotocardResources,
+  } = useResourceStore((state) => ({
+    backgrounds: state.backgrounds,
+    stickers: state.stickers,
+    templates: state.templates,
+    themes: state.themes,
+    fetchResources: state.fetchResources,
+    fetchStampList: state.fetchStampList,
+    fetchPhotocardResources: state.fetchPhotocardResources,
+  }));
 
   const { stampList, selectedCategory, selectedColor } = useResourceStore();
   const [selectedBtn, setSelectedBtn] = useState(0);
   const [selectCanvas, setSelectCanvas] = useState(null);
   const [isDecorated, setIsDecorated] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [diary, setDiary] = useState(null);
-
+  const [isExampleOn, setIsExampleOn] = useState(false);
   const fileInputRef = useRef(null); // 파일 입력 참조
 
   useEffect(() => {
@@ -68,9 +72,6 @@ const PhotoCardCreator = () => {
     fetchPhotocardResources();
   }, [fetchResources, fetchPhotocardResources]);
 
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
   const openSaveModal = () => setIsSaveModalOpen(true);
   const closeSaveModal = () => setIsSaveModalOpen(false);
 
@@ -95,52 +96,58 @@ const PhotoCardCreator = () => {
         }
       });
 
-      fabric.Image.fromURL(selectedImg, (img) => {
-        img.scaleToWidth(selectCanvas.getWidth());
-        img.scaleToHeight(selectCanvas.getHeight());
-        img.set({
-          originX: "center",
-          originY: "center",
-          left: selectCanvas.getWidth() / 2,
-          top: selectCanvas.getHeight() / 2,
-          selectable: false,  // 프레임을 선택 불가로 설정
-          evented: false,
-          hasControls: false,  // 컨트롤 핸들러를 비활성화
-          hasBorders: false,   // 경계선을 비활성화
-          lockMovementX: true, // X축으로 이동 불가
-          lockMovementY: true, // Y축으로 이동 불가
-          lockScalingX: true,  // X축 크기 조정 불가
-          lockScalingY: true,  // Y축 크기 조정 불가
-          lockRotation: true,  // 회전 불가
-        });
-        selectCanvas.add(img);
-        selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
-        selectCanvas.renderAll();
-        selectCanvas.add(img);
-        selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
-        selectCanvas.renderAll();
-      }, { crossOrigin: "anonymous" }); // 이 부분 추가);
+      fabric.Image.fromURL(
+        selectedImg,
+        (img) => {
+          img.scaleToWidth(selectCanvas.getWidth());
+          img.scaleToHeight(selectCanvas.getHeight());
+          img.set({
+            originX: "center",
+            originY: "center",
+            left: selectCanvas.getWidth() / 2,
+            top: selectCanvas.getHeight() / 2,
+            selectable: false, // 프레임을 선택 불가로 설정
+            evented: false,
+            hasControls: false, // 컨트롤 핸들러를 비활성화
+            hasBorders: false, // 경계선을 비활성화
+            lockMovementX: true, // X축으로 이동 불가
+            lockMovementY: true, // Y축으로 이동 불가
+            lockScalingX: true, // X축 크기 조정 불가
+            lockScalingY: true, // Y축 크기 조정 불가
+            lockRotation: true, // 회전 불가
+          });
+          selectCanvas.add(img);
+          selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
+          selectCanvas.renderAll();
+          selectCanvas.add(img);
+          selectCanvas.bringToFront(img); // 새 프레임을 최상위로 가져옴
+          selectCanvas.renderAll();
+        },
+        { crossOrigin: "anonymous" }
+      ); // 이 부분 추가);
     }
   };
 
   const handleStickerClick = async (sticker) => {
     if (selectCanvas) {
-      fabric.Image.fromURL(sticker.imgUrl, (img) => {
-        if (sticker.imgUrl.startsWith("http")) {
-          img.set({ crossOrigin: "anonymous" });
-        }
-        img.scaleToHeight(100);
-        img.set({
-          left: selectCanvas.getWidth() / 2,
-          top: selectCanvas.getHeight() / 2,
-          originX: "center",
-          originY: "center",
-        });
-        selectCanvas.add(img);
-        selectCanvas.renderAll();
-      },
-      { crossOrigin: "anonymous" }
-    );
+      fabric.Image.fromURL(
+        sticker.imgUrl,
+        (img) => {
+          if (sticker.imgUrl.startsWith("http")) {
+            img.set({ crossOrigin: "anonymous" });
+          }
+          img.scaleToHeight(100);
+          img.set({
+            left: selectCanvas.getWidth() / 2,
+            top: selectCanvas.getHeight() / 2,
+            originX: "center",
+            originY: "center",
+          });
+          selectCanvas.add(img);
+          selectCanvas.renderAll();
+        },
+        { crossOrigin: "anonymous" }
+      );
     }
   };
 
@@ -190,10 +197,7 @@ const PhotoCardCreator = () => {
       case 0:
         return (
           <>
-            <FrameComp
-              wallpapers={templates}
-              onImageClick={handleImageClick}
-            />
+            <FrameComp wallpapers={templates} onImageClick={handleImageClick} />
           </>
         );
       case 1:
@@ -237,11 +241,13 @@ const PhotoCardCreator = () => {
       try {
         const photocardImgUrl = selectCanvas.toDataURL({ format: "png" });
         const formData = new FormData();
-        const imageBlob = await fetch(photocardImgUrl).then((res) => res.blob());
+        const imageBlob = await fetch(photocardImgUrl).then((res) =>
+          res.blob()
+        );
         formData.append("file", imageBlob, "image.png");
         await createPhotoCard(formData);
         await fetchPhotoCardList();
-  
+
         // 다음 모달 open
         setIsConfirmModalOpen(true);
         // 바인더로 이동
@@ -346,7 +352,10 @@ const PhotoCardCreator = () => {
                 </St.IconContainer>
                 <St.IconFont>꾸미기</St.IconFont>
               </St.Btn>
-              <St.Btn $decorated={isDecorated} onClick={() => setIsExampleOn((prev) => !prev)}>
+              <St.Btn
+                $decorated={isDecorated}
+                onClick={() => setIsExampleOn((prev) => !prev)}
+              >
                 <St.IconContainer>
                   <ExampleIcon />
                 </St.IconContainer>
@@ -406,10 +415,9 @@ const PhotoCardCreator = () => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-      {/* {isExampleOn && <ExampleModal
-          isOn={isExampleOn}
-          setIsOn={setIsExampleOn}
-      />} */}
+      {isExampleOn && (
+        <ExampleModal isOn={isExampleOn} setIsOn={setIsExampleOn} />
+      )}
     </>
   );
 };
