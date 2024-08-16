@@ -131,15 +131,19 @@ import DeleteFriendIcon from "@assets/Post/Sad_alt_light.svg?react";
 import { useNavigate } from "react-router-dom";
 import usePostStore from "@stores/postStore";
 import useDiaryStore from "@stores/diaryStore";
+import useFriendStore from "../../stores/friendStore";
 
 const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { fetchFriendPosts } = usePostStore();
   const { fetchFriendDiary } = useDiaryStore();
+  const { fetchFriends } = useFriendStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [friendStatus, setFriendStatus] = useState(friend.isFriend);
+
   if (!isOpen) return null;
-  
+
   if (user.nickname === friend.nickname) {
     navigate("/my-page");
     return;
@@ -150,7 +154,7 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
       navigate(`/post/friend/${friend.nickname}`);
     } catch (error) {
       console.log("Failed to fetch friend", error);
-      set({ loading: false, error: error.message });
+      // set({ loading: false, error: error.message });
     }
   };
   const friendDiary = async (friend) => {
@@ -159,7 +163,7 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
       navigate(`/diary/friend/${friend.nickname}`);
     } catch (error) {
       console.log("Failed to fetch friend", error);
-      set({ loading: false, error: error.message });
+      // set({ loading: false, error: error.message });
     }
   };
   const addFriend = async (friend) => {
@@ -170,28 +174,30 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
         friendUuid: friend.userId,
       });
       console.log(res.data.message);
+      setFriendStatus("WAITING");
     } catch (error) {
       console.log("Failed to Add friend", error);
-      set({ loading: false, error: error.message });
+      // set({ loading: false, error: error.message });
     }
   };
   const deleteFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
       console.log(friend.userId);
-      const res = await apiClient.post(`/friends/request`, {
+      const res = await apiClient.delete(`/friends/request`, {
         friendUuid: friend.userId,
       });
       console.log(res.data.message);
+      setFriendStatus("NOT_FRIEND");
     } catch (error) {
       console.log("Failed to Add friend", error);
-      set({ loading: false, error: error.message });
+      // set({ loading: false, error: error.message });
     }
   };
   const FriendComponent = ({ friend, addFriend }) => {
     const { isFriend } = friend;
     console.log(friend, isFriend);
-    switch (isFriend) {
+    switch (friendStatus) {
       case "NOT_FRIEND":
         return (
           <UserItem
@@ -213,7 +219,7 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
           <UserItem
             icon={DeleteFriendIcon}
             text="친구 삭제"
-            onClick={() => console.log("친구 삭제")}
+            onClick={() => deleteFriend(friend)}
           />
         );
       default:
@@ -235,7 +241,9 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
             <BtnContainer onClick={onClose}>{CloseSvg(theme)}</BtnContainer>
           </Header>
           <Profile>
-            <ProfileImg src={friend.imgUrl ? friend.imgUrl : friend.profileUrl} />
+            <ProfileImg
+              src={friend.imgUrl ? friend.imgUrl : friend.profileUrl}
+            />
             <ProfileInfo>
               <Nickname>{friend.nickname}</Nickname>
               <Introduce>{friend.introduce}</Introduce>
