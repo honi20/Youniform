@@ -140,7 +140,9 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const { fetchFriendDiary } = useDiaryStore();
   const { fetchFriends } = useFriendStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [friendStatus, setFriendStatus] = useState(friend.isFriend);
+  const [friendStatus, setFriendStatus] = useState(
+    friend ? friend.isFriend : null
+  );
 
   if (!isOpen) return null;
 

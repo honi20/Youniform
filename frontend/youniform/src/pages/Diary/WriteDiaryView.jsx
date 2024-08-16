@@ -205,25 +205,32 @@ const WriteDiaryView = () => {
             img,
             selectCanvas.renderAll.bind(selectCanvas)
           );
-        }
-        // { crossOrigin: "anonymous" }
+        },
+        { crossOrigin: "anonymous" }
       );
     }
   };
   const handleImageSelect = (imageUrl) => {
     if (selectCanvas) {
-      fabric.Image.fromURL(imageUrl, (img) => {
-        const desiredHeight = 200; // 원하는 세로 크기
-        img.scaleToHeight(desiredHeight);
-        img.set({
-          left: selectCanvas.getWidth() / 2,
-          top: selectCanvas.getHeight() / 2,
-          originX: "center",
-          originY: "center",
-        });
-        selectCanvas.add(img);
-        selectCanvas.renderAll();
-      });
+      fabric.Image.fromURL(
+        imageUrl,
+        (img) => {
+          if (imageUrl.startsWith("https")) {
+            img.set({ crossOrigin: "anonymous" });
+          }
+          const desiredHeight = 200; // 원하는 세로 크기
+          img.scaleToHeight(desiredHeight);
+          img.set({
+            left: selectCanvas.getWidth() / 2,
+            top: selectCanvas.getHeight() / 2,
+            originX: "center",
+            originY: "center",
+          });
+          selectCanvas.add(img);
+          selectCanvas.renderAll();
+        },
+        { crossOrigin: "anonymous" }
+      );
     }
   };
 
