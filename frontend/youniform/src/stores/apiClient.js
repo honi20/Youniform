@@ -48,10 +48,7 @@ export const getApiClient = () => {
       const originalRequest = error.config;
       console.log(error.message);
 
-      if (
-        (error.response.status === 400 || error.response.status === 403) &&
-        !originalRequest._retry
-      ) {
+      if (error.response.status === 403 && !originalRequest._retry) {
         originalRequest._retry = true;
         console.log(error.response.data.body);
         console.log("토큰이 재발급 되었습니다.");
