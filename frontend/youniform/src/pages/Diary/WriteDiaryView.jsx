@@ -56,8 +56,14 @@ const WriteDiaryView = () => {
   const [update, setUpdate] = useState(false);
   const { diaryId, diaryDate } = useParams();
   const navigate = useNavigate();
-  const { diary, fetchDiary, addDiary, updateDiary, initializeDiary, fetchMonthlyDiaries } =
-    useDiaryStore();
+  const {
+    diary,
+    fetchDiary,
+    addDiary,
+    updateDiary,
+    initializeDiary,
+    fetchMonthlyDiaries,
+  } = useDiaryStore();
   const { backgrounds, stickers, themes, fetchResources, fetchStampList } =
     useResourceStore((state) => ({
       backgrounds: state.backgrounds,
@@ -83,7 +89,7 @@ const WriteDiaryView = () => {
 
   useEffect(() => {
     fetchResources();
-    console.log(themes)
+    console.log(themes);
     fetchStampList();
   }, [fetchResources, fetchStampList]);
 
@@ -104,46 +110,50 @@ const WriteDiaryView = () => {
   const handleImageClick = async (background) => {
     console.log(background);
     if (selectCanvas) {
-      fabric.Image.fromURL(background.imgUrl, (img) => {
-        if (background.imgUrl.startsWith("https")) {
-          img.set({ crossOrigin: "anonymous" });
-        }
-        img.scaleToWidth(selectCanvas.getWidth());
-        img.scaleToHeight(selectCanvas.getHeight());
-        img.set({
-          originX: "center",
-          originY: "center",
-          left: selectCanvas.getWidth() / 2,
-          top: selectCanvas.getHeight() / 2,
-        });
-        selectCanvas.setBackgroundImage(
-          img,
-          selectCanvas.renderAll.bind(selectCanvas)
-        );
-      },
-      { crossOrigin: "anonymous" }
-    );
+      fabric.Image.fromURL(
+        background.imgUrl,
+        (img) => {
+          if (background.imgUrl.startsWith("https")) {
+            img.set({ crossOrigin: "anonymous" });
+          }
+          img.scaleToWidth(selectCanvas.getWidth());
+          img.scaleToHeight(selectCanvas.getHeight());
+          img.set({
+            originX: "center",
+            originY: "center",
+            left: selectCanvas.getWidth() / 2,
+            top: selectCanvas.getHeight() / 2,
+          });
+          selectCanvas.setBackgroundImage(
+            img,
+            selectCanvas.renderAll.bind(selectCanvas)
+          );
+        },
+        { crossOrigin: "anonymous" }
+      );
     }
   };
 
   const handleStickerClick = async (sticker) => {
     if (selectCanvas) {
-      fabric.Image.fromURL(sticker.imgUrl, (img) => {
-        if (sticker.imgUrl.startsWith("http")) {
-          img.set({ crossOrigin: "anonymous" });
-        }
-        img.scaleToHeight(100);
-        img.set({
-          left: selectCanvas.getWidth() / 2,
-          top: selectCanvas.getHeight() / 2,
-          originX: "center",
-          originY: "center",
-        });
-        selectCanvas.add(img);
-        selectCanvas.renderAll();
-      },
-      { crossOrigin: "anonymous" }
-    );
+      fabric.Image.fromURL(
+        sticker.imgUrl,
+        (img) => {
+          if (sticker.imgUrl.startsWith("http")) {
+            img.set({ crossOrigin: "anonymous" });
+          }
+          img.scaleToHeight(100);
+          img.set({
+            left: selectCanvas.getWidth() / 2,
+            top: selectCanvas.getHeight() / 2,
+            originX: "center",
+            originY: "center",
+          });
+          selectCanvas.add(img);
+          selectCanvas.renderAll();
+        },
+        { crossOrigin: "anonymous" }
+      );
     }
   };
 
@@ -152,12 +162,12 @@ const WriteDiaryView = () => {
       const parts = path.split("/");
       const fileName = parts[parts.length - 1];
       const baseName = fileName.split(".")[0];
-  const cleanName = baseName.replace(/[-].*$/, ""); 
+      const cleanName = baseName.replace(/[-].*$/, "");
 
-  return cleanName;
+      return cleanName;
     };
     await document.fonts.load(`16px ${getFontName(selectedFont)}`);
-    console.log(selectedFont, getFontName(selectedFont))
+    console.log(selectedFont, getFontName(selectedFont));
     if (selectCanvas) {
       console.log(selectedFont);
       const text = new fabric.Textbox("입력하세요.", {
@@ -177,35 +187,34 @@ const WriteDiaryView = () => {
   const handleThemeClick = async (background) => {
     console.log(background);
     if (selectCanvas) {
-      fabric.Image.fromURL(background.imgUrl, (img) => {
-        if (background.imgUrl.startsWith("https")) {
-          img.set({ crossOrigin: "anonymous" });
+      fabric.Image.fromURL(
+        background.imgUrl,
+        (img) => {
+          if (background.imgUrl.startsWith("https")) {
+            img.set({ crossOrigin: "anonymous" });
+          }
+          img.scaleToWidth(selectCanvas.getWidth());
+          img.scaleToHeight(selectCanvas.getHeight());
+          img.set({
+            originX: "center",
+            originY: "center",
+            left: selectCanvas.getWidth() / 2,
+            top: selectCanvas.getHeight() / 2,
+          });
+          selectCanvas.setBackgroundImage(
+            img,
+            selectCanvas.renderAll.bind(selectCanvas)
+          );
         }
-        img.scaleToWidth(selectCanvas.getWidth());
-        img.scaleToHeight(selectCanvas.getHeight());
-        img.set({
-          originX: "center",
-          originY: "center",
-          left: selectCanvas.getWidth() / 2,
-          top: selectCanvas.getHeight() / 2,
-        });
-        selectCanvas.setBackgroundImage(
-          img,
-          selectCanvas.renderAll.bind(selectCanvas)
-        );
-      },
-      { crossOrigin: "anonymous" }
-    );
+        // { crossOrigin: "anonymous" }
+      );
     }
   };
   const handleImageSelect = (imageUrl) => {
     if (selectCanvas) {
       fabric.Image.fromURL(imageUrl, (img) => {
-        // const desiredWidth = 200; // 원하는 가로 크기
-            const desiredHeight = 200; // 원하는 세로 크기
-            
-            // img.scaleToWidth(desiredWidth);
-            img.scaleToHeight(desiredHeight);
+        const desiredHeight = 200; // 원하는 세로 크기
+        img.scaleToHeight(desiredHeight);
         img.set({
           left: selectCanvas.getWidth() / 2,
           top: selectCanvas.getHeight() / 2,
@@ -217,7 +226,7 @@ const WriteDiaryView = () => {
       });
     }
   };
-  
+
   const handleResetClick = () => {
     if (selectCanvas) {
       selectCanvas.clear();
@@ -266,9 +275,11 @@ const WriteDiaryView = () => {
           />
         );
       case 3:
-        return <ThemeComp themes={themes["NONE"]} onImageClick={handleThemeClick}/>; // 테마 컴포지션
+        return (
+          <ThemeComp themes={themes["NONE"]} onImageClick={handleThemeClick} />
+        ); // 테마 컴포지션
       case 4:
-        return <ImageComp onImageSelect={handleImageSelect}/>;
+        return <ImageComp onImageSelect={handleImageSelect} />;
       case 5:
         // 프레임
         return;
@@ -291,46 +302,44 @@ const WriteDiaryView = () => {
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const handleAfterSave = async () => {
-  try {
-    // 배경 이미지가 없는 경우 기본 이미지를 설정
-    if (!selectCanvas.backgroundImage) {
-      const defaultImage = backgrounds["WHITE"].find(
-        (img) => img.resourceId == 1
-      );
+  const handleAfterSave = async () => {
+    try {
+      // 배경 이미지가 없는 경우 기본 이미지를 설정
+      if (!selectCanvas.backgroundImage) {
+        const defaultImage = backgrounds["WHITE"].find(
+          (img) => img.resourceId == 1
+        );
 
-      if (defaultImage) {
-        // handleImageClick이 완료될 때까지 대기
-        await handleImageClick(defaultImage);
-        
-        // 일정 시간 대기 (예: 1초)
-        await sleep(1000);
-      } else {
-        throw new Error("Default background image not found.");
+        if (defaultImage) {
+          // handleImageClick이 완료될 때까지 대기
+          await handleImageClick(defaultImage);
+
+          // 일정 시간 대기 (예: 1초)
+          await sleep(1000);
+        } else {
+          throw new Error("Default background image not found.");
+        }
       }
+
+      // handleImageClick이 완료되고 대기 후 다이어리 저장 로직 실행
+      const formData = await saveDiaryObject();
+      let newId = "";
+
+      if (diaryId) {
+        console.log("다이어리 수정");
+        await updateDiary(diaryId, formData);
+      } else {
+        console.log("다이어리 생성");
+        newId = await addDiary(formData);
+      }
+
+      // 다이어리 저장 후 데이터 갱신 및 상세 페이지로 이동
+      await fetchMonthlyDiaries();
+      await moveToDetailPage(newId ? newId : diaryId);
+    } catch (error) {
+      console.error("Error saving diary object:", error);
     }
-
-    // handleImageClick이 완료되고 대기 후 다이어리 저장 로직 실행
-    const formData = await saveDiaryObject();
-    let newId = "";
-
-    if (diaryId) {
-      console.log("다이어리 수정");
-      await updateDiary(diaryId, formData);
-    } else {
-      console.log("다이어리 생성");
-      newId = await addDiary(formData);
-    }
-
-    // 다이어리 저장 후 데이터 갱신 및 상세 페이지로 이동
-    await fetchMonthlyDiaries();
-    await moveToDetailPage(newId ? newId : diaryId);
-
-  } catch (error) {
-    console.error("Error saving diary object:", error);
-  }
-};
-
+  };
 
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
@@ -345,12 +354,12 @@ const handleAfterSave = async () => {
         const json = selectCanvas.toJSON();
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
-  
+
         // console.log("diaryDate: ", diaryDate ? diaryDate : date);
         console.log("contents: ", json);
         // console.log("scope: ", scope);
         // console.log("stamp: ", stampId);
-  
+
         const formData = new FormData();
         const dto = {
           diaryDate: diaryDate ? diaryDate : date,
@@ -358,16 +367,16 @@ const handleAfterSave = async () => {
           scope: scope,
           stampId: stampId,
         };
-  
+
         const dtoBlob = new Blob([JSON.stringify(dto)], {
           type: "application/json",
         });
         formData.append("file", imageBlob, "canvas.png");
         formData.append("dto", dtoBlob);
-  
+
         console.log("FormData contents:");
         logFormData(formData);
-  
+
         return formData;
       } else {
         throw new Error("selectCanvas is not defined.");
@@ -377,7 +386,7 @@ const handleAfterSave = async () => {
       throw new Error("Error saving diary object: " + error.message);
     }
   };
-  
+
   // const saveDiaryObject = async () => {
   //   try {
   //     if (selectCanvas) {
@@ -550,12 +559,10 @@ const handleAfterSave = async () => {
           onClose={() => setIsSaveModalOpen(false)}
           onButtonClick={handleAfterSave}
         />
-        {isExampleOn && <ExampleModal
-          isOn={isExampleOn}
-          setIsOn={setIsExampleOn}
-/>}
+        {isExampleOn && (
+          <ExampleModal isOn={isExampleOn} setIsOn={setIsExampleOn} />
+        )}
       </St.Div>
-      
     </>
   );
 };

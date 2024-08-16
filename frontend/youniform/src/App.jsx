@@ -1,7 +1,13 @@
 import "./App.css";
 import GlobalStyle from "./globalStyles";
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
 import LoginView from "./pages/LoginView";
@@ -55,14 +61,14 @@ import ResetPasswordView from "./pages/ResetPasswordView";
 import TestView from "@pages/Diary/TestView";
 import SSEAlertModal from "@/components/Modal/SSEAlertModal";
 import PlayerPushAlarm from "@/pages/Setting/PlayerPushAlarm";
-import useAlertStore from '@stores/alertStore';
+import useAlertStore from "@stores/alertStore";
 import { isLoggedIn } from "@stores/apiClient";
 import AuthLogin from "./components/Social/AuthLogin";
 import AuthLoginExsist from "./components/Social/AuthLoginExsist";
 import SocialSignUpView from "./pages/SocialSignUpView";
 import SocialStepOneForm from "./components/Social/Step1/SocialStepOneForm";
 import SocialStepTwoForm from "./components/Social/Step2/SocialStepTwoForm";
-import LanDingView from './pages/LandingView';
+import LanDingView from "./pages/LandingView";
 import AuthError from "./components/Social/AuthError";
 
 const AppContainer = styled.div`
@@ -118,14 +124,17 @@ function ContentWithHeader({ contentHeight }) {
       <ContentContainer style={{ height: contentHeight }}>
         <Routes>
           <Route path="/" element={<LanDingView />} />
-          <Route path="/main" element={isLoggedIn() ? <MainView /> : <Navigate to="/login" />} />
+          <Route
+            path="/main"
+            element={isLoggedIn() ? <MainView /> : <Navigate to="/login" />}
+          />
           <Route path="/login" element={<LoginView />} />
           <Route path="/find-email" element={<FindEmailView />} />
           <Route path="/find-password" element={<FindPasswordView />} />
           <Route path="/reset-password/:uuid" element={<ResetPasswordView />} />
           <Route exact path="/signup/info" element={<AuthLogin />} />
           <Route exact path="/signup/exist" element={<AuthLoginExsist />} />
-          <Route exact path="/signup/error" element={<AuthError />} />
+          <Route path="/signup/error" element={<AuthError />} />
           {/* SignUp */}
           <Route path="/sign-up/*" element={<SignUpView />}>
             <Route index element={<StepOneForm />} />
@@ -143,66 +152,249 @@ function ContentWithHeader({ contentHeight }) {
           <Route path="/select-player" element={<SelectPlayerView />} />
 
           {/* Photocard */}
-          <Route path="/photo-card" element={isLoggedIn() ? <PhotoCardView /> : <Navigate to="/login" />}>
-            <Route index element={isLoggedIn() ? <BinderCover /> : <Navigate to="/login" />} />
-            <Route path="cover" element={isLoggedIn() ? <BinderCover /> : <Navigate to="/login" />} />
-            <Route path="binder" element={isLoggedIn() ? <Binder /> : <Navigate to="/login" />} />
-            <Route path="detail/:photocardId" element={isLoggedIn() ? <PhotoCardDetail /> : <Navigate to="/login"/>} />
-            <Route path="create" element={isLoggedIn() ? <PhotoCardCreator /> : <Navigate to="/login" />} />
+          <Route
+            path="/photo-card"
+            element={
+              isLoggedIn() ? <PhotoCardView /> : <Navigate to="/login" />
+            }
+          >
+            <Route
+              index
+              element={
+                isLoggedIn() ? <BinderCover /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="cover"
+              element={
+                isLoggedIn() ? <BinderCover /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="binder"
+              element={isLoggedIn() ? <Binder /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="detail/:photocardId"
+              element={
+                isLoggedIn() ? <PhotoCardDetail /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="create"
+              element={
+                isLoggedIn() ? <PhotoCardCreator /> : <Navigate to="/login" />
+              }
+            />
           </Route>
           {/* 다이어리 */}
           <Route path="/diary/*">
-            <Route index element={isLoggedIn() ? <DiaryHomeView /> : <Navigate to="/login" />} />
-            <Route path=":diaryId" element={isLoggedIn() ? <DiaryDetailView /> : <Navigate to="/login" />} />
-            <Route path=":diaryId/update" element={isLoggedIn() ? <WriteDiaryView /> : <Navigate to="/login" />} />
-            <Route path="write/:diaryDate" element={isLoggedIn() ? <WriteDiaryView /> : <Navigate to="/login" />} />
-            <Route path="friend/:nickname" element={isLoggedIn() ? <MyDiaryView /> : <Navigate to="/login" />} />
+            <Route
+              index
+              element={
+                isLoggedIn() ? <DiaryHomeView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path=":diaryId"
+              element={
+                isLoggedIn() ? <DiaryDetailView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path=":diaryId/update"
+              element={
+                isLoggedIn() ? <WriteDiaryView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="write/:diaryDate"
+              element={
+                isLoggedIn() ? <WriteDiaryView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="friend/:nickname"
+              element={
+                isLoggedIn() ? <MyDiaryView /> : <Navigate to="/login" />
+              }
+            />
           </Route>
           <Route path="/post/*">
-            <Route index element={isLoggedIn() ? <PostView /> : <Navigate to="/login" />} />
-            <Route path=":postId" element={isLoggedIn() ? <PostDetailView /> : <Navigate to="/login" />} />
-            <Route path="write" element={isLoggedIn() ? <WritePostView /> : <Navigate to="/login" />} />
-            <Route path="write/:postId" element={isLoggedIn() ? <WritePostView /> : <Navigate to="/login" />} />
-            <Route path="friend/:nickname" element={isLoggedIn() ? <MyPost /> : <Navigate to="/login" />} />
+            <Route
+              index
+              element={isLoggedIn() ? <PostView /> : <Navigate to="/login" />}
+            />
+            <Route
+              path=":postId"
+              element={
+                isLoggedIn() ? <PostDetailView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="write"
+              element={
+                isLoggedIn() ? <WritePostView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="write/:postId"
+              element={
+                isLoggedIn() ? <WritePostView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="friend/:nickname"
+              element={isLoggedIn() ? <MyPost /> : <Navigate to="/login" />}
+            />
           </Route>
-          <Route path="/search" element={isLoggedIn() ? <SearchView />: <Navigate to="/login" />} />
+          <Route
+            path="/search"
+            element={isLoggedIn() ? <SearchView /> : <Navigate to="/login" />}
+          />
           <Route path="/my-page/*">
-            <Route index element={isLoggedIn() ? <MyPageView />: <Navigate to="/login" />} />
-            <Route path="friend-list" element={isLoggedIn() ? <FriendView /> : <Navigate to="/login" />} />
-            <Route path="like-post" element={isLoggedIn() ? <LikePostView /> : <Navigate to="/login" />} />
-            <Route path="my-post" element={isLoggedIn() ? <MyPost /> : <Navigate to="/login" />} />
-            <Route path="my-diary" element={isLoggedIn() ? <MyDiaryView />: <Navigate to="/login" />} />
-            <Route path="change-profile" element={isLoggedIn() ? <ChangeProfile /> : <Navigate to="/login" />} />
+            <Route
+              index
+              element={isLoggedIn() ? <MyPageView /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="friend-list"
+              element={isLoggedIn() ? <FriendView /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="like-post"
+              element={
+                isLoggedIn() ? <LikePostView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="my-post"
+              element={isLoggedIn() ? <MyPost /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="my-diary"
+              element={
+                isLoggedIn() ? <MyDiaryView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="change-profile"
+              element={
+                isLoggedIn() ? <ChangeProfile /> : <Navigate to="/login" />
+              }
+            />
           </Route>
-          <Route path="/news/:playerId" element={isLoggedIn() ? <NewsView /> : <Navigate to="/login" />} />
+          <Route
+            path="/news/:playerId"
+            element={isLoggedIn() ? <NewsView /> : <Navigate to="/login" />}
+          />
           {/* 노래 관련 */}
           <Route path="/song/*">
-            <Route index element={isLoggedIn() ? <TotalSongView /> : <Navigate to="/login" />} />
-            <Route path="player/:playerId" element={isLoggedIn() ?<PlayerSongView /> : <Navigate to="/login" />} />
-            <Route path="team/:teamId" element={isLoggedIn() ? <TotalSongView /> : <Navigate to="/login" />} />
-            <Route path="team-song/:teamSongId" element={isLoggedIn() ? <SongView /> : <Navigate to="/login" />} />
+            <Route
+              index
+              element={
+                isLoggedIn() ? <TotalSongView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="player/:playerId"
+              element={
+                isLoggedIn() ? <PlayerSongView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="team/:teamId"
+              element={
+                isLoggedIn() ? <TotalSongView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="team-song/:teamSongId"
+              element={isLoggedIn() ? <SongView /> : <Navigate to="/login" />}
+            />
           </Route>
           {/* 채팅 관련 */}
-          <Route path="/chat/:roomId" element={isLoggedIn() ? <ChatView /> : <Navigate to="/login" />} />
+          <Route
+            path="/chat/:roomId"
+            element={isLoggedIn() ? <ChatView /> : <Navigate to="/login" />}
+          />
           <Route path="/setting/*">
-            <Route index element={isLoggedIn() ? <SettingView /> : <Navigate to="/login" />} />
-            <Route path="change-password" element={isLoggedIn() ? <ChangePasswordView /> : <Navigate to="/login" />} />
-            <Route path="theme" element={isLoggedIn() ? <ChangeTheme /> : <Navigate to="/login" />} />
+            <Route
+              index
+              element={
+                isLoggedIn() ? <SettingView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="change-password"
+              element={
+                isLoggedIn() ? <ChangePasswordView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="theme"
+              element={
+                isLoggedIn() ? <ChangeTheme /> : <Navigate to="/login" />
+              }
+            />
             <Route path="notifications">
-              <Route index element={isLoggedIn() ? <PushAlarm /> : <Navigate to="/login" />} />
-              <Route path="player" element={isLoggedIn() ? <PlayerPushAlarm /> : <Navigate to="/login" />} />
+              <Route
+                index
+                element={
+                  isLoggedIn() ? <PushAlarm /> : <Navigate to="/login" />
+                }
+              />
+              <Route
+                path="player"
+                element={
+                  isLoggedIn() ? <PlayerPushAlarm /> : <Navigate to="/login" />
+                }
+              />
             </Route>
-            <Route path="permissions" element={isLoggedIn() ? <Permissions /> : <Navigate to="/login" />} />
-            <Route path="contact" element={isLoggedIn() ? <Contact /> : <Navigate to="/login" />} />
-            <Route path="terms" element={isLoggedIn() ? <Terms /> : <Navigate to="/login" />} />
-            <Route path="privacy" element={isLoggedIn() ? <Privacy /> : <Navigate to="/login" />} />
-            <Route path="version" element={isLoggedIn() ? <Version /> : <Navigate to="/login" />} />
-            <Route path="find-email" element={isLoggedIn() ? <FindEmailView /> : <Navigate to="/login" />} />
-            <Route path="find-password" element={isLoggedIn() ? <FindPasswordView /> : <Navigate to="/login" />} />
+            <Route
+              path="permissions"
+              element={
+                isLoggedIn() ? <Permissions /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="contact"
+              element={isLoggedIn() ? <Contact /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="terms"
+              element={isLoggedIn() ? <Terms /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="privacy"
+              element={isLoggedIn() ? <Privacy /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="version"
+              element={isLoggedIn() ? <Version /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="find-email"
+              element={
+                isLoggedIn() ? <FindEmailView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="find-password"
+              element={
+                isLoggedIn() ? <FindPasswordView /> : <Navigate to="/login" />
+              }
+            />
           </Route>
-          <Route path="alert" element={isLoggedIn() ? <AlertView /> : <Navigate to="/login" />} />
+          <Route
+            path="alert"
+            element={isLoggedIn() ? <AlertView /> : <Navigate to="/login" />}
+          />
           {/* 공유 모달 테스트 끝나면 삭제해야함 */}
-          <Route path="test" element={isLoggedIn() ? <TestView /> : <Navigate to="/login" />} />
+          <Route
+            path="test"
+            element={isLoggedIn() ? <TestView /> : <Navigate to="/login" />}
+          />
         </Routes>
       </ContentContainer>
     </>
