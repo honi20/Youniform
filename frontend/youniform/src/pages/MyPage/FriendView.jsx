@@ -74,9 +74,9 @@ const FriendView = () => {
         ))}
       </Friends>
       <Friends>
-        내 칭구
         {friends.length > 0 ? (
           <>
+            <p>내 칭구</p>
             {friendList.map((friend) => (
               <Friend
                 key={friend.userId}
