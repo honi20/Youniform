@@ -36,7 +36,7 @@ public class PhotocardServiceImpl implements PhotocardService {
 		Users user = userRepository.findById(userId)
 				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-		if (!file.isEmpty()) {
+		if (file != null && !file.isEmpty()) {
 			String imgUrl = s3Service.upload(file, "photocard");
 			Photocard photocard = Photocard.builder()
 					.user(user)

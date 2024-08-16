@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
-import static com.youniform.api.domain.friend.entity.Status.FRIEND;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
@@ -250,7 +249,7 @@ public class DiaryServiceImpl implements DiaryService {
 		diary.updateStamp(stamp);
 		diary.updateScope(Scope.valueOf(diaryModifyReq.getScope()));
 
-		if (!file.isEmpty()) {
+		if (file != null && !file.isEmpty()) {
 			if (diary.getImgUrl() != null) {
 				s3Service.fileDelete(diary.getImgUrl());
 			}
