@@ -8,6 +8,7 @@ import { clearAccessToken } from "@stores/apiClient";
 import useUserStore from "../../stores/userStore";
 import useAlertStore from "../../stores/alertStore";
 import LogoIcon from "@assets/Header/logo.svg?react";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Head = styled.div`
   background-color: #f8f8f8;
@@ -93,10 +94,14 @@ const IconContainer = styled.div`
 `;
 
 const LogoutButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
   color: #ffffff;
-  padding: 0.5em 1.2em;
-  font-size: 15px;
-  letter-spacing: 3px;
+  padding: 0.4em 1.0em;
+  font-size: 11px;
+  letter-spacing: 2px;
   font-weight: bold;
   border-radius: 0.5em;
   background: #262f66;
@@ -181,9 +186,12 @@ const Header = () => {
         return (
           <InnerHead>
             <Logo>
-              <LogoIcon />
+              <LogoIcon style={{ height: "50%" }} />
             </Logo>
-            <LogoutButton onClick={handleLogoutClick}>LOGOUT</LogoutButton>
+            <LogoutButton onClick={handleLogoutClick}>
+              <LogoutIcon style={{ width: "16px" }} />
+              <span>LOGOUT</span>
+            </LogoutButton>
           </InnerHead>
         );
       case currentPath === "/my-page":
