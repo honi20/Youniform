@@ -21,9 +21,7 @@ export const isLoggedIn = () => {
   return !!accessToken; // accessToken이 있으면 true, 없으면 false를 반환
 };
 const getAccessToken = () => {
-  return (
-    localStorage.getItem("accessToken")
-  );
+  return localStorage.getItem("accessToken");
 };
 export const clearAccessToken = () => {
   return localStorage.removeItem("accessToken");
@@ -50,10 +48,13 @@ export const getApiClient = () => {
       const originalRequest = error.config;
       console.log(error.message);
 
-      if (error.response.status === 403 && !originalRequest._retry) {
-        console.log("토큰이 재발급 되었습니다.");
+      if (
+        (error.response.status === 400 || error.response.status === 403) &&
+        !originalRequest._retry
+      ) {
         originalRequest._retry = true;
         console.log(error.response.data.body);
+        console.log("토큰이 재발급 되었습니다.");
         try {
           setAccessToken(error.response.data.body);
 
