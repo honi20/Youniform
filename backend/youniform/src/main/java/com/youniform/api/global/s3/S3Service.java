@@ -90,7 +90,7 @@ public class S3Service {
     public void fileDelete(String fileUrl) throws CustomException {
         try{
             try {
-                String fileKey = fileUrl.replace(bucketURl, "");
+                String fileKey = fileUrl.replace(cloudFrontUrl, "");
                 amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileKey));
             } catch (AmazonServiceException e) {
                 System.err.println(e.getErrorMessage());
