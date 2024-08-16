@@ -91,7 +91,7 @@ public class PostServiceImpl implements PostService {
 
         List<TagDto> tagDtoList = new ArrayList<>();
 
-        if(!file.isEmpty()) {
+        if(file != null && !file.isEmpty()) {
             if(post.getImgUrl() != null && !post.getImgUrl().isEmpty()) {
                 s3Service.fileDelete(post.getImgUrl());
             }
