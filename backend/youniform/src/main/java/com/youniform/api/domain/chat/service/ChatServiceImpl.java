@@ -143,13 +143,13 @@ public class ChatServiceImpl implements ChatService {
 
         if (chatMessage.getType().equals(ENTRY)) {
             redisUtils.setDataWithExpiration(redisKey, userId, 300L);
-            broadcastUserCount(roomId);
+//            broadcastUserCount(roomId);
 
             return null;
         } else if (chatMessage.getType().equals(EXIT)) {
             updateLastReadTime(userId, roomId, LocalDateTime.now());
             redisUtils.deleteData(redisKey);
-            broadcastUserCount(roomId);
+//            broadcastUserCount(roomId);
 
             return null;
         } else if (chatMessage.getType().equals(HEARTBEAT)) {
@@ -200,7 +200,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void broadcastUserCount(Long roomId) {
-        Set<String> keys = redisUtils.keys("room:" + roomId + ":user:*");
+        Set<String> keys = redisUtils.keys("room:" + roomId + ":session:*");
 
         String userCount = String.valueOf(keys.size());
 
