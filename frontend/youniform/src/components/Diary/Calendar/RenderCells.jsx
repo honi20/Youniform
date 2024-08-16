@@ -88,7 +88,6 @@ const RenderCells = ({ user, currentMonth, selectedDate, onDateClick }) => {
     if (user) {
       return;
     }
-
     // 내 다이어리 클릭했을 때
     if (!stampSrc) {
       navigate(`/diary/write/${formattedDate}`);

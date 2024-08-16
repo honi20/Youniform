@@ -90,7 +90,7 @@ const VerticalBar = styled.div`
 const DiaryFriendsList = ({ onUserClick }) => {
   const [selectedUserIndex, setSelectedUserIndex] = useState(null);
   const [selectedSelf, setSelectedSelf] = useState(false);
-  const [updateTrigger, setUpdateTrigger] = useState(false);  // 추가된 상태
+  const [updateTrigger, setUpdateTrigger] = useState(false);
   const { friends, diaryFriends, fetchDiaryFriends } = useFriendStore();
   const { fetchUser, user } = useUserStore();
   const {
@@ -109,12 +109,14 @@ const DiaryFriendsList = ({ onUserClick }) => {
     fetchDiaryFriends();
   }, [fetchDiaryFriends]);
 
-  const handleUserClick = async (type, index = null) => {
+  const handleUserClick = async (type, index) => {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const formattedDate = `${year}-${month}`;
-
+    console.log(`selectedSelf = ${selectedSelf}`);
+    console.log(`selectedUser = ${selectedUser}`);
+    console.log(`selectedUserIndex = ${selectedUserIndex}`);
     if (type === "friend") {
       setSelectedSelf(false);
       setSelectedUserIndex(index);
@@ -132,12 +134,9 @@ const DiaryFriendsList = ({ onUserClick }) => {
       }
       await fetchMonthlyDiaries(formattedDate);
     }
-
-    // Fetch friends diaries and then refresh the diary friends to update the status circle
-    await fetchDiaryFriends();
-
-    // Update state to trigger re-render
-    setUpdateTrigger((prev) => !prev); // 이 줄이 추가되어 강제로 리렌더링합니다.
+  
+    // 상태 업데이트를 트리거하여 UI가 재렌더링되도록 함
+    setUpdateTrigger((prev) => !prev);
   };
 
   return (
@@ -149,7 +148,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
             <UserCard
               $isSelected={selectedSelf}
               $noneSelected={selectedUserIndex === null && !selectedSelf}
-              onClick={() => handleUserClick("self")}
+              onClick={() => handleUserClick("self", null)}
             >
               <UserImage src={user.profileUrl} alt={user.nickname} />
               <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
