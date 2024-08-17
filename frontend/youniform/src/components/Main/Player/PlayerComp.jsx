@@ -49,10 +49,11 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
     }
   };
   const handleSong = async () => {
-    console.log(player)
+    // team 선택일 경우
     if (player.foundation){
       navigate(`/song/team/1000`)
     } else
+    // player 선택일 경우
     navigate(`/song/player/${player.playerId}`)
   }
   // 선정한 플레이어 개수에 따라서 folder 개수 달라져야함

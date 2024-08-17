@@ -48,7 +48,7 @@ const TeamSongComp = ({ songs }) => {
   const goToSongPage = (id) => {
     console.log('test')
     console.log('Navigating to song with ID:', id); 
-    navigate(`/song/team-song/${id}`);
+    navigate(`./song/${id}`);
   };
   return (
     <>

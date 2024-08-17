@@ -19,9 +19,9 @@ import SignUpView from "./pages/SignUpView";
 import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "@pages/Main/NewsView";
 import TotalSongView from "@pages/Main/TotalSongView";
-import SongView from "@pages/Main/SongView";
-import PlayerSongView from "@pages/Main/PlayerSongView";
-import TeamSongView from "@pages/Main/TeamSongView";
+import SongView from "@pages/Main/Song/SongView";
+import PlayerSongView from "@pages/Main/Song/PlayerSongView";
+import TeamSongView from "@pages/Main/Song/TeamSongView";
 import ChatView from "@pages/Main/ChatView";
 import StepOneForm from "@components/SignUp/Step1/StepOneForm";
 import StepTwoForm from "@components/SignUp/Step2/StepTwoForm";
@@ -289,7 +289,7 @@ function ContentWithHeader({ contentHeight }) {
             element={isLoggedIn() ? <NewsView /> : <Navigate to="/login" />}
           />
           {/* 노래 관련 */}
-          <Route path="/song/*">
+          <Route path="/song/*" element={<TotalSongView />}>
             <Route
               index
               element={
@@ -299,17 +299,17 @@ function ContentWithHeader({ contentHeight }) {
             <Route
               path="player/:playerId"
               element={
-                isLoggedIn() ? <PlayerSongView /> : <Navigate to="/login" />
+                isLoggedIn() ? <SongView /> : <Navigate to="/login" />
               }
             />
             <Route
               path="team/:teamId"
               element={
-                isLoggedIn() ? <TotalSongView /> : <Navigate to="/login" />
+                isLoggedIn() ? <TeamSongView /> : <Navigate to="/login" />
               }
             />
             <Route
-              path="team-song/:teamSongId"
+              path="team/:teamId/song/:teamSongId"
               element={isLoggedIn() ? <SongView /> : <Navigate to="/login" />}
             />
           </Route>

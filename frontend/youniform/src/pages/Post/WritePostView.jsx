@@ -118,10 +118,14 @@ const WritePostView = () => {
   const { postId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const stripHtmlTags = (input) => {
+    return input.replace(/<\/?[^>]+>/gi, ''); // 모든 HTML 태그 제거
+  };
+  
   useEffect(() => {
     if (location.state && location.state.post) {
       const post = location.state.post;
-      setContent(post.contents);
+      setContent(stripHtmlTags(post.contents));
       console.log(post.contents);
       setTags(post.tags.map((tag) => tag.contents));
       if (post.imageUrl) {
