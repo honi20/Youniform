@@ -1,49 +1,35 @@
 import React, { useEffect, useState } from "react";
-import TeamSongComp from "@components/Main/Player/TeamSongComp";
-import { useNavigate, useParams } from "react-router-dom";
+
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import usePlayerStore from "@stores/playerStore";
 import * as St from "./SongStyle"
 
 const TotalSongView = () => {
-  // store에서 꺼내야함
   const {
-    playerList,
-    fetchPlayerList,
-    teamSongs,
-    fetchTeamSongs,
-    playerSongs,
-    fetchPlayerSongs,
+    total,
+    fetchTotalList,
   } = usePlayerStore();
-  const { playerId } = useParams();
-  const [player, setPlayer] = useState();
+  const { playerId, teamId } = useParams();
   const navigate = useNavigate();
-  const teamId = 1000;
-  useEffect(() => {
-    if (teamSongs.length == 0) {
-      console.log("fetch to team songs");
-      fetchTeamSongs();
-    }
-  }, [fetchTeamSongs]);
+  // const teamId = 1000;
 
   useEffect(() => {
-    console.log(playerList);
-    if (playerList.length == 0) {
-      console.log("fetch to player list");
-      fetchPlayerList();
+    if (!total || total.length == 0) {
+      fetchTotalList();
     }
-  }, [fetchPlayerList]);
+  }, [fetchTotalList]);
 
-  const [isOn, setIsOn] = useState(false); // 초기 상태 off
+  const [isOn, setIsOn] = useState(false);
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
-  // const teamName = "전체 팀";
-  const handleToggleBtn = (id) => {
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const handleToggleBtn = (index) => {
     setIsOn(false);
-    if (id === 'team'){
-      setPlayer('team');
-      navigate(`/song/team/1000`)
+    console.log(total[index])
+    setSelectedIndex(index)
+    if (index == 0){
+      navigate(`/song/team/${teamId}`)
     } else {
-    setPlayer(playerList.find((p) => p.playerId == id));
-    navigate(`/song/player/${id}`);
+    navigate(`/song/player/${total[index].playerId}`);
     }
   };
   const [activeBtn, setActiveBtn] = useState(0);
@@ -51,9 +37,8 @@ const TotalSongView = () => {
     console.log(btnIndex);
     setActiveBtn(btnIndex);
   };
-  const isTeamClass = playerId == undefined;
   const switchChange = () => {
-    const buttonLabels = isTeamClass
+    const buttonLabels = teamId
       ? ["공식", "비공식"]
       : ["등장곡", "응원가"];
 
@@ -71,56 +56,44 @@ const TotalSongView = () => {
       </>
     );
   };
-  const renderTeamSongs = () => {
-    switch (activeBtn){
-    case 0:
-      const songs = teamSongs.filter((song) => song.type == "OFFICIAL")
-      return (
-      <TeamSongComp songs={songs}/> 
-      )
-    }
+  const isTabSwitcherVisible = !location.pathname.includes(`/song/team/${teamId}/`);
 
-  }
   return (
     <St.Wrapper>
       <St.OuterContainer>
         <St.BlurredBorder />
         <St.ContentWrapper>
+          {/* toggle */}
           <St.NavToggle>
             <St.ToggleBtn onClick={() => handleToggle(isOn)}>
             {
-              (playerId === undefined) 
-                ? "팀 이름"  // 여기에 실제 팀 이름을 넣어야 합니다
-                : playerList.find((p) => p.playerId == playerId)?.name}
+              total.find((item, index) => index == selectedIndex)?.name}
+
             {St.toggle(isOn)}
             </St.ToggleBtn>
             <St.ToggleList $isOn={isOn}>
-            <St.ToggleItem
-              $isOn={isOn}
-              // $isChecked={player.playerId === 'team'}
-              key="team"
-              onClick={() => handleToggleBtn('team')}
-            >
-              {"전체 팀"}  
-              <St.SelectIcon $isChecked={playerId == 'team'} />
-            </St.ToggleItem>
-              {playerList.map((player) => (
+              {total.map((item, index) => (
                 <St.ToggleItem
                   $isOn={isOn}
-                  $isChecked={playerId != undefined && playerId === player.playerId}
-                  key={player.playerId}
-                  onClick={() => handleToggleBtn(player.playerId)}
+                  $isChecked={index == selectedIndex}
+                  key={index}
+                  onClick={() => handleToggleBtn(index)}
                 >
-                  {player.name}
-                  <St.SelectIcon $isChecked={playerId == player.playerId} />
+                  {item.name}
+                  <St.SelectIcon $isChecked={index == selectedIndex} />
               </St.ToggleItem>
               ))} 
             </St.ToggleList>
           </St.NavToggle>
-          <St.TabSwitcher>
-            <St.Switcher>{switchChange()}</St.Switcher>
-          </St.TabSwitcher>
-          {isTeamClass ? <>{renderTeamSongs()}</> : <></>}
+          {/* switch */}
+            {isTabSwitcherVisible && 
+            <St.TabSwitcher>
+                <St.Switcher>{switchChange()}</St.Switcher>
+            </St.TabSwitcher>
+            }
+          <St.Content>
+            <Outlet context={{ activeBtn }}/>
+          </St.Content>
         </St.ContentWrapper>
       </St.OuterContainer>
     </St.Wrapper>

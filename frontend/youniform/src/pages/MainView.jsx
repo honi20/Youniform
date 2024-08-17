@@ -67,14 +67,17 @@ const MainView = () => {
   const navigate = useNavigate();
   const { team, fetchTeamList, playerList, fetchPlayerList, loading, error } = usePlayerStore();
   const { user, fetchUser } = useUserStore();
-
+  const [totalList, setTotalList] = useState([])
+  const teamId = 1000 // 테마 없으므로 몬스터즈 id로 임의 지정
+  
   useEffect(() => {
     const loadPlayList = async () => {
       if ((!playerList || playerList.length == 0) || (!team || team.length == 0)) {
         await fetchPlayerList();
         await fetchTeamList();
       };
-      console.log('fetch', playerList, team)
+      const myList = [team, ...playerList]
+      setTotalList(myList)
     }
     loadPlayList();
   }, [fetchPlayerList, fetchTeamList]);
@@ -92,7 +95,7 @@ const MainView = () => {
     setSelectedPlayer(playerId);
   };
   const handleNews = () => {
-    navigate(`/news/${playerList.length == 0 ? '1000' : playerList[selectedPlayer].playerId}`);
+    navigate(`/news/${playerList.length == 0 ? teamId : playerList[selectedPlayer].playerId}`);
   };
   if (loading) {
     return <Loading />;
@@ -117,7 +120,7 @@ const MainView = () => {
   </Btn>
         <Btn
           onClick={() =>
-            navigate(`/chat/${playerList.length==0? 1000 : playerList[selectedPlayer].playerId}`)
+            navigate(`/chat/${playerList.length==0 ? teamId : playerList[selectedPlayer].playerId}`)
           }
         >
           <IconWrapper>

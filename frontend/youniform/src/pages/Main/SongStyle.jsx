@@ -57,7 +57,6 @@ export const ToggleBtn = styled.div`
   align-items: center;
   gap: 0.5rem;
   // typo
-  font-family: "Pretendard";
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 600;
@@ -68,8 +67,8 @@ export const ToggleList = styled.div`
   position: absolute;
   z-index: 1;
   top: 8%;
-  left: 30%;
-  width: 40%;
+  left: 25%;
+  width: 50%;
   border: 1px solid #737373;
   background-color: white;
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -131,7 +130,10 @@ export const Btn = styled.div`
   align-items: center;
   border-radius: 3.5rem;
   // typo
-  font-family: "Pretendard";
   font-weight: 600;
 `;
+export const Content = styled.div`
+  /* border: 1px solid black; */
+  
+`
 export * from "./SongStyle";

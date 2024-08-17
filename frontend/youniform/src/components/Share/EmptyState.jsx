@@ -62,7 +62,7 @@ const EmptyState = ({ icon: Icon, state }) => {
     break;
     case 'noSongs':
       title = '응원가가 없습니다.';
-      subTitle = '나만의 다이어리를 만들고 수집해보세요.';
+      subTitle = '해당 정보가 없습니다.';
     break;
     default:
       title = '정보가 없습니다.';

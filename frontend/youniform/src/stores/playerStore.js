@@ -4,11 +4,27 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const usePlayerStore = create((set) => ({
+const usePlayerStore = create((set, get) => ({
   playerList: [],
   loading: false,
   error: null,
   team: [],
+  total: [],
+  fetchTotalList: async () => {
+    set({ loading: true, error: null })
+    const { fetchTeamList, fetchPlayerList } = get()
+    try {
+      await fetchTeamList();
+      await fetchPlayerList();
+      const { team, playerList } = get();
+      console.log(team, playerList)
+      set({ total: [team, ...playerList] })
+    }
+    catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+      set({ loading: false, error: err.message });
+    }
+  },
   fetchTeamList: async () => {
     set({loading: true, error: null})
     const apiClient = getApiClient();
@@ -30,7 +46,6 @@ const usePlayerStore = create((set) => ({
       console.log(res.data.header.message);
       console.log(res.data.body);
       set({ playerList: res.data.body.playerList, loading: false });
-      // return res.data.body.playerList
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
       set({ loading: false, error: err.message });
@@ -56,6 +71,7 @@ const usePlayerStore = create((set) => ({
 
   fetchPlayerSongs: async (playerId) => {
     set({ loading: true, error: null });
+    console.log(playerId)
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/players/song/${playerId}`);
