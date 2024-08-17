@@ -139,16 +139,16 @@ const WritePostView = () => {
 
   // 해쉬태그
   useEffect(() => {
-    const extractedTags = content.match(/# \S+/g) || [];
+    const extractedTags = content.match(/#\S+/g) || [];
     const uniqueTags = [
       ...new Set(
         extractedTags.map((tag) =>
-          tag.length > 10 ? `${tag.slice(2, 12)}` : tag.slice(2)
+          tag.length > 10 ? `${tag.slice(1, 12)}` : tag.slice(1)
         )
       ),
     ].slice(0, 10); // 태그 개수를 10개로 제한
     setTags(uniqueTags);
-    console.log("해쉬태그", uniqueTags);
+    // console.log("해쉬태그", uniqueTags);
   }, [content]);
 
   const cleanContent = () => {
@@ -162,9 +162,9 @@ const WritePostView = () => {
   const createFormData = async () => {
     const cleanedContent = cleanContent();
 
-    console.log("저장할 내용:", cleanedContent);
-    console.log("해쉬태그", tags);
-    console.log("Selected file:", selectedFile);
+    // console.log("저장할 내용:", cleanedContent);
+    // console.log("해쉬태그", tags);
+    // console.log("Selected file:", selectedFile);
 
     const formData = new FormData();
     const dto = {
@@ -209,7 +209,7 @@ const WritePostView = () => {
   const moveToDetailPage = async (postId) => {
     try {
       if (postId) {
-        console.log(postId);
+        // console.log(postId);
         navigate(`/post/${postId}`); // 페이지 이동
       }
     } catch (error) {

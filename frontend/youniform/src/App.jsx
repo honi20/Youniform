@@ -20,7 +20,6 @@ import SelectPlayerView from "./pages/SelectPlayerView";
 import NewsView from "@pages/Main/NewsView";
 import TotalSongView from "@pages/Main/TotalSongView";
 import SongView from "@pages/Main/Song/SongView";
-import PlayerSongView from "@pages/Main/Song/PlayerSongView";
 import TeamSongView from "@pages/Main/Song/TeamSongView";
 import ChatView from "@pages/Main/ChatView";
 import StepOneForm from "@components/SignUp/Step1/StepOneForm";
