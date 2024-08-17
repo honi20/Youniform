@@ -112,13 +112,14 @@ const ChatView = () => {
     };
   }, [fetchUser, connect, disconnect, roomId, enterChatRoom]);
 
-  useEffect(() => {
-    if (roomId) {
-      fetchChatRoomMessage();
-    }
-  }, [roomId, fetchChatRoomMessage]);
+  // useEffect(() => {
+  //   if (roomId) {
+  //     fetchChatRoomMessage();
+  //   }
+  // }, [roomId, fetchChatRoomMessage]);
 
   useEffect(() => {
+    console.log(messages)
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }

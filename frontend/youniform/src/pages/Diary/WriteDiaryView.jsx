@@ -362,19 +362,19 @@ const WriteDiaryView = () => {
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
 
-        // console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        console.log("diaryDate: ", diaryDate ? diaryDate : date);
         console.log("contents: ", json);
-        // console.log("scope: ", scope);
-        // console.log("stamp: ", stampId);
-
+        console.log("scope: ", scope);
+        console.log("stamp: ", stampId);
+        console.log(diaryDate, date)
+        console.log(diary)
         const formData = new FormData();
         const dto = {
-          diaryDate: diaryDate ? diaryDate : date,
+          diaryDate: diaryDate ? diaryDate : diary.diaryDate,
           contents: json,
           scope: scope,
           stampId: stampId,
         };
-
         const dtoBlob = new Blob([JSON.stringify(dto)], {
           type: "application/json",
         });

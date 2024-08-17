@@ -128,15 +128,18 @@ const useDiaryStore = create((set) => ({
       console.error(err.response ? err.response.data : err.message);
     }
   },
-  updateDiary: async (diaryId, updatedDiary) => {
+  updateDiary: async (diaryId, formData) => {
     const apiClient = getApiClient();
-    // console.log("updateDiary - API Client:", apiClient);
+    const test = localStorage.getItem("accessToken")
+    console.log(test)
+    console.log("updateDiary - API Client:", apiClient);
     try {
-      const res = await apiClient.post(`/diaries/${diaryId}`, updatedDiary, {
+      const res = await apiClient.post(`/diaries/${diaryId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(res.data)
       console.log(res.data.header.message);
       console.log(res.data.body);
       set((state) => ({

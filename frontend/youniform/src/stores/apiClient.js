@@ -6,9 +6,7 @@ export const createApiClient = (accessToken) => {
     console.error("createApiClient: accessToken이 제공되지 않았습니다.");
     throw new Error("Access token is required to create an API client.");
   }
-
-  // console.log("createApiClient: API 클라이언트를 생성합니다.");
-  // console.log(API_URL);
+  console.log(accessToken)
   return axios.create({
     baseURL: API_URL,
     headers: {
@@ -33,10 +31,14 @@ const setAccessToken = (token) => {
     localStorage.removeItem("accessToken");
   }
 };
+export const LogIn = () => {
+  const accessToken = getAccessToken();
+  return !!accessToken; // accessToken이 있으면 true, 없으면 false를 반환
+};
 export const getApiClient = () => {
   const accessToken = getAccessToken();
   if (accessToken) {
-    // console.log("getApiClient: accesToken이 존재합니다.");
+    console.log("getApiClient: accesToken이 존재합니다.", accessToken);
   }
   const apiClient = createApiClient(accessToken);
 
@@ -47,14 +49,18 @@ export const getApiClient = () => {
     async (error) => {
       const originalRequest = error.config;
       console.log(error.message);
-
-      if (error.response.status === 403 && !originalRequest._retry) {
+      console.log('test1', accessToken)
+      
+      if (error.response && error.response.status === 403 && !originalRequest._retry) {
         originalRequest._retry = true;
-        console.log(error.response.data.body);
-        console.log("토큰이 재발급 되었습니다.");
+        console.log('test2', accessToken)
+        console.log(error.response)
         try {
-          setAccessToken(error.response.data.body);
-
+          if (error.response.data.body){
+            setAccessToken(error.response.data.body);
+          } else {
+            return;
+          }
           apiClient.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${error.response.data.body}`;

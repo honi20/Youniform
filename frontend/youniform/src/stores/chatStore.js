@@ -226,7 +226,7 @@ const useChatStore = create((set, get) => ({
     }
   },
   enterChatRoom: async (nickname) => {
-    const { client, selectedRoom } = get();
+    const { client, selectedRoom, addMessage } = get();
 
     console.log("entry test")
     // 입장 메시지 전송
@@ -248,6 +248,7 @@ const useChatStore = create((set, get) => ({
       });
 
       console.log(`${nickname}님이 채팅방에 입장했습니다.`);
+      // addMessage(entryMessage)
     }
   },
 
