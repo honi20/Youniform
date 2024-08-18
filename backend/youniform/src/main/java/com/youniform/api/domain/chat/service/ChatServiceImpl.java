@@ -141,17 +141,21 @@ public class ChatServiceImpl implements ChatService {
     public ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId, String sessionId) {
         String redisKey = "room:" + roomId + ":session:" + sessionId + ":user:" + userId;
 
-        if (chatMessage.getType().equals(ENTRY)) {
+        if (chatMessage.getType().equals(HEARTBEAT)) {
             redisUtils.setDataWithExpiration(redisKey, userId, 300L);
+
+            return null;
+        } else if (chatMessage.getType().equals(MESSAGE)) {
+
+        } else if (chatMessage.getType().equals(ENTRY)) {
+            redisUtils.setDataWithExpiration(redisKey, userId, 300L);
+
             broadcastUserCount(roomId);
         } else if (chatMessage.getType().equals(EXIT)) {
             updateLastReadTime(userId, roomId, LocalDateTime.now());
             redisUtils.deleteData(redisKey);
-            broadcastUserCount(roomId);
-        } else if (chatMessage.getType().equals(HEARTBEAT)) {
-            redisUtils.setDataWithExpiration(redisKey, userId, 300L);
 
-            return null;
+            broadcastUserCount(roomId);
         } else {
             throw new CustomException(MESSAGETYPE_NOT_VALID);
         }
