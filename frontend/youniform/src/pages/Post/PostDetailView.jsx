@@ -177,9 +177,8 @@ const PostDetailView = () => {
   }, [user, fetchUser]);
 
   const handleTagClick = (tag) => {
-    console.log(tag);
     const encodedQuery = encodeURIComponent(tag.contents);
-    navigate(`/search?type=tag&q=${encodedQuery}`);
+    navigate(`/search?tagId=${tag.tagId}&q=${encodedQuery}`);
   };
 
   const handlePostAction = async ({ action, post }) => {

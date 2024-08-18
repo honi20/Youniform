@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   gap: 3.3%;
   margin: 10px;
   overflow-y: auto;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 `;
 const WallpaperImgContainer = styled.div`
   flex: 0 0 30%;

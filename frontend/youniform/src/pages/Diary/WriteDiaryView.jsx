@@ -25,6 +25,7 @@ import CategoryComp from "../../components/Diary/Write/CategoryComp";
 import ImageComp from "../../components/Diary/Write/ImageComp";
 import ThemeComp from "../../components/Diary/Write/ThemeComp";
 import ExampleModal from "../../components/Diary/Write/ExampleModal";
+import CloseSvg from "@assets/Post/Close_round_light.svg?react"
 // import html2canvas from "html2canvas"
 const ToggleBtn = styled.div`
   /* width: 50%; */
@@ -75,6 +76,7 @@ const WriteDiaryView = () => {
   const { stampList, selectedCategory, selectedColor } = useResourceStore();
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const [isExampleOn, setIsExampleOn] = useState(false); // 초기 상태 off
+  const deleteBtnRef = useRef();
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
   useEffect(() => {
     if (diaryId) {
@@ -92,6 +94,44 @@ const WriteDiaryView = () => {
     fetchStampList();
   }, [fetchResources, fetchStampList]);
 
+  useEffect(() => {
+    if (selectCanvas) {
+      const updateDeleteButtonPosition = () => {
+        const activeObjects = selectCanvas.getActiveObjects();
+        if (activeObjects.length > 0) {
+          const obj = activeObjects[0];
+          const test = activeObjects[0].getCenterPoint()
+          // console.log(test)
+          const imgWidth = obj.getScaledWidth();
+          const imgHeight = obj.getScaledHeight();
+          if (deleteBtnRef.current) {
+            deleteBtnRef.current.style.display = "block";
+            deleteBtnRef.current.style.left = `${test.x - imgWidth/2 + 48}px`;
+            deleteBtnRef.current.style.top = `${test.y - imgHeight/2 + 10}px`;
+            deleteBtnRef.current.style.display = 'flex'; 
+          }
+        }
+      };
+
+      selectCanvas.on('object:scaling', updateDeleteButtonPosition);
+      selectCanvas.on('object:moving', updateDeleteButtonPosition);
+      selectCanvas.on('selection:created', updateDeleteButtonPosition);
+      selectCanvas.on('selection:updated', updateDeleteButtonPosition);
+      selectCanvas.on('selection:cleared', () => {
+        if (deleteBtnRef.current) {
+          deleteBtnRef.current.style.display = 'none'; 
+        }
+      });
+
+      return () => {
+        selectCanvas.off('object:scaling', updateDeleteButtonPosition);
+        selectCanvas.off('object:moving', updateDeleteButtonPosition);
+        selectCanvas.off('selection:created', updateDeleteButtonPosition);
+        selectCanvas.off('selection:updated', updateDeleteButtonPosition);
+        selectCanvas.off('selection:cleared');
+      };
+    }
+  }, [selectCanvas]);
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
   };
@@ -469,8 +509,11 @@ const WriteDiaryView = () => {
       </St.SaveBtn>
       <St.Div $decorated={isDecorated}>
         <button
+        ref={deleteBtnRef}
         onClick={() => removeBtn()}
-        style={{ zIndex: "120", position: "absolute" }}>test</button>
+        style={{ zIndex: "120", position: "absolute", display: "none" }}>
+        <CloseSvg/>
+        </button>
         <CanvasComp
           selectCanvas={selectCanvas}
           setSelectCanvas={setSelectCanvas}
