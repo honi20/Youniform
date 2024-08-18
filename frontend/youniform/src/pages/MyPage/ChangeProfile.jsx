@@ -1,28 +1,30 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
 import PencilSvg from "@assets/MyPage/pencil.svg?react";
-import { TextField } from "@mui/material";
-import useUserStore from "@stores/userStore";
+import { TextField, Button as MuiButton } from "@mui/material";
 import Loading from "@components/Share/Loading";
-import { styled as muiStyled } from "@mui/material/styles";
-import { Button } from "@mui/material";
 import { getApiClient } from "@stores/apiClient";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "@stores/userStore";
+import StatusMessageForm from "@components/SignUp/StatusMessageForm";
+import CheckIcon from '@mui/icons-material/Check';
+import WarningIcon from '@mui/icons-material/PriorityHigh';
+import { styled as muiStyled } from "@mui/material/styles";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 120px);
-  border: 1px solid black;
   justify-content: center;
   align-items: center;
 `;
+
 const Title = styled.div`
   ${Font.Medium}
-  /* margin: 30px 0; */
   display: flex;
 `;
+
 const ProfileImage = styled.div`
   box-sizing: border-box;
   height: 110px;
@@ -32,8 +34,8 @@ const ProfileImage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
   position: relative;
+  
   & img {
     border: 1px solid #dadada;
     height: 100%;
@@ -44,26 +46,26 @@ const ProfileImage = styled.div`
     object-position: center;
   }
 `;
+
 const ImageBtn = styled.label`
   color: white;
   background-color: ${(props) => props.theme.primary};
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 50%;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-top: 20px; */
   position: absolute;
   bottom: 0px;
   right: 0px;
   z-index: 10;
-  border-radius: 50%;
 `;
 
 const HiddenInput = styled.input`
   display: none;
 `;
+
 const InputForm = styled.div`
   display: flex;
   flex-direction: column;
@@ -72,6 +74,7 @@ const InputForm = styled.div`
   padding: 0 10%;
   margin: 20px;
 `;
+
 const NicknameBtn = styled.button`
   ${Font.XSmall}
   font-weight: 300;
@@ -90,14 +93,15 @@ const NicknameBtn = styled.button`
       props.disabled ? "#d3d3d3" : props.theme.secondary};
   }
 `;
-const ColorBtn = muiStyled(Button)(({ theme, ismodified }) => ({
+
+const ColorBtn = muiStyled(MuiButton)(({ theme, ismodified }) => ({
   backgroundColor: ismodified ? theme.primary : theme.secondary,
+  color: "white",
   fontSize: "16px",
   fontFamily: "Pretendard",
   borderRadius: "10px",
-  cursor: ismodified ? "pointer" : "not-allowed",
-  opacity: ismodified ? 1 : 0.5,
-  pointerEvents: ismodified ? "auto" : "none",
+  cursor: ismodified === "true" ? "pointer" : "not-allowed",
+  pointerEvents: ismodified === "true" ? "auto" : "none",
 }));
 
 const ChangeProfile = () => {
@@ -105,18 +109,16 @@ const ChangeProfile = () => {
   const [nickname, setNickname] = useState("");
   const [introduce, setIntroduce] = useState("");
   const [isModified, setIsModified] = useState(false);
-  const [isNicknameChecked, setIsNicknameChecked] = useState(true);
-  const fileInputRef = useRef(null);
+  const [isNicknameUnique, setIsNicknameUnique] = useState(true);
+  const [statusMsg, setStatusMsg] = useState(null);
+  const [introduceStatusMsg, setIntroduceStatusMsg] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
-  const { user, fetchUser, clearUser, loading, error } = useUserStore();
+
+  const { user, fetchUser, clearUser, loading, verifyNickname } = useUserStore();
+  const fileInputRef = useRef(null);
   const theme = useTheme();
   const navigate = useNavigate();
-  const logFormData = (formData) => {
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-  };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -129,75 +131,86 @@ const ChangeProfile = () => {
       setIsModified(true);
     }
   };
+
+  const validateNickname = (nickname) => /^[가-힣a-z0-9]{1,10}$/.test(nickname);
+
   const handleNicknameChange = (e) => {
-    setNickname(e.target.value);
-    setIsModified(true); // Assuming any change means the profile is modified
-    setIsNicknameChecked(false); // Reset nickname check status on change
+    const newNickname = e.target.value;
+    setNickname(newNickname);
+    setIsModified(newNickname !== user?.nickname);
+    setStatusMsg(null);
   };
-  // 닉네임 중복 확인 처리
-  const handleNicknameCheck = async () => {
-    console.log("Checking nickname...");
-    const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
-    try {
-      const res = await apiClient.get(`/users/verify`, {
-        params: {
-          nickname: nickname,
-        },
-      });
-      console.log(res.data.header.message);
-      if (res.data.header.message === "사용 가능한 닉네임입니다.") {
-        setIsNicknameChecked(true);
-      }
-    } catch (error) {
-      console.error("Nickname check failed", error);
+
+  const handleIntroduceChange = (event) => {
+    const value = event.target.value;
+    if (value.length <= 20) {
+      setIntroduce(value);
+      setIntroduceStatusMsg('');
+      setIsModified(value !== user?.introduce);
+    } else {
+      setIntroduceStatusMsg('한 줄 소개는 20자 이내로 작성해주세요.');
     }
   };
+
+  const memoizedVerifyNickname = useCallback(verifyNickname, []);
+
+  useEffect(() => {
+    const checkNickname = async () => {
+      if (validateNickname(nickname)) {
+        if (nickname === user?.nickname) {
+          setIsNicknameUnique(true);
+          setStatusMsg(null);
+        } else {
+          const result = await memoizedVerifyNickname(nickname);
+          if (result === "$OK") {
+            setIsNicknameUnique(true);
+            setStatusMsg(null);
+          } else {
+            setIsNicknameUnique(false);
+            setStatusMsg('이미 사용 중인 닉네임입니다.');
+          }
+        }
+      } else {
+        setIsNicknameUnique(false);
+        setStatusMsg('유효하지 않은 닉네임입니다. 10자 이내의 한글, 소문자 영어, 숫자만 사용 가능합니다.');
+      }
+    };
+
+    const typingTimeout = setTimeout(checkNickname, 1000);
+    return () => clearTimeout(typingTimeout);
+  }, [nickname, memoizedVerifyNickname, user?.nickname]);
+
   const createFormData = async () => {
     const formData = new FormData();
     const dto = {
-      nickname: nickname ? nickname : user.nickname,
-      introduce: introduce ? introduce : user.introduce,
+      nickname: nickname,
+      introduce: introduce || user.introduce,
     };
-    console.log(dto);
-    const newBlob = new Blob();
+    formData.append("dto", new Blob([JSON.stringify(dto)], { type: "application/json" }));
     if (selectedFile) {
-      console.log(selectedFile);
       formData.append("file", selectedFile, selectedFile.name);
-    } else {
-      formData.append("file", newBlob);
     }
-    const dtoBlob = new Blob([JSON.stringify(dto)], {
-      type: "application/json",
-    });
-
-    formData.append("dto", dtoBlob);
-    logFormData(formData);
     return formData;
   };
+
   const changeProfile = async (formData) => {
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post("/users/profile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
       console.log(res.data.header.message);
-      console.log(res.data.body);
       navigate("/my-page");
-      // return res.data.body.diaryId;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
   };
 
   const handleClickBtn = async () => {
-    if (!isModified || !isNicknameChecked) {
-      console.log("Cannot submit, either no changes or nickname not checked");
+    if (!isModified || !isNicknameUnique) {
+      console.log("Cannot submit, either no changes or invalid nickname");
       return;
     }
-    console.log("Submitting changes...");
     try {
       const formData = await createFormData();
       await changeProfile(formData);
@@ -216,7 +229,6 @@ const ChangeProfile = () => {
     };
 
     fetchData();
-
     return () => clearUser();
   }, [fetchUser, clearUser]);
 
@@ -224,76 +236,56 @@ const ChangeProfile = () => {
     if (user) {
       setNickname(user.nickname || "");
       setIntroduce(user.introduce || "");
+      setImage(user.profileUrl || null);
+      setIsNicknameUnique(true);  // 페이지 로드 시 true로 설정
     }
   }, [user]);
-
-  useEffect(() => {
-    setIsModified(
-      nickname !== (user?.nickname || "") ||
-      introduce !== (user?.introduce || "")
-    );
-    setIsNicknameChecked(nickname === user?.nickname);
-  }, [nickname, introduce, user]);
 
   if (loading || !user) {
     return <Loading />;
   }
+
   return (
     <Container>
       <Title>프로필 수정</Title>
       <ProfileImage>
         <img src={image || user.profileUrl} alt="profile" />
         <ImageBtn>
-          <HiddenInput
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
+          <HiddenInput type="file" ref={fileInputRef} onChange={handleFileChange} />
           <PencilSvg />
         </ImageBtn>
       </ProfileImage>
       <InputForm>
-        <div style={{ marginBottom: "20px" }}>
-          <TextField
-            id="outlined-required"
-            label="닉네임"
-            defaultValue={user.nickname}
-            onChange={handleNicknameChange}
-            sx={{ width: "100%" }}
-            InputProps={{
-              endAdornment: (
-                <NicknameBtn
-                  disabled={
-                    nickname.trim() === "" || nickname === user.nickname
-                  }
-                  onClick={handleNicknameCheck}
-                >
-                  중복확인
-                </NicknameBtn>
-              ),
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: "20px" }}>
-          <TextField
-            id="outlined-required"
-            label="한줄소개"
-            defaultValue={user.introduce}
-            onChange={(e) => setIntroduce(e.target.value)}
-            sx={{ width: "100%" }}
-          />
-        </div>
-        <ColorBtn
+        <TextField
           sx={{ width: "100%" }}
-          variant="contained"
-          theme={theme}
-          ismodified={isModified.toString()}
-          onClick={handleClickBtn}
-          disabled={!isModified || !isNicknameChecked}
-        >
-          수정완료
-        </ColorBtn>
+          label="닉네임 입력"
+          value={nickname}
+          onChange={handleNicknameChange}
+          InputProps={{
+            endAdornment: (
+              <MuiButton
+                variant="contained"
+                sx={{ height: "30px", width: "34%", backgroundColor: isNicknameUnique ? 'navy' : 'red' }}
+              >
+                {isNicknameUnique ? <CheckIcon /> : <WarningIcon />}
+              </MuiButton>
+            ),
+          }}
+        />
+        {statusMsg && <StatusMessageForm statusMsg={statusMsg} />}
+        <TextField
+          sx={{ width: "100%", marginTop: "0.8rem" }}
+          label="한 줄 소개 입력"
+          value={introduce}
+          onChange={handleIntroduceChange}
+          error={Boolean(introduceStatusMsg)}
+          helperText={introduceStatusMsg}
+        />
       </InputForm>
+      <ColorBtn ismodified={isModified.toString()} onClick={handleClickBtn}
+      style={{ backgroundColor: "navy", width: "80%" }}>
+        완료
+      </ColorBtn>
     </Container>
   );
 };
