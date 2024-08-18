@@ -29,7 +29,6 @@ import static com.youniform.api.domain.alert.entity.AlertType.PLAYER_APPEARANCE;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AlertServiceImpl implements AlertService {
 	private static final Logger log = LoggerFactory.getLogger(AlertServiceImpl.class);
@@ -80,6 +79,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	@Transactional
 	public void modifyAlertRead(Long userId, Long alertId) {
 		Alert alert = alertRepository.findByIdAndReceiverId(alertId, userId)
 				.orElseThrow(() -> new CustomException(ALERT_NOT_FOUND));
@@ -89,6 +89,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	@Transactional
 	public void modifyAlertAllRead(Long userId) {
 		List<Alert> alerts = alertRepository.findByReceiverId(userId);
 
@@ -99,6 +100,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	@Transactional
 	public void removeAlert(Long userId, Long alertId) {
 		Alert alert = alertRepository.findByIdAndReceiverId(alertId, userId)
 				.orElseThrow(() -> new CustomException(ALERT_NOT_FOUND));
@@ -107,6 +109,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	@Transactional
 	public void removeAllAlert(Long userId) {
 		List<Alert> alerts = alertRepository.findByReceiverId(userId);
 
@@ -114,6 +117,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	@Transactional
 	public void sendPlayerAppearance(Long playerId) {
 		Player player = playerRepository.findById(playerId)
 				.orElseThrow(() -> new CustomException(PLAYER_NOT_FOUND));
@@ -131,6 +135,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	@Transactional
 	public void sendCleanSweepAlert() {
 		List<Users> uesrs = userRepository.findAllByPushAlertTrue();
 		uesrs.forEach(user -> {
@@ -139,6 +144,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
+	@Transactional
 	public void send(String receiverUuid, Long senderId, AlertType type, String content, Long pk) {
 		Users receiver = userRepository.findByUuid(receiverUuid)
 				.orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
