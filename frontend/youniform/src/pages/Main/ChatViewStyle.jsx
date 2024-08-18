@@ -71,8 +71,12 @@ export const ChatBody = styled.div`
       : "0rem 0.625rem 0.625rem 0.625rem"};
   /* border: 1px solid blue; */
   word-break: break-word;
+  display: flex;
+  flex-direction: column;
 `;
-
+export const ChatImage = styled.img`
+  height: 200px;
+`
 export const InputSection = styled.div`
   width: 100%;
   height: 10%;

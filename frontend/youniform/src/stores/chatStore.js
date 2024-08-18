@@ -186,7 +186,8 @@ const useChatStore = create((set, get) => ({
         },
       });
       console.log(res.data.header);
-      console.log(res.data.body);
+      console.log(res.data.body.imageUrl);
+      return res.data.body.imageUrl;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
