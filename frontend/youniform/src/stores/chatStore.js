@@ -176,14 +176,8 @@ const useChatStore = create((set, get) => ({
     }
   },
 
-  sendImage: async (file) => {
-    const { selectedRoom } = get();
-    if (!selectedRoom || !file) return;
-
+  submitImage: async (formData) => {
     const apiClient = getApiClient();
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
       const res = await apiClient.post(`/chats/messages/upload`, formData, {
         headers: {
