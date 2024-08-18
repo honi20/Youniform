@@ -31,4 +31,12 @@ public class RedisUtils {
     public Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
     }
+
+    public void deleteDataWithPattern(String roomId, String userId) {
+        String pattern = "room:" + roomId + ":session:*:user:" + userId;
+        Set<String> keys = redisTemplate.keys(pattern);
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
+    }
 }
