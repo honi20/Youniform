@@ -60,13 +60,25 @@ const DiaryComp = ({ state, diary }) => {
     const [year, month, day] = dateString.split("-");
     return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
   };
-
+  const renderScope = (scope) => {
+    switch(scope){
+      case "ALL":
+        return "전체공개"
+      case "FRIENDS":
+        return "친구공개"
+      case "PRIVATE":
+        return "비공개"
+    }
+  }
   return (
     <St.Diary>
       <St.DiaryHeader>
         <St.Profile src={diary.profileUrl} />
         <St.TextContainer>
-          <St.HeaderText>{diary.nickname}</St.HeaderText>
+          <St.HeaderText>{diary.nickname}
+          <St.HeaderScope>{renderScope(diary.scope)}</St.HeaderScope>
+          </St.HeaderText>
+          
         </St.TextContainer>
         <St.DiaryDate>
           {diary?.diaryDate && formatDate(diary.diaryDate)}

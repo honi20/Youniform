@@ -107,8 +107,8 @@ const WriteDiaryView = () => {
           const imgHeight = obj.getScaledHeight();
           if (deleteBtnRef.current) {
             deleteBtnRef.current.style.display = "block";
-            deleteBtnRef.current.style.left = `${test.x - imgWidth/2 + 48}px`;
-            deleteBtnRef.current.style.top = `${test.y - imgHeight/2 + 10}px`;
+            deleteBtnRef.current.style.left = `${test.x + imgWidth/2 + 28}px`;
+            deleteBtnRef.current.style.top = `${test.y - imgHeight/2 + 12}px`;
             deleteBtnRef.current.style.display = 'flex'; 
           }
         }

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import * as Font from "@/typography"
 export const Diary = styled.div`
   // layout
   box-sizing: border-box;
@@ -50,6 +50,8 @@ export const HeaderText = styled.span`
   flex-shrink: 0;
   /* margin-left: 0.6rem; */
   // typography
+  display: flex;
+  flex-direction: row;
   font-size: 1rem;
   color: #363636;
   font-weight: 700;
@@ -162,4 +164,14 @@ export const CanvasContainer = styled.div`
   z-index: ${(props) => (props.$decorated ? "100" : "")};
   position: absolute;
 `;
+export const HeaderScope = styled.div`
+  ${Font.Tiny};
+  /* border: 1px solid black; */
+  margin: 0px 5px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  padding: 2px;
+  background: #dadada;
+`
 export * from "./DiaryCompStyle";
