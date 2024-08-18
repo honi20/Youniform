@@ -154,7 +154,9 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     setLike(post.isLiked);
+    if (!post){
     fetchPost(post.postId)
+    }
   }, [setLike]);
 
   const handleProfileClick = async () => {
