@@ -82,7 +82,7 @@ const NavBar = () => {
 
   // 특정 경로에서 NavBar를 숨기기 위한 조건 설정
   const shouldHideNavBar =
-    currentPath === "/" ||
+    // currentPath === "/" ||
     currentPath === "/login" ||
     currentPath.startsWith("/signup") ||
     currentPath.startsWith("/find-password") ||
