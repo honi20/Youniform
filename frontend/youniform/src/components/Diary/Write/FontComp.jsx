@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
 const FontContainer = styled.div`
   display: flex;
   height: 100%;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 `;
 const Wrapper = styled.div`
   padding-left: 3%;
