@@ -34,7 +34,10 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("성공성공!!");
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        Users user = userRepository.findByEmail(((PrincipalDetails)authentication.getPrincipal()).getPassword());
+        Users user = userRepository.findByEmailAndProviderType(
+                ((PrincipalDetails)authentication.getPrincipal()).getPassword(),
+                        ((PrincipalDetails) oAuth2User).getUser().getProviderType())
+                .get();
         if(user == null) {
             user = ((PrincipalDetails)oAuth2User).getUser();
             sendSignUpUserInfo(response, user);

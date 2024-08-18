@@ -64,7 +64,7 @@ public class JwtBearerAuthenticationFilter extends GenericFilterBean {
                         return;
                     }
                 }
-                sendAccessToken(response, JWT.decode(token).getSubject());
+                sendError(response, ErrorCode.EXPIRED_TOKEN);
                 return;
             } else {
                 sendError(response, ErrorCode.NOT_VALID_TOKEN);
