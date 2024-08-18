@@ -1,12 +1,7 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
 import { fabric } from "fabric";
+import FontFaceObserver from 'fontfaceobserver';
 
-const loadCanvasFromJSON = (canvas, json) => {
-  canvas.loadFromJSON(json, () => {
-    canvas.renderAll();
-  });
-};
 
 const Canvas = ({ selectCanvas, setSelectCanvas, decorated, diary }) => {
   console.log("decorated: ", decorated);
