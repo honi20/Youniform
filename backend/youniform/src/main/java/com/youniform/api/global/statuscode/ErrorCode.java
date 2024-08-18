@@ -20,6 +20,7 @@ public enum ErrorCode {
     VERIFY_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "인증번호가 일치하지 않습니다."),
     FAIL_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "메일을 보내지 못하였습니다."),
     ALREADY_EXIST_USER(HttpStatus.BAD_REQUEST.value(), "이미 사용중인 이메일입니다."),
+    BAD_SIGNUP_REQUEST(HttpStatus.BAD_REQUEST.value(), "잘못된 회원가입 요청입니다."),
 
     // mail error code
     MAIL_SEND_FAILURE(HttpStatus.BAD_REQUEST.value(), "이메일을 전송하지 못하였습니다."),

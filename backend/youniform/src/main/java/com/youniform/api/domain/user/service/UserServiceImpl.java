@@ -114,11 +114,21 @@ public class UserServiceImpl implements UserService {
     public String signup(SignupReq user) {
         String uuid = UUID.randomUUID().toString();
 
+        if (userRepository.findByEmail(user.getEmail()) != null){
+            throw new CustomException(ALREADY_EXIST_USER);
+        }
+
         if (userRepository.findByNickname(user.getNickname()) != null) {
             throw new CustomException(ALREADY_EXIST_USER);
         }
 
         if (user.getProviderType().equals("local")) {
+            String verifyCode = user.getVerifyCode();
+            String verify = (String) redisUtils.getData(user.getEmail()+"_verify");
+            if(verify == null || !verify.equals(verifyCode)) {
+                throw new CustomException(BAD_SIGNUP_REQUEST);
+            }
+
             String password = passwordEncoder.encode(user.getPassword());
             user.setPassword(password);
         }
@@ -253,7 +263,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (jwtRedis.getVerify().equals(req.getVerify())) {
-            Users user = userRepository.findByUuid(req.getUuid())
+            Users user = userRepository.findByUuid(jwtRedis.getUuid())
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
             user.updatePassword(passwordEncoder.encode(req.getPassword()));
             userRepository.save(user);
@@ -289,14 +299,15 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(INVALID_EMAIL);
         }
         //email로 비밀번호 재설정 email 전송
+        String key = UUID.randomUUID().toString();
         String verify_key = "";
-        verify_key = mailService.sendPasswordResetMail(req.getEmail(), user.getUuid());
+        verify_key = mailService.sendPasswordResetMail(req.getEmail(), key);
         JwtRedis jwtRedis = JwtRedis.builder()
                 .uuid(user.getUuid())
                 .verify(verify_key)
                 .build();
         //redis에 key: email
-        redisUtils.setDataWithExpiration(user.getUuid(), jwtRedis, System.currentTimeMillis() + (600_000));
+        redisUtils.setDataWithExpiration(key, jwtRedis, 300L);
     }
 
     @Override
@@ -402,7 +413,7 @@ public class UserServiceImpl implements UserService {
 
         if (user == null) {
             String verify = mailService.sendVerifyEmail(req.getEmail());
-            redisUtils.setDataWithExpiration(req.getEmail() + "_verify", verify, System.currentTimeMillis() + (600_000));
+            redisUtils.setDataWithExpiration(req.getEmail() + "_verify", verify, 500L);
             return;
         }
 
@@ -420,8 +431,6 @@ public class UserServiceImpl implements UserService {
         if (!verify.equals(req.getVerifyCode())) {
             throw new CustomException(VERIFY_NOT_MATCH);
         }
-
-        redisUtils.deleteData(req.getEmail() + "_verify");
     }
 
     @Override

@@ -37,6 +37,8 @@ public class SignupReq {
     @NotNull
     private String team;
 
+    private String verifyCode;
+
     private List<Long> players;
 
     public Users toEntity(String uuid, String bucketUrl){
