@@ -40,6 +40,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.diary.validation.DiaryValidation.*;
@@ -113,9 +114,9 @@ public class DiaryServiceImpl implements DiaryService {
 		Users writer = diary.getUser();
 
 		Status status = friendService.isFriend(userId, writer.getId());
-		boolean isFriend = (status != null && status == Status.FRIEND);
+		boolean isFriend = (status == Status.FRIEND);
 
-		if (userId != writer.getId()) {
+		if (!Objects.equals(userId, writer.getId())) {
 			isForbiddenDiary(diary.getScope(), isFriend);
 		}
 
