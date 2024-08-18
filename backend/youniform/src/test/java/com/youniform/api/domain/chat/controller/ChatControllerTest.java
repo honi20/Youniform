@@ -3,6 +3,7 @@ package com.youniform.api.domain.chat.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.youniform.api.domain.chat.document.Type;
 import com.youniform.api.domain.chat.dto.*;
 import com.youniform.api.domain.chat.service.ChatService;
 import com.youniform.api.global.dto.SliceDto;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.youniform.api.domain.chat.document.Type.MESSAGE;
 import static com.youniform.api.global.statuscode.ErrorCode.CHATROOM_NOT_FOUND;
 import static com.youniform.api.global.statuscode.SuccessCode.*;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
@@ -95,7 +97,7 @@ public class ChatControllerTest {
     public void 채팅방_상세조회_성공() throws Exception {
         ChatRoomDetailsRes chatRoomDetails = new ChatRoomDetailsRes(1L, "1번 방", true);
         List<ChatMessageDto> messageList = List.of(
-                new ChatMessageDto(1L, "유저 1", "1번방 테스트1", "image.png", LocalDateTime.now())
+                new ChatMessageDto(1L, "유저 1", "1번방 테스트1", "image.png", LocalDateTime.now(), MESSAGE)
         );
         SliceImpl<ChatMessageDto> slice = new SliceImpl<>(messageList, PageRequest.of(0, 10), false);
         SliceDto<ChatMessageDto> messages = new SliceDto<>(slice);
@@ -142,6 +144,8 @@ public class ChatControllerTest {
                                                         .description("이미지 URL"),
                                                 fieldWithPath("body.messages.content[].messageTime").type(JsonFieldType.STRING)
                                                         .description("메시지 시간"),
+                                                fieldWithPath("body.messages.content[].type").type(JsonFieldType.STRING)
+                                                        .description("메시지 타입"),
                                                 fieldWithPath("body.messages.page").type(JsonFieldType.NUMBER)
                                                         .description("페이지 번호"),
                                                 fieldWithPath("body.messages.size").type(JsonFieldType.NUMBER)
@@ -240,7 +244,7 @@ public class ChatControllerTest {
     @Test
     public void 채팅_메시지_이전_조회_성공() throws Exception {
         List<ChatMessageDto> messageList = List.of(
-                new ChatMessageDto(1L, "유저 1", "1번 방 이전 테스트 1", "image.png", LocalDateTime.now())
+                new ChatMessageDto(1L, "유저 1", "1번 방 이전 테스트 1", "image.png", LocalDateTime.now(), MESSAGE)
         );
         SliceImpl<ChatMessageDto> slice = new SliceImpl<>(messageList, PageRequest.of(0, 10), false);
         SliceDto<ChatMessageDto> response = new SliceDto<>(slice);
@@ -284,6 +288,8 @@ public class ChatControllerTest {
                                                         .description("이미지 URL"),
                                                 fieldWithPath("body.content[].messageTime").type(JsonFieldType.STRING)
                                                         .description("메시지 시간"),
+                                                fieldWithPath("body.content[].type").type(JsonFieldType.STRING)
+                                                        .description("메시지 타입"),
                                                 fieldWithPath("body.page").type(JsonFieldType.NUMBER)
                                                         .description("페이지 번호"),
                                                 fieldWithPath("body.size").type(JsonFieldType.NUMBER)
@@ -300,7 +306,7 @@ public class ChatControllerTest {
     @Test
     public void 채팅_메시지_이후_조회_성공() throws Exception {
         List<ChatMessageDto> messageList = List.of(
-                new ChatMessageDto(1L, "유저 1", "1번 방 이후 테스트 1", "image.png", LocalDateTime.now())
+                new ChatMessageDto(1L, "유저 1", "1번 방 이후 테스트 1", "image.png", LocalDateTime.now(), MESSAGE)
         );
         SliceImpl<ChatMessageDto> slice = new SliceImpl<>(messageList, PageRequest.of(0, 10), false);
         SliceDto<ChatMessageDto> response = new SliceDto<>(slice);
@@ -344,6 +350,8 @@ public class ChatControllerTest {
                                                         .description("이미지 URL"),
                                                 fieldWithPath("body.content[].messageTime").type(JsonFieldType.STRING)
                                                         .description("메시지 시간"),
+                                                fieldWithPath("body.content[].type").type(JsonFieldType.STRING)
+                                                        .description("메시지 타입"),
                                                 fieldWithPath("body.page").type(JsonFieldType.NUMBER)
                                                         .description("페이지 번호"),
                                                 fieldWithPath("body.size").type(JsonFieldType.NUMBER)

@@ -1,6 +1,7 @@
 package com.youniform.api.domain.chat.dto;
 
 import com.youniform.api.domain.chat.document.ChatMessage;
+import com.youniform.api.domain.chat.document.Type;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,8 @@ public class ChatMessageDto {
 
     private LocalDateTime messageTime;
 
+    private Type type;
+
     public static ChatMessageDto toDto(ChatMessage chatMessage) {
         return ChatMessageDto.builder()
                 .roomId(chatMessage.getRoomId())
@@ -30,6 +33,7 @@ public class ChatMessageDto {
                 .content(chatMessage.getContent())
                 .imageUrl(chatMessage.getImageUrl())
                 .messageTime(chatMessage.getMessageTime())
+                .type(chatMessage.getType())
                 .build();
     }
 }
