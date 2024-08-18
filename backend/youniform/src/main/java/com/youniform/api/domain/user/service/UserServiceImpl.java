@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
         Photocard photoCard = Photocard.builder()
                 .createdAt(LocalDateTime.now())
                 .user(users)
-                .imgUrl(cloudFrontUrl+"/asset/basic.png")
+                .imgUrl(cloudFrontUrl+"asset/basic.png")
                 .build();
 
         photocardRepository.save(photoCard);
