@@ -70,10 +70,11 @@ const PostView = () => {
         <ScrollablePostView onScroll={handleScroll}>
           <Posts posts={posts} />
         </ScrollablePostView>
-        <AddBtn onClick={handleClickAddBtn}>
+        
+      </Container>
+      <AddBtn onClick={handleClickAddBtn}>
           <AddSvg />
         </AddBtn>
-      </Container>
     </>
   );
 };
