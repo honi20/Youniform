@@ -76,7 +76,6 @@ const WriteDiaryView = () => {
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const [isExampleOn, setIsExampleOn] = useState(false); // 초기 상태 off
   const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
-  // const fileInputRef = useRef(null);
   useEffect(() => {
     if (diaryId) {
       fetchDiary(diaryId);
@@ -92,16 +91,6 @@ const WriteDiaryView = () => {
     console.log(themes);
     fetchStampList();
   }, [fetchResources, fetchStampList]);
-
-  // useEffect(() => {
-  //   const loadResources = () => {
-  //     if (!backgrounds || backgrounds.length == 0) {
-  //       fetchResources();
-  //     }
-  //   };
-  //   loadResources();
-  //   console.log(backgrounds);
-  // }, [fetchResources, backgrounds]);
 
   const handleBtnClick = (index) => {
     setSelectedBtn(index);
@@ -362,10 +351,11 @@ const WriteDiaryView = () => {
         const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
 
-        console.log("diaryDate: ", diaryDate ? diaryDate : date);
-        console.log("contents: ", json);
-        console.log("scope: ", scope);
-        console.log("stamp: ", stampId);
+        // 확인용 코드
+        // console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        // console.log("contents: ", json);
+        // console.log("scope: ", scope);
+        // console.log("stamp: ", stampId);
         // console.log(diaryDate, date)
         // console.log(diary)
         const formData = new FormData();
@@ -381,8 +371,8 @@ const WriteDiaryView = () => {
         formData.append("file", imageBlob, "canvas.png");
         formData.append("dto", dtoBlob);
 
-        console.log("FormData contents:");
-        logFormData(formData);
+        // console.log("FormData contents:");
+        // logFormData(formData);
 
         return formData;
       } else {
@@ -394,49 +384,10 @@ const WriteDiaryView = () => {
     }
   };
 
-  // const saveDiaryObject = async () => {
-  //   try {
-  //     if (selectCanvas) {
-  //       // console.log(backgrounds["WHITE"].filter((img)=>img.resourceId == 1)[0])
-  //       if (!selectCanvas.backgroundImage) {
-  //         // console.log(backgrounds)
-  //         await handleImageClick(backgrounds["WHITE"].filter((img)=>img.resourceId == 1)[0])
-  //     } try {
-  //       const json = selectCanvas.toJSON();
-
-  //       const diaryImgUrl = selectCanvas.toDataURL({ format: "png" });
-  //       const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
-  //       console.log("diaryDate: ", diaryDate ? diaryDate : date);
-  //       console.log("contents: ", json);
-  //       console.log("scope: ", scope);
-  //       console.log("stamp: ", stampId);
-  //       const formData = new FormData();
-  //       const dto = {
-  //         diaryDate: diaryDate ? diaryDate : date, // 날짜 바뀌는 거 확인하기
-  //         contents: json,
-  //         scope: scope,
-  //         stampId: stampId,
-  //       };
-
-  //       const dtoBlob = new Blob([JSON.stringify(dto)], {
-  //         type: "application/json",
-  //       });
-  //       formData.append("file", imageBlob, "canvas.png");
-  //       formData.append("dto", dtoBlob);
-
-  //       console.log("FormData contents:");
-  //       logFormData(formData);
-  //       return formData;
-  //     }
-  //   } catch (error) {
-  //     throw new Error("Error saving diary object: " + error.message);
-  //   }
-  // };
-
   const moveToDetailPage = async (diaryId) => {
     try {
       if (diaryId) {
-        console.log(diaryId);
+        // console.log(diaryId);
         navigate(`/diary/${diaryId}`); // 페이지 이동
       }
     } catch (error) {
@@ -459,12 +410,35 @@ const WriteDiaryView = () => {
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
-      console.log("선택 해제");
+      // console.log("선택 해제");
       obj.selectable = false;
     }
     selectCanvas.renderAll();
     setIsDecorated(!isDecorated);
   };
+  const removeBtn = async() => {
+    if (selectCanvas) {
+      const objectsToDelete = await selectCanvas.getActiveObjects();
+      console.log(objectsToDelete);
+  
+      if (objectsToDelete.length > 0) {
+        objectsToDelete.forEach((obj) => {
+          selectCanvas.remove(obj);
+        });
+  
+        selectCanvas.discardActiveObject(); // 선택된 상태를 해제
+        selectCanvas.renderAll();
+        console.log('삭제완료');
+      }
+    }
+  }
+  const deleteElem = (elem) => {
+    if (selectCanvas){
+      console.log('삭제')
+      selectCanvas.remove(elem)
+      selectCanvas.renderAll();
+    }
+  }
   return (
     <>
       <St.StampContainer onClick={() => handleToggle(isOn)}>
@@ -494,6 +468,9 @@ const WriteDiaryView = () => {
         <St.IconFont>저장</St.IconFont>
       </St.SaveBtn>
       <St.Div $decorated={isDecorated}>
+        <button
+        onClick={() => removeBtn()}
+        style={{ zIndex: "120", position: "absolute" }}>test</button>
         <CanvasComp
           selectCanvas={selectCanvas}
           setSelectCanvas={setSelectCanvas}

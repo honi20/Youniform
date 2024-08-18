@@ -102,6 +102,7 @@ export const DecorationBtn = styled.button`
 export const DecorationMenu = styled.div`
   width: 100%;
   height: calc(100% - 70px);
+  max-height: 500px;
   flex-shrink: 0;
   box-sizing: border-box;
   border-radius: 0rem 1.25rem 1.25rem 1.25rem;

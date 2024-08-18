@@ -16,26 +16,25 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const FontContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px;
-  overflow-y: auto;
-  max-height: 100%;
-  margin-bottom: 5px;
-  /* border: 1px solid red; */
+    display: flex;
+    height: calc(100% - 40px);
 `;
-
+const Wrapper = styled.div`
+  padding-left: 3%;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 3.3%;
+  margin: 10px;
+  overflow-y: auto;
+  border: 1px solid red;
+`;
 const FontItem = styled.div`
   flex: 0 0 30%;
   aspect-ratio: 6/4.5;
   overflow: hidden;
-  display: flex;
   background: white;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center;
+  align-items: center; */
   font-family: ${(props) => props.$fontName || "sans-serif"};
   border-radius: 0.625rem;
   border: 1px solid #000;
@@ -67,6 +66,8 @@ const fontNameMapping = {
   "MangoDdobak": "또박체",
   TheJamsil: "더잠실체",
   "NotoSansKR": "Noto Sans",
+  Ownglyph: "온글잎 언즈체",
+  yangjin: "양진체",
 };
 
 const getKoreanFontName = (fontName) => {
@@ -83,6 +84,7 @@ const FontComp = ({ fonts, onFontClick }) => {
     <>
       <GlobalStyle fonts={fontData} />
       <FontContainer>
+        <Wrapper>
         {fontData.map((font, index) => {
           return (
             <FontItem
@@ -95,6 +97,7 @@ const FontComp = ({ fonts, onFontClick }) => {
             </FontItem>
           );
         })}
+        </Wrapper>
       </FontContainer>
     </>
   );

@@ -118,28 +118,37 @@ const WritePostView = () => {
   const { postId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+
   const stripHtmlTags = (input) => {
     return input.replace(/<\/?[^>]+>/gi, ''); // 모든 HTML 태그 제거
   };
-  
+
   useEffect(() => {
     if (location.state && location.state.post) {
-      const post = location.state.post;
-      setContent(stripHtmlTags(post.contents));
-      console.log(post.contents);
-      setTags(post.tags.map((tag) => tag.contents));
-      if (post.imageUrl) {
-        setFilePreview(post.imageUrl);
-      }
+        const post = location.state.post;
+        setContent(stripHtmlTags(post.contents));
+        // console.log(post.tags);
+        // console.log(post.tags.map((tag) => tag.contents));
+        setTags(post.tags.map((tag) => tag.contents));
+        if (post.imageUrl) {
+            setFilePreview(post.imageUrl);
+        }
     }
     if (!user) {
-      fetchUser();
+        fetchUser();
     }
-  }, [location.state, user, fetchUser]);
+}, [location.state, user, fetchUser]);
 
-  // 해쉬태그
-  useEffect(() => {
+// content가 업데이트된 후에 extractedTagFunction을 호출
+useEffect(() => {
+    if (content) {
+        extractedTagFunction(content);
+    }
+}, [content]);
+
+  const extractedTagFunction = (content) => {
     const extractedTags = content.match(/#\S+/g) || [];
+    console.log(content)
     const uniqueTags = [
       ...new Set(
         extractedTags.map((tag) =>
@@ -147,12 +156,13 @@ const WritePostView = () => {
         )
       ),
     ].slice(0, 10); // 태그 개수를 10개로 제한
+    // console.log(uniqueTags)
     setTags(uniqueTags);
     // console.log("해쉬태그", uniqueTags);
-  }, [content]);
-
+  }
   const cleanContent = () => {
-    return content.replace(/# \S+/g, "").trim();
+    // console.log(content)
+    return content.replace(/#\S+/g, "").trim();
   };
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
@@ -162,10 +172,10 @@ const WritePostView = () => {
   const createFormData = async () => {
     const cleanedContent = cleanContent();
 
-    // console.log("저장할 내용:", cleanedContent);
-    // console.log("해쉬태그", tags);
-    // console.log("Selected file:", selectedFile);
-
+    console.log("저장할 내용:", cleanedContent);
+    console.log("해쉬태그", tags);
+    console.log("Selected file:", selectedFile);
+    console.log(tags)
     const formData = new FormData();
     const dto = {
       contents: cleanedContent,
@@ -174,8 +184,10 @@ const WritePostView = () => {
 
     const newBlob = new Blob();
     if (selectedFile) {
+      console.log("파일 있음")
       formData.append("file", selectedFile, selectedFile.name);
     } else {
+      console.log("파일 없음")
       formData.append("file", newBlob);
     }
     const dtoBlob = new Blob([JSON.stringify(dto)], {
@@ -195,8 +207,8 @@ const WritePostView = () => {
       const formData = await createFormData();
       let newPostId = "";
       if (postId) {
-        console.log("업데이트", postId);
-        logFormData(formData);
+        // console.log("업데이트", postId);
+        // logFormData(formData);
         await updatePost(postId, formData);
       } else {
         newPostId = await addPost(formData);
@@ -209,7 +221,6 @@ const WritePostView = () => {
   const moveToDetailPage = async (postId) => {
     try {
       if (postId) {
-        // console.log(postId);
         navigate(`/post/${postId}`); // 페이지 이동
       }
     } catch (error) {
@@ -253,6 +264,9 @@ const WritePostView = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
+          {/* <div>
+            {content}
+          </div> */}
           <ImageContainer>
           {filePreview && <><ImgBox src={filePreview} alt="Preview" >
           </ImgBox>
@@ -268,7 +282,7 @@ const WritePostView = () => {
             onChange={handleFileChange}
           />
           <TagsContainer>
-            {tags.map((tag, index) => (
+            {tags && tags.map((tag, index) => (
               <Tag key={index}># {tag}</Tag>
             ))}
           </TagsContainer>
