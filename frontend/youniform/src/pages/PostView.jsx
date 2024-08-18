@@ -29,9 +29,11 @@ const AddBtn = styled.div`
   padding: 7px;
   background-color: white;
   border-radius: 50%;
-  position: absolute;
+  position: fixed;
   bottom: 80px;
-  right: 10px;
+  /* right: 10px; */
+  left: calc(50% + 170px);
+  transform: translate(-50%, 0);
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   &:hover {
     background-color: ${(props) => props.theme.secondary};
