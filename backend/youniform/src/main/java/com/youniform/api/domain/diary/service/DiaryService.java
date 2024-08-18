@@ -12,7 +12,7 @@ import java.io.IOException;
 public interface DiaryService {
 	DiaryAddRes addDiary(Long userId, DiaryAddReq diaryAddReq, MultipartFile file) throws IOException;
 
-	DiaryDetailDto detailDiary(Long userId, Long diaryId) throws JsonProcessingException;
+	DiaryDetailDto detailDiary(Long userId, Long diaryId) throws IOException;
 
 	DiaryListRes findMyDiaries(Long userId, DiaryListReq diaryListReq, Pageable pageable) throws JsonProcessingException;
 

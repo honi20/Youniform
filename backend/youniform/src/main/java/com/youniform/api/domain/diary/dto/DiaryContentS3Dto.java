@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DiaryContentRedisDto {
+public class DiaryContentS3Dto {
 	private Long userId;
 
 	private DiaryContentDto contents;

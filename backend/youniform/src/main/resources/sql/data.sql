@@ -1,6 +1,7 @@
 -- team
-INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name)
-VALUES (1000, CURRENT_DATE, 3, 1, 2, 66.6, '홈그라운드', '서울', '팀 이름');
+INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name, img_url)
+VALUES (1000, '2022-04-18', 12, 1, 11, 91.7, '고척스카이돔', '서울', '최강 몬스터즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/monsters.png');
 
 -- users
 INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_write_diary, team_id, email, introduce,
@@ -82,7 +83,7 @@ VALUES (123, 'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB
        (124, null, '최강 몬스터즈5', current_date);
 
 -- post_tag
-INSERT INTO POST_TAG(post_id, tag_id)
+INSERT INTO post_tag(post_id, tag_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),

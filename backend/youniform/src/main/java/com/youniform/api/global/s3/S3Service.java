@@ -45,6 +45,36 @@ public class S3Service {
         return uploadS3(multipartFile, dirName);
     }
 
+    public String uploadJson(String jsonContent, String dirName, String fileName) {
+        if (jsonContent == null || jsonContent.isEmpty()) {
+            throw new CustomException(FILE_UPLOAD_FAIL);
+        }
+
+        String s3FileName = dirName + "/" + fileName;
+
+        byte[] bytes = jsonContent.getBytes();
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType("application/json");
+        objectMetadata.setContentLength(bytes.length);
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+
+        try {
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, s3FileName, byteArrayInputStream, objectMetadata);
+            amazonS3Client.putObject(putObjectRequest);
+        } catch (Exception e) {
+            throw new CustomException(FILE_UPLOAD_FAIL);
+        } finally {
+            try {
+                byteArrayInputStream.close();
+            } catch (IOException e) {
+                log.error("Error closing input stream", e);
+            }
+        }
+
+        return generateCloudFrontUrl(s3FileName);
+    }
+
     private String uploadS3(MultipartFile multipartFile, String dirName) throws IOException {
         validateImageFileExtention(multipartFile.getOriginalFilename());
 

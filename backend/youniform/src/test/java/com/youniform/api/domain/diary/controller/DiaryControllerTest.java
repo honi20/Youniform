@@ -1018,7 +1018,7 @@ public class DiaryControllerTest {
     }
 
     private void setRedisDiaryContent(Long id) throws JsonProcessingException {
-        DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
+        DiaryContentS3Dto redisDto = DiaryContentS3Dto.builder()
                 .userId(id)
                 .contents(getDiaryContent())
                 .build();

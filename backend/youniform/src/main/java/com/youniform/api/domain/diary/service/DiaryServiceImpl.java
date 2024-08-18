@@ -24,6 +24,7 @@ import com.youniform.api.global.exception.CustomException;
 import com.youniform.api.global.redis.RedisUtils;
 import com.youniform.api.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
@@ -31,7 +32,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,10 +56,6 @@ public class DiaryServiceImpl implements DiaryService {
 
 	private final ResourceRepository resourceRepository;
 
-	private final RedisUtils redisUtils;
-
-	private final ObjectMapper objectMapper;
-
 	private final UserRepository userRepository;
 
 	private final S3Service s3Service;
@@ -63,6 +63,9 @@ public class DiaryServiceImpl implements DiaryService {
 	private final FriendService friendService;
 
 	private final FriendRepository friendRepository;
+
+	@Value("${BUCKET_URL}")
+	private String bucketURL;
 
 	@Override
 	@Transactional
@@ -80,18 +83,22 @@ public class DiaryServiceImpl implements DiaryService {
 		if (file.isEmpty()) {
 			diary = diaryAddReq.toEntity(user, stamp);
 		} else {
-			String imgUrl = s3Service.upload(file, "diary");
+			String imgUrl = s3Service.upload(file, "diary/img");
 			diary = diaryAddReq.toEntity(user, stamp, imgUrl);
 		}
 
 		diaryRepository.save(diary);
 
-		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
+		DiaryContentS3Dto s3ContentDto = DiaryContentS3Dto.builder()
 				.userId(userId)
 				.contents(diaryAddReq.getContents())
 				.build();
 
-		redisUtils.setData("diaryContents_"+diary.getId(), objectMapper.writeValueAsString(redisDto));
+		String contentFileName = "diary_" + diary.getId() + ".json";
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonString = mapper.writeValueAsString(s3ContentDto);
+
+		s3Service.uploadJson(jsonString, "diary/contents", contentFileName);
 
 		user.updateLastWriteDiary(LocalDateTime.now());
 
@@ -99,7 +106,7 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 
 	@Override
-	public DiaryDetailDto detailDiary(Long userId, Long diaryId) throws JsonProcessingException {
+	public DiaryDetailDto detailDiary(Long userId, Long diaryId) throws IOException {
 		Diary diary = diaryRepository.findById(diaryId)
 				.orElseThrow(() -> new CustomException(DIARY_NOT_FOUND));
 
@@ -112,9 +119,9 @@ public class DiaryServiceImpl implements DiaryService {
 			isForbiddenDiary(diary.getScope(), isFriend);
 		}
 
-		DiaryContentDto contents = getContentsFromRedis(diaryId);
+		DiaryContentDto contentDto = getContentsFromS3(diary.getId());
 
-		return DiaryDetailDto.toDto(diary, contents);
+		return DiaryDetailDto.toDto(diary, contentDto);
 	}
 
 	@Override
@@ -254,21 +261,26 @@ public class DiaryServiceImpl implements DiaryService {
 				s3Service.fileDelete(diary.getImgUrl());
 			}
 
-			String imgUrl = s3Service.upload(file, "diary");;
+			String imgUrl = s3Service.upload(file, "diary/img");;
 			diary.updateImgUrl(imgUrl);
 		}
 
 		diaryRepository.save(diary);
 
-		DiaryContentRedisDto redisDto = DiaryContentRedisDto.builder()
+		DiaryContentS3Dto s3ContentDto = DiaryContentS3Dto.builder()
 				.userId(diary.getId())
 				.contents(diaryModifyReq.getContents())
 				.build();
 
-		redisUtils.setData("diaryContents_"+diary.getId(), objectMapper.writeValueAsString(redisDto));
+		String contentFileName = "diary_" + diary.getId() + ".json";
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonString = mapper.writeValueAsString(s3ContentDto);
+
+		s3Service.uploadJson(jsonString, "diary/contents", contentFileName);
 	}
 
 	@Override
+	@Transactional
 	public void removeDiary(Long userId, Long diaryId) {
 		Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new CustomException(DIARY_NOT_FOUND));
 
@@ -276,7 +288,7 @@ public class DiaryServiceImpl implements DiaryService {
 			throw new CustomException(DIARY_UPDATE_FORBIDDEN);
 		}
 
-		redisUtils.deleteData("diaryContents_" + diary.getId());
+		s3Service.fileDelete(bucketURL + "diary/contents/diary_" + diaryId + ".json");
 		diaryRepository.deleteById(diaryId);
 
 		if (diary.getImgUrl() != null) {
@@ -315,11 +327,19 @@ public class DiaryServiceImpl implements DiaryService {
 		return new StampListRes(stampList);
 	}
 
-	private DiaryContentDto getContentsFromRedis(Long diaryId) throws JsonProcessingException {
-		String redisContents = (String) redisUtils.getData("diaryContents_" + diaryId);
-		DiaryContentRedisDto redisDto = objectMapper.readValue(redisContents, DiaryContentRedisDto.class);
+	private DiaryContentDto getContentsFromS3(Long diaryId) throws IOException {
+		String fileName = "diary/contents/diary_" + diaryId + ".json";
+		InputStream inputStream = s3Service.download(fileName);
 
-		return redisDto.getContents();
+		String jsonContents;
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+			jsonContents = reader.lines().collect(Collectors.joining());
+		}
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		DiaryContentS3Dto s3Dto = objectMapper.readValue(jsonContents, DiaryContentS3Dto.class);
+
+		return s3Dto.getContents();
 	}
 
 	private void validateDiaryContent(String diaryDate, DiaryContentDto contents, String scope) throws JsonProcessingException {

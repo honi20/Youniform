@@ -42,7 +42,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/{diaryId}")
-	public ResponseEntity<?> diaryDetails(@PathVariable("diaryId") Long diaryId) throws JsonProcessingException {
+	public ResponseEntity<?> diaryDetails(@PathVariable("diaryId") Long diaryId) throws IOException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryDetailDto response = diaryService.detailDiary(userId, diaryId);
