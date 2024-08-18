@@ -329,7 +329,7 @@ public class DiaryControllerTest {
 
     @Test
     public void 다이어리_상세조회_성공() throws Exception {
-        DiaryDetailDto diaryDetailDto = new DiaryDetailDto(123L, "User1", "s3 url", LocalDate.parse("2024-07-31"), getDiaryContent(), Scope.FRIENDS, "http://youniform.com/sticker1.png", "diary image url");
+        DiaryDetailDto diaryDetailDto = new DiaryDetailDto(123L, "User1", "s3 url", LocalDate.parse("2024-07-31"), getDiaryContent(), Scope.FRIENDS, 1L, "http://youniform.com/sticker1.png", "diary image url");
 
         when(diaryService.detailDiary(anyLong(), anyLong())).thenReturn(diaryDetailDto);
 

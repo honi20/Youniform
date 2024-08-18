@@ -289,7 +289,8 @@ public class DiaryServiceImpl implements DiaryService {
 			throw new CustomException(DIARY_UPDATE_FORBIDDEN);
 		}
 
-		s3Service.fileDelete(bucketURL + "diary/contents/diary_" + diaryId + ".json");
+		String fileUrl = bucketURL + "diary/contents/diary_" + diaryId + ".json";
+		s3Service.fileDelete(fileUrl);
 		diaryRepository.deleteById(diaryId);
 
 		if (diary.getImgUrl() != null) {
