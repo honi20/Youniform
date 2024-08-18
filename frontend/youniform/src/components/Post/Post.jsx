@@ -10,7 +10,7 @@ const Container = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
   margin: 0 5%;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   cursor: pointer;
   &:not(:first-child) {
     margin: 4% 5%;
