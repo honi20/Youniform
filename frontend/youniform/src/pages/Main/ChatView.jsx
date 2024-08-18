@@ -82,13 +82,14 @@ const ChatView = () => {
     sendMessage,
     setSelectedRoom,
     fetchChatRoom,
-    sendImage,
     fetchChatRoomMessage,
+    submitImage,
     enterChatRoom,
     type,
     setType,
   } = useChatStore();
   const { fetchUser, user } = useUserStore();
+  const [selectedFile, setSelectedFile] = useState(null);
   const messages = useChatStore((state) => state.messages);
   const chatBoxRef = useRef(null);
   const { roomId } = useParams();
@@ -154,6 +155,7 @@ const ChatView = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setFilePreview(reader.result);
@@ -168,9 +170,22 @@ const ChatView = () => {
     }
   };
 
+  const createFormData = async () => {
+    const formData = new FormData();
+    formData.append("file", selectedFile, selectedFile.name);
+    return formData;
+  };
+
+  const sendImage = async () => {
+    const formData = await createFormData();
+    await submitImage(formData);
+  }
+
   const handleSubmitBtn = () => {
-    sendMessage(user.nickname, fileInputRef.current.files[0]);
+    console.log("handleSubmitBtn",selectedFile);
     sendImage();
+    //sendImage에서 받아온 이미지 url 저장해서 sendMessage할때 같이 보내줘야해요 !!
+    // sendMessage(user.nickname, fileInputRef.current.files[0]);
   };
   return (
     <St.Wrapper>
