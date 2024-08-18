@@ -16,13 +16,11 @@ const ToggleBtn = styled.div`
   align-items: center;
   gap: 0.5rem;
   // typo
-  font-family: "Pretendard";
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 600;
   cursor: default;
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  /* box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.04); */
   /* border: 1px solid red; */
 `;
 
@@ -178,14 +176,18 @@ const ChatView = () => {
 
   const sendImage = async () => {
     const formData = await createFormData();
-    await submitImage(formData);
+    const imageUrl = await submitImage(formData);
+    return imageUrl
   }
 
-  const handleSubmitBtn = () => {
-    console.log("handleSubmitBtn",selectedFile);
-    sendImage();
+  const handleSubmitBtn = async () => {
+    console.log("handleSubmitBtn", selectedFile);
+    const imageUrl = await sendImage();
+    // console.log(imageUrl)
     //sendImage에서 받아온 이미지 url 저장해서 sendMessage할때 같이 보내줘야해요 !!
-    // sendMessage(user.nickname, fileInputRef.current.files[0]);
+    sendMessage(user.nickname, imageUrl);
+    setFilePreview('')
+    setSelectedFile('')
   };
   return (
     <St.Wrapper>
