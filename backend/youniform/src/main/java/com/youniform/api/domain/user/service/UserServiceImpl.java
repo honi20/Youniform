@@ -7,6 +7,8 @@ import com.youniform.api.domain.chat.entity.ChatRoom;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
 import com.youniform.api.domain.chat.repository.ChatRoomRepository;
 import com.youniform.api.domain.friend.service.FriendService;
+import com.youniform.api.domain.photocard.entity.Photocard;
+import com.youniform.api.domain.photocard.repository.PhotocardRepository;
 import com.youniform.api.domain.player.entity.Player;
 import com.youniform.api.domain.player.repository.PlayerRepository;
 import com.youniform.api.domain.team.entity.Team;
@@ -44,9 +46,6 @@ import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.user.entity.QUsers.users;
 import static com.youniform.api.global.statuscode.ErrorCode.*;
-import static com.youniform.api.global.statuscode.ErrorCode.ALREADY_EXIST_NICKNAME;
-import static com.youniform.api.global.statuscode.ErrorCode.PROFILE_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -77,6 +76,8 @@ public class UserServiceImpl implements UserService {
     private final ChatRoomRepository chatRoomRepository;
 
     private final ChatPartRepository chatPartRepository;
+
+    private final PhotocardRepository photocardRepository;
 
     @Value("${CLOUD_FRONT}")
     private String cloudFrontUrl;
@@ -169,6 +170,14 @@ public class UserServiceImpl implements UserService {
 
         JwtRedis jwtRedis = user.toRedis(uuid, users.getId(), jwtService.createRefreshToken(uuid));
         redisUtils.setData(uuid, jwtRedis);
+
+        Photocard photoCard = Photocard.builder()
+                .createdAt(LocalDateTime.now())
+                .user(users)
+                .imgUrl(cloudFrontUrl+"/asset/basic.png")
+                .build();
+
+        photocardRepository.save(photoCard);
 
         return jwtService.createAccessToken(uuid);
     }
