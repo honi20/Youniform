@@ -151,6 +151,7 @@ const ChatView = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    console.log('file')
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
@@ -162,8 +163,10 @@ const ChatView = () => {
   };
 
   const handleAddPhotoClick = () => {
-    if (fileInputRef.current) {
+    console.log(fileInputRef.current, 'juyeon test')
+    if (fileInputRef.current !== null) {
       fileInputRef.current.click();
+      console.log('test', selectedFile)
     }
   };
 
@@ -184,6 +187,8 @@ const ChatView = () => {
     console.log("handleSubmitBtn", selectedFile);
     const imageUrl = await sendImage();
     sendMessage(user.nickname, imageUrl);
+    setSelectedFile('')
+    fileInputRef.current.value = ''
   } else {
     sendMessage(user.nickname);
   }
