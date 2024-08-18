@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
-import { wallpapers, stickers, fonts } from "@assets";
+import { fonts } from "@assets";
 import styled from "styled-components";
 import DecoIcon from "@assets/Main/DecoIcon.svg?react";
 import ExampleIcon from "@assets/Main/ExIcon.svg?react";
@@ -394,11 +394,11 @@ const WriteDiaryView = () => {
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
 
         // 확인용 코드
-        console.log("diaryDate: ", diaryDate ? diaryDate : date);
-        console.log("contents: ", json);
-        console.log("scope: ", scope);
-        console.log("stamp: ", stampId);
-        console.log(diaryDate, date)
+        // console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        // console.log("contents: ", json);
+        // console.log("scope: ", scope);
+        // console.log("stamp: ", stampId);
+        // console.log(diaryDate, date)
         // console.log(diary)
         const formData = new FormData();
         const dto = {
@@ -519,6 +519,7 @@ const WriteDiaryView = () => {
           decorated={isDecorated}
           diary={diary.contents}
           update={update}
+          fonts={Object.values(fonts).map((mod) => mod.default)}
         />
         <St.DecorationContainer $decorated={isDecorated}>
           <St.BtnContainer $decorated={isDecorated}>

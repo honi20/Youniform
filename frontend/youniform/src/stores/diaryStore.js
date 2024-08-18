@@ -104,7 +104,7 @@ const useDiaryStore = create((set) => ({
     try {
       const res = await apiClient.get(`/diaries/${diaryId}`);
       console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.body);
 
       set({ diary: res.data.body, loading: false });
     } catch (err) {

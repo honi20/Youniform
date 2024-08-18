@@ -139,8 +139,8 @@ const Post = ({ post }) => {
   const navigate = useNavigate();
   const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } =
     useUserStore();
-  const { fetchPost } = usePostStore();
-  const [like, setLike] = useState(false);
+  const { fetchPost, fetchPosts } = usePostStore();
+  const [like, setLike] = useState(post.isLiked);
   const handleTagClick = (tag) => {
     console.log(tag, "포스트 포함 태그 검색");
     const encodedQuery = encodeURIComponent(tag.contents);
@@ -181,13 +181,15 @@ const Post = ({ post }) => {
   const handleLike = async () => {
     const newLike = !like;
     setLike(newLike);
-    console.log(newLike);
+    // console.log(newLike);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
         isLiked: newLike,
       });
       console.log(res.data.header.message);
+      fetchPosts();
+      // fetch
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
