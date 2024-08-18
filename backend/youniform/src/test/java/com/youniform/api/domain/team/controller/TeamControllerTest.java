@@ -3,9 +3,6 @@ package com.youniform.api.domain.team.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.youniform.api.domain.player.dto.PlayerListDto;
-import com.youniform.api.domain.player.dto.PlayerListRes;
 import com.youniform.api.domain.team.dto.TeamDetailsRes;
 import com.youniform.api.domain.team.dto.TeamSongDto;
 import com.youniform.api.domain.team.dto.TeamSongListRes;
@@ -35,7 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.youniform.api.global.statuscode.SuccessCode.*;
+import static com.youniform.api.global.statuscode.SuccessCode.TEAM_DETAILS_OK;
+import static com.youniform.api.global.statuscode.SuccessCode.TEAM_SONG_LIST_OK;
 import static com.youniform.api.utils.ResponseFieldUtils.getCommonResponseFields;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -43,7 +41,6 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -128,7 +125,7 @@ class TeamControllerTest {
 
     @Test
     public void 최애_구단_정보_조회_성공() throws Exception {
-        TeamDetailsRes response = new TeamDetailsRes("최강 몬스터즈", "서울특별시", "고척 스카이돔", LocalDate.parse("2000-01-01"), 1, 11, 0.999F, 10, "imgUrl");
+        TeamDetailsRes response = new TeamDetailsRes("최강 몬스터즈", "서울특별시", "고척 스카이돔", LocalDate.parse("2000-01-01"), 1, 11, 0.999F, 10, "imgUrl", "photoCardUrl","mainImageUrl");
         when(teamService.findTeamDetail(anyLong())).thenReturn(response);
 
         ResultActions actions = mockMvc.perform(
@@ -161,7 +158,9 @@ class TeamControllerTest {
                                                 fieldWithPath("body.matchCount").description("경기 횟수").type(JsonFieldType.NUMBER),
                                                 fieldWithPath("body.winningRate").description("승률").type(JsonFieldType.NUMBER),
                                                 fieldWithPath("body.win").description("승 횟수").type(JsonFieldType.NUMBER),
-                                                fieldWithPath("body.imgUrl").description("이미지 url").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.imgUrl").description("이미지(얼굴만) url").type(JsonFieldType.STRING),
+                                                fieldWithPath("body.photoCardUrl").description("포토카드에 쓸 커버 url").type(JsonFieldType.STRING),
+                                                fieldWithPath("body.mainUrl").description("메인 화면에 들어가는 캐릭터 url").type(JsonFieldType.STRING)
                                         )
                                 )
                                 .responseSchema(Schema.schema("최애 구단 정보 조회 Response"))

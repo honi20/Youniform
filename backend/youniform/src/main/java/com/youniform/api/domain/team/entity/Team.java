@@ -36,4 +36,8 @@ public class Team {
     private Integer win;
 
     private String imgUrl;
+
+    private String photoCardUrl;
+
+    private String mainUrl;
 }

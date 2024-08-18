@@ -29,6 +29,10 @@ public class TeamDetailsRes {
 
     private String imgUrl;
 
+    private String photoCardUrl;
+
+    private String mainUrl;
+
     public static TeamDetailsRes toDto(Team team) {
         return TeamDetailsRes.builder()
                 .name(team.getName())
@@ -40,6 +44,8 @@ public class TeamDetailsRes {
                 .winningRate(team.getWinningRate())
                 .win(team.getWin())
                 .imgUrl(team.getImgUrl())
+                .photoCardUrl(team.getPhotoCardUrl())
+                .mainUrl(team.getMainUrl())
                 .build();
     }
 }
