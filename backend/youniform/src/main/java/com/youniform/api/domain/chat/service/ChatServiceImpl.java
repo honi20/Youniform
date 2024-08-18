@@ -140,15 +140,16 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId, String sessionId) {
         String redisKey = "room:" + roomId + ":session:" + sessionId + ":user:" + userId;
+        redisUtils.deleteDataWithPattern(roomId.toString(), userId.toString());
 
         if (chatMessage.getType().equals(HEARTBEAT)) {
-            redisUtils.setDataWithExpiration(redisKey, userId, 300L);
+            redisUtils.setDataWithExpiration(redisKey, userId, 10L);
 
             return null;
         } else if (chatMessage.getType().equals(MESSAGE)) {
 
         } else if (chatMessage.getType().equals(ENTRY)) {
-            redisUtils.setDataWithExpiration(redisKey, userId, 300L);
+            redisUtils.setDataWithExpiration(redisKey, userId, 10L);
 
             broadcastUserCount(roomId);
         } else if (chatMessage.getType().equals(EXIT)) {
