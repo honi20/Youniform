@@ -105,7 +105,7 @@ const signUpStore = create((set, get) => ({
       console.log(err);
       return "$FAIL";
     }
-},
+  },
   fetchLocalSignUp: async () => {
     try {
       const { user } = get();

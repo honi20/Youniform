@@ -23,11 +23,11 @@ const useUserStore = create((set, get) => ({
     // console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users`);
-      set({ 
-        user: response.data.body, 
+      set({
+        user: response.data.body,
         pushAlert: response.data.body.pushAlert,
         playPushAlert: response.data.body.playPushAlert,
-        loading: false 
+        loading: false,
       });
     } catch (error) {
       console.log("Failed to fetch user", error);
@@ -129,6 +129,21 @@ const useUserStore = create((set, get) => ({
       }
     } catch (err) {
       console.log("Failed to fetchLogin", err);
+      return "$FAIL";
+    }
+  },
+  verifyNickname: async (nickname) => {
+    try {
+      const apiClient = getApiClient();
+      const response = await apiClient.get(`${API_URL}/users/verify`, {
+        params: {
+          nickname: nickname,
+        },
+      });
+      console.log(response);
+      return "$OK";
+    } catch (err) {
+      console.log(err);
       return "$FAIL";
     }
   },
