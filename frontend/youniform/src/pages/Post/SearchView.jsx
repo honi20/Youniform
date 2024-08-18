@@ -13,7 +13,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 120px);
-  border: 1px solid black;
+  /* border: 1px solid black; */
   overflow-y: auto;
 `;
 const RecommendContainer = styled.div`

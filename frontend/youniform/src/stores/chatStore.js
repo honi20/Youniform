@@ -287,7 +287,7 @@ const useChatStore = create((set, get) => ({
       type: MESSAGE_TYPE.HEARTBEAT,
       messageTime: formattedDate,
     };
-
+  
     if (client) {
       client.publish({
         destination: `/pub/${selectedRoom}`,

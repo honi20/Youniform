@@ -86,11 +86,12 @@ const WriteDiaryView = () => {
       initializeDiary();
       setUpdate(false);
     }
+    console.log(diary)
   }, [diaryId, fetchDiary]);
 
   useEffect(() => {
     fetchResources();
-    console.log(themes);
+    // console.log(themes);
     fetchStampList();
   }, [fetchResources, fetchStampList]);
 
@@ -370,7 +371,7 @@ const WriteDiaryView = () => {
       }
 
       // 다이어리 저장 후 데이터 갱신 및 상세 페이지로 이동
-      await fetchMonthlyDiaries();
+      // await fetchMonthlyDiaries();
       await moveToDetailPage(newId ? newId : diaryId);
     } catch (error) {
       console.error("Error saving diary object:", error);
@@ -382,8 +383,9 @@ const WriteDiaryView = () => {
       console.log(`${key}:`, value);
     }
   };
-  const [scope, setScope] = useState("ALL");
-  const [stampId, setStampId] = useState(1);
+  
+  const [scope, setScope] = useState(diaryId ? diary.scope : "ALL");
+  const [stampId, setStampId] = useState(diaryId ? diary.stampId : 1);
   const saveDiaryObject = async () => {
     try {
       if (selectCanvas) {
@@ -392,11 +394,11 @@ const WriteDiaryView = () => {
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
 
         // 확인용 코드
-        // console.log("diaryDate: ", diaryDate ? diaryDate : date);
-        // console.log("contents: ", json);
-        // console.log("scope: ", scope);
-        // console.log("stamp: ", stampId);
-        // console.log(diaryDate, date)
+        console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        console.log("contents: ", json);
+        console.log("scope: ", scope);
+        console.log("stamp: ", stampId);
+        console.log(diaryDate, date)
         // console.log(diary)
         const formData = new FormData();
         const dto = {
@@ -495,6 +497,8 @@ const WriteDiaryView = () => {
         setIsOn={setIsOn}
         setScope={setScope}
         setStampId={setStampId}
+        scope={scope}
+        stampId={stampId}
       />
       <St.SaveBtn onClick={() => setIsSaveModalOpen(true)}>
         <St.IconContainer>
