@@ -4,7 +4,6 @@ import useFriendStore from "@stores/friendStore";
 import useDiaryStore from "@stores/diaryStore";
 import useUserStore from "@stores/userStore";
 
-// Styled Components 정의
 const ListContainer = styled.div`
   background-color: #ededed;
   width: 100%;
@@ -93,13 +92,13 @@ const DiaryFriendsList = ({ onUserClick }) => {
   const [updateTrigger, setUpdateTrigger] = useState(false);
   const { friends, diaryFriends, fetchDiaryFriends } = useFriendStore();
   const { fetchUser, user } = useUserStore();
-  const {
-    selectedUser,
-    setSelectedUser,
-    monthlyDiaries,
-    fetchMonthlyDiaries,
-    fetchFriendsDiaries,
-  } = useDiaryStore();
+  const { selectedUser, setSelectedUser, monthlyDiaries, fetchMonthlyDiaries, fetchFriendsDiaries } = useDiaryStore(state => ({
+    selectedUser: state.selectedUser,
+    setSelectedUser: state.setSelectedUser,
+    monthlyDiaries: state.monthlyDiaries,
+    fetchMonthlyDiaries: state.fetchMonthlyDiaries,
+    fetchFriendsDiaries: state.fetchFriendsDiaries,
+  }));
 
   useEffect(() => {
     fetchUser();
@@ -109,14 +108,27 @@ const DiaryFriendsList = ({ onUserClick }) => {
     fetchDiaryFriends();
   }, [fetchDiaryFriends]);
 
+  useEffect(() => {
+    if (selectedUser !== null) {
+      const index = diaryFriends.findIndex(
+        (friend) => friend.friendId === selectedUser
+      );
+      if (index !== -1) {
+        setSelectedUserIndex(index);
+        setSelectedSelf(false);
+      } else {
+        setSelectedSelf(true);
+        setSelectedUserIndex(null);
+      }
+    }
+  }, [selectedUser, diaryFriends]);
+
   const handleUserClick = async (type, index) => {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const formattedDate = `${year}-${month}`;
-    console.log(`selectedSelf = ${selectedSelf}`);
-    console.log(`selectedUser = ${selectedUser}`);
-    console.log(`selectedUserIndex = ${selectedUserIndex}`);
+
     if (type === "friend") {
       setSelectedSelf(false);
       setSelectedUserIndex(index);
@@ -134,9 +146,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
       }
       await fetchMonthlyDiaries(formattedDate);
     }
-  
-    // 상태 업데이트를 트리거하여 UI가 재렌더링되도록 함
-    setUpdateTrigger((prev) => !prev);
+    // setUpdateTrigger((prev) => !prev);
   };
 
   return (
