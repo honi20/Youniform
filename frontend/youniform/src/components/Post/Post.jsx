@@ -131,14 +131,15 @@ const HeartIcon = styled(HeartSvg)`
   height: 24px;
 `;
 import useUserStore from "@stores/userStore";
+import usePostStore from "@stores/postStore";
 import { useNavigate } from "react-router-dom";
 const Post = ({ post }) => {
-  // const [selectedTag, setSelectedTag] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
   const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } =
     useUserStore();
+  const { fetchPost } = usePostStore();
   const [like, setLike] = useState(false);
   const handleTagClick = (tag) => {
     console.log(tag, "포스트 포함 태그 검색");
@@ -153,6 +154,7 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     setLike(post.isLiked);
+    fetchPost(post.postId)
   }, [setLike]);
 
   const handleProfileClick = async () => {

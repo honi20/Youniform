@@ -4,6 +4,7 @@ import styled from "styled-components";
 const WallpaperContainer = styled.div`
   display: flex;
   height: calc(100% - 40px);
+  /* max-height: 400px; */
   /* border: 1px solid red; */
 `;
 const Wrapper = styled.div`
@@ -13,6 +14,7 @@ const Wrapper = styled.div`
   gap: 3.3%;
   margin: 10px;
   overflow-y: auto;
+  border: 1px solid red;
 `;
 const WallpaperImgContainer = styled.div`
   flex: 0 0 30%;
@@ -25,6 +27,7 @@ const WallpaperImgContainer = styled.div`
 const WallpaperImg = styled.img`
   width: 100%;
   height: 100%;
+  /* aspect-ratio: 6/4.5; */
   object-fit: cover;
 `;
 
