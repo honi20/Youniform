@@ -456,6 +456,7 @@ const WriteDiaryView = () => {
     selectCanvas.renderAll();
     setIsDecorated(!isDecorated);
   };
+
   const removeBtn = async() => {
     if (selectCanvas) {
       const objectsToDelete = await selectCanvas.getActiveObjects();
@@ -472,13 +473,7 @@ const WriteDiaryView = () => {
       }
     }
   }
-  const deleteElem = (elem) => {
-    if (selectCanvas){
-      console.log('삭제')
-      selectCanvas.remove(elem)
-      selectCanvas.renderAll();
-    }
-  }
+  
   return (
     <>
       <St.StampContainer onClick={() => handleToggle(isOn)}>
