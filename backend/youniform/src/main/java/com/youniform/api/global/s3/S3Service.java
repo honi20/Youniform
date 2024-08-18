@@ -108,7 +108,7 @@ public class S3Service {
         }
 
         String extention = filename.substring(lastDotIndex + 1).toLowerCase();
-        List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif");
+        List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif", "webp", "json", "txt");
 
         if (!allowedExtentionList.contains(extention)) {
             throw new CustomException(FILE_EXTENSION_FAIL);
