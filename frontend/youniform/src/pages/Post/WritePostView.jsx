@@ -124,31 +124,33 @@ const WritePostView = () => {
   };
 
   useEffect(() => {
-    if (location.state && location.state.post) {
-        const post = location.state.post;
-        setContent(stripHtmlTags(post.contents));
-        // console.log(post.tags);
-        // console.log(post.tags.map((tag) => tag.contents));
-        setTags(post.tags.map((tag) => tag.contents));
-        if (post.imageUrl) {
-            setFilePreview(post.imageUrl);
+    const fetchData = async () => {
+        if (location.state && location.state.post) {
+            const post = location.state.post;
+            const contentWithTags = addTagsToContent(post);
+            // console.log(contentWithTags)
+            setContent(contentWithTags);
+            setTags(post.tags.map((tag) => tag.contents))
+            if (post.imageUrl) {
+                setFilePreview(post.imageUrl);
+            }
         }
-    }
-    if (!user) {
-        fetchUser();
-    }
+        if (!user) {
+            await fetchUser(); // 비동기 호출은 여전히 await로 처리할 수 있습니다.
+        }
+    };
+    fetchData();
 }, [location.state, user, fetchUser]);
 
-// content가 업데이트된 후에 extractedTagFunction을 호출
-useEffect(() => {
-    if (content) {
-        extractedTagFunction(content);
-    }
-}, [content]);
+  // content가 업데이트된 후에 extractedTagFunction을 호출
+  useEffect(() => {
+      if (content) {
+          extractedTagFunction(content);
+      }
+  }, [content]);
 
   const extractedTagFunction = (content) => {
     const extractedTags = content.match(/#\S+/g) || [];
-    console.log(content)
     const uniqueTags = [
       ...new Set(
         extractedTags.map((tag) =>
@@ -156,14 +158,20 @@ useEffect(() => {
         )
       ),
     ].slice(0, 10); // 태그 개수를 10개로 제한
-    // console.log(uniqueTags)
     setTags(uniqueTags);
-    // console.log("해쉬태그", uniqueTags);
   }
   const cleanContent = () => {
-    // console.log(content)
     return content.replace(/#\S+/g, "").trim();
   };
+  const addTagsToContent = (post) => {
+    // console.log("addTagsToContent", post.tags)
+    const content = stripHtmlTags(post.contents);
+    const tags = (post.tags.map((tag) => tag.contents))
+    const tagsString = tags.map(tag => `#${tag}`).join(" ");
+    // 기존 content 뒤에 태그 문자열을 추가합니다.
+    return `${content} ${tagsString}`.trim();
+  };
+  
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
@@ -184,11 +192,17 @@ useEffect(() => {
 
     const newBlob = new Blob();
     if (selectedFile) {
-      console.log("파일 있음")
+      // console.log("파일 있음")
       formData.append("file", selectedFile, selectedFile.name);
     } else {
-      console.log("파일 없음")
-      formData.append("file", newBlob);
+      // console.log(filePreview);
+      if(filePreview === null) {
+        // console.log("파일 없음");
+        formData.append("file", newBlob);
+      } else {
+        // console.log("이건 업데이트 안할거임!!");
+        formData.append("file", null);
+      }
     }
     const dtoBlob = new Blob([JSON.stringify(dto)], {
       type: "application/json",
