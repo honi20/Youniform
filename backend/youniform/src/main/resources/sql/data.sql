@@ -47,11 +47,13 @@ VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
 -- chat_room
 INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1, '1번 방', TRUE);
 INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (2, '2번 방', TRUE);
+INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1000, '최강 야구 !!', TRUE);
 
 -- chat_part
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1, CURRENT_TIMESTAMP);
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (124, 1, CURRENT_TIMESTAMP);
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 2, CURRENT_TIMESTAMP);
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1000, CURRENT_TIMESTAMP);
 
 -- alert
 INSERT INTO ALERT(receiver_id, sender_id, type, content, pk, is_read, created_at)

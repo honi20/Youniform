@@ -2,7 +2,10 @@ package com.youniform.api.domain.chat.service;
 
 import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.document.DatabaseSequence;
-import com.youniform.api.domain.chat.dto.*;
+import com.youniform.api.domain.chat.dto.ChatMessageDto;
+import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
+import com.youniform.api.domain.chat.dto.ChatRoomListRes;
+import com.youniform.api.domain.chat.dto.ChatUploadImageRes;
 import com.youniform.api.domain.chat.entity.ChatPart;
 import com.youniform.api.domain.chat.entity.ChatPartPK;
 import com.youniform.api.domain.chat.entity.ChatRoom;
@@ -17,7 +20,6 @@ import com.youniform.api.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -32,13 +34,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.youniform.api.domain.chat.document.Type.*;
@@ -185,9 +185,12 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatUploadImageRes uploadImage(MultipartFile file) throws IOException {
-        String imgUrl = s3Service.upload(file, "chat_image");
-
-        return new ChatUploadImageRes(imgUrl);
+        if(file != null && !file.isEmpty()) {
+            String imgUrl = s3Service.upload(file, "chat_image");
+            return new ChatUploadImageRes(imgUrl);
+        } else {
+            return new ChatUploadImageRes("");
+        }
     }
 
     @Override
