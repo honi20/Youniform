@@ -230,8 +230,9 @@ const ChangeProfile = () => {
   useEffect(() => {
     setIsModified(
       nickname !== (user?.nickname || "") ||
-        introduce !== (user?.introduce || "")
+      introduce !== (user?.introduce || "")
     );
+    setIsNicknameChecked(nickname === user?.nickname);
   }, [nickname, introduce, user]);
 
   if (loading || !user) {
@@ -286,7 +287,7 @@ const ChangeProfile = () => {
           sx={{ width: "100%" }}
           variant="contained"
           theme={theme}
-          ismodified={isModified}
+          ismodified={isModified.toString()}
           onClick={handleClickBtn}
           disabled={!isModified || !isNicknameChecked}
         >
