@@ -41,7 +41,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             user = ((PrincipalDetails)oAuth2User).getUser();
             sendSignUpUserInfo(response, user);
         }else {
-            if(Objects.equals(((PrincipalDetails) authentication.getPrincipal()).getUser().getProviderType(), user.getProviderType())){
+            if(Objects.equals(((PrincipalDetails) authentication.getPrincipal()).getUser().getProviderType(), user.getProviderType()) && !user.getIsDeleted()){
                 sendAccessToken(response, user);
             }else{
                 response.sendRedirect("https://youniform.site/signup/error?providerType=" + user.getProviderType());
