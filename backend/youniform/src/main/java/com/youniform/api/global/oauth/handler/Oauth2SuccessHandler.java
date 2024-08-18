@@ -37,7 +37,7 @@ public class Oauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Users user = userRepository.findByEmailAndProviderType(
                 ((PrincipalDetails)authentication.getPrincipal()).getPassword(),
                         ((PrincipalDetails) oAuth2User).getUser().getProviderType());
-        if(user == null) {
+        if(user == null && !user.getIsDeleted()) {
             user = ((PrincipalDetails)oAuth2User).getUser();
             sendSignUpUserInfo(response, user);
         }else {
