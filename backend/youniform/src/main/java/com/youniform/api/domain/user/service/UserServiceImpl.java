@@ -95,7 +95,9 @@ public class UserServiceImpl implements UserService {
     public String signin(LocalSigninReq user) {
         Users users = userRepository.findByEmail(user.getEmail());
 
-        if (users != null && passwordEncoder.matches(user.getPassword(), users.getPassword())) {
+        if (users != null
+                && passwordEncoder.matches(user.getPassword(), users.getPassword())
+                && !users.getIsDeleted()) {
             redisUtils.setData(users.getUuid(), JwtRedis.builder()
                     .userId(users.getId())
                     .uuid(users.getUuid())
