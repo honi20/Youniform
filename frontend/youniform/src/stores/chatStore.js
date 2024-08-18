@@ -145,7 +145,7 @@ const useChatStore = create((set, get) => ({
   sendMessage: (nickname, imageUrl, type = MESSAGE_TYPE.MESSAGE) => {
     const { content, client, selectedRoom, isConnected } = get();
 
-    if (content.trim() === "") return;
+    if (!imageUrl && content.trim() === "") return;
     if (!isConnected) {
       console.error("STOMP 클라이언트가 연결되지 않았습니다.");
       return;

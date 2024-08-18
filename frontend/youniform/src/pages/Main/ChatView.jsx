@@ -111,14 +111,13 @@ const ChatView = () => {
     };
   }, [fetchUser, connect, disconnect, roomId, enterChatRoom]);
 
-  // useEffect(() => {
-  //   if (roomId) {
-  //     fetchChatRoomMessage();
-  //   }
-  // }, [roomId, fetchChatRoomMessage]);
+  useEffect(() => {
+    if (roomId) {
+      fetchChatRoomMessage();
+    }
+  }, [roomId, fetchChatRoomMessage]);
 
   useEffect(() => {
-    console.log(messages)
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
@@ -181,11 +180,14 @@ const ChatView = () => {
   }
 
   const handleSubmitBtn = async () => {
+    if (selectedFile){
     console.log("handleSubmitBtn", selectedFile);
     const imageUrl = await sendImage();
-    // console.log(imageUrl)
-    //sendImage에서 받아온 이미지 url 저장해서 sendMessage할때 같이 보내줘야해요 !!
     sendMessage(user.nickname, imageUrl);
+  } else {
+    sendMessage(user.nickname);
+  }
+    
     setFilePreview('')
     setSelectedFile('')
   };
