@@ -5,7 +5,7 @@ VALUES (1000, CURRENT_DATE, 3, 1, 2, 66.6, '홈그라운드', '서울', '팀 이
 -- users
 INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_write_diary, team_id, email, introduce,
                    nickname, password, profile_url, provider_type, uuid)
-VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@google.com', '자기소개111', 'User1', '$2a$10$0EMRXBOjq3aEqYROBSC44O36f8YrhiJ35d4A/IgcRhrrhSM6C9Tf6',
+VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'user1@naver.com', '자기소개111', 'User1', '$2a$10$joNMmm0t5dDpM0g5UibESOdk3rBgVvza/yrd0gqZwsIIAdWslwCUG',
         'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
        (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@test.com', '자기소개222', 'dubebedu', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
         'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100'),
@@ -148,6 +148,4 @@ VALUES (123, 3), (123, 4), (123, 9), (124, 4), (125, 3), (125, 4);
 -- photocard resource
 INSERT INTO PHOTOCARD_RESOURCE(img_url, type)
 VALUES ('photocard_resource1', 'TEMPLATE'),
-       ('photocard_resource2', 'TEMPLATE'),
-       ('photocard_resource3', 'STICKER'),
-       ('photocard_resource4', 'STICKER');
+       ('photocard_resource2', 'TEMPLATE');
