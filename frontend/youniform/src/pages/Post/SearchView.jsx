@@ -13,6 +13,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 120px);
+  border: 1px solid black;
+  overflow-y: auto;
 `;
 const RecommendContainer = styled.div`
   display: flex;
@@ -21,7 +23,7 @@ const RecommendContainer = styled.div`
   height: calc(100vh - 120px);
   padding-bottom: 60px;
   /* border: 5px solid black; */
-  overflow-y: auto;
+  /* overflow-y: auto; */
 `;
 const SearchView = () => {
   const location = useLocation();
