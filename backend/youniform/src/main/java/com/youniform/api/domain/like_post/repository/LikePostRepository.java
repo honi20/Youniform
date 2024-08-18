@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface LikePostRepository extends JpaRepository<LikePost, LikePostPK> {
     @Query("SELECT CASE WHEN (COUNT(lp) > 0) THEN TRUE ELSE FALSE END " +
             "FROM LikePost lp " +
-            "WHERE lp.post.id = :postId")
-    Boolean isLikedPost(@Param("postId") Long postId);
+            "WHERE lp.post.id = :postId AND lp.user.id = :userId")
+    Boolean isLikedPost(@Param("postId") Long postId, @Param("userId") Long userId);
 
     @Modifying
     @Transactional

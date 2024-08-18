@@ -159,7 +159,7 @@ public class PostServiceImpl implements PostService {
                 .toList();
 
         Boolean isMine = post.getUser().getId().equals(userId);
-        Boolean isLiked = likePostRepository.isLikedPost(postId);
+        Boolean isLiked = likePostRepository.isLikedPost(postId, userId);
 
         return PostDetailsRes.toDto(post, tags, commentList, isMine, isLiked);
     }
