@@ -18,7 +18,7 @@ public class FriendMypageDto {
 
     private String teamUrl;
 
-    private Status status;
+    private Status isFriend;
 
     public static FriendMypageDto toDto(Friend friend) {
         return FriendMypageDto.builder()
@@ -27,7 +27,7 @@ public class FriendMypageDto {
                 .nickname(friend.getFriend().getNickname())
                 .introduce(friend.getFriend().getIntroduce())
                 .teamUrl(friend.getFriend().getTeam().getImgUrl())
-                .status(friend.getStatus())
+                .isFriend(friend.getStatus())
                 .build();
     }
 }
