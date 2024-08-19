@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
 import UserItem from "@components/MyPage/UserItem";
@@ -143,7 +143,9 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const [friendStatus, setFriendStatus] = useState(
     friend ? friend.isFriend : null
   );
-
+  useEffect(() => {
+    fetch
+  })
   if (!isOpen) return null;
 
   if (user.nickname === friend.nickname) {
@@ -171,11 +173,11 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const addFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      console.log(friend.userId);
+      // console.log(friend.userId);
       const res = await apiClient.post(`/friends/request`, {
         friendUuid: friend.userId,
       });
-      console.log(res.data.message);
+      // console.log(res.data.message);
       setFriendStatus("WAITING");
     } catch (error) {
       console.log("Failed to Add friend", error);
@@ -185,11 +187,11 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const deleteFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      console.log(friend.userId);
+      // console.log(friend.userId);
       const res = await apiClient.delete(`/friends/request`, {
         friendUuid: friend.userId,
       });
-      console.log(res.data.message);
+      // console.log(res.data.message);
       setFriendStatus("NOT_FRIEND");
     } catch (error) {
       console.log("Failed to Add friend", error);
@@ -198,6 +200,7 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   };
   const FriendComponent = ({ friend, addFriend }) => {
     const { isFriend } = friend;
+    const { statue } = friend;
     console.log(friend, isFriend);
     switch (friendStatus) {
       case "NOT_FRIEND":
