@@ -101,12 +101,14 @@ const Friend = ({ friend, setSelectedFriend }) => {
       {friend.status == "FRIEND" && (
         <DeleteBtn onClick={handleDeleteBtn}>삭제</DeleteBtn>
       )}
-      <ProfileModal
-        user={user}
-        friend={friend}
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {isModalOpen && (
+        <ProfileModal
+          friend={friend}
+          user={user}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </Container>
   );
 };

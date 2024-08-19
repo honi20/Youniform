@@ -37,13 +37,7 @@ const DateWrapper = styled(HeaderWrapper)`
   color: #848484;
   font-weight: 400;
 `;
-const ProfileImg = styled.img`
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  margin-right: 5px;
-  border: 0.5px solid #dadada;
-`;
+
 const Content = styled.div`
   ${Font.Medium};
   font-weight: 400;
@@ -83,11 +77,7 @@ const Footer = styled.div`
   padding: 1%;
   border-top: 1px solid #9c9c9c;
 `;
-const TeamImg = styled.img`
-  /* border: 1px solid black; */
-  height: 20px;
-  margin-left: 2px;
-`
+
 const CommentContainer = styled.div`
   gap: 1%;
   display: flex;
@@ -130,6 +120,30 @@ const HeartIcon = styled(HeartSvg)`
   width: 24px;
   height: 24px;
 `;
+const NicknameContainer = styled.div`
+  max-width: 150px;
+  /* border: 5px solid black; */
+  /* display: flex; */
+  /* flex-direction: column; */
+`;
+const Nickname = styled.p`
+  /* border: 2px solid red; */
+  flex-shrink: 1;
+  display: inline;
+`;
+const ProfileImg = styled.img`
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  margin-right: 5px;
+  border: 0.5px solid #dadada;
+`;
+const TeamImg = styled.img`
+  /* border: 2px solid blue; */
+  height: 20px;
+  display: inline;
+  padding-top: 5px;
+`;
 import useUserStore from "@stores/userStore";
 import usePostStore from "@stores/postStore";
 import { useNavigate } from "react-router-dom";
@@ -154,8 +168,8 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     setLike(post.isLiked);
-    if (!post){
-    fetchPost(post.postId)
+    if (!post) {
+      fetchPost(post.postId);
     }
   }, [setLike]);
 
@@ -206,8 +220,12 @@ const Post = ({ post }) => {
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
             <ProfileImg src={post.profileImg} />
-            {post.nickname} 
-            <TeamImg src={post.teamUrl}/>
+            <NicknameContainer>
+              <Nickname>
+                {post.nickname}
+                <TeamImg src={post.teamUrl} />
+              </Nickname>
+            </NicknameContainer>
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
@@ -217,7 +235,7 @@ const Post = ({ post }) => {
             src={post.imageUrl}
           />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
-          {parseText(post.contents)}
+            {parseText(post.contents)}
             {/* {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
                 {line}

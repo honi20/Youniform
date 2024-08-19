@@ -91,7 +91,7 @@ const TeamImg = styled.img`
   /* border: 1px solid black; */
   height: 20px;
   margin-left: 2px;
-`
+`;
 import Chatsvg from "@assets/Post/chat.svg?react";
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
@@ -274,7 +274,7 @@ const PostDetailView = () => {
             <HeaderWrapper onClick={handleProfileClick}>
               <ProfileImg src={post.profileImg} />
               {post.nickname}
-              <TeamImg src={post.teamUrl}/>
+              <TeamImg src={post.teamUrl} />
             </HeaderWrapper>
             <FlexBox>
               {editedPost && editedPost.postId === post.postId ? (
@@ -356,12 +356,14 @@ const PostDetailView = () => {
       ) : (
         <>엥</>
       )}
-      <ProfileModal
-        user={user}
-        friend={friend}
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {isModalOpen && (
+        <ProfileModal
+          friend={friend}
+          user={user}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
       {isDeleteModalOpen && (
         <BasicModal
           state="PostDeleted"
