@@ -251,7 +251,12 @@ const ChangeProfile = () => {
       <ProfileImage>
         <img src={image || user.profileUrl} alt="profile" />
         <ImageBtn>
-          <HiddenInput type="file" ref={fileInputRef} onChange={handleFileChange} />
+          <HiddenInput
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".jpg, .jpeg, .png"
+          />
           <PencilSvg />
         </ImageBtn>
       </ProfileImage>

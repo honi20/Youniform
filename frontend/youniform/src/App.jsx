@@ -41,6 +41,7 @@ import SettingView from "@pages/Setting/SettingView";
 import ChangePasswordView from "@pages/Setting/ChangePasswordView";
 import ChangeTheme from "@pages/Setting/ChangeTheme";
 import PushAlarm from "@pages/Setting/PushAlarm";
+import DeleteAccount from "@pages/Setting/DeleteAccountView";
 import Permissions from "@pages/Setting/Permissions";
 import Contact from "@pages/Setting/Contact";
 import Terms from "@pages/Setting/Terms";
@@ -382,6 +383,12 @@ function ContentWithHeader({ contentHeight }) {
               path="find-password"
               element={
                 isLoggedIn() ? <FindPasswordView /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="delete-account"
+              element={
+                isLoggedIn() ? <DeleteAccount /> : <Navigate to="/delete-account" />
               }
             />
           </Route>
