@@ -98,7 +98,7 @@ const Friend = ({ friend, setSelectedFriend }) => {
           <Introduce>{friend.introduce}</Introduce>
         </ProfileInfo>
       </div>
-      {friend.status == "FRIEND" && (
+      {friend.isFriend == "FRIEND" && (
         <DeleteBtn onClick={handleDeleteBtn}>삭제</DeleteBtn>
       )}
       {isModalOpen && (
