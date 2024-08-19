@@ -220,7 +220,7 @@ const StepTwoForm = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const validExtensions = ['image/jpeg', 'image/png', 'image/gif']; // 허용할 이미지 확장자
+      const validExtensions = ['image/jpeg', 'image/png', 'image/jpg']; // 허용할 이미지 확장자
       if (validExtensions.includes(file.type)) {
         const reader = new FileReader();
         reader.onloadend = () => {

@@ -147,6 +147,21 @@ const useUserStore = create((set, get) => ({
       return "$FAIL";
     }
   },
+
+  deleteAccount: async () => {
+    try {
+      const apiClient = getApiClient();
+      const response = await apiClient.patch(`${API_URL}/users/resign`);
+      console.log(response);
+      console.log(response.data.header.message);
+      if (response.data.header.httpStatusCode === 200) {
+        return "$SUCCESS";
+      }
+    } catch (err) {
+      console.log("Failed to fetchLogin", err);
+      return "$FAIL";
+    }
+  },
 }));
 
 export default useUserStore;

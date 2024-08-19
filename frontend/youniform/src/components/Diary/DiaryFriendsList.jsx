@@ -137,6 +137,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
         onUserClick(diaryFriends[index]);
       }
       await fetchFriendsDiaries(diaryFriends[index].friendId, formattedDate);
+      await fetchDiaryFriends();
     } else if (type === "self") {
       setSelectedSelf(true);
       setSelectedUserIndex(null);

@@ -15,6 +15,7 @@ const signUpStore = create((set, get) => ({
     }),
   user: {
     email: "",
+    verifyCode: null,
     password: "",
     confirmPw: "",
     profileUrl: null,
@@ -26,6 +27,8 @@ const signUpStore = create((set, get) => ({
     isNicknameUnique: false,
     setEmail: (val) =>
       set((state) => ({ user: { ...state.user, email: val } })),
+    setVerifyCode: (val) =>
+      set((state) => ({ user: { ...state.user, verifyCode: val } })),
     setPassword: (val) =>
       set((state) => ({ user: { ...state.user, password: val } })),
     setConfirmPw: (val) =>
