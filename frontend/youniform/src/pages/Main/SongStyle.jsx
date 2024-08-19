@@ -1,8 +1,8 @@
 import styled, { useTheme } from "styled-components";
-import * as Font from "@/typography";
 import SelectSvg from "@assets/Main/selectedIcon.svg?react";
 import DownIcon from "@assets/Main/chevron-down.svg?react";
 import UpIcon from "@assets/Main/chevron-up.svg?react";
+
 export const Wrapper = styled.div`
   height: calc(100vh - 120px);
   display: flex;
@@ -134,6 +134,5 @@ export const Btn = styled.div`
 `;
 export const Content = styled.div`
   /* border: 1px solid black; */
-  
-`
+`;
 export * from "./SongStyle";
