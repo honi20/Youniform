@@ -6,6 +6,7 @@ import com.youniform.api.domain.chat.entity.ChatPartPK;
 import com.youniform.api.domain.chat.entity.ChatRoom;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
 import com.youniform.api.domain.chat.repository.ChatRoomRepository;
+import com.youniform.api.domain.friend.entity.Status;
 import com.youniform.api.domain.friend.service.FriendService;
 import com.youniform.api.domain.photocard.entity.Photocard;
 import com.youniform.api.domain.photocard.repository.PhotocardRepository;
@@ -238,9 +239,17 @@ public class UserServiceImpl implements UserService {
         Users user = userRepository.findByUuid(uuid).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if (user == null) throw new CustomException(PROFILE_NOT_FOUND);
-        String isFriend = (friendService.isFriend(myUserId, user.getId()) != null) ? friendService.isFriend(myUserId, user.getId()).toString() : null;
 
-        if (isFriend == null) isFriend = "NOT_FRIEND";
+        Status friend1 = friendService.isFriend(myUserId, user.getId());
+        Status friend2 = friendService.isFriend(user.getId(), myUserId);
+
+        Status isFriend;
+        if(friend1 == null && friend2 == null) {
+            isFriend = Status.NOT_FRIEND;
+        } else {
+            isFriend = Objects.requireNonNullElse(friend2, friend1);
+        }
+
         UserDetailsRes userDetail = UserDetailsRes.builder().build();
 
         return userDetail.toDto(user, isFriend);

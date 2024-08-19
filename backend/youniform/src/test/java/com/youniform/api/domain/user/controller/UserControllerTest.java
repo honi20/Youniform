@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
+import com.youniform.api.domain.friend.entity.Status;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.service.UserServiceImpl;
@@ -488,7 +489,7 @@ public class UserControllerTest {
                         .teamImage("팀 이미지")
                         .introduce("자기소개")
                         .profileUrl("s3 url")
-                        .isFriend("NOTFRIEND / WATTING / FRIEND")
+                        .isFriend(Status.NOT_FRIEND)
                         .build()
         );
         ResultActions actions = mockMvc.perform(

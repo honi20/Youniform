@@ -1,5 +1,6 @@
 package com.youniform.api.domain.user.dto;
 
+import com.youniform.api.domain.friend.entity.Status;
 import com.youniform.api.domain.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +20,9 @@ public class UserDetailsRes {
 
     private String teamImage;
 
-    private String isFriend;
+    private Status isFriend;
 
-    public UserDetailsRes toDto(Users user, String isFriend) {
+    public UserDetailsRes toDto(Users user, Status isFriend) {
         return UserDetailsRes.builder()
                 .userId(user.getUuid())
                 .nickname(user.getNickname())

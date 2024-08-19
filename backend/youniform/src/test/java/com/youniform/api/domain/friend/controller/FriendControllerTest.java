@@ -283,7 +283,7 @@ public class FriendControllerTest {
                 .nickname("유저 1")
                 .introduce("안녕하세요")
                 .teamUrl("http://example.com/team.jpg")
-                .status(Status.FRIEND)
+                .isFriend(Status.FRIEND)
                 .build());
 
         FriendMypageRes friendMypageRes = FriendMypageRes.builder()
@@ -331,8 +331,8 @@ public class FriendControllerTest {
                                                         .description("친구 한줄소개"),
                                                 fieldWithPath("body.friendMypageList[].teamUrl").type(JsonFieldType.STRING)
                                                         .description("응원 팀 이미지 URL"),
-                                                fieldWithPath("body.friendMypageList[].status").type(JsonFieldType.STRING)
-                                                        .description("친구 상태 (FRIEND, WAITING)")
+                                                fieldWithPath("body.friendMypageList[].isFriend").type(JsonFieldType.STRING)
+                                                        .description("친구 상태 (FRIEND, WAITING, NOT_FRIEND)")
                                         )
                                 )
                                 .responseSchema(Schema.schema("Mypage Friend 리스트 조회 Response"))
