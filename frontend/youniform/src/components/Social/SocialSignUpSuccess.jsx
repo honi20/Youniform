@@ -63,7 +63,7 @@ const BtnWrap = styled.div`
   margin-top: 2rem; /* 추가: 버튼과 위 요소 간의 간격 */
 `;
 
-const SignUpSuccess = () => {
+const SocialSignUpSuccess = () => {
   const location = useLocation();
   const { isStepFour } = location.state || {};
   return (
@@ -90,4 +90,4 @@ const SignUpSuccess = () => {
   );
 };
 
-export default SignUpSuccess;
+export default SocialSignUpSuccess;

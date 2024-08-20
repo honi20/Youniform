@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useSignUpStore from "@stores/signUpStore";
 
 const NextStepBtn = styled.div`

@@ -313,7 +313,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
             ))}
         </BtnWrapper>
       </Content>
-      {step !== "3" && (
+      {!(step == "3" || step == "4") && (
         <Footer>
           <ConfirmBtnWrapper>
             <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>

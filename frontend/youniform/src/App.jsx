@@ -63,13 +63,16 @@ import SSEAlertModal from "@/components/Modal/SSEAlertModal";
 import PlayerPushAlarm from "@/pages/Setting/PlayerPushAlarm";
 import useAlertStore from "@stores/alertStore";
 import { isLoggedIn } from "@stores/apiClient";
-import AuthLogin from "./components/Social/AuthLogin";
+import AuthLogin from "@components/Social/AuthLogin";
 import AuthLoginExsist from "./components/Social/AuthLoginExsist";
-import SocialSignUpView from "./pages/SocialSignUpView";
-import SocialStepOneForm from "./components/Social/Step1/SocialStepOneForm";
-import SocialStepTwoForm from "./components/Social/Step2/SocialStepTwoForm";
-import LanDingView from "./pages/LandingView";
-import AuthError from "./components/Social/AuthError";
+import SocialSignUpView from "@pages/SocialSignUpView";
+import SocialStepOneForm from "@components/Social/Step1/SocialStepOneForm";
+import SocialStepTwoForm from "@components/Social/Step2/SocialStepTwoForm";
+import LanDingView from "@pages/LandingView";
+import AuthError from "@components/Social/AuthError";
+import StepFourForm from "@components/SignUp/Step4/StepFourForm";
+import SocialSignUpSuccess from "@components/Social/SocialSignUpSuccess";
+import SocialStepThreeForm from "@components/Social/Step3/SocialStepThreeForm";
 
 const AppContainer = styled.div`
   height: 100vh; /* 전체 화면 높이 설정 */
@@ -141,13 +144,15 @@ function ContentWithHeader({ contentHeight }) {
             <Route path="step-1" element={<StepOneForm />} />
             <Route path="step-2" element={<StepTwoForm />} />
             <Route path="step-3" element={<StepThreeForm />} />
-            <Route path="step-4" element={<SignUpSuccess />} />
+            <Route path="step-4" element={<StepFourForm />} />
+            <Route path="success" element={<SignUpSuccess />} />
           </Route>
           <Route path="/social/sign-up/*" element={<SocialSignUpView />}>
             <Route index element={<SocialStepOneForm />} />
             <Route path="step-1" element={<SocialStepOneForm />} />
             <Route path="step-2" element={<SocialStepTwoForm />} />
-            <Route path="step-3" element={<SignUpSuccess />} />
+            <Route path="step-3" element={<SocialStepThreeForm />} />
+            <Route path="success" element={<SocialSignUpSuccess />} />
           </Route>
           <Route path="/select-player" element={<SelectPlayerView />} />
 

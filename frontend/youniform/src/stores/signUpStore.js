@@ -21,6 +21,7 @@ const signUpStore = create((set, get) => ({
     profileUrl: null,
     nickname: "",
     introduce: "",
+    team: null,
     players: [],
     isVerified: false,
     isPwVerified: false,
@@ -39,6 +40,8 @@ const signUpStore = create((set, get) => ({
       set((state) => ({ user: { ...state.user, nickname: val } })),
     setIntroduce: (val) =>
       set((state) => ({ user: { ...state.user, introduce: val } })),
+    setTeam: (val) =>
+      set((state) => ({ user: { ...state.user, team: val } })),
     setIsVerified: (val) =>
       set((state) => ({ user: { ...state.user, isVerified: val } })),
     setIsPwVerified: (val) =>
@@ -122,7 +125,7 @@ const signUpStore = create((set, get) => ({
           profileUrl: null,
           nickname: user.nickname,
           introduce: user.introduce,
-          team: "MONSTERS",
+          team: user.team,
           players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
         },
       });
@@ -153,7 +156,7 @@ const signUpStore = create((set, get) => ({
           profileUrl: user.profileUrl,
           nickname: user.nickname,
           introduce: user.introduce,
-          team: "MONSTERS",
+          team: user.team,
           players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
         },
       });
