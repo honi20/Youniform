@@ -606,7 +606,7 @@ public class UserControllerTest {
     public void 테마_변경_성공() throws Exception {
         //given
         ThemeModifyReq themeModifyReq = new ThemeModifyReq();
-        themeModifyReq.setTheme("NC");
+        themeModifyReq.setTheme(1002L);
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
@@ -638,7 +638,7 @@ public class UserControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        fieldWithPath("theme").type(JsonFieldType.STRING)
+                                        fieldWithPath("theme").type(JsonFieldType.NUMBER)
                                                 .description("변경할 테마 이름")
                                 )
                                 .responseFields(
@@ -863,7 +863,7 @@ public class UserControllerTest {
                 .introduce("ㅎㅇㅎㅇㅎㅇ")
                 .profileUrl("test")
                 .password("암호화 된 비밀번호")
-                .team("MONSTERS")
+                .team(1000L)
                 .providerType("LOCAL")
                 .players(players)
                 .build();
@@ -902,8 +902,8 @@ public class UserControllerTest {
                                                                 .description("닉네임"),
                                                         fieldWithPath("introduce").type(JsonFieldType.STRING)
                                                                 .description("한줄 소개"),
-                                                        fieldWithPath("team").type(JsonFieldType.STRING)
-                                                                .description("최애 팀"),
+                                                        fieldWithPath("team").type(JsonFieldType.NUMBER)
+                                                                .description("최애 팀 Id"),
                                                         fieldWithPath("players").type(JsonFieldType.ARRAY)
                                                                 .description("죄애 선수(0~3)")
                                                 )

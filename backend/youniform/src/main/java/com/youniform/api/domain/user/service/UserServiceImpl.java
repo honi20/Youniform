@@ -136,7 +136,6 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password);
         }
 
-        user.setTeam("MONSTERS");
         Users users = userRepository.save(user.toEntity(uuid, cloudFrontUrl));
 
         if (user.getPlayers() != null) {
@@ -169,7 +168,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 팀 채팅방
-        ChatRoom teamChatRoom = chatRoomRepository.findById(1000L)
+        ChatRoom teamChatRoom = chatRoomRepository.findById(user.getTeam())
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
         ChatPart chatPart = ChatPart.builder()
@@ -207,8 +206,43 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void modifyTheme(ThemeModifyReq req, Long userId) {
+        Users user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        // 새로운 팀 채팅 설정
+        Team currentTeam = user.getTeam();
+
+        if (req.getTheme() != null && !Objects.equals(currentTeam.getId(), req.getTheme())) {
+            Team newTeam = teamRepository.findById(req.getTheme())
+                    .orElseThrow(() -> new CustomException(TEAM_NOT_FOUND));
+
+            user.updateTeam(newTeam);
+
+            chatPartRepository.deleteById(new ChatPartPK(userId, currentTeam.getId()));
+
+            ChatRoom newTeamChatRoom = chatRoomRepository.findById(newTeam.getId())
+                    .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+            ChatPart newTeamChatPart = ChatPart.builder()
+                    .chatPartPK(new ChatPartPK(userId, newTeamChatRoom.getId()))
+                    .user(user)
+                    .room(newTeamChatRoom)
+                    .lastReadTime(LocalDateTime.now())
+                    .build();
+
+            chatPartRepository.save(newTeamChatPart);
+
+            // 최애 선수 삭제
+            List<UserPlayer> currentPlayers = userPlayerRepository.findByUserId(userId);
+            userPlayerRepository.deleteAll(currentPlayers);
+
+            currentPlayers.forEach(up -> {
+                chatPartRepository.deleteById(new ChatPartPK(userId, up.getUserPlayerPK().getPlayerId()));
+            });
+
+        }
+
         queryFactory.update(users)
-                .set(users.theme, Theme.valueOf(req.getTheme().toUpperCase()))
+                .set(users.theme, Theme.valueOfLabel(req.getTheme()))
                 .where(users.id.eq(userId))
                 .execute();
     }
