@@ -1,7 +1,50 @@
 -- team
-INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name, img_url)
+INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name, img_url, photo_card_url, main_url)
 VALUES (1000, '2022-04-18', 12, 1, 11, 91.7, '고척스카이돔', '서울', '최강 몬스터즈',
-        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/monsters.png');
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/monsters.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/monsters_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/monsters.png'),
+       (1001, '1982-01-30', 0, 0, 0, 0, '기아 챔피언스 필드', '광주', '타이거즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/kia.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/kia_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/kia.png'),
+       (1002, '1982-02-03', 0, 0, 0 , 0, '대구 삼성 라이온즈 파크', '대구', '라이온즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/samsung.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/samsung_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/samsung.png'),
+       (1003, '1982-01-26', 0, 0, 0, 0, '잠실 야구장', '서울', '트윈스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/lg.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/lg_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/lg.png'),
+       (1004, '1982-01-15', 0, 0, 0, 0, '잠실 야구장', '서울', '베어스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/doosan.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/doosan_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/doosan.png'),
+       (1005, '2000-03-31', 0, 0, 0, 0, '인천 SSG랜더스필드', '인천', '랜더스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/ssg.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/ssg_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/ssg.png'),
+       (1006, '2013-01-17', 0, 0, 0, 0, '수원KT위즈파크', '수원', '위즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/kt.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/kt_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/kt.png'),
+       (1007, '1986-03-08',0, 0, 0, 0, '한화생명 이글스 파크', '대전', '이글스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/hanhwa.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/hanhwa_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/hanhwa.png'),
+       (1008, '1975-05-06',0, 0, 0, 0, '사직 야구장', '부산','자이언츠',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/lotte.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/lotte_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/lotte.png'),
+       (1009, '2011-03-31',0, 0, 0, 0, '창원NC파크','창원', '다이노스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/nc.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/nc_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/nc.png'),
+       (1010, '2008-03-24', 0, 0, 0, 0, '고척 스카이돔','서울', '히어로즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/kiwoom.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/kiwoom_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/kiwoom.png')
+;
 
 -- users
 INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_write_diary, team_id, email, introduce,
@@ -46,9 +89,37 @@ VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
        (8, 'theme_2.png', 'THEME', 'NONE');
 
 -- chat_room
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1, '1번 방', TRUE);
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (2, '2번 방', TRUE);
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1000, '최강 야구 !!', TRUE);
+INSERT INTO chat_room (room_id, room_name, room_state)
+VALUES (1000, '몬스터즈 응원방', TRUE),
+       (1001, '타이거즈 응원방', TRUE),
+       (1002, '라이온즈 응원방', TRUE),
+       (1003, '트윈스 응원방', TRUE),
+       (1004, '베어스 응원방', TRUE),
+       (1005, '랜더스 응원방', TRUE),
+       (1006, '위즈 응원방', TRUE),
+       (1007, '이글스 응원방', TRUE),
+       (1008, '자이언츠 응원방', TRUE),
+       (1009, '다이노스 응원방', TRUE),
+       (1010, '히어로즈 응원방', TRUE),
+       (1, '김문호 응원방', TRUE),
+       (2, '정근우 응원방', TRUE),
+       (3, '박용택 응원방', TRUE),
+       (4, '이대호 응원방', TRUE),
+       (5, '정의윤 응원방', TRUE),
+       (6, '최수현 응원방', TRUE),
+       (7, '박재욱 응원방', TRUE),
+       (8, '정성훈 응원방', TRUE),
+       (9, '유태웅 응원방', TRUE),
+       (10, '문교원 응원방', TRUE),
+       (11, '임상우 응원방', TRUE),
+       (12, '윤상혁 응원방', TRUE),
+       (13, '이대은 응원방', TRUE),
+       (14, '신재영 응원방', TRUE),
+       (15, '오주원 응원방', TRUE),
+       (16, '유희관 응원방', TRUE),
+       (17, '장원삼 응원방', TRUE),
+       (18, '니퍼트 응원방', TRUE),
+       (19, '송승준 응원방', TRUE);
 
 -- chat_part
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1, CURRENT_TIMESTAMP);
