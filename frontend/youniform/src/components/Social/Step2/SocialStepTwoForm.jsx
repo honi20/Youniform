@@ -234,15 +234,7 @@ const SocialStepTwoForm = () => {
             ))}
           </BtnWrapper>
         </Content>
-        {!(step == "3" || step == "4") ? (
-        <Footer>
-          <ConfirmBtnWrapper>
-            <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>
-          </ConfirmBtnWrapper>
-        </Footer>
-        ) : (
-          <NextStepButton step="3" selectedTeam={selectedTeam} />
-        )}
+        <NextStepButton step="3" selectedTeam={selectedTeam} />
         </SelectTeamContainer>
     </StepThree>
   );
