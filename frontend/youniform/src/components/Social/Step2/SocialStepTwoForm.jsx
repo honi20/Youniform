@@ -193,6 +193,7 @@ const SocialStepTwoForm = () => {
     setSelectedTeam((prevSelectedTeam) =>
       prevSelectedTeam === teamCode ? "none" : teamCode
     );
+    console.log(selectedTeam);
   };
 
   const handleConfirmClick = () => {
