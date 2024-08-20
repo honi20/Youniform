@@ -21,7 +21,7 @@ const NextStepBtn = styled.div`
 `;
 
 const NextStepButton = ({ step, email, providerType, profileImage }) => {
-  const { user, fetchSocialSignUp } = useSignUpStore();
+  const { user, setTeam, fetchSocialSignUp } = useSignUpStore();
   const navigate = useNavigate();
 
   const handleNextStep = async () => {
@@ -50,12 +50,19 @@ const NextStepButton = ({ step, email, providerType, profileImage }) => {
         case "3":
         if (user.players.length > 0) {
           const res = await fetchSocialSignUp();
+          console.log(res);
           if (res === "$SUCCESS") {
             navigate(`/social/sign-up/success`);
           }
         }
+        break;
+      case "3":
         navigate(`/main`);
-        return;
+      return;
+      case "success":
+        window.dispatchEvent(new Event("storage"));
+        navigate(`/main`);
+      break;
     }
 
     // if (nextStep) {
