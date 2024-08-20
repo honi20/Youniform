@@ -21,7 +21,11 @@ const NextStepBtn = styled.div`
 `;
 
 const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage }) => {
-  const { user, setTeam, fetchSocialSignUp } = useSignUpStore();
+  const { user, setTeam, fetchSocialSignUp } = useSignUpStore((state) => ({
+    user: state.user,
+    setTeam: state.user.setTeam,
+    fetchSocialSignUp: state.fetchSocialSignUp,
+  }));
   const navigate = useNavigate();
 
   const handleNextStep = async () => {
