@@ -36,14 +36,24 @@ const NextStepButton = ({ step, email, providerType, profileImage }) => {
         }
         break;
       case "2":
+        if (selectedTeam === 1000) { // 몬스터즈
+          navigate(`/social/sign-up/step-3`);
+        } else {  // 이 외 구단
+          setTeam(selectedTeam);
+          const res = await fetchSocialSignUp();
+          console.log(res);
+          if (res === "$SUCCESS") {
+            navigate(`/sign-up/success`, { state: { isStepFour: true } });
+          }
+        }
+      break;
+        case "3":
         if (user.players.length > 0) {
           const res = await fetchSocialSignUp();
           if (res === "$SUCCESS") {
-            navigate(`/social/sign-up/step-3`);
+            navigate(`/social/sign-up/success`);
           }
         }
-        break;
-      case "3":
         navigate(`/main`);
         return;
     }
