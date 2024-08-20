@@ -6,16 +6,16 @@ import java.util.stream.Stream;
 
 public enum Theme {
     MONSTERS(1000L),
-    KT(1006L),
-    SSG(1005L),
-    DOOSAN(1004L),
-    LOTTE(1008L),
-    SAMSUNG(1002L),
-    KIWOOM(1010L),
-    KIA(1001L),
-    HANWHA(1007L),
-    LG(1003L),
-    NC(1009L);
+    TIGERS(1001L),
+    LIONS(1002L),
+    TWINS(1003L),
+    BEARS(1004L),
+    LANDERS(1005L),
+    WIZ(1006L),
+    EAGLES(1007L),
+    GIANTS(1008L),
+    DINOS(1009L),
+    HEROES(1010L);
 
     private final long teamId;
 
