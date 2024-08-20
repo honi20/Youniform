@@ -113,8 +113,13 @@ const signUpStore = create((set, get) => ({
     }
   },
   fetchLocalSignUp: async () => {
+    console.log(1);
     try {
+      console.log(2);
       const { user } = get();
+      console.log(user);
+      console.log("typeof team")
+      console.log(typeof user.team);
       const res = await axios({
         method: "post",
         url: `${API_URL}/users/signup/local`,
@@ -126,9 +131,10 @@ const signUpStore = create((set, get) => ({
           nickname: user.nickname,
           introduce: user.introduce,
           team: user.team,
-          players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
+          players: user.players,
         },
       });
+      console.log(res);      
       console.log("Success to fetch Local SignUp");
       if (res.data.header.httpStatusCode === 200) {
         const accessToken = res.data.body.accessToken;
@@ -157,7 +163,7 @@ const signUpStore = create((set, get) => ({
           nickname: user.nickname,
           introduce: user.introduce,
           team: user.team,
-          players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
+          players: user.players,
         },
       });
       console.log("Success to fetch Local SignUp");
