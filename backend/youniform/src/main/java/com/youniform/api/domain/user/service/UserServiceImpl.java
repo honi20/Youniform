@@ -127,11 +127,12 @@ public class UserServiceImpl implements UserService {
 
         if (user.getProviderType().equals("local")) {
             String verifyCode = user.getVerifyCode();
-            String verify = (String) redisUtils.getData(user.getEmail()+"_verify");
+            String key = user.getEmail()+"_verify";
+            String verify = ((JwtRedis)redisUtils.getData(key)).getVerify();
             if(verify == null || !verify.equals(verifyCode)) {
                 throw new CustomException(BAD_SIGNUP_REQUEST);
             }
-
+            redisUtils.deleteData(key);
             String password = passwordEncoder.encode(user.getPassword());
             user.setPassword(password);
         }
@@ -458,7 +459,8 @@ public class UserServiceImpl implements UserService {
 
         if (user == null) {
             String verify = mailService.sendVerifyEmail(req.getEmail());
-            redisUtils.setDataWithExpiration(req.getEmail() + "_verify", verify, 500L);
+            JwtRedis jwtRedis = JwtRedis.builder().verify(verify).build();
+            redisUtils.setDataWithExpiration(req.getEmail() + "_verify", jwtRedis, 500L);
             return;
         }
 
@@ -467,7 +469,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void verifyEmail(EmailVerifyReq req) {
-        String verify = (String) redisUtils.getData(req.getEmail() + "_verify");
+        String verify = ((JwtRedis) redisUtils.getData(req.getEmail() + "_verify")).getVerify();
 
         if (verify == null) {
             throw new CustomException(NOT_EXIST_VERIFY);
