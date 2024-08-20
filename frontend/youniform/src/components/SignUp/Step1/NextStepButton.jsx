@@ -20,12 +20,17 @@ const NextStepBtn = styled.div`
   /* border: 1px solid black; */
 `;
 
-const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
-  const { user, isVerified, fetchLocalSignUp } = useSignUpStore();
-  const navigate = useNavigate();
+const NextStepButton = ({ step, selectedTeam, isPasswordVerified, isPasswordMatch }) => {
+  const { user, setTeam, isVerified, fetchLocalSignUp } = useSignUpStore((state) => ({
+    user: state.user,
+    setTeam: state.user.setTeam,
+    isVerified: state.user.isVerified,
+    fetchLocalSignUp: state.fetchLocalSignUp,
+  }));
 
+  const navigate = useNavigate();
+  
   const handleNextStep = async () => {
-    let nextStep;
     switch (step) {
       case "1":
         if (isVerified && isPasswordVerified, isPasswordMatch) {
@@ -35,10 +40,24 @@ const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
         break;
       case "2":
         if (user.isNicknameUnique && [...user.introduce].length <= 20) {
-          navigate(`/sign-up/step-3`);
+          navigate(`/sign-up/step-3`, {state: { step: 3 }} );
         }
         break;
       case "3":
+        if (selectedTeam === "none")
+          return;
+        
+        if (selectedTeam === 1000) { // 몬스터즈
+          navigate(`/sign-up/step-4`);
+        } else {  // 이 외 구단
+          setTeam(selectedTeam);
+          const res = await fetchLocalSignUp();
+          if (res === "$SUCCESS") {
+            navigate(`/sign-up/success`, { state: { isStepFour: true } });
+          }
+        }
+        break;
+      case "4":
         if (user.players.length > 0) {
           const res = await fetchLocalSignUp();
           if (res === "$SUCCESS") {
@@ -46,21 +65,17 @@ const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
           }
         }
         break;
-      case "4":
+      case "success":
         window.dispatchEvent(new Event("storage"));
         navigate(`/main`);
-        return;
+        break;
     }
-
-    // if (nextStep) {
-    //   navigate(`/sign-up/step-${nextStep}`);
-    // }
   };
 
   return (
     <NextStepBtn onClick={handleNextStep}>
       <span>
-        {step === '4' ? "홈으로" : "다음 단계로"}
+        {step === 'success' ? "홈으로" : "다음 단계로"}
       </span>
     </NextStepBtn>
   );

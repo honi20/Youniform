@@ -162,6 +162,20 @@ const useUserStore = create((set, get) => ({
       return "$FAIL";
     }
   },
+
+  changeTheme: async (teamCode) => {
+    console.log(teamCode);
+    try {
+      const apiClient = getApiClient();
+      const response = await apiClient.patch(`${API_URL}/users/profile/theme`, {
+        theme: teamCode
+      });
+      console.log(response);
+      console.log(response.data.header.message);
+    } catch (error) {
+     console.log(error); 
+    }
+  },
 }));
 
 export default useUserStore;
