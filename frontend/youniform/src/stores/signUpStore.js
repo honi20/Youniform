@@ -118,8 +118,10 @@ const signUpStore = create((set, get) => ({
       console.log(2);
       const { user } = get();
       console.log(user);
-      console.log("typeof team")
+      console.log("typeof team");
       console.log(typeof user.team);
+      console.log("인증번호 확인");
+      console.log(user.verifyCode);
       const res = await axios({
         method: "post",
         url: `${API_URL}/users/signup/local`,
@@ -159,6 +161,7 @@ const signUpStore = create((set, get) => ({
         data: {
           email: user.email,
           password: user.password,
+          verifyCode: user.verifyCode,
           providerType: user.providerType,
           profileUrl: user.profileUrl,
           nickname: user.nickname,

@@ -203,25 +203,18 @@ const SocialStepTwoForm = () => {
     <StepThree>
       <EmptyBox />
       <StepIndicatorBox $step={step}>
-        {[1, 2, 3, 4].map((num, index) => (
+        {[1, 2, 3].map((num, index) => (
           <React.Fragment key={index}>
             <StepCircle $active={num === step}>{num}</StepCircle>
-            {num < 4 && <StepBar $active={num < step} />}
+            {num < 3 && <StepBar $active={num < step} />}
           </React.Fragment>
         ))}
       </StepIndicatorBox>
       <SelectTeamContainer>
-      {!(step == "3" || step == "4") ? (
-        <Header>
-          <Title>변경하고 싶은</Title>
-          <Title>테마를 선택하세요.</Title>
-        </Header>
-        ) : (
         <Header>
           <Title>좋아하는 구단을</Title>
           <Title>선택하세요.</Title>
         </Header>
-      )}
         <Content>
           <BtnWrapper>
             {teamList.map((team) => (
@@ -234,7 +227,7 @@ const SocialStepTwoForm = () => {
             ))}
           </BtnWrapper>
         </Content>
-        <NextStepButton step="3" selectedTeam={selectedTeam} />
+        <NextStepButton step="2" selectedTeam={selectedTeam} />
         </SelectTeamContainer>
     </StepThree>
   );
