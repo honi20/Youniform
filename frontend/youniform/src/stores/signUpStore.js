@@ -126,6 +126,7 @@ const signUpStore = create((set, get) => ({
         data: {
           email: user.email,
           password: user.password,
+          verifyCode: user.verifyCode,
           providerType: "local",
           profileUrl: null,
           nickname: user.nickname,
