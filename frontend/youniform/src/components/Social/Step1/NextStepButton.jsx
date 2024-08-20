@@ -20,7 +20,7 @@ const NextStepBtn = styled.div`
   z-index: 1;
 `;
 
-const NextStepButton = ({ step, email, providerType, profileImage }) => {
+const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage }) => {
   const { user, setTeam, fetchSocialSignUp } = useSignUpStore();
   const navigate = useNavigate();
 
@@ -36,6 +36,8 @@ const NextStepButton = ({ step, email, providerType, profileImage }) => {
         }
         break;
       case "2":
+        if (selectedTeam === "none")
+          return;
         if (selectedTeam === 1000) { // 몬스터즈
           navigate(`/social/sign-up/step-3`);
         } else {  // 이 외 구단
