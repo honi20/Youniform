@@ -44,7 +44,7 @@ const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage 
 
           return;
         if (selectedTeam === 1000) { // 몬스터즈
-          setTeam(selectedTeam);
+          setTeam(1000);
           navigate(`/social/sign-up/step-3`);
         } else {  // 이 외 구단
           setTeam(selectedTeam);
@@ -57,6 +57,7 @@ const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage 
       break;
         case "3":
         if (user.players.length > 0) {
+          setTeam(1000);
           const res = await fetchSocialSignUp();
           console.log(res);
           if (res === "$SUCCESS") {

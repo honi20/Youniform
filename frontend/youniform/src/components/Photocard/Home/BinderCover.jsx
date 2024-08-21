@@ -30,11 +30,11 @@ const CoverImage = styled.img`
 const BinderCover = () => {
   const { user } = useUserStore();
   const navigate = useNavigate();
-  const [teamImage, setTeamImage] = useState(null);
+  // const [teamImage, setTeamImage] = useState(null);
 
-  useEffect(() => {
-    setTeamImage(user.teamImage);
-  }, []);
+  // useEffect(() => {
+  //   setTeamImage(user.teamImage);
+  // }, []);
 
   const goToBinder = () => {
     navigate('/photo-card/binder', { state: { from: 'BinderCover' } });
@@ -42,7 +42,7 @@ const BinderCover = () => {
 
   return (
     <BinderContainer>
-        <CoverImage src={teamImage} />
+        <CoverImage src={coverimg} />
         <ArrowRight />
     </BinderContainer>
   );
