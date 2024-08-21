@@ -26,11 +26,11 @@ const DiaryComp = ({ state, diary }) => {
     if(!user){
       fetchUser();
           }     
-           console.log(user)
+           // console.log(user)
   }, [user, fetchUser])
 
   const handleDeleteBtn = async (diaryId) => {
-    console.log("다이어리 삭제", diaryId);
+    // console.log("다이어리 삭제", diaryId);
     await deleteDiary(diaryId);
     fetchMonthlyDiaries();
     navigate("/diary");
@@ -39,19 +39,19 @@ const DiaryComp = ({ state, diary }) => {
   const handleButtonClick = (index) => {
     switch (index) {
       case 1:
-        console.log("Button 1 clicked");
+        // console.log("Button 1 clicked");
         // 추가 작업
         break;
       case 2:
-        console.log("Button 2 clicked");
+        // console.log("Button 2 clicked");
         // 추가 작업
         break;
       case 3:
-        console.log("Button 3 clicked");
+        // console.log("Button 3 clicked");
         handleDeleteBtn(diary.diaryId);
         break;
       default:
-        console.log("Unknown button clicked");
+        // console.log("Unknown button clicked");
         break;
     }
   };

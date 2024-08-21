@@ -19,11 +19,11 @@ const MyPost = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { myPosts, fetchMyPosts, friendPosts, fetchFriendPosts } = usePostStore();
   const { nickname } = useParams();
-  console.log(nickname)
+  // console.log(nickname)
   useEffect(() => {
     if (nickname) {
       // fetchFriendPosts(nickname);
-      console.log('test')
+      // console.log('test')
     } else {
       fetchMyPosts();
     }

@@ -157,7 +157,7 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
       await fetchFriendPosts(friend.userId);
       navigate(`/post/friend/${friend.nickname}`);
     } catch (error) {
-      console.log("Failed to fetch friend", error);
+      // console.log("Failed to fetch friend", error);
       // set({ loading: false, error: error.message });
     }
   };
@@ -166,42 +166,42 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
       await fetchFriendDiary(friend.userId);
       navigate(`/diary/friend/${friend.nickname}`);
     } catch (error) {
-      console.log("Failed to fetch friend", error);
+      // console.log("Failed to fetch friend", error);
       // set({ loading: false, error: error.message });
     }
   };
   const addFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      // console.log(friend.userId);
+      // // console.log(friend.userId);
       const res = await apiClient.post(`/friends/request`, {
         friendUuid: friend.userId,
       });
-      // console.log(res.data.message);
+      // // console.log(res.data.message);
       setFriendStatus("WAITING");
     } catch (error) {
-      console.log("Failed to Add friend", error);
+      // console.log("Failed to Add friend", error);
       // set({ loading: false, error: error.message });
     }
   };
   const deleteFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      // console.log(friend.userId);
+      // // console.log(friend.userId);
       const res = await apiClient.delete(`/friends/request`, {
         friendUuid: friend.userId,
       });
-      // console.log(res.data.message);
+      // // console.log(res.data.message);
       setFriendStatus("NOT_FRIEND");
     } catch (error) {
-      console.log("Failed to Add friend", error);
+      // console.log("Failed to Add friend", error);
       // set({ loading: false, error: error.message });
     }
   };
   const FriendComponent = ({ friend, addFriend }) => {
     const { isFriend } = friend;
     const { statue } = friend;
-    console.log(friend, isFriend);
+    // console.log(friend, isFriend);
     switch (friendStatus) {
       case "NOT_FRIEND":
         return (
@@ -216,7 +216,6 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
           <UserItem
             icon={WaitingIcon}
             text="친구 요청 중"
-            onClick={() => console.log("친구 요청 중")}
           />
         );
       case "FRIEND":

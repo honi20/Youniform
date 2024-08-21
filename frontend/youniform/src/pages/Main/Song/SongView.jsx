@@ -85,19 +85,19 @@ const SongView = () => {
   const { activeBtn } = useOutletContext();
 
   useEffect(() => {
-    console.log(teamSongId, playerId);
+    // console.log(teamSongId, playerId);
     if (teamSongId && teamSongs.length == 0) {
-      console.log("fetch to team songs");
+      // console.log("fetch to team songs");
       fetchTeamSongs();
     } else if (playerId) {
-      console.log("fetch to player songs");
+      // console.log("fetch to player songs");
       fetchPlayerSongs(playerId);
     }
   }, [fetchTotalList, fetchTeamSongs, fetchPlayerSongs, playerId]);
 
   const parseText = (text) => {
     // 줄바꿈을 <br /> 태그로 변환
-    // console.log(text);
+    // // console.log(text);
     if (typeof text !== "string") {
       return ""; // or some other fallback value
     }
@@ -111,8 +111,8 @@ const SongView = () => {
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
-  // console.log(teamSongs, playerSongs);
-  // console.log(playerSongs.filter((song) => song.type == "CHEERING")[0]?.lyrics);
+  // // console.log(teamSongs, playerSongs);
+  // // console.log(playerSongs.filter((song) => song.type == "CHEERING")[0]?.lyrics);
   const renderCharacter = () => {
     if (teamSongId) {
       return (

@@ -28,22 +28,23 @@ const CoverImage = styled.img`
 `;
 
 const BinderCover = () => {
-  const { user } = useUserStore();
+  const { user, photoCardUrl } = useUserStore();
   const navigate = useNavigate();
-  // const [teamImage, setTeamImage] = useState(null);
+  const [cover, setCover] = useState(null);
 
-  // useEffect(() => {
-  //   setTeamImage(user.teamImage);
-  // }, []);
+  useEffect(() => {
+    // console.log(photoCardUrl);
+    setCover(photoCardUrl);
+  }, [photoCardUrl]);
 
   const goToBinder = () => {
-    navigate('/photo-card/binder', { state: { from: 'BinderCover' } });
+    navigate('/photo-card/binder', { state: { from: 'BinderCover', coverSrc: cover } });
   };
 
   return (
     <BinderContainer>
-        <CoverImage src={coverimg} />
-        <ArrowRight />
+        <CoverImage src={cover} />
+        <ArrowRight cover={cover}/>
     </BinderContainer>
   );
 };

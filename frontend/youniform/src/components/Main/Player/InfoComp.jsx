@@ -63,7 +63,7 @@ const FooterWrapper = styled.div`
   /* border: 1px solid red; */
 `;
 const InfoComp = ({ player }) => {
-  console.log('test', player)
+  // console.log('test', player)
   return (
     <>
       {player && (

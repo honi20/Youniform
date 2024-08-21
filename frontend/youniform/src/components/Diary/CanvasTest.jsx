@@ -4,7 +4,7 @@ import FontFaceObserver from 'fontfaceobserver';
 
 
 const Canvas = ({ selectCanvas, setSelectCanvas, decorated, diary }) => {
-  console.log("decorated: ", decorated);
+  // console.log("decorated: ", decorated);
   useEffect(() => {
     const initCanvas = new fabric.Canvas("canvas", {
       height: 500,

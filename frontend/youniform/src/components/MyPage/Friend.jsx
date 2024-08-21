@@ -66,7 +66,7 @@ const Friend = ({ friend, setSelectedFriend }) => {
   useEffect(() => {
     const loadUserDate = () => {
       if (!user || user.length == 0) {
-        console.log("user data fatch");
+        // console.log("user data fatch");
         fetchUser();
       }
     };
@@ -74,15 +74,15 @@ const Friend = ({ friend, setSelectedFriend }) => {
   }, [fetchUser, user]);
 
   const handleDeleteBtn = () => {
-    console.log("친구삭제");
+    // console.log("친구삭제");
     deleteFriend(friend.userId);
   };
   const handleProfileClick = () => {
-    console.log("프로필 모달");
+    // console.log("프로필 모달");
     setSelectedFriend(friend);
     setModalOpen(true);
   };
-  console.log(friend);
+  // console.log(friend);
   return (
     <Container>
       <div

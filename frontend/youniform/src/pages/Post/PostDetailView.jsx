@@ -185,7 +185,7 @@ const PostDetailView = () => {
     if (action === "update") {
       navigate(`/post/write/${post.postId}`, { state: { post } });
     } else if (action === "delete") {
-      console.log("test");
+      // console.log("test");
       setIsDeleteModalOpen(true);
     }
   };
@@ -230,14 +230,14 @@ const PostDetailView = () => {
   const handleLike = async () => {
     const newLike = !like;
     setLike(newLike);
-    console.log(newLike);
+    // console.log(newLike);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
         isLiked: true,
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -245,10 +245,10 @@ const PostDetailView = () => {
   const handlePostBtn = async (index) => {
     switch (index) {
       case 1:
-        console.log("Button 1 clicked");
+        // console.log("Button 1 clicked");
         break;
       case 2:
-        console.log("Button 2 clicked");
+        // console.log("Button 2 clicked");
         break;
       case 3:
         await deletePost(post.postId);
@@ -256,7 +256,7 @@ const PostDetailView = () => {
         navigate("/post");
         break;
       default:
-        console.log("Unknown button clicked");
+        // console.log("Unknown button clicked");
         break;
     }
   };

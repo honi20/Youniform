@@ -146,7 +146,7 @@ const CommentContainer = ({ postId, user }) => {
     const { scrollTop, scrollHeight, clientHeight } = event.target;
     const isAtTop = scrollTop === 0;
     const isAtBottom = scrollTop + clientHeight >= scrollHeight;
-    // console.log(scrollTop, clientHeight, scrollHeight);
+    // // console.log(scrollTop, clientHeight, scrollHeight);
     setShowEllipsis({
       top: !isAtTop,
       bottom: !isAtBottom,
@@ -189,7 +189,7 @@ const CommentContainer = ({ postId, user }) => {
   };
 
   return (
-    <Container onClick={() => console.log("댓글창 클릭됨")}>
+    <Container>
       <ScrollableView ref={scrollableRef} onScroll={handleScroll}>
         {comments &&
           comments.map((comment) => (

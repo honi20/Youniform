@@ -18,15 +18,15 @@ const TotalSongView = () => {
       fetchTotalList();
     }
   }, [fetchTotalList]);
-  // console.log(total, playerId);
-  // console.log(total.findIndex((elem) => elem.playerId == playerId));
+  // // console.log(total, playerId);
+  // // console.log(total.findIndex((elem) => elem.playerId == playerId));
   const [isOn, setIsOn] = useState(false);
   const handleToggle = () => {
     setIsOn((prevIsOn) => !prevIsOn);
   };
   const handleToggleBtn = (index) => {
     setIsOn(false);
-    console.log(total[index]);
+    // console.log(total[index]);
     setSelectedIndex(index);
     if (index == 0) {
       navigate(`/song/team/${teamId}`);
@@ -36,7 +36,7 @@ const TotalSongView = () => {
   };
   const [activeBtn, setActiveBtn] = useState(0);
   const handleBtnClick = (btnIndex) => {
-    console.log(btnIndex);
+    // console.log(btnIndex);
     setActiveBtn(btnIndex);
   };
   const switchChange = () => {
@@ -59,7 +59,7 @@ const TotalSongView = () => {
   const isTabSwitcherVisible = !location.pathname.includes(
     `/song/team/${teamId}/`
   );
-  console.log(selectedIndex);
+  // console.log(selectedIndex);
   return (
     <St.Wrapper>
       <St.OuterContainer>

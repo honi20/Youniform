@@ -31,7 +31,7 @@ const StickerImg = styled.img`
 `;
 
 const StickerComp = ({ stickers, onImageClick }) => {
-  // console.log(stickers);
+  // // console.log(stickers);
   return (
     <StickerContainer>
       <Wrapper>

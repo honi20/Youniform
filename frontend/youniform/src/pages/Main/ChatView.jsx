@@ -124,7 +124,7 @@ const ChatView = () => {
   }, [messages]);
   
   const handleKeyDown = (event) => {
-    console.log("Key pressed:", event.key); // 키 이벤트를 확인하기 위한 로그
+    // console.log("Key pressed:", event.key); // 키 이벤트를 확인하기 위한 로그
     if (event.key === "Enter") {
       event.preventDefault(); // 기본 Enter 동작 방지 (예: 줄바꿈)
       handleSubmitBtn();
@@ -134,7 +134,7 @@ const ChatView = () => {
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = (isOn) => {
     setIsOn((prevIsOn) => !prevIsOn);
-    console.log("토글얌얌", isOn);
+    // console.log("토글얌얌", isOn);
   };
   const [selected, setSelected] = useState(roomId);
 
@@ -151,7 +151,7 @@ const ChatView = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log('file')
+    // console.log('file')
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
@@ -163,10 +163,10 @@ const ChatView = () => {
   };
 
   const handleAddPhotoClick = () => {
-    console.log(fileInputRef.current, 'juyeon test')
+    // console.log(fileInputRef.current, 'juyeon test')
     if (fileInputRef.current !== null) {
       fileInputRef.current.click();
-      console.log('test', selectedFile)
+      // console.log('test', selectedFile)
     }
   };
 
@@ -184,7 +184,7 @@ const ChatView = () => {
 
   const handleSubmitBtn = async () => {
     if (selectedFile){
-    console.log("handleSubmitBtn", selectedFile);
+    // console.log("handleSubmitBtn", selectedFile);
     const imageUrl = await sendImage();
     sendMessage(user.nickname, imageUrl);
     setSelectedFile('')

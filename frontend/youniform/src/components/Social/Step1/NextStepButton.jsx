@@ -49,7 +49,7 @@ const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage 
         } else {  // 이 외 구단
           setTeam(selectedTeam);
           const res = await fetchSocialSignUp();
-          console.log(res);
+          // console.log(res);
           if (res === "$SUCCESS") {
             navigate(`/sign-up/success`, { state: { isStepFour: true } });
           }
@@ -59,7 +59,7 @@ const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage 
         if (user.players.length > 0) {
           setTeam(1000);
           const res = await fetchSocialSignUp();
-          console.log(res);
+          // console.log(res);
           if (res === "$SUCCESS") {
             navigate(`/social/sign-up/success`);
           }
