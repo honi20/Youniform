@@ -30,6 +30,8 @@ public class MyDetailsRes {
 
     private String provider;
 
+    private String photoCardUrl;
+
     public MyDetailsRes toDto(Users user, Long likePostCount, Long friendCount) {
         return MyDetailsRes.builder()
                 .nickname(user.getNickname())
@@ -42,6 +44,7 @@ public class MyDetailsRes {
                 .likePostCount(likePostCount)
                 .friendCount(friendCount)
                 .provider(user.getProviderType())
+                .profileUrl(user.getTeam().getPhotoCardUrl())
                 .build();
     }
 }
