@@ -13,6 +13,7 @@ import Tigers from "@assets/Team/Tigers.png";
 import Twins from "@assets/Team/Twins.png";
 import Wiz from "@assets/Team/Wiz.png";
 import useUserStore from '@stores/userStore';
+import { useNavigate } from 'react-router-dom';
 
 const StepThree = styled.div`
   height: calc(120vh);
@@ -146,6 +147,7 @@ const ChangeTheme = () => {
   const { changeTheme } = useUserStore();
   const step = 2;
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const navigate = useNavigate();
 
   const teamList = [
   { teamCode: 1000, teamName: "몬스터즈", color: "#262F66", icon: Monsters },
@@ -169,6 +171,7 @@ const ChangeTheme = () => {
 
   const handleConfirmClick = async () => {
     await changeTheme(selectedTeam);
+    navigate(`/main`);
   };
 
   return (

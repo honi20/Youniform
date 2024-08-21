@@ -70,7 +70,7 @@ const Introduce = styled.div`
 const ProfileComp = ({ user }) => {
   return (
     <ProfileSection>
-      <ProfileImage onClick={() => console.log("프로필 사진 변경")}>
+      <ProfileImage onClick={() => console.log(user)}>
         <img src={user.profileUrl} alt="Profile" />
       </ProfileImage>
       <ProfileInfo>
@@ -229,7 +229,6 @@ const Profile = () => {
     };
 
     fetchData();
-
     return () => clearUser();
   }, [fetchUser, clearUser]);
 

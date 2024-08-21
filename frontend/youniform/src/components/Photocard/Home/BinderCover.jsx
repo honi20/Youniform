@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import coverimg from "@assets/photocard/cover.png";
 import ArrowRight from "./ArrowRight";
+import useUserStore from "@stores/userStore";
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
 
 const BinderContainer = styled.div`
   display: flex;
@@ -26,7 +28,13 @@ const CoverImage = styled.img`
 `;
 
 const BinderCover = () => {
+  const { user } = useUserStore();
   const navigate = useNavigate();
+  const [teamImage, setTeamImage] = useState(null);
+
+  useEffect(() => {
+    setTeamImage(user.teamImage);
+  }, []);
 
   const goToBinder = () => {
     navigate('/photo-card/binder', { state: { from: 'BinderCover' } });
@@ -34,7 +42,7 @@ const BinderCover = () => {
 
   return (
     <BinderContainer>
-        <CoverImage src={coverimg} />
+        <CoverImage src={teamImage} />
         <ArrowRight />
     </BinderContainer>
   );

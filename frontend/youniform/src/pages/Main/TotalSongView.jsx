@@ -9,6 +9,9 @@ const TotalSongView = () => {
   const { playerId, teamId } = useParams();
   const navigate = useNavigate();
   // const teamId = 1000;
+  const [selectedIndex, setSelectedIndex] = useState(
+    teamId ? 0 : total.findIndex((elem) => elem.playerId == playerId)
+  );
 
   useEffect(() => {
     if (!total || total.length == 0) {
@@ -18,10 +21,9 @@ const TotalSongView = () => {
   // console.log(total, playerId);
   // console.log(total.findIndex((elem) => elem.playerId == playerId));
   const [isOn, setIsOn] = useState(false);
-  const handleToggle = () => setIsOn((prevIsOn) => !prevIsOn);
-  const [selectedIndex, setSelectedIndex] = useState(
-    teamId ? 0 : total.findIndex((elem) => elem.playerId == playerId)
-  );
+  const handleToggle = () => {
+    setIsOn((prevIsOn) => !prevIsOn);
+  };
   const handleToggleBtn = (index) => {
     setIsOn(false);
     console.log(total[index]);
@@ -66,9 +68,8 @@ const TotalSongView = () => {
           {/* toggle */}
           <St.NavToggle>
             <St.ToggleBtn onClick={() => handleToggle(isOn)}>
-              {total.find((item, index) => index == selectedIndex)?.name}
-
               {St.toggle(isOn)}
+              {total.find((item, index) => index == selectedIndex)?.name}
             </St.ToggleBtn>
             <St.ToggleList $isOn={isOn}>
               {total.map((item, index) => (
