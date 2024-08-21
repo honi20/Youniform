@@ -420,6 +420,7 @@ public class UserControllerTest {
                         .introduce("자기소개")
                         .profileUrl("프로필 이미지 url")
                         .provider("local")
+                        .photoCardUrl("src")
                         .build()
         );
         ResultActions actions = mockMvc.perform(
@@ -467,7 +468,9 @@ public class UserControllerTest {
                                                         .optional()
                                                         .description("친구 수"),
                                                 fieldWithPath("body.provider").type(JsonFieldType.STRING)
-                                                        .description("가입 타입")
+                                                        .description("가입 타입"),
+                                                fieldWithPath("body.photoCardUrl").type(JsonFieldType.STRING)
+                                                        .description("포토카드 url")
                                         )
                                 )
                                 .responseSchema(Schema.schema("내 정보 조회 Response"))
