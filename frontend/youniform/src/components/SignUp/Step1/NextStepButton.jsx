@@ -49,6 +49,7 @@ const NextStepButton = ({ step, selectedTeam, isPasswordVerified, isPasswordMatc
           return;
         
         if (selectedTeam === 1000) { // 몬스터즈
+          setTeam(selectedTeam);
           navigate(`/sign-up/step-4`);
         } else {  // 이 외 구단
           setTeam(selectedTeam);

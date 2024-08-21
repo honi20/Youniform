@@ -41,8 +41,10 @@ const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage 
         break;
       case "2":
         if (selectedTeam === "none")
+
           return;
         if (selectedTeam === 1000) { // 몬스터즈
+          setTeam(selectedTeam);
           navigate(`/social/sign-up/step-3`);
         } else {  // 이 외 구단
           setTeam(selectedTeam);
