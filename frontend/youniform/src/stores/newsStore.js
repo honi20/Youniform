@@ -9,11 +9,11 @@ const useNewsStore = create((set, get) => ({
   hasMore: true, // 뉴스 존재 여부
 
   fetchTotalNews: async (playerList) => {
-    // console.log(playerList);
+    // // console.log(playerList);
     const { page, hasMore } = get();
     if (!hasMore) return;
     
-    console.log("뉴스를 불러옵니다.");
+    // console.log("뉴스를 불러옵니다.");
     const apiClient = getApiClient()
     try {
       const newsPromises = playerList.map((player) => {
@@ -60,9 +60,9 @@ const useNewsStore = create((set, get) => ({
 
   // 특정 선수의 뉴스 가져오기
   fetchTeamNews: async (team) => {
-    console.log("test", team)
+    // console.log("test", team)
     if (team){
-      console.log("팀 뉴스 조회")
+      // console.log("팀 뉴스 조회")
       const apiClient = getApiClient();
     try {
       const response = await apiClient(`https://youniform.site/api/news?`, {
@@ -70,7 +70,7 @@ const useNewsStore = create((set, get) => ({
           query: "최강몬스터즈",
         },
       });
-      console.log(response.data)
+      // console.log(response.data)
       set((state) => ({
         news: {
           ...state.news,

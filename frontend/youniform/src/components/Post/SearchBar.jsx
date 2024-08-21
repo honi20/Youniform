@@ -52,7 +52,7 @@ ${Font.XSmall};
 `
 const SearchBar = ({ searchQuery, setSearchQuery, type, setSearch }) => {
   const [placeholder, setPlaceholder] = useState("검색어를 입력하세요");
-  // console.log("search Bar - type: ", type);
+  // // console.log("search Bar - type: ", type);
   useEffect(() => {
     if (searchQuery) {
       setPlaceholder("");

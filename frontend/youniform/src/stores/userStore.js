@@ -11,16 +11,17 @@ const useUserStore = create((set, get) => ({
   accessToken: null,
   pushAlert: null,
   playPushAlert: null,
+  photoCardUrl: null,
   setPushAlert: (value) => set({ pushAlert: value }),
   setPlayPushAlert: (value) => set({ playPushAlert: value }),
-
+  setPhotoCardUrl: (value) => set({ photoCardUrl: value }),
   setAccessToken: (token) => set({ accessToken: token }),
   clearAccessToken: () => set({ accessToken: null }),
 
   fetchUser: async () => {
     set({ loading: true, error: null });
     const apiClient = getApiClient();
-    // console.log("API Client:", apiClient);
+    // // console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users`);
       set({
@@ -28,9 +29,10 @@ const useUserStore = create((set, get) => ({
         pushAlert: response.data.body.pushAlert,
         playPushAlert: response.data.body.playPushAlert,
         loading: false,
+        photoCardUrl: response.data.body.photoCardUrl,
       });
     } catch (error) {
-      console.log("Failed to fetch user", error);
+      // console.log("Failed to fetch user", error);
       set({ loading: false, error: error.message });
     }
   },
@@ -40,14 +42,14 @@ const useUserStore = create((set, get) => ({
     set({ loading: true, error: null });
     // const { accessToken } = get();
     const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
+    // console.log("API Client:", apiClient);
     try {
       const response = await apiClient.get(`/users/${userId}`);
-      console.log("유저 정보 조회에 성공했습니다.");
-      console.log(response.data.body);
+      // console.log("유저 정보 조회에 성공했습니다.");
+      // console.log(response.data.body);
       set({ friend: response.data.body, loading: false });
     } catch (error) {
-      console.log("Failed to fetch friend", error);
+      // console.log("Failed to fetch friend", error);
       set({ loading: false, error: error.message });
     }
   },
@@ -59,7 +61,7 @@ const useUserStore = create((set, get) => ({
         email,
         password,
       });
-      console.log(response.data);
+      // console.log(response.data);
       const { accessToken } = response.data.body;
       set({ accessToken });
       const handleLoginSuccess = (accessToken) => {
@@ -70,7 +72,7 @@ const useUserStore = create((set, get) => ({
       return "$OK";
     } catch (err) {
       // if (err.response.data.)
-      console.log("Failed to fetchLogin", err);
+      // console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }
   },
@@ -80,22 +82,22 @@ const useUserStore = create((set, get) => ({
       const response = await axios.post(`${API_URL}/users/password/send`, {
         email,
       });
-      console.log(response.data.header.message);
-      console.log(response);
+      // console.log(response.data.header.message);
+      // console.log(response);
       if (response.data.header.httpStatusCode === 200) {
         return "$OK";
       }
     } catch (err) {
-      console.log("Failed to fetchLogin", err);
+      // console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }
   },
 
   resetPassword: async (uuid, verifyCode, pw, confirmPw) => {
-    console.log(uuid);
-    console.log(verifyCode);
-    console.log(pw);
-    console.log(confirmPw);
+    // console.log(uuid);
+    // console.log(verifyCode);
+    // console.log(pw);
+    // console.log(confirmPw);
     try {
       const response = await axios.patch(`${API_URL}/users/password/reset`, {
         uuid: uuid,
@@ -103,13 +105,13 @@ const useUserStore = create((set, get) => ({
         password: pw,
         confirmPassword: confirmPw,
       });
-      console.log(response);
-      console.log(response.data.header.message);
+      // console.log(response);
+      // console.log(response.data.header.message);
       if (response.data.header.httpStatusCode === 200) {
         return "$SUCCESS";
       }
     } catch (err) {
-      console.log("Failed to fetchLogin", err);
+      // console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }
   },
@@ -122,13 +124,13 @@ const useUserStore = create((set, get) => ({
         newPassword: newPw,
         confirmPassword: confirmPw,
       });
-      console.log(response);
-      console.log(response.data.header.message);
+      // console.log(response);
+      // console.log(response.data.header.message);
       if (response.data.header.httpStatusCode === 200) {
         return "$SUCCESS";
       }
     } catch (err) {
-      console.log("Failed to fetchLogin", err);
+      // console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }
   },
@@ -140,10 +142,10 @@ const useUserStore = create((set, get) => ({
           nickname: nickname,
         },
       });
-      console.log(response);
+      // console.log(response);
       return "$OK";
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return "$FAIL";
     }
   },
@@ -152,28 +154,28 @@ const useUserStore = create((set, get) => ({
     try {
       const apiClient = getApiClient();
       const response = await apiClient.patch(`${API_URL}/users/resign`);
-      console.log(response);
-      console.log(response.data.header.message);
+      // console.log(response);
+      // console.log(response.data.header.message);
       if (response.data.header.httpStatusCode === 200) {
         return "$SUCCESS";
       }
     } catch (err) {
-      console.log("Failed to fetchLogin", err);
+      // console.log("Failed to fetchLogin", err);
       return "$FAIL";
     }
   },
 
   changeTheme: async (teamCode) => {
-    console.log(teamCode);
+    // console.log(teamCode);
     try {
       const apiClient = getApiClient();
       const response = await apiClient.patch(`${API_URL}/users/profile/theme`, {
         theme: teamCode
       });
-      console.log(response);
-      console.log(response.data.header.message);
+      // console.log(response);
+      // console.log(response.data.header.message);
     } catch (error) {
-     console.log(error); 
+     // console.log(error); 
     }
   },
 }));

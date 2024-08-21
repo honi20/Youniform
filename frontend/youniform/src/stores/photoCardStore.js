@@ -5,21 +5,23 @@ import { getApiClient } from "@stores/apiClient";
 
 const logFormData = (formData) => {
   for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value);
+    // console.log(`${key}:`, value);
   }
 };
 
 const usePhotoCardStore = create((set, get) => ({
   photoCard: null,
   photoCards: [],
+  coverUrl: null,
   isFlipped: false,
   flipPage: () => set((state) => ({ isFlipped: !state.isFlipped })),
   page: 0,
   totalPages: 0,
   setPhotoCard: (photoCard) => set({ photoCard }),
+  setCoverUrl: (url) => set({ coverUrl }),
   setTotalPages: () => {
     const totalPages = Math.ceil(get().photoCards.length / 4);
-    console.log(`totalPages: ${totalPages}`);
+    // console.log(`totalPages: ${totalPages}`);
     set({ totalPages });
   },
   nextPage: () => set((state) => ({ page: state.page + 1 })),
@@ -31,13 +33,13 @@ const usePhotoCardStore = create((set, get) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/photocards`);
-      console.log(res);
+      // console.log(res);
       set({ photoCards: res.data.body.photocardList });
       get().setTotalPages();
-      console.log("fetch photocard");
-      console.log(get().photoCards);
+      // console.log("fetch photocard");
+      // console.log(get().photoCards);
     } catch (error) {
-      console.log("Failed to fetchPhotocards", error);
+      // console.log("Failed to fetchPhotocards", error);
     }
   },
   createPhotoCard: async (formData) => {
@@ -49,15 +51,15 @@ const usePhotoCardStore = create((set, get) => ({
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data);
+      // console.log(res.data.header.message);
+      // console.log(res.data);
     } catch (error) {
-      console.log("Failed to createPhotoCard", error);
+      // console.log("Failed to createPhotoCard", error);
     }
   },
   // 포토카드 삭제
   deletePhotocards: async (list) => {
-    console.log("deletePhotocards function called with", list);
+    // console.log("deletePhotocards function called with", list);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/photocards`, {
@@ -65,26 +67,26 @@ const usePhotoCardStore = create((set, get) => ({
           photocardIdList: list,
         },
       });
-      console.log(res);
-      console.log(res.data.header);
+      // console.log(res);
+      // console.log(res.data.header);
     } catch (error) {
-      console.log("Failed to createPhotoCard", error);
+      // console.log("Failed to createPhotoCard", error);
     }
   },
   // 포토카드 단일 삭제
   // deletePhotocard: async (id) => {
   //   const apiClient = getApiClient();
-  //   console.log(`id: ${id}`);
+  //   // console.log(`id: ${id}`);
   //   try {
   //     const res = await apiClient.delete(`/photocards/${id}`, {
   //       params: {
   //         photocardId: id,
   //       },
   //     });
-  //     console.log(res.data.header.message);
-  //     console.log(res.data);
+  //     // console.log(res.data.header.message);
+  //     // console.log(res.data);
   //   } catch (error) {
-  //     console.log("Failed to createPhotoCard", error);
+  //     // console.log("Failed to createPhotoCard", error);
   //   }
   // },
   fetchPhotocardDetail: async (id) => {
@@ -96,9 +98,9 @@ const usePhotoCardStore = create((set, get) => ({
         },
       });
       set({ photoCard: res.data.body });
-      console.log(get().photoCard);
+      // console.log(get().photoCard);
     } catch (error) {
-      console.log("Failed to fetchPhotocardDetail", error);
+      // console.log("Failed to fetchPhotocardDetail", error);
     }
   },
 }));

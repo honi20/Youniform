@@ -300,7 +300,7 @@ const BasicModal = ({
   };
 
   const renderTitle = (state, nickname) => {
-    // console.log(state, stateMap[state]);
+    // // console.log(state, stateMap[state]);
     const title =
       typeof stateMap[state]?.title === "function"
         ? stateMap[state].title(nickname)

@@ -10,6 +10,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ColorBtn from "@components/Common/ColorBtn";
 import EmptyState from "@components/Share/EmptyState";
 import EmptyIcon from "@assets/EmptyState/EmptyState_Photocard.svg?react";
+import useUserStore from "@stores/userStore";
 
 const rotateAnimation = keyframes`
   from {
@@ -180,11 +181,12 @@ const MiddleGroup = styled.div`
 `;
 
 const Binder = (prevLocation) => {
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const from = state?.from;
+  const coverSrc = state?.coverSrc;
 
   const [animate, setAnimate] = useState(false);
   const [isSelectMode, setIsSelectMode] = useState(false);
@@ -204,7 +206,9 @@ const Binder = (prevLocation) => {
     setTotalPages,
   } = usePhotoCardStore();
 
-  const closeWarningModal = () => setIsWarningModalOpen(false);
+  useEffect(() => {
+    // console.log(coverSrc);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -214,19 +218,19 @@ const Binder = (prevLocation) => {
       } else {
         setPage(0); // 기본 페이지로 설정 (첫 페이지)
       }
-
+      
       fetchPhotoCardList(); // 포토카드 리스트 가져오기
       setTotalPages(); // 총 페이지 수 설정
     };
-
+    
     fetchData();
   }, [fetchPhotoCardList, setPage, setTotalPages, location.state?.from]);
-
+  
   useEffect(() => {
     // 페이지 정보가 수정 시 localStorage에 저장
     localStorage.setItem("currentPage", page);
   }, [page]);
-
+  
   useEffect(() => {
     if (from === 'photo-card') {
       setAnimate(true);
@@ -234,19 +238,19 @@ const Binder = (prevLocation) => {
       setAnimate(false);
     }
   }, [from]);
-
+  
   const handlePhotoFrameClick = (imageUrl, photocardId) => {
     if (!isSelectMode) {
       setSelectedImage(imageUrl);
       navigate(`/photo-card/detail/${photocardId}`);
     } else {
-      console.log(`imageUrl: ${imageUrl}`);
-      console.log(`photocardId: ${photocardId}`);
-      console.log(`selectedCards: ${selectedCards}`);
+      // console.log(`imageUrl: ${imageUrl}`);
+      // console.log(`photocardId: ${photocardId}`);
+      // console.log(`selectedCards: ${selectedCards}`);
       handleSelectCard(photocardId);
     }
   };
-
+  
   const handleSelectCard = (photocardId) => {
     setSelectedCards((prevSelectedCards) => {
       if (prevSelectedCards.includes(photocardId)) {
@@ -256,32 +260,34 @@ const Binder = (prevLocation) => {
       }
     });
   };
+  
+  const closeWarningModal = () => setIsWarningModalOpen(false);
 
   const toggleSelectMode = () => {
     setIsSelectMode((prevMode) => !prevMode);
   };
-
+  
   const renderPhotoFrames = () => {
     if (!photoCards || !Array.isArray(photoCards)) {
       return null; // 데이터가 없을 때
     }
-
+    
     const startIndex = page * 4;
     return photoCards
-      .slice(startIndex, startIndex + 4)
-      .map((photocard, index) => {
-        const photocardId = photocard.photocardId;
-        const isSelected = selectedCards.includes(photocardId);
-
-        return (
-          <PhotoFrame
-            key={index}
-            $isSelectMode={isSelectMode}
-            onClick={() => handlePhotoFrameClick(photocard.imgUrl, photocardId)}
-          >
+    .slice(startIndex, startIndex + 4)
+    .map((photocard, index) => {
+      const photocardId = photocard.photocardId;
+      const isSelected = selectedCards.includes(photocardId);
+      
+      return (
+        <PhotoFrame
+        key={index}
+        $isSelectMode={isSelectMode}
+        onClick={() => handlePhotoFrameClick(photocard.imgUrl, photocardId)}
+        >
             {isSelectMode && (
               <SelectButton
-                selected={isSelected}
+              selected={isSelected}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSelectCard(photocardId);
@@ -306,7 +312,7 @@ const Binder = (prevLocation) => {
 
   const deleteCard = async () => {
     
-    console.log(selectedCards);
+    // console.log(selectedCards);
     if (selectedCards.length === 0) {
       setIsWarningModalOpen(true);
       return;
@@ -325,7 +331,7 @@ const Binder = (prevLocation) => {
     <>
       <BinderContainer>
         { from === 'photo-card' &&
-          <CoverImage src={coverimg} className={animate ? "animate" : ""} />
+          <CoverImage src={coverSrc} className={animate ? "animate" : ""} />
         }
         <Paper>
           <Holes>

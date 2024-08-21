@@ -17,7 +17,7 @@ const usePlayerStore = create((set, get) => ({
       await fetchTeamList();
       await fetchPlayerList();
       const { team, playerList } = get();
-      console.log(team, playerList)
+      // console.log(team, playerList)
       set({ total: [team, ...playerList] })
     }
     catch (err) {
@@ -30,8 +30,8 @@ const usePlayerStore = create((set, get) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/teams/favorite`);
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set({ team: res.data.body, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -43,8 +43,8 @@ const usePlayerStore = create((set, get) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/players/favorite`);
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set({ playerList: res.data.body.playerList, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -60,8 +60,8 @@ const usePlayerStore = create((set, get) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/teams/song`);
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set({ teamSongs: res.data.body.teamSongList, loading: false  });
     } catch (error) {
       console.error("Failed to fetch team songs:", error);
@@ -71,12 +71,12 @@ const usePlayerStore = create((set, get) => ({
 
   fetchPlayerSongs: async (playerId) => {
     set({ loading: true, error: null });
-    console.log(playerId)
+    // console.log(playerId)
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/players/song/${playerId}`);
-      console.log(res.data.header.message);
-      console.log(res.data.body.songList);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.songList);
       set({ playerSongs: res.data.body.songList, loading: false  });
     } catch (error) {
       console.error("Failed to fetch team songs:", error);
@@ -88,7 +88,7 @@ const usePlayerStore = create((set, get) => ({
     const apiClient = getApiClient();
     try {
       await apiClient.patch(`/players/alert/${playerId}`, { pushAlert });
-      console.log(`Player ${playerId} pushAlert status updated to ${pushAlert}`);
+      // console.log(`Player ${playerId} pushAlert status updated to ${pushAlert}`);
       // fetchPlayerList to refresh the player list with updated pushAlert state
       set({ loading: false });
     } catch (error) {

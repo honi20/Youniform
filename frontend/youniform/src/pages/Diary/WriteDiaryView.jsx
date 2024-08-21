@@ -86,12 +86,12 @@ const WriteDiaryView = () => {
       initializeDiary();
       setUpdate(false);
     }
-    console.log(diary)
+    // console.log(diary)
   }, [diaryId, fetchDiary]);
 
   useEffect(() => {
     fetchResources();
-    // console.log(themes);
+    // // console.log(themes);
     fetchStampList();
   }, [fetchResources, fetchStampList]);
 
@@ -102,7 +102,7 @@ const WriteDiaryView = () => {
         if (activeObjects.length > 0) {
           const obj = activeObjects[0];
           const test = activeObjects[0].getCenterPoint()
-          // console.log(test)
+          // // console.log(test)
           const imgWidth = obj.getScaledWidth();
           const imgHeight = obj.getScaledHeight();
           if (deleteBtnRef.current) {
@@ -138,7 +138,7 @@ const WriteDiaryView = () => {
   };
 
   const handleImageClick = async (background) => {
-    console.log(background);
+    // console.log(background);
     if (selectCanvas) {
       fabric.Image.fromURL(
         background.imgUrl,
@@ -197,9 +197,9 @@ const WriteDiaryView = () => {
       return cleanName;
     };
     await document.fonts.load(`16px ${getFontName(selectedFont)}`);
-    console.log(selectedFont, getFontName(selectedFont));
+    // console.log(selectedFont, getFontName(selectedFont));
     if (selectCanvas) {
-      console.log(selectedFont);
+      // console.log(selectedFont);
       const text = new fabric.Textbox("입력하세요.", {
         left: selectCanvas.getWidth() / 2,
         top: selectCanvas.getHeight() / 2,
@@ -215,7 +215,7 @@ const WriteDiaryView = () => {
     }
   };
   const handleThemeClick = async (background) => {
-    console.log(background);
+    // console.log(background);
     if (selectCanvas) {
       fabric.Image.fromURL(
         background.imgUrl,
@@ -363,10 +363,10 @@ const WriteDiaryView = () => {
       let newId = "";
 
       if (diaryId) {
-        console.log("다이어리 수정");
+        // console.log("다이어리 수정");
         await updateDiary(diaryId, formData);
       } else {
-        console.log("다이어리 생성");
+        // console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
 
@@ -380,7 +380,7 @@ const WriteDiaryView = () => {
 
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+      // console.log(`${key}:`, value);
     }
   };
   
@@ -394,12 +394,12 @@ const WriteDiaryView = () => {
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
 
         // 확인용 코드
-        // console.log("diaryDate: ", diaryDate ? diaryDate : date);
-        // console.log("contents: ", json);
-        // console.log("scope: ", scope);
-        // console.log("stamp: ", stampId);
-        // console.log(diaryDate, date)
-        // console.log(diary)
+        // // console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        // // console.log("contents: ", json);
+        // // console.log("scope: ", scope);
+        // // console.log("stamp: ", stampId);
+        // // console.log(diaryDate, date)
+        // // console.log(diary)
         const formData = new FormData();
         const dto = {
           diaryDate: diaryDate ? diaryDate : diary.diaryDate,
@@ -413,7 +413,7 @@ const WriteDiaryView = () => {
         formData.append("file", imageBlob, "canvas.png");
         formData.append("dto", dtoBlob);
 
-        // console.log("FormData contents:");
+        // // console.log("FormData contents:");
         // logFormData(formData);
 
         return formData;
@@ -429,7 +429,7 @@ const WriteDiaryView = () => {
   const moveToDetailPage = async (diaryId) => {
     try {
       if (diaryId) {
-        // console.log(diaryId);
+        // // console.log(diaryId);
         navigate(`/diary/${diaryId}`); // 페이지 이동
       }
     } catch (error) {
@@ -452,7 +452,7 @@ const WriteDiaryView = () => {
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
-      // console.log("선택 해제");
+      // // console.log("선택 해제");
       obj.selectable = false;
     }
     selectCanvas.renderAll();
@@ -462,7 +462,7 @@ const WriteDiaryView = () => {
   const removeBtn = async() => {
     if (selectCanvas) {
       const objectsToDelete = await selectCanvas.getActiveObjects();
-      console.log(objectsToDelete);
+      // console.log(objectsToDelete);
   
       if (objectsToDelete.length > 0) {
         objectsToDelete.forEach((obj) => {
@@ -471,7 +471,7 @@ const WriteDiaryView = () => {
   
         selectCanvas.discardActiveObject(); // 선택된 상태를 해제
         selectCanvas.renderAll();
-        console.log('삭제완료');
+        // console.log('삭제완료');
       }
     }
   }

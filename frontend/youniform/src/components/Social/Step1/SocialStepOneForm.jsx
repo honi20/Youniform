@@ -181,14 +181,14 @@ const SocialStepOneForm = () => {
         setNickname(data.body.nickname); // 닉네임 초기값 설정
       }
       if (data.body.profileUrl) {
-        console.log(data.body.profileUrl);
+        // console.log(data.body.profileUrl);
         setProfileUrl(data.body.profileUrl); // 프로필 이미지 초기값 설정
       }
     }
   }, [data]);
 
   useEffect(() => {
-    console.log("바뀐 프로필", profileImage);
+    // console.log("바뀐 프로필", profileImage);
   }, [profileImage]);
 
   useEffect(() => {

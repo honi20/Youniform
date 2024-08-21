@@ -44,7 +44,7 @@ const NextStepButton = ({ step, selectedTeam, isPasswordVerified, isPasswordMatc
         }
         break;
       case "3":
-        console.log("switch문 접근");
+        // console.log("switch문 접근");
         if (selectedTeam === "none")
           return;
         
@@ -54,7 +54,7 @@ const NextStepButton = ({ step, selectedTeam, isPasswordVerified, isPasswordMatc
         } else {  // 이 외 구단
           setTeam(selectedTeam);
           const res = await fetchLocalSignUp();
-          console.log(res);
+          // console.log(res);
           if (res === "$SUCCESS") {
             navigate(`/sign-up/success`, { state: { isStepFour: true } });
           }

@@ -12,8 +12,8 @@ const usePostStore = create((set) => ({
         method: "get",
         url: `/posts/${postId}`,
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
 
       set({
         post: res.data.body,
@@ -29,8 +29,8 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/posts`);
-      console.log(res.data.header.message);
-      console.log(res.data.body.postList);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.postList);
 
       set({
         posts: res.data.body.postList.content,
@@ -47,8 +47,8 @@ const usePostStore = create((set) => ({
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body.postId);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.postId);
       return res.data.body.postId;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -57,14 +57,14 @@ const usePostStore = create((set) => ({
   updatePost: async (postId, formData) => {
     const apiClient = getApiClient();
     try {
-      console.log(postId);
+      // console.log(postId);
       const res = await apiClient.post(`/posts/${postId}`, formData, {
       headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body.postId);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.postId);
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -72,10 +72,10 @@ const usePostStore = create((set) => ({
   deletePost: async (postId) => {
     const apiClient = getApiClient();
     try {
-      console.log(postId);
+      // console.log(postId);
       const res = await apiClient.delete(`/posts/${postId}`);
-      console.log(res.data.header.message);
-      console.log(res.data.body.postId);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.postId);
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -85,8 +85,8 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/posts/likes`);
-      console.log(res.data.header.message);
-      console.log(res.data.body.postList.content);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.postList.content);
 
       set({
         likePosts: res.data.body.postList.content,
@@ -100,8 +100,8 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/posts/list`);
-      console.log(res.data.header.message);
-      console.log(res.data.body.postList.content);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.postList.content);
 
       set({
         myPosts: res.data.body.postList.content,
@@ -117,8 +117,8 @@ const usePostStore = create((set) => ({
       const res = await apiClient.post(`/comments/${postId}`, {
         contents: comment,
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
 
       const newComment = res.data.body;
 
@@ -138,8 +138,8 @@ const usePostStore = create((set) => ({
       const res = await apiClient.patch(`/comments/${commentId}`, {
         contents: updatedComment,
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
 
       const newComment = res.data.body;
 
@@ -163,10 +163,10 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/comments/${commentId}`);
-      console.log(res.data.header.message);
+      // console.log(res.data.header.message);
       set((state) => {
         const postComments = state.comments[postId] || [];
-        console.log(postComments);
+        // console.log(postComments);
         return {
           comments: {
             ...state.comments,
@@ -188,11 +188,11 @@ const usePostStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.get(`/posts/friends/${userId}`);
-      console.log(response.data.header);
-      console.log(response.data.body);
+      // console.log(response.data.header);
+      // console.log(response.data.body);
       set({ friendPosts: response.data.body.postList.content, loading: false });
     } catch (error) {
-      console.log("Failed to fetch friend", error);
+      // console.log("Failed to fetch friend", error);
       set({ loading: false, error: error.message });
     }
   },

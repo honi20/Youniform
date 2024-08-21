@@ -80,7 +80,7 @@ const FontComp = ({ fonts, onFontClick }) => {
     path: fontPath,
     name: getFontName(fontPath),
   }));
-  console.log(fontData);
+  // console.log(fontData);
   return (
     <>
       <GlobalStyle fonts={fontData} />

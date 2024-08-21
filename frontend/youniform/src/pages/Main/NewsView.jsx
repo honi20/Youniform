@@ -119,7 +119,7 @@ const NewsView = () => {
       await fetchTotalNews(playerList);
       }
       if (team.length != 0){
-        console.log('test', team)
+        // console.log('test', team)
         await fetchTeamNews(team);
       }
     };
@@ -148,7 +148,7 @@ const NewsView = () => {
       setNewsList(getPlayerNews(selectedTagId));
     }
   }, [selectedTagId, getTotalNews, getPlayerNews, news]);
-  // console.log(newsList);
+  // // console.log(newsList);
 
   const handleTagClick = (tagId) => {
     setSelectedTagId(tagId);

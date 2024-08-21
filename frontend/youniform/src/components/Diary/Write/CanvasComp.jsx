@@ -38,28 +38,28 @@ const Div = styled.div`
 `;
 
 // const loadCanvasFromJSON = (canvas, json) => {
-//   console.log("loadCanvasFromJSON", json)
+//   // console.log("loadCanvasFromJSON", json)
 //   // const parsedJSON = JSON.parse(json);
-//   // console.log(parsedJSON)
+//   // // console.log(parsedJSON)
 //   const fonts = Object.values(fonts).map((mod) => mod.default)
 //   const fontData = fonts.map((fontPath) => ({
 //     path: fontPath,
 //     // name: getFontName(fontPath),
 //   }));
-//   console.log(fontData);
+//   // console.log(fontData);
 
   
 //   const fontPromises = [...fonts].map(fontName => {
-//     // console.log(fontName)
+//     // // console.log(fontName)
 //     const font = new FontFaceObserver(fontName);
-//     console.log(font)
+//     // console.log(font)
 //     return font.load();
 //   });
 
 //   Promise.all(fontPromises)
 //     .then(() => {
 //       // 모든 폰트가 로드된 후 캔버스를 로드합니다.
-//       console.log("render")
+//       // console.log("render")
 //       canvas.loadFromJSON(json, () => {
 //         canvas.renderAll();
 //       });
@@ -98,8 +98,8 @@ const CanvasComp = ({
   }));
 
   useEffect(() => {
-    console.log("decorated: ", decorated);
-    console.log("캔버스 초기화");
+    // console.log("decorated: ", decorated);
+    // console.log("캔버스 초기화");
     const initCanvas = new fabric.Canvas("canvas", {
       height: 500,
       width: 300,
@@ -152,7 +152,7 @@ const CanvasComp = ({
     if (selectCanvas && diary) {
       selectCanvas.loadFromJSON(diary, () => {
         selectCanvas.getObjects('textbox').forEach((obj) => {
-          console.log(obj.fontFamily)
+          // console.log(obj.fontFamily)
           obj.set({ fontFamily: obj.fontFamily });
         });
         selectCanvas.renderAll();
@@ -163,7 +163,7 @@ const CanvasComp = ({
 
   useEffect(() => {
     if (selectCanvas && diary) {
-      console.log("객체 잠금");
+      // console.log("객체 잠금");
       const objects = selectCanvas.getObjects();
       for (const obj of objects) {
         obj.selectable = decorated;

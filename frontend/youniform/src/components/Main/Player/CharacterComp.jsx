@@ -35,7 +35,7 @@ const PlayerNameContainer = styled.div`
   /* border: 1px solid black; */
 `;
 const CharacterComp = ({ player, index }) => {
-  console.log(index, player)
+  // console.log(index, player)
   const renderImages = () => {
     if (player.position === "투수") {
       switch (index) {

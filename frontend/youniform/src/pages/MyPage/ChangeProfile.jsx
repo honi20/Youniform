@@ -199,7 +199,7 @@ const ChangeProfile = () => {
       const res = await apiClient.post("/users/profile", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(res.data.header.message);
+      // console.log(res.data.header.message);
       navigate("/my-page");
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -208,14 +208,14 @@ const ChangeProfile = () => {
 
   const handleClickBtn = async () => {
     if (!isModified || !isNicknameUnique) {
-      console.log("Cannot submit, either no changes or invalid nickname");
+      // console.log("Cannot submit, either no changes or invalid nickname");
       return;
     }
     try {
       const formData = await createFormData();
       await changeProfile(formData);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

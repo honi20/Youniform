@@ -6,7 +6,7 @@ const EntryMessage = styled.div`
 const ExitMessage = styled.div`
 `
 const Message = ({ isUser, msg }) => {
-  // console.log(msg)
+  // // console.log(msg)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -25,7 +25,7 @@ const Message = ({ isUser, msg }) => {
     case "HEARTBEAT":
       return
     case "USERCOUNT":
-      // console.log("usercount:", msg.content)
+      // // console.log("usercount:", msg.content)
       return
    default:
     return (

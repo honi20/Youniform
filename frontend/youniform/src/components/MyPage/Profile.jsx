@@ -70,7 +70,7 @@ const Introduce = styled.div`
 const ProfileComp = ({ user }) => {
   return (
     <ProfileSection>
-      <ProfileImage onClick={() => console.log(user)}>
+      <ProfileImage>
         <img src={user.profileUrl} alt="Profile" />
       </ProfileImage>
       <ProfileInfo>
