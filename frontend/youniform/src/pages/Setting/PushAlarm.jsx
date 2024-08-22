@@ -6,6 +6,7 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { useNavigate } from "react-router-dom";
 import useUserStore from "@stores/userStore";
 import axios from "axios";
+import LogoWithTitle from "../../components/Setting/Share/LogoWithTitle";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -95,7 +96,7 @@ const PushAlarm = () => {
 
   return (
     <Container>
-      <Title>알림 설정</Title>
+      <LogoWithTitle state="AlarmSetting" />
       <ContentWrapper>
         <NotificationToggle
           label="게시글 소식 받기"

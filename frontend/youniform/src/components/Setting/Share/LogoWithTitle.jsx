@@ -30,6 +30,7 @@ const ChangePasswordContainer = styled.div`
   align-items: center;
   text-align: center;
   gap: 20px;
+  margin-top: 3%;
 `;
 
 const Title = styled.span`
@@ -53,6 +54,9 @@ const stateMap = {
       기존 비밀번호와 변경할 <br /> 새 비밀번호를 입력해주세요.
     </>,
   },
+  AlarmSetting: {
+    title: "알림 설정",
+  }
 };
 
 const LogoWithTitle = ({ state }) => {
@@ -64,10 +68,6 @@ const LogoWithTitle = ({ state }) => {
 
   return (
     <ChangePassword>
-      <LoginLogo>
-        <SportsBaseballIcon />
-        <span>Youniform</span>
-      </LoginLogo>
       <ChangePasswordContainer>
         <Title>{currentState.title}</Title>
         <SubTitle>{currentState.subtitle}</SubTitle>
