@@ -87,7 +87,7 @@ const UserSection = styled(Section)`
 `;
 
 const ItemWrapper = styled.div`
-  width: 95%;
+  width: 100%;
   height: 90%;
   background-color: white;
   border-radius: 10px;
@@ -154,7 +154,7 @@ const SocialSection = styled(Section)`
 `;
 const SocialItem = styled(FlexBox)`
   box-sizing: border-box;
-  width: 46.5%;
+  width: 50%;
   height: 90%;
   border-radius: 10px;
   background-color: #9d9d9d1a;
@@ -169,7 +169,7 @@ const SocialHeader = styled.div`
 `;
 
 const SocialContent = styled.div`
-  width: 75%;
+  width: 80%;
   height: 70%;
   padding-top: 3%;
 `;
@@ -214,6 +214,16 @@ const SocialComp = ({ user }) => {
     </>
   );
 };
+
+const ProfileBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  height: 100%;
+  margin: 0 auto;
+  gap: 0.5rem;
+`;
+
 const Profile = () => {
   const { user, fetchUser, clearUser, loading, error } = useUserStore();
 
@@ -244,11 +254,11 @@ const Profile = () => {
     return <div>No user data available</div>;
   }
   return (
-    <>
+    <ProfileBox>
       <ProfileComp user={user} />
       <UserComp />
       <SocialComp user={user} />
-    </>
+    </ProfileBox>
   );
 };
 
