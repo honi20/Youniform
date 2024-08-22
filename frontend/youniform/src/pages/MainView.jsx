@@ -61,6 +61,7 @@ const TextContainer = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  margin-bottom: 5px;
 `;
 const MainView = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(0);
