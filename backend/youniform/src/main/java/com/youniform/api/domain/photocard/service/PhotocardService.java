@@ -13,4 +13,6 @@ public interface PhotocardService {
 	void removePhotocard(Long userId, PhotocardDeleteReq photocardDeleteReq);
 
 	PhotocardListRes findPhotocards(Long userId);
+
+	PhotocardResourceListRes findPhotocardResources();
 }

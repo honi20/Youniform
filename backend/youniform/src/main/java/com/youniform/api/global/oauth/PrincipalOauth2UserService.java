@@ -5,6 +5,7 @@ import com.youniform.api.global.oauth.userInfo.GoogleUserInfo;
 import com.youniform.api.global.oauth.userInfo.KakaoUserInfo;
 import com.youniform.api.global.oauth.userInfo.NaverUserInfo;
 import com.youniform.api.global.oauth.userInfo.Oauth2UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
     @Override
@@ -21,14 +23,18 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Oauth2UserInfo oAuth2UserInfo = null;
-
+        log.info("loadUser !!!!");
         if(userRequest.getClientRegistration().getRegistrationId().equals("google")){
             oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+            log.info("google user");
         } else if(userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
             oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
+            log.info("naver user");
         } else if(userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
             oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
+            log.info("kakao user");
         } else {
+            log.info("error user");
             return oAuth2User;
         }
 
@@ -44,6 +50,8 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                 .providerType(provider)
                 .profileUrl(profileUrl)
                 .build();
+
+        log.info("end userService");
 
         return new PrincipalDetails(userEntity, oAuth2User.getAttributes());
     }

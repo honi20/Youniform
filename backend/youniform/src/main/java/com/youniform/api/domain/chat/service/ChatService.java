@@ -2,7 +2,6 @@ package com.youniform.api.domain.chat.service;
 
 import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.dto.*;
-import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.global.dto.SliceDto;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,15 +20,15 @@ public interface ChatService {
 
     SliceDto<ChatMessageDto> getNextMessages(Long roomId, Long messageId, int size);
 
-    ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId);
+    ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId, String sessionId);
 
-    ChatMessage saveChatMessage(Long roomId, ChatMessage chatMessage, Users user);
+    ChatMessage saveChatMessage(Long roomId, ChatMessage chatMessage, Long userId);
 
     long createSequence(String seqName);
 
     ChatUploadImageRes uploadImage(MultipartFile file) throws IOException;
 
-    InputStreamResource downloadImage(String imgUrl) throws IOException;
+    void updateLastReadTime(Long userId, Long roomId, LocalDateTime lastReadTime);
 
-    void updateLastReadTime(Long roomId, Long userId, LocalDateTime lastReadTime);
+    void broadcastUserCount(Long roomId);
 }

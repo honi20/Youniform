@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
+import com.youniform.api.domain.friend.entity.Status;
 import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.entity.Theme;
 import com.youniform.api.domain.user.service.UserServiceImpl;
@@ -88,7 +89,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/users/verify")
+                get("/api/users/verify")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("nickname", nickname)
                         .accept(MediaType.APPLICATION_JSON)
@@ -138,7 +139,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/users/email/send")
+                post("/api/users/email/send")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -188,7 +189,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/users/email/verify")
+                get("/api/users/email/verify")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("email", email)
                         .param("verifyCode", verifyCode)
@@ -243,7 +244,7 @@ public class UserControllerTest {
         //when
         when(mailService.sendPasswordResetMail(any(), any())).thenReturn("verify");
         ResultActions actions = mockMvc.perform(
-                post("/users/password/send")
+                post("/api/users/password/send")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -299,7 +300,7 @@ public class UserControllerTest {
         //when
         when(mailService.sendPasswordResetMail(any(), any())).thenReturn("asdf");
         ResultActions actions = mockMvc.perform(
-                patch("/users/password/reset")
+                patch("/api/users/password/reset")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -359,7 +360,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/password")
+                patch("/api/users/password")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -396,8 +397,8 @@ public class UserControllerTest {
                                                         .description("내용 없음")
                                         )
                                 )
-                                .requestSchema(Schema.schema("비밀번호 변경 Request"))
-                                .responseSchema(Schema.schema("비밀번호 변경 Response"))
+                                .requestSchema(Schema.schema("비밀번호 재설정 Request"))
+                                .responseSchema(Schema.schema("비밀번호 재설정 Response"))
                                 .build()
                         ))
                 );
@@ -418,10 +419,12 @@ public class UserControllerTest {
                         .teamImage("최애 팀 이미지 url")
                         .introduce("자기소개")
                         .profileUrl("프로필 이미지 url")
+                        .provider("local")
+                        .photoCardUrl("src")
                         .build()
         );
         ResultActions actions = mockMvc.perform(
-                get("/users")
+                get("/api/users")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -463,7 +466,11 @@ public class UserControllerTest {
                                                         .description("회원이 좋아요한 게시글 수"),
                                                 fieldWithPath("body.friendCount").type(JsonFieldType.NUMBER)
                                                         .optional()
-                                                        .description("친구 수")
+                                                        .description("친구 수"),
+                                                fieldWithPath("body.provider").type(JsonFieldType.STRING)
+                                                        .description("가입 타입"),
+                                                fieldWithPath("body.photoCardUrl").type(JsonFieldType.STRING)
+                                                        .description("포토카드 url")
                                         )
                                 )
                                 .responseSchema(Schema.schema("내 정보 조회 Response"))
@@ -485,11 +492,11 @@ public class UserControllerTest {
                         .teamImage("팀 이미지")
                         .introduce("자기소개")
                         .profileUrl("s3 url")
-                        .isFriend("NOTFRIEND / WATTING / FRIEND")
+                        .isFriend(Status.NOT_FRIEND)
                         .build()
         );
         ResultActions actions = mockMvc.perform(
-                get("/users/{userId}", 1L)
+                get("/api/users/{userId}", 1L)
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -555,7 +562,7 @@ public class UserControllerTest {
                         .build()
         );
         ResultActions actions = mockMvc.perform(
-                multipart("/users/profile")
+                multipart("/api/users/profile")
                         .file(file)
                         .file(dto)
                         .header("Authorization", "Bearer " + jwtToken)
@@ -602,7 +609,7 @@ public class UserControllerTest {
     public void 테마_변경_성공() throws Exception {
         //given
         ThemeModifyReq themeModifyReq = new ThemeModifyReq();
-        themeModifyReq.setTheme("NC");
+        themeModifyReq.setTheme(1002L);
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
@@ -610,7 +617,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/profile/theme")
+                patch("/api/users/profile/theme")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -634,7 +641,7 @@ public class UserControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        fieldWithPath("theme").type(JsonFieldType.STRING)
+                                        fieldWithPath("theme").type(JsonFieldType.NUMBER)
                                                 .description("변경할 테마 이름")
                                 )
                                 .responseFields(
@@ -662,7 +669,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/profile/alert")
+                patch("/api/users/profile/alert")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -714,7 +721,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/play/alert")
+                patch("/api/users/play/alert")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -771,7 +778,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/users/resign")
+                patch("/api/users/resign")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -815,7 +822,7 @@ public class UserControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/users/signin/local")
+                post("/api/users/signin/local")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(content))
@@ -859,14 +866,14 @@ public class UserControllerTest {
                 .introduce("ㅎㅇㅎㅇㅎㅇ")
                 .profileUrl("test")
                 .password("암호화 된 비밀번호")
-                .team("MONSTERS")
+                .team(1000L)
                 .providerType("LOCAL")
                 .players(players)
                 .build();
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/users/signup/local")
+                post("/api/users/signup/local")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(content))
@@ -898,8 +905,8 @@ public class UserControllerTest {
                                                                 .description("닉네임"),
                                                         fieldWithPath("introduce").type(JsonFieldType.STRING)
                                                                 .description("한줄 소개"),
-                                                        fieldWithPath("team").type(JsonFieldType.STRING)
-                                                                .description("최애 팀"),
+                                                        fieldWithPath("team").type(JsonFieldType.NUMBER)
+                                                                .description("최애 팀 Id"),
                                                         fieldWithPath("players").type(JsonFieldType.ARRAY)
                                                                 .description("죄애 선수(0~3)")
                                                 )
@@ -930,7 +937,7 @@ public class UserControllerTest {
         userService.modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                patch("/users/favorite")
+                patch("/api/users/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -981,7 +988,7 @@ public class UserControllerTest {
         doThrow(new CustomException(TEAM_NOT_FOUND)).when(userService).modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                patch("/users/favorite")
+                patch("/api/users/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1031,7 +1038,7 @@ public class UserControllerTest {
         doThrow(new CustomException(PLAYER_NOT_FOUND)).when(userService).modifyUserFavorite(anyLong(), any(UserFavoriteReq.class));
 
         ResultActions actions = mockMvc.perform(
-                patch("/users/favorite")
+                patch("/api/users/favorite")
                         .header("Authorization", "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1097,7 +1104,7 @@ public class UserControllerTest {
                 .thenReturn(new SearchUserRes(searchUSerDto));
 
         ResultActions actions = mockMvc.perform(
-                get("/users/lists")
+                get("/api/users/lists")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("lastUserId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -1172,7 +1179,7 @@ public class UserControllerTest {
                 .thenReturn(new SearchNicknameRes(result));
 
         ResultActions actions = mockMvc.perform(
-                get("/users/search")
+                get("/api/users/search")
                         .header("Authorization", "Bearer " + jwtToken)
                         .param("nickname", "User")
                         .accept(MediaType.APPLICATION_JSON)

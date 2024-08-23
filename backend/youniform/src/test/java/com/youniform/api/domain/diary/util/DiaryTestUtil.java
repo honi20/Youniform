@@ -186,6 +186,8 @@ public class DiaryTestUtil {
                     .description("다이어리 Id"));
             fields.add(fieldWithPath(prefix + "nickname").type(JsonFieldType.STRING)
                     .description("작성자 닉네임"));
+            fields.add(fieldWithPath(prefix + "stampId").type(JsonFieldType.NUMBER)
+                    .description("다이어리 스탬프 Id"));
             fields.add(fieldWithPath(prefix + "stampImgUrl").type(JsonFieldType.STRING)
                     .description("다이어리 스탬프 이미지 url"));
             fields.add(fieldWithPath(prefix + "profileUrl").type(JsonFieldType.STRING)

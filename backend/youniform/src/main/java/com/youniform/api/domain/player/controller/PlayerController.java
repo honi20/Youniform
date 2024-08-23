@@ -26,7 +26,7 @@ public class PlayerController {
 
     private final PlayerService playerService;
 
-    @GetMapping("/{teamId}")
+    @GetMapping("/list/{teamId}")
     public ResponseEntity<?> playerList(@PathVariable("teamId") Long teamId) {
         PlayerListRes response = playerService.findPlayers(teamId);
 

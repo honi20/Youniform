@@ -45,7 +45,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<?> publicPostList(
             @ModelAttribute PublicPostListReq publicPostListReq,
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 100) Pageable pageable) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         PostListRes result = postService.findPublicPosts(userId, publicPostListReq, pageable);
@@ -56,7 +56,7 @@ public class PostController {
     @GetMapping("/list")
     public ResponseEntity<?> myPostList(
             @ModelAttribute MyPostListReq myPostListReq,
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 100) Pageable pageable) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         PostListRes result = postService.findMyPosts(userId, myPostListReq, pageable);
@@ -68,7 +68,7 @@ public class PostController {
     public ResponseEntity<?> friendPostList(
             @ModelAttribute FriendPostListReq friendPostReq,
             @PathVariable("friendId") String friendId,
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 100) Pageable pageable) {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
         PostListRes result = postService.findFriendPost(userId, friendId, friendPostReq, pageable);

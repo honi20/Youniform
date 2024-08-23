@@ -35,7 +35,9 @@ public class SignupReq {
     private String introduce;
 
     @NotNull
-    private String team;
+    private Long team;
+
+    private String verifyCode;
 
     private List<Long> players;
 
@@ -46,7 +48,7 @@ public class SignupReq {
                 .password(this.password)
                 .providerType(this.providerType)
                 .profileUrl(this.profileUrl == null ? bucketUrl + "profile/no_profile.png" : this.profileUrl)
-                .theme(Theme.MONSTERS)
+                .theme(Theme.valueOfLabel(this.team))
                 .nickname(this.nickname)
                 .introduce(this.introduce)
                 .isDeleted(false)
@@ -54,7 +56,7 @@ public class SignupReq {
                 .playPushAlert(true)
                 .createdAt(LocalDateTime.now())
                 .lastWriteDiary(LocalDateTime.now())
-                .team(Team.builder().id(1L).build())
+                .team(Team.builder().id(this.team).build())
                 .build();
     }
 

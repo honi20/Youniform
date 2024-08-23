@@ -33,6 +33,9 @@ public class S3Service {
     @Value("${BUCKET_URL}")
     private String bucketURl;
 
+    @Value("${CLOUD_FRONT}")
+    private String cloudFrontUrl;
+
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         if(multipartFile.isEmpty() || Objects.isNull(multipartFile.getOriginalFilename())) {
@@ -40,6 +43,36 @@ public class S3Service {
         }
 
         return uploadS3(multipartFile, dirName);
+    }
+
+    public String uploadJson(String jsonContent, String dirName, String fileName) {
+        if (jsonContent == null || jsonContent.isEmpty()) {
+            throw new CustomException(FILE_UPLOAD_FAIL);
+        }
+
+        String s3FileName = dirName + "/" + fileName;
+
+        byte[] bytes = jsonContent.getBytes();
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType("application/json");
+        objectMetadata.setContentLength(bytes.length);
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+
+        try {
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, s3FileName, byteArrayInputStream, objectMetadata);
+            amazonS3Client.putObject(putObjectRequest);
+        } catch (Exception e) {
+            throw new CustomException(FILE_UPLOAD_FAIL);
+        } finally {
+            try {
+                byteArrayInputStream.close();
+            } catch (IOException e) {
+                log.error("Error closing input stream", e);
+            }
+        }
+
+        return generateCloudFrontUrl(s3FileName);
     }
 
     private String uploadS3(MultipartFile multipartFile, String dirName) throws IOException {
@@ -71,7 +104,11 @@ public class S3Service {
             is.close();
         }
 
-        return amazonS3Client.getUrl(bucket, s3FileName).toString();
+        return generateCloudFrontUrl(s3FileName);
+    }
+
+    private String generateCloudFrontUrl(String s3FileName) {
+        return cloudFrontUrl + s3FileName;
     }
 
     public InputStream download(String fileName) throws IOException {
@@ -83,7 +120,7 @@ public class S3Service {
     public void fileDelete(String fileUrl) throws CustomException {
         try{
             try {
-                String fileKey = fileUrl.replace(bucketURl, "");
+                String fileKey = fileUrl.replace(cloudFrontUrl, "");
                 amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileKey));
             } catch (AmazonServiceException e) {
                 System.err.println(e.getErrorMessage());
@@ -101,7 +138,7 @@ public class S3Service {
         }
 
         String extention = filename.substring(lastDotIndex + 1).toLowerCase();
-        List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif");
+        List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif", "webp", "json", "txt");
 
         if (!allowedExtentionList.contains(extention)) {
             throw new CustomException(FILE_EXTENSION_FAIL);

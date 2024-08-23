@@ -24,4 +24,6 @@ public interface AlertService {
     void send(String receiverUuid, Long senderId, AlertType type, String content, Long pk);
 
     void testAlert();
+
+    void sendCleanSweepAlert();
 }

@@ -37,14 +37,15 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
-				.leftJoin(likePost).on(post.id.eq(likePost.post.id))
+				.leftJoin(likePost).on(post.id.eq(likePost.post.id)
+						.and(likePost.user.id.eq(userId)))
 				.leftJoin(postTag).on(post.id.eq(postTag.post.id))
 				.leftJoin(tag).on(postTag.tag.id.eq(tag.id))
-				.leftJoin(likePost).on(post.id.eq(likePost.post.id).and(likePost.user.id.eq(userId)))
 				.where(conditionPostId(lastPostId))
 				.groupBy(post.id)
 				.orderBy(post.id.desc())
@@ -77,14 +78,15 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
-				.leftJoin(likePost).on(post.id.eq(likePost.post.id))
+				.leftJoin(likePost).on(post.id.eq(likePost.post.id)
+						.and(likePost.user.id.eq(userId)))
 				.leftJoin(postTag).on(post.id.eq(postTag.post.id))
 				.leftJoin(tag).on(postTag.tag.id.eq(tag.id))
-				.leftJoin(likePost).on(post.id.eq(likePost.post.id).and(likePost.user.id.eq(userId)))
 				.where(post.user.id.eq(userId))
 				.where(conditionPostId(lastPostId))
 				.groupBy(post.id)
@@ -118,14 +120,16 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
 				.leftJoin(likePost).on(post.id.eq(likePost.post.id))
 				.leftJoin(postTag).on(post.id.eq(postTag.post.id))
 				.leftJoin(tag).on(postTag.tag.id.eq(tag.id))
-				.leftJoin(likePost).on(post.id.eq(likePost.post.id).and(likePost.user.id.eq(userId)))
+				.leftJoin(likePost).on(post.id.eq(likePost.post.id)
+						.and(likePost.user.id.eq(userId)))
 				.where(post.user.uuid.eq(friendId))
 				.where(conditionPostId(lastPostId))
 				.groupBy(post.id)
@@ -159,11 +163,14 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
 				.leftJoin(likePost).on(post.id.eq(likePost.post.id))
+				.where(likePost.user.id.eq(userId)
+						.and(likePost.user.id.eq(userId)))
 				.leftJoin(postTag).on(post.id.eq(postTag.post.id))
 				.leftJoin(tag).on(postTag.tag.id.eq(tag.id))
 				.where(likePost.user.id.eq(userId))
@@ -199,11 +206,13 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 						post.date.as("createdAt"),
 						comment.countDistinct().as("commentCount"),
 						post.user.uuid.as("userId"),
-						likePost.likePostPK.isNotNull()
+						likePost.likePostPK.isNotNull(),
+						post.user.team.imgUrl.as("teamUrl")
 				))
 				.from(post)
 				.leftJoin(comment).on(post.id.eq(comment.post.id))
-				.leftJoin(likePost).on(post.id.eq(likePost.post.id).and(likePost.user.id.eq(userId)))
+				.leftJoin(likePost).on(post.id.eq(likePost.post.id)
+						.and(likePost.user.id.eq(userId)))
 				.leftJoin(postTag).on(post.id.eq(postTag.post.id))
 				.leftJoin(tag).on(postTag.tag.id.eq(tag.id))
 				.where(tag.id.eq(tagId))

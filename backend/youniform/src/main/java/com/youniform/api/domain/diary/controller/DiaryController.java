@@ -42,7 +42,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/{diaryId}")
-	public ResponseEntity<?> diaryDetails(@PathVariable("diaryId") Long diaryId) throws JsonProcessingException {
+	public ResponseEntity<?> diaryDetails(@PathVariable("diaryId") Long diaryId) throws IOException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryDetailDto response = diaryService.detailDiary(userId, diaryId);
@@ -51,7 +51,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable) throws JsonProcessingException {
+	public ResponseEntity<?> diaryMyList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 100) Pageable pageable) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryListRes response = diaryService.findMyDiaries(userId, diaryListReq, pageable);
@@ -60,7 +60,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/list/{userId}")
-	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 10) Pageable pageable, @PathVariable("userId") String friendUuid) throws JsonProcessingException {
+	public ResponseEntity<?> diaryList(@ModelAttribute DiaryListReq diaryListReq, @PageableDefault(size = 100) Pageable pageable, @PathVariable("userId") String friendUuid) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
 		DiaryListRes response = diaryService.findDiaries(userId, friendUuid, diaryListReq, pageable);
@@ -68,7 +68,7 @@ public class DiaryController {
 		return new ResponseEntity<>(ResponseDto.success(OTHER_DIARIES_OK, response), HttpStatus.OK);
 	}
 
-	@GetMapping("monthly")
+	@GetMapping("/monthly")
 	public ResponseEntity<?> diaryMyMonthlyList(@ModelAttribute DiaryMonthlyListReq diaryMonthlyListReq) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 
@@ -77,7 +77,7 @@ public class DiaryController {
 		return new ResponseEntity<>(ResponseDto.success(MY_MONTHLY_DIARIES_OK, response), HttpStatus.OK);
 	}
 
-	@GetMapping("monthly/{userId}")
+	@GetMapping("/monthly/{userId}")
 	public ResponseEntity<?> diaryMonthlyList(@ModelAttribute DiaryMonthlyListReq diaryMonthlyListReq, @PathVariable("userId") String userUuid) throws JsonProcessingException {
 		Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
 

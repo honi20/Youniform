@@ -35,6 +35,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 				))
 				.from(users)
 				.where(conditionUserId(lastUserId))
+				.where(users.id.eq(userId).not())
 				.orderBy(users.id.desc())
 				.limit(pageable.getPageSize() + 1)
 				.fetch();
@@ -60,7 +61,9 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 						users.playPushAlert,
 						users.team.imgUrl,
 						likePost.likePostPK.postId.countDistinct(),
-						friend1.friendPK.friendId.countDistinct()
+						friend1.friendPK.friendId.countDistinct(),
+						users.providerType,
+						users.team.photoCardUrl
 				))
 				.from(users)
 				.leftJoin(likePost).on(users.id.eq(likePost.user.id))

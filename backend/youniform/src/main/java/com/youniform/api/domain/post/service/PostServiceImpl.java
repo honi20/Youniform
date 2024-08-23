@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.youniform.api.global.statuscode.ErrorCode.*;
@@ -89,14 +88,15 @@ public class PostServiceImpl implements PostService {
             throw new CustomException(POST_UPDATE_FORBIDDEN);
         }
 
-        List<TagDto> tagDtoList = new ArrayList<>();
-
-        if(!file.isEmpty()) {
-            if(!post.getImgUrl().isEmpty()) {
+        if(file != null) {
+            if(post.getImgUrl() != null && !post.getImgUrl().isEmpty()) {
                 s3Service.fileDelete(post.getImgUrl());
+                post.updateImgUrl(null);
             }
-            String imgUrl = s3Service.upload(file, "post");
-            post.updateImgUrl(imgUrl);
+            if(!file.isEmpty()) {
+                String imgUrl = s3Service.upload(file, "post");
+                post.updateImgUrl(imgUrl);
+            }
         }
 
         if(postModifyReq.getTags() != null) {
@@ -130,12 +130,13 @@ public class PostServiceImpl implements PostService {
             throw new CustomException(POST_DELETE_FORBIDDEN);
         }
 
-        if(!post.getImgUrl().isEmpty()) {
+        if(post.getImgUrl() != null && !post.getImgUrl().isEmpty()) {
             s3Service.fileDelete(post.getImgUrl());
         }
 
+        commentRepository.deleteAllByPostId(post.getId());
         postTagRepository.deletePostTagsByPostId(post.getId());
-
+        likePostRepository.deleteAllByPostId(post.getId());
         postRepository.delete(post);
     }
 
@@ -158,7 +159,7 @@ public class PostServiceImpl implements PostService {
                 .toList();
 
         Boolean isMine = post.getUser().getId().equals(userId);
-        Boolean isLiked = likePostRepository.isLikedPost(postId);
+        Boolean isLiked = likePostRepository.isLikedPost(postId, userId);
 
         return PostDetailsRes.toDto(post, tags, commentList, isMine, isLiked);
     }

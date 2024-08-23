@@ -4,6 +4,7 @@ import com.youniform.api.domain.user.dto.*;
 import com.youniform.api.domain.user.service.UserService;
 import com.youniform.api.global.dto.ResponseDto;
 import com.youniform.api.global.jwt.service.JwtService;
+import com.youniform.api.global.redis.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,6 +25,7 @@ public class UserController {
     private final UserService userService;
 
     private final JwtService jwtService;
+    private final RedisUtils redisUtils;
 
     @GetMapping("/verify")
     public ResponseEntity<?> nicknameCheck(@RequestParam("nickname") String nickname) {
@@ -118,6 +120,13 @@ public class UserController {
         userService.resignUser(userId);
 
         return new ResponseEntity<>(ResponseDto.success(USER_RESIGNED, null), HttpStatus.OK);
+    }
+
+    @GetMapping("/signup/info/{key}")
+    public ResponseEntity<?> signupInfo(@PathVariable("key") String key) {
+        SignupReq res = (SignupReq) redisUtils.getData(key + "_signin_key");
+        redisUtils.deleteData(key+"_signin_key");
+        return new ResponseEntity<>(ResponseDto.success(USER_SIGNUP_USER, res), HttpStatus.OK);
     }
 
     @PostMapping("/signup/{provider}")

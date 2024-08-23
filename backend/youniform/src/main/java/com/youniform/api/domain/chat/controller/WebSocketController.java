@@ -9,11 +9,9 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 @Controller
@@ -27,17 +25,21 @@ public class WebSocketController {
     // 채팅방에 메시지 전송 및 저장
     @MessageMapping("/{roomId}")
     @SendTo("/sub/{roomId}")
-    public ChatMessage processChatMessage(@DestinationVariable Long roomId, @Payload ChatMessage chatMessage) {
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+    public ChatMessage processChatMessage(@DestinationVariable Long roomId,
+                                          @Payload ChatMessage chatMessage,
+                                          SimpMessageHeaderAccessor headerAccessor) {
+        String authHeader = headerAccessor.getFirstNativeHeader("Authorization");
 
-        return chatService.processChatMessage(roomId, chatMessage, userId);
-    }
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            Long userId = (Long) jwtService.getAuthentication(token).getPrincipal(); // 토큰에서 userId 추출
+            String sessionId = headerAccessor.getSessionId();
 
-    @MessageMapping("/{roomId}/leave")
-    public void updateLastReadTime(@DestinationVariable Long roomId) {
-        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
-        LocalDateTime lastReadTime = LocalDateTime.now();
+            log.info("userId: {}, sessionId: {}, roomId: {}", userId, sessionId, roomId);
 
-        chatService.updateLastReadTime(userId, roomId, lastReadTime);
+            return chatService.processChatMessage(roomId, chatMessage, userId, sessionId);
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 헤더");
+        }
     }
 }

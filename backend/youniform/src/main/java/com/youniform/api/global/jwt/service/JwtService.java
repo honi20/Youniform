@@ -19,4 +19,6 @@ public interface JwtService {
     boolean isTokenExpired(String token);
 
     Long getUserId(SecurityContext securityContext);
+
+    Long getUserIdFromRedis(String uuid);
 }

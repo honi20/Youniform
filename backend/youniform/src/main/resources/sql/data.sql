@@ -1,18 +1,62 @@
 -- team
-INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name)
-VALUES (1, CURRENT_DATE, 3, 1, 2, 66.6, '홈그라운드', '서울', '팀 이름');
+INSERT INTO team (team_id, foundation, match_count, rank, win, winning_rate, home_ground, hometown, name, img_url, photo_card_url, main_url)
+VALUES (1000, '2022-04-18', 12, 1, 11, 91.7, '고척스카이돔', '서울', '최강 몬스터즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/monsters.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/monsters_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/monsters.png'),
+       (1001, '1982-01-30', 0, 0, 0, 0, '기아 챔피언스 필드', '광주', '타이거즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/kia.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/kia_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/kia.png'),
+       (1002, '1982-02-03', 0, 0, 0 , 0, '대구 삼성 라이온즈 파크', '대구', '라이온즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/samsung.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/samsung_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/samsung.png'),
+       (1003, '1982-01-26', 0, 0, 0, 0, '잠실 야구장', '서울', '트윈스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/lg.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/lg_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/lg.png'),
+       (1004, '1982-01-15', 0, 0, 0, 0, '잠실 야구장', '서울', '베어스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/doosan.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/doosan_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/doosan.png'),
+       (1005, '2000-03-31', 0, 0, 0, 0, '인천 SSG랜더스필드', '인천', '랜더스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/ssg.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/ssg_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/ssg.png'),
+       (1006, '2013-01-17', 0, 0, 0, 0, '수원KT위즈파크', '수원', '위즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/kt.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/kt_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/kt.png'),
+       (1007, '1986-03-08',0, 0, 0, 0, '한화생명 이글스 파크', '대전', '이글스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/hanhwa.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/hanhwa_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/hanhwa.png'),
+       (1008, '1975-05-06',0, 0, 0, 0, '사직 야구장', '부산','자이언츠',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/lotte.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/lotte_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/lotte.png'),
+       (1009, '2011-03-31',0, 0, 0, 0, '창원NC파크','창원', '다이노스',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/nc.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/nc_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/nc.png'),
+       (1010, '2008-03-24', 0, 0, 0, 0, '고척 스카이돔','서울', '히어로즈',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/mascot_face/kiwoom.png',
+        'https://dsfjel9nvktdp.cloudfront.net/asset/kiwoom_cover.png',
+        'https://dsfjel9nvktdp.cloudfront.net/sticker/baseball/kiwoom.png')
+;
 
 -- users
 INSERT INTO users (user_id, is_deleted, push_alert, theme, created_at, last_write_diary, team_id, email, introduce,
                    nickname, password, profile_url, provider_type, uuid)
-VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@google.com', '자기소개111', 'User1', '$2a$10$0EMRXBOjq3aEqYROBSC44O36f8YrhiJ35d4A/IgcRhrrhSM6C9Tf6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
-       (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', 'dubebedu', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100'),
-       (125, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', 'bebebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f101'),
-       (126, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1, 'test@test.com', '자기소개222', '123bebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
-        'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f102');
+VALUES (123, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'user1@naver.com', '자기소개111', 'User1', '$2a$10$joNMmm0t5dDpM0g5UibESOdk3rBgVvza/yrd0gqZwsIIAdWslwCUG',
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f598'),
+       (124, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@test.com', '자기소개222', 'dubebedu', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f100'),
+       (125, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@test.com', '자기소개222', 'bebebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f101'),
+       (126, false, true, 1, CURRENT_DATE, CURRENT_DATE, 1000, 'test@test.com', '자기소개222', '123bebe', '$2a$10$Uip6WzTSUcBLXVV0LrWvGexHndE7a5DqaIrDa3a7g1XS8n8Inlpe6',
+        'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png', 'local', '1604b772-adc0-4212-8a90-81186c57f102');
 
 -- stamp
 INSERT INTO DIARY_STAMP (stamp_id, img_url)
@@ -45,13 +89,43 @@ VALUES (1, 'background_1.png', 'BACKGROUND', 'RED'),
        (8, 'theme_2.png', 'THEME', 'NONE');
 
 -- chat_room
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (1, '1번 방', TRUE);
-INSERT INTO CHAT_ROOM (room_id, room_name, room_state) VALUES (2, '2번 방', TRUE);
+INSERT INTO chat_room (room_id, room_name, room_state)
+VALUES (1000, '몬스터즈 응원방', TRUE),
+       (1001, '타이거즈 응원방', TRUE),
+       (1002, '라이온즈 응원방', TRUE),
+       (1003, '트윈스 응원방', TRUE),
+       (1004, '베어스 응원방', TRUE),
+       (1005, '랜더스 응원방', TRUE),
+       (1006, '위즈 응원방', TRUE),
+       (1007, '이글스 응원방', TRUE),
+       (1008, '자이언츠 응원방', TRUE),
+       (1009, '다이노스 응원방', TRUE),
+       (1010, '히어로즈 응원방', TRUE),
+       (1, '김문호 응원방', TRUE),
+       (2, '정근우 응원방', TRUE),
+       (3, '박용택 응원방', TRUE),
+       (4, '이대호 응원방', TRUE),
+       (5, '정의윤 응원방', TRUE),
+       (6, '최수현 응원방', TRUE),
+       (7, '박재욱 응원방', TRUE),
+       (8, '정성훈 응원방', TRUE),
+       (9, '유태웅 응원방', TRUE),
+       (10, '문교원 응원방', TRUE),
+       (11, '임상우 응원방', TRUE),
+       (12, '윤상혁 응원방', TRUE),
+       (13, '이대은 응원방', TRUE),
+       (14, '신재영 응원방', TRUE),
+       (15, '오주원 응원방', TRUE),
+       (16, '유희관 응원방', TRUE),
+       (17, '장원삼 응원방', TRUE),
+       (18, '니퍼트 응원방', TRUE),
+       (19, '송승준 응원방', TRUE);
 
 -- chat_part
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1, CURRENT_TIMESTAMP);
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (124, 1, CURRENT_TIMESTAMP);
 INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 2, CURRENT_TIMESTAMP);
+INSERT INTO CHAT_PART (user_id, room_id, last_read_time) VALUES (123, 1000, CURRENT_TIMESTAMP);
 
 -- alert
 INSERT INTO ALERT(receiver_id, sender_id, type, content, pk, is_read, created_at)
@@ -71,7 +145,7 @@ VALUES ('최강야구'),
        ('최강몬스터즈');
 
 INSERT INTO POST(user_id, img_url, contents, date)
-VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png',
+VALUES (123, 'https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png',
         '최강 몬스터즈 진짜 최고!!', current_date),
        (124, null, '최강 몬스터즈1', current_date),
        (124, null, '최강 몬스터즈2', current_date),
@@ -80,7 +154,7 @@ VALUES (123, 'https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91
        (124, null, '최강 몬스터즈5', current_date);
 
 -- post_tag
-INSERT INTO POST_TAG(post_id, tag_id)
+INSERT INTO post_tag(post_id, tag_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),
@@ -105,28 +179,28 @@ VALUES (123, 'photocard1.png', CURRENT_TIME),
 
 -- player : hitter
 INSERT INTO PLAYER(player_id, team_id, name, age, back_num, batting_average, hit, homerun, steal, position, two_way)
-VALUES (1, 1, '김문호', '1987-06-22', 24, 0.111, 1, 0, 0, '외야수', '좌투좌타'),
-       (2, 1, '정근우', '1982-10-02', 8, 0.200, 2, 0, 2, '2루수', '우투우타'),
-       (3, 1, '박용택', '1979-04-21', 33, 0.000, 0, 0, 0, '외야수', '우투좌타'),
-       (4, 1, '이대호', '1982-06-21', 10, 0.556, 5, 1, 0, '1루수', '우투우타'),
-       (5, 1, '정의윤', '1986-07-25', 37, 0.000, 0, 0, 0, '외야수', '우투우타'),
-       (6, 1, '최수현', '1996-11-15', 2, 0.111, 1, 0, 0, '유틸리티', '우투좌타'),
-       (7, 1, '박재욱', '1995-12-06', 12, 0.333, 3, 0, 0, '포수', '우투우타'),
-       (8, 1, '정성훈', '1980-06-27', 16, 0.250, 2, 0, 0, '3루수', '우투우타'),
-       (9, 1, '유태웅', '2002-03-13', 1, 0.250, 1, 0, 0, '내야수', '우투우타'),
-       (10, 1, '문교원', '2004-07-19', 5, 0.000, 0, 0, 0, '내야수', '우투좌타'),
-       (11, 1, '임상우', '2003-01-03', 52, 0.200, 1, 0, 0, '내야수', '우투좌타'),
-       (12, 1, '윤상혁', '1999-11-19', 35, 0.333, 1, 0, 0, '외야수', '우투좌타');
+VALUES (1, 1000, '김문호', '1987-06-22', 24, 0.111, 1, 0, 0, '외야수', '좌투좌타'),
+       (2, 1000, '정근우', '1982-10-02', 8, 0.200, 2, 0, 2, '2루수', '우투우타'),
+       (3, 1000, '박용택', '1979-04-21', 33, 0.000, 0, 0, 0, '외야수', '우투좌타'),
+       (4, 1000, '이대호', '1982-06-21', 10, 0.556, 5, 1, 0, '1루수', '우투우타'),
+       (5, 1000, '정의윤', '1986-07-25', 37, 0.000, 0, 0, 0, '외야수', '우투우타'),
+       (6, 1000, '최수현', '1996-11-15', 2, 0.111, 1, 0, 0, '유틸리티', '우투좌타'),
+       (7, 1000, '박재욱', '1995-12-06', 12, 0.333, 3, 0, 0, '포수', '우투우타'),
+       (8, 1000, '정성훈', '1980-06-27', 16, 0.250, 2, 0, 0, '3루수', '우투우타'),
+       (9, 1000, '유태웅', '2002-03-13', 1, 0.250, 1, 0, 0, '내야수', '우투우타'),
+       (10, 1000, '문교원', '2004-07-19', 5, 0.000, 0, 0, 0, '내야수', '우투좌타'),
+       (11, 1000, '임상우', '2003-01-03', 52, 0.200, 1, 0, 0, '내야수', '우투좌타'),
+       (12, 1000, '윤상혁', '1999-11-19', 35, 0.333, 1, 0, 0, '외야수', '우투좌타');
 
 -- player : pitcher
 INSERT INTO PLAYER(player_id, team_id, name, age, back_num, era, whip, win, struck, position, two_way)
-VALUES (13, 1, '이대은', '1989-03-23', 11, 3.11, 1.61, 2, 9, '투수', '우투좌타'),
-       (14, 1, '신재영', '1989-11-18', 19, 6.00, 2.00, 1, 1, '투수', '우사우타'),
-       (15, 1, '오주원', '1985-03-31', 15, 0.00, 0.33, 0, 0, '투수', '좌투좌타'),
-       (16, 1, '유희관', '1987-06-01', 47, 0.00, 0.00, 4, 0, '투수', '좌투좌타'),
-       (17, 1, '장원삼', '1983-06-09', 13, 0.00, 0.00, 0, 2, '투수', '좌투좌타'),
-       (18, 1, '니퍼트', '1981-05-06', 40, 2.45, 1.90, 0, 4, '투수', '우투우타'),
-       (19, 1, '송승준', '1980-06-29', 21, 0.00, 0.00, 1, 0, '투수', '우투우타');
+VALUES (13, 1000, '이대은', '1989-03-23', 11, 3.11, 1.61, 2, 9, '투수', '우투좌타'),
+       (14, 1000, '신재영', '1989-11-18', 19, 6.00, 2.00, 1, 1, '투수', '우사우타'),
+       (15, 1000, '오주원', '1985-03-31', 15, 0.00, 0.33, 0, 0, '투수', '좌투좌타'),
+       (16, 1000, '유희관', '1987-06-01', 47, 0.00, 0.00, 4, 0, '투수', '좌투좌타'),
+       (17, 1000, '장원삼', '1983-06-09', 13, 0.00, 0.00, 0, 2, '투수', '좌투좌타'),
+       (18, 1000, '니퍼트', '1981-05-06', 40, 2.45, 1.90, 0, 4, '투수', '우투우타'),
+       (19, 1000, '송승준', '1980-06-29', 21, 0.00, 0.00, 1, 0, '투수', '우투우타');
 
 -- player cheering song
 INSERT INTO CHEERING_SONG(song_id, player_id, title, lyrics, type, link)
@@ -138,9 +212,14 @@ VALUES (1, 4, '롯데 이대호', '오~ 롯데 이대호~ 오오~ 롯데 이대�
 
 -- team cheering song
 INSERT INTO TEAM_SONG(team_song_id, team_id, titlE, lyrics, type, link)
-VALUES (1, 1, '승리하라 몬스터즈여', '몬!스!터!즈! 승!리!하!리!라!<br>우리는 승리의 최강 몬스터즈<br>승리를 위해서 달려간다 워우 오오<br>우리는 승리의 최강 몬스터즈<br>오늘도 승리한다<br><br>우리는 승리의 최강 몬스터즈<br>승리를 위해서 달려간다 워우 오오<br>우리는 승리의 최강 몬스터즈<br>오늘도 승리한다<br><br>오! 오오! 오오오! 몬!스!터!즈!<br>오! 오오! 오오오! 승!리!하!리!라!<br>오! 오오! 오오오! 몬!스!터!즈!<br>오늘도 승리한다<br>언제나 승리한다', 'OFFICIAL', 'https://youtu.be/HAhw5IG5BmY?si=_oWn-ZVxC6OF7SSb&t=25'),
-       (2, 1, '몬스터즈 승리 영원하라', '몬!스!터!즈!<br>최강 몬스터즈 승리 영원하라<br>힘차게 날려라 저 멀리까지<br>우리의! 함성을! 여기에 모아서<br>지금부터 외쳐라 몬!스!터!즈!<br>워어어어어<br><br>몬!스!터!즈!<br>최강 몬스터즈 승리 영원하라<br>힘차게 달려라 승리를 향해<br>우리의! 함성을! 여기에 모아서<br>지금부터 외쳐라 몬!스!터!즈!<br>워어어어어', 'OFFICIAL', 'https://youtu.be/cEHB2nsqFTw?si=iCq-PBbtt9JyYgnd');
+VALUES (1, 1000, '승리하라 몬스터즈여', '몬!스!터!즈! 승!리!하!리!라!<br>우리는 승리의 최강 몬스터즈<br>승리를 위해서 달려간다 워우 오오<br>우리는 승리의 최강 몬스터즈<br>오늘도 승리한다<br><br>우리는 승리의 최강 몬스터즈<br>승리를 위해서 달려간다 워우 오오<br>우리는 승리의 최강 몬스터즈<br>오늘도 승리한다<br><br>오! 오오! 오오오! 몬!스!터!즈!<br>오! 오오! 오오오! 승!리!하!리!라!<br>오! 오오! 오오오! 몬!스!터!즈!<br>오늘도 승리한다<br>언제나 승리한다', 'OFFICIAL', 'https://youtu.be/HAhw5IG5BmY?si=_oWn-ZVxC6OF7SSb&t=25'),
+       (2, 1000, '몬스터즈 승리 영원하라', '몬!스!터!즈!<br>최강 몬스터즈 승리 영원하라<br>힘차게 날려라 저 멀리까지<br>우리의! 함성을! 여기에 모아서<br>지금부터 외쳐라 몬!스!터!즈!<br>워어어어어<br><br>몬!스!터!즈!<br>최강 몬스터즈 승리 영원하라<br>힘차게 달려라 승리를 향해<br>우리의! 함성을! 여기에 모아서<br>지금부터 외쳐라 몬!스!터!즈!<br>워어어어어', 'OFFICIAL', 'https://youtu.be/cEHB2nsqFTw?si=iCq-PBbtt9JyYgnd');
 
 -- user favorite player
 INSERT INTO USER_PLAYER(user_id, player_id)
 VALUES (123, 3), (123, 4), (123, 9), (124, 4), (125, 3), (125, 4);
+
+-- photocard resource
+INSERT INTO PHOTOCARD_RESOURCE(img_url, type)
+VALUES ('photocard_resource1', 'TEMPLATE'),
+       ('photocard_resource2', 'TEMPLATE');

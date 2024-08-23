@@ -38,7 +38,7 @@ spring:
             scope:
               - profile_nickname
               - profile_image
-#              - account_email
+              - account_email
           naver:
             client-id: ${NAVER_ID}
             client-secret: ${NAVER_SECRET}

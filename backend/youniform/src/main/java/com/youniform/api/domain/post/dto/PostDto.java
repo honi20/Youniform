@@ -32,6 +32,8 @@ public class PostDto {
 
     private Boolean isLiked;
 
+    private String teamUrl;
+
     public static PostDto toDto(PostListDto post, List<TagDto> tags) {
         return PostDto.builder()
                 .postId(post.getPostId())
@@ -44,6 +46,7 @@ public class PostDto {
                 .commentCount(post.getCommentCount())
                 .userId(post.getUserId())
                 .isLiked(post.getIsLiked())
+                .teamUrl(post.getTeamUrl())
                 .build();
     }
 }

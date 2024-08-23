@@ -26,6 +26,8 @@ public class DiaryDetailDto {
 
 	private Scope scope;
 
+	private Long stampId;
+
 	private String stampImgUrl;
 
 	private String diaryImgUrl;
@@ -38,6 +40,7 @@ public class DiaryDetailDto {
 				.diaryDate(diary.getDiaryDate())
 				.contents(contents)
 				.scope(diary.getScope())
+				.stampId(diary.getStamp().getId())
 				.stampImgUrl(diary.getStamp().getImgUrl())
 				.diaryImgUrl(diary.getImgUrl())
 				.build();

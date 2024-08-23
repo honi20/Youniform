@@ -2,6 +2,7 @@ package com.youniform.api.global.oauth.userInfo;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class KakaoUserInfo implements Oauth2UserInfo {
 
@@ -22,13 +23,17 @@ public class KakaoUserInfo implements Oauth2UserInfo {
 
     @Override
     public String getEmail() {
-        return (String) attributes.get("email");
+        return (String) ((Map<String, Object>)attributes.get("kakao_account")).get("email");
     }
 
     @Override
     public String getName() {
-        return ((LinkedHashMap)attributes.get("properties")).get("nickname").toString();
+        return Optional.ofNullable((LinkedHashMap) attributes.get("properties"))
+                .map(properties -> properties.get("nickname"))
+                .map(Object::toString)
+                .orElse("youniform_" + (System.currentTimeMillis()/1000));
     }
+
 
     @Override
     public String getProfileUrl() {

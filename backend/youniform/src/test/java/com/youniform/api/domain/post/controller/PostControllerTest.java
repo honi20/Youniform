@@ -467,7 +467,9 @@ public class PostControllerTest {
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
                                                         .description("댓글 개수"),
                                                 fieldWithPath("body.postList.*[].isLiked").type(JsonFieldType.BOOLEAN)
-                                                        .description("좋아요 여부")
+                                                        .description("좋아요 여부"),
+                                                fieldWithPath("body.postList.*[].teamUrl").description(JsonFieldType.STRING)
+                                                        .description("team Url")
                                         )
                                 )
                                 .requestSchema(Schema.schema("전체 Post 목록 조회 Request"))
@@ -580,7 +582,9 @@ public class PostControllerTest {
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
                                                         .description("댓글 개수"),
                                                 fieldWithPath("body.postList.*[].isLiked").type(JsonFieldType.BOOLEAN)
-                                                        .description("좋아요 여부")
+                                                        .description("좋아요 여부"),
+                                                fieldWithPath("body.postList.*[].teamUrl").description(JsonFieldType.STRING)
+                                                        .description("team Url")
                                         )
                                 )
                                 .requestSchema(Schema.schema("나의 Post 목록 조회 Request"))
@@ -694,7 +698,9 @@ public class PostControllerTest {
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
                                                         .description("댓글 개수"),
                                                 fieldWithPath("body.postList.*[].isLiked").type(JsonFieldType.BOOLEAN)
-                                                        .description("좋아요 여부")
+                                                        .description("좋아요 여부"),
+                                                fieldWithPath("body.postList.*[].teamUrl").description(JsonFieldType.STRING)
+                                                        .description("team Url")
                                         )
                                 )
                                 .requestSchema(Schema.schema("친구 Post 목록 조회 Request"))
@@ -856,7 +862,9 @@ public class PostControllerTest {
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
                                                         .description("댓글 개수"),
                                                 fieldWithPath("body.postList.*[].isLiked").type(JsonFieldType.BOOLEAN)
-                                                        .description("좋아요 여부")
+                                                        .description("좋아요 여부"),
+                                                fieldWithPath("body.postList.*[].teamUrl").description(JsonFieldType.STRING)
+                                                        .description("team Url")
                                         )
                                 )
                                 .requestSchema(Schema.schema("좋아요한 Post 목록 조회 Request"))
@@ -972,7 +980,9 @@ public class PostControllerTest {
                                                 fieldWithPath("body.postList.*[].commentCount").type(JsonFieldType.NUMBER)
                                                         .description("댓글 개수"),
                                                 fieldWithPath("body.postList.*[].isLiked").type(JsonFieldType.BOOLEAN)
-                                                        .description("좋아요 여부")
+                                                        .description("좋아요 여부"),
+                                                fieldWithPath("body.postList.*[].teamUrl").description(JsonFieldType.STRING)
+                                                        .description("team Url")
                                         )
                                 )
                                 .requestSchema(Schema.schema("좋아요한 Post 목록 조회 Request"))
@@ -1011,7 +1021,7 @@ public class PostControllerTest {
                         .createdAt("2시간 전")
                         .updatedAt(null)
                         .userId(UUID)
-                        .imgUrl("https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
+                        .imgUrl("https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
                         .nickname("User1")
                 .build());
         comments.add(CommentDto.builder()
@@ -1020,16 +1030,16 @@ public class PostControllerTest {
                 .createdAt("1시간 전")
                 .updatedAt("5분 전")
                 .userId("1604b772-adc0-4212-8a90-81186c57f100")
-                .imgUrl("https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
+                .imgUrl("https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png")
                 .nickname("User2")
                 .build());
 
         String jwtToken = jwtService.createAccessToken(UUID);
 
         when(postService.findPost(any(), any()))
-                .thenReturn(new PostDetailsRes(1L, UUID, "https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
-                        "User1", "https://youniforms3.s3.ap-northeast-2.amazonaws.com/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
-                        "최강 몬스터즈 진짜 최고!!'", tags, LocalDate.now(), true, comments, true));
+                .thenReturn(new PostDetailsRes(1L, UUID, "https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
+                        "User1", "https://dsfjel9nvktdp.cloudfront.net/profile/%EB%91%90%EC%82%B0%EB%B2%A0%EC%96%B4%EC%8A%A4.png",
+                        "최강 몬스터즈 진짜 최고!!'", tags, LocalDate.now(), true, comments, true, "url"));
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -1094,7 +1104,9 @@ public class PostControllerTest {
                                                 fieldWithPath("body.commentList[].createdAt").description(JsonFieldType.STRING)
                                                         .description("댓글 작성일"),
                                                 fieldWithPath("body.commentList[].updatedAt").optional()
-                                                        .description("댓글 수정일(없으면 null)")
+                                                        .description("댓글 수정일(없으면 null)"),
+                                                fieldWithPath("body.teamUrl").description(JsonFieldType.STRING)
+                                                        .description("team Url")
                                         )
                                 )
                                 .responseSchema(Schema.schema("Post 상세 조회 Response"))

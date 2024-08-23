@@ -7,10 +7,7 @@ import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -55,6 +52,7 @@ public class ChatController {
                                                  @RequestParam Long messageId,
                                                  @RequestParam(defaultValue = "100") int size) {
         SliceDto<ChatMessageDto> response = chatService.getPreviousMessages(roomId, messageId, size);
+
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, response), HttpStatus.OK);
     }
 
@@ -63,6 +61,7 @@ public class ChatController {
                                              @RequestParam Long messageId,
                                              @RequestParam(defaultValue = "100") int size) {
         SliceDto<ChatMessageDto> response = chatService.getNextMessages(roomId, messageId, size);
+
         return new ResponseEntity<>(ResponseDto.success(CHATROOM_LIST_OK, response), HttpStatus.OK);
     }
 
@@ -71,16 +70,5 @@ public class ChatController {
         ChatUploadImageRes response = chatService.uploadImage(file);
 
         return new ResponseEntity<>(ResponseDto.success(IMAGE_UPLOAD_OK, response), HttpStatus.OK);
-    }
-
-    @GetMapping("/messages/download")
-    public ResponseEntity<?> downloadImage(@RequestParam String imgUrl) throws IOException {
-        InputStreamResource resource = chatService.downloadImage(imgUrl);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-        headers.setContentDispositionFormData("attachment", imgUrl);
-
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }

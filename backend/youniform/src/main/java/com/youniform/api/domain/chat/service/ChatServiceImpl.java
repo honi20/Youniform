@@ -2,21 +2,24 @@ package com.youniform.api.domain.chat.service;
 
 import com.youniform.api.domain.chat.document.ChatMessage;
 import com.youniform.api.domain.chat.document.DatabaseSequence;
-import com.youniform.api.domain.chat.dto.*;
+import com.youniform.api.domain.chat.dto.ChatMessageDto;
+import com.youniform.api.domain.chat.dto.ChatRoomDetailsRes;
+import com.youniform.api.domain.chat.dto.ChatRoomListRes;
+import com.youniform.api.domain.chat.dto.ChatUploadImageRes;
 import com.youniform.api.domain.chat.entity.ChatPart;
 import com.youniform.api.domain.chat.entity.ChatPartPK;
 import com.youniform.api.domain.chat.entity.ChatRoom;
 import com.youniform.api.domain.chat.repository.ChatMessageRepository;
 import com.youniform.api.domain.chat.repository.ChatPartRepository;
 import com.youniform.api.domain.chat.repository.ChatRoomRepository;
-import com.youniform.api.domain.user.entity.Users;
 import com.youniform.api.domain.user.repository.UserRepository;
 import com.youniform.api.global.dto.SliceDto;
 import com.youniform.api.global.exception.CustomException;
+import com.youniform.api.global.redis.RedisUtils;
 import com.youniform.api.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -26,19 +29,21 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.youniform.api.domain.chat.document.Type.*;
 import static com.youniform.api.global.statuscode.ErrorCode.CHATROOM_NOT_FOUND;
-import static com.youniform.api.global.statuscode.ErrorCode.USER_NOT_FOUND;
-import static com.youniform.api.global.statuscode.SuccessCode.IMAGE_DOWNLOAD_OK;
+import static com.youniform.api.global.statuscode.ErrorCode.MESSAGETYPE_NOT_VALID;
 
 @Slf4j
 @Service
@@ -55,6 +60,13 @@ public class ChatServiceImpl implements ChatService {
     private final MongoOperations mongoOperations;
 
     private final S3Service s3Service;
+
+    private final RedisUtils redisUtils;
+
+    private final SimpMessagingTemplate messagingTemplate;
+
+    @Value("${BUCKET_URL}")
+    private String bucketURl;
 
     @Override
     public ChatRoomListRes getChatRoomList(Long userId) {
@@ -90,6 +102,7 @@ public class ChatServiceImpl implements ChatService {
 
         List<ChatMessageDto> chatMessageDtos = slicedMessages.getContent()
                 .stream()
+                .sorted(Comparator.comparing(ChatMessage::getMessageTime))
                 .map(ChatMessageDto::toDto)
                 .collect(Collectors.toList());
 
@@ -103,6 +116,7 @@ public class ChatServiceImpl implements ChatService {
 
         List<ChatMessageDto> chatMessageDtos = slicedMessages.getContent()
                 .stream()
+                .sorted(Comparator.comparing(ChatMessage::getMessageTime))
                 .map(ChatMessageDto::toDto)
                 .collect(Collectors.toList());
 
@@ -116,6 +130,7 @@ public class ChatServiceImpl implements ChatService {
 
         List<ChatMessageDto> chatMessageDtos = slicedMessages.getContent()
                 .stream()
+                .sorted(Comparator.comparing(ChatMessage::getMessageTime).reversed())
                 .map(ChatMessageDto::toDto)
                 .collect(Collectors.toList());
 
@@ -123,21 +138,37 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId) {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    public ChatMessage processChatMessage(Long roomId, ChatMessage chatMessage, Long userId, String sessionId) {
+        String redisKey = "room:" + roomId + ":session:" + sessionId + ":user:" + userId;
+        redisUtils.deleteDataWithPattern(roomId.toString(), userId.toString());
 
-        ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+        if (chatMessage.getType().equals(HEARTBEAT)) {
+            redisUtils.setDataWithExpiration(redisKey, userId, 10L);
 
-        return saveChatMessage(roomId, chatMessage, user);
+            return null;
+        } else if (chatMessage.getType().equals(MESSAGE)) {
+
+        } else if (chatMessage.getType().equals(ENTRY)) {
+            redisUtils.setDataWithExpiration(redisKey, userId, 10L);
+
+            broadcastUserCount(roomId);
+        } else if (chatMessage.getType().equals(EXIT)) {
+            updateLastReadTime(userId, roomId, LocalDateTime.now());
+            redisUtils.deleteData(redisKey);
+
+            broadcastUserCount(roomId);
+        } else {
+            throw new CustomException(MESSAGETYPE_NOT_VALID);
+        }
+
+        return saveChatMessage(roomId, chatMessage, userId);
     }
 
     @Override
-    public ChatMessage saveChatMessage(Long roomId, ChatMessage chatMessage, Users user) {
+    public ChatMessage saveChatMessage(Long roomId, ChatMessage chatMessage, Long userId) {
         chatMessage.updateMessageId(createSequence(ChatMessage.CHAT_MESSAGE_SEQUENCE));
         chatMessage.updateRoomId(roomId);
-        chatMessage.updateUuid(user.getUuid());
+        chatMessage.updateUuid(userRepository.findById(userId).get().getUuid());
         chatMessage.updateMessageTime(LocalDateTime.now());
 
         return chatMessageRepository.save(chatMessage);
@@ -154,37 +185,36 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatUploadImageRes uploadImage(MultipartFile file) throws IOException {
-        ChatUploadImageRes chatUploadImageRes = new ChatUploadImageRes(null);
-
-        if (file.isEmpty()) {
-            return chatUploadImageRes;
-        } else {
+        if(file != null && !file.isEmpty()) {
             String imgUrl = s3Service.upload(file, "chat_image");
-            chatUploadImageRes.setImageUrl(imgUrl);
-
-            return chatUploadImageRes;
+            return new ChatUploadImageRes(imgUrl);
+        } else {
+            return new ChatUploadImageRes("");
         }
-    }
-
-    @Override
-    public InputStreamResource downloadImage(String imgUrl) throws IOException {
-        String s3Key = extractS3KeyFromUrl(imgUrl);
-        InputStream imageStream = s3Service.download(s3Key);
-
-        return new InputStreamResource(imageStream);
-    }
-
-    private String extractS3KeyFromUrl(String url) {
-        return url.replace("https://youniforms3.s3.ap-northeast-2.amazonaws.com/", "");
     }
 
     @Override
     public void updateLastReadTime(Long userId, Long roomId, LocalDateTime lastReadTime) {
         ChatPart chatPart = chatPartRepository.findById(new ChatPartPK(userId, roomId))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
-
         chatPart.updateLastReadTime(lastReadTime);
 
         chatPartRepository.save(chatPart);
+    }
+
+    @Override
+    public void broadcastUserCount(Long roomId) {
+        Set<String> keys = redisUtils.keys("room:" + roomId + ":session:*");
+
+        String userCount = String.valueOf(keys.size());
+
+        ChatMessage userCountMessage = ChatMessage.builder()
+                .roomId(roomId)
+                .content(userCount)
+                .type(USERCOUNT)
+                .messageTime(LocalDateTime.now())
+                .build();
+
+        messagingTemplate.convertAndSend("/sub/" + roomId, userCountMessage);
     }
 }

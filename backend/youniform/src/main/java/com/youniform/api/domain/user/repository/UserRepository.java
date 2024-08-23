@@ -16,11 +16,15 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Users, Long>, UserCustomRepository {
     Users findByEmail(String email);
 
+    Users findByEmailAndProviderType(String email, String provider);
+
     Optional<Users> findByUuid(String uuid);
 
     Users findById(long id);
 
     Users findByNickname(String nickname);
+
+    List<Users> findAllByPushAlertTrue();
 
     @Query("SELECT u FROM Users u " +
             "WHERE u.nickname LIKE %:nickname% " +

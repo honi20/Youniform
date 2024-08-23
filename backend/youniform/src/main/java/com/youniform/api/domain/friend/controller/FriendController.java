@@ -49,6 +49,16 @@ public class FriendController {
         return new ResponseEntity<>(ResponseDto.success(FRIEND_ACCEPT_OK, null), HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/reject")
+    public ResponseEntity<?> friendReject(@ModelAttribute @Valid FriendRejectReq friendRejectReq) {
+        Long userId = jwtService.getUserId(SecurityContextHolder.getContext());
+        String friendUuid = friendRejectReq.getFriendUuid();
+
+        friendService.rejectFriend(userId, friendUuid);
+
+        return new ResponseEntity<>(ResponseDto.success(FRIEND_REJECTED, null), HttpStatus.OK);
+    }
+
     @GetMapping("/mypage")
     public ResponseEntity<?> friendMypage() {
         Long userId = jwtService.getUserId(SecurityContextHolder.getContext());

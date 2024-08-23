@@ -71,7 +71,7 @@ public class MailService {
             message.setSubject("이메일 인증");
             String body = "";
             body += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
-            body += "<h1>" + uuid + "</h1>";
+            body += "<a href='https://youniform.site/reset-password/"+uuid+"'>비밀번호 변경하러 가기</a>";
             body += "<h1>" + verify + "</h1>";
             body += "<h3>" + "감사합니다." + "</h3>";
             message.setText(body,"UTF-8", "html");

@@ -36,6 +36,8 @@ public class PostDetailsRes {
 
     private Boolean isLiked;
 
+    private String teamUrl;
+
     public static PostDetailsRes toDto(Post post,List<TagDto> tags, List<CommentDto> commentList, Boolean isMyPost, Boolean isLiked) {
         return PostDetailsRes.builder()
                 .postId(post.getId())
@@ -49,6 +51,7 @@ public class PostDetailsRes {
                 .userId(post.getUser().getUuid())
                 .isMyPost(isMyPost)
                 .isLiked(isLiked)
+                .teamUrl(post.getUser().getTeam().getImgUrl())
                 .build();
     }
 }
