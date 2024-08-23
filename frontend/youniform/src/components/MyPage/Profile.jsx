@@ -13,23 +13,25 @@ const Section = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2%;
-  /* width: */
 `;
+
 const Container = styled.div`
   padding: 5%;
   height: calc(100vh - 120px);
-  border: 1px solid black;
 `;
+
 const FlexBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 `;
+
 const ProfileSection = styled(Section)`
   height: 100px;
   width: 90%;
 `;
+
 const ProfileImage = styled.div`
   box-sizing: border-box;
   height: 85px;
@@ -38,16 +40,14 @@ const ProfileImage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* border: 1px solid black; */
   & img {
     height: 100%;
     width: 100%;
     border-radius: 50px;
     object-fit: cover;
-    /* border: 1px solid black; */
   }
-  /* border: 1px solid blue; */
 `;
+
 const ProfileInfo = styled.div`
   box-sizing: border-box;
   flex: 1;
@@ -56,8 +56,8 @@ const ProfileInfo = styled.div`
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  /* border: 1px solid rebeccapurple; */
 `;
+
 const Nickname = styled.div`
   ${Font.Small}/* border: 1px solid red; */
 `;
@@ -65,13 +65,12 @@ const Introduce = styled.div`
   ${Font.XSmall}
   margin-top: 5px;
   font-size: 1rem;
-  /* border: 1px solid blue; */
 `;
 
 const ProfileComp = ({ user }) => {
   return (
     <ProfileSection>
-      <ProfileImage onClick={() => console.log("프로필 사진 변경")}>
+      <ProfileImage>
         <img src={user.profileUrl} alt="Profile" />
       </ProfileImage>
       <ProfileInfo>
@@ -230,7 +229,6 @@ const Profile = () => {
     };
 
     fetchData();
-
     return () => clearUser();
   }, [fetchUser, clearUser]);
 

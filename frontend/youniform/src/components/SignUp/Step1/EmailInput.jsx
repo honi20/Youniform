@@ -28,9 +28,10 @@ const TimerDisplay = styled.span`
 `;
 
 const EmailInput = ({ emailInput, setEmailInput, statusMsg, setStatusMsg }) => {
-  const { user, setEmail, setIsVerified, sendEmail, verifyEmailCode } = signUpStore(state => ({
+  const { user, setEmail, setVerifyCode, setIsVerified, sendEmail, verifyEmailCode } = signUpStore(state => ({
     user: state.user,
     setEmail: state.user.setEmail,
+    setVerifyCode: state.user.setVerifyCode,
     setIsVerified: state.user.setIsVerified,
     sendEmail: state.sendEmail,
     verifyEmailCode: state.verifyEmailCode,
@@ -107,6 +108,7 @@ const EmailInput = ({ emailInput, setEmailInput, statusMsg, setStatusMsg }) => {
     const result = await verifyEmailCode(fullEmail, authenticCode);
     if (result === "$SUCCESS") {
       setIsVerified(true);
+      setVerifyCode(authenticCode);
       setExpiryTime(null); // 인증이 완료되면 타이머 중지
     } else {
       alert("잘못된 인증 코드입니다.");

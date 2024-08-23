@@ -3,7 +3,8 @@ import styled from "styled-components";
 import PostView from "@pages/Post/Posts";
 import usePostStore from "@stores/postStore";
 import { useParams } from "react-router-dom";
-
+import EmptyState from "../../components/Share/EmptyState";
+import EmptyIcon from "@assets/EmptyState/EmptyState_Post.svg?react";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,11 +19,11 @@ const MyPost = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { myPosts, fetchMyPosts, friendPosts, fetchFriendPosts } = usePostStore();
   const { nickname } = useParams();
-  console.log(nickname)
+  // console.log(nickname)
   useEffect(() => {
     if (nickname) {
       // fetchFriendPosts(nickname);
-      console.log('test')
+      // console.log('test')
     } else {
       fetchMyPosts();
     }
@@ -36,6 +37,14 @@ const MyPost = () => {
     }
   };
   const postsToShow = nickname ? friendPosts : myPosts;
+  if (postsToShow.length == 0) {
+    return (
+      <EmptyState
+      icon={EmptyIcon}
+        state="noPosts"
+      />
+    )
+  }
   return (
     <>
       <Container>

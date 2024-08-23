@@ -6,6 +6,7 @@ import useUserStore from "@stores/userStore";
 import Loading from "@components/Share/Loading";
 import ImgSvg from "@assets/Post/img_box.svg?react";
 import DoneSvg from "@assets/Post/done.svg?react";
+import CloseSvg from "@assets/Post/Close_round_light.svg?react"
 import { getApiClient } from "@stores/apiClient";
 import usePostStore from "@stores/postStore";
 const Container = styled.div`
@@ -31,7 +32,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   margin-left: 15px;
-  /* border: 1px solid pink; */
 `;
 const ProfileImg = styled.img`
   height: 30px;
@@ -51,7 +51,26 @@ const Content = styled.textarea`
   resize: none;
   border-radius: 5px;
 `;
-
+const ImageContainer = styled.div`
+  padding: 5 27px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  /* background-color: red; */
+`
+const ImgBox = styled.img`
+  height: 60px;
+`;
+const DeleteBtn = styled.button`
+  position: absolute;
+  top: 5px;
+  left: 27px;
+  background: transparent;
+  background-color: #b4b4b4;
+  border: 1px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+`;
 const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -60,17 +79,12 @@ const TagsContainer = styled.div`
   padding: 10px 0;
 `;
 const Tag = styled.span`
-  /* background-color: ${(props) => props.theme.primary || "#2196F3"}; */
   color: #848484;
-  border: 1px solid #848484;
+  border: 1px solid #f6f6f6;
   padding: 5px 10px;
   border-radius: 15px;
 `;
-const ImgBox = styled.img`
-  border: 1px solid black;
-  max-width: 50px;
-  margin-bottom: 10px;
-`;
+
 const Footer = styled.div`
   height: 70px;
   display: flex;
@@ -104,50 +118,72 @@ const WritePostView = () => {
   const { postId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (location.state && location.state.post) {
-      const post = location.state.post;
-      setContent(post.contents);
-      console.log(post.contents);
-      setTags(post.tags.map((tag) => tag.contents));
-      if (post.imageUrl) {
-        setFilePreview(post.imageUrl);
-      }
-    }
-    if (!user) {
-      fetchUser();
-    }
-  }, [location.state, user, fetchUser]);
 
-  // 해쉬태그
+  const stripHtmlTags = (input) => {
+    return input.replace(/<\/?[^>]+>/gi, ''); // 모든 HTML 태그 제거
+  };
+
   useEffect(() => {
-    const extractedTags = content.match(/# \S+/g) || [];
+    const fetchData = async () => {
+        if (location.state && location.state.post) {
+            const post = location.state.post;
+            const contentWithTags = addTagsToContent(post);
+            // // console.log(contentWithTags)
+            setContent(contentWithTags);
+            setTags(post.tags.map((tag) => tag.contents))
+            if (post.imageUrl) {
+                setFilePreview(post.imageUrl);
+            }
+        }
+        if (!user) {
+            await fetchUser(); // 비동기 호출은 여전히 await로 처리할 수 있습니다.
+        }
+    };
+    fetchData();
+}, [location.state, user, fetchUser]);
+
+  // content가 업데이트된 후에 extractedTagFunction을 호출
+  useEffect(() => {
+      if (content) {
+          extractedTagFunction(content);
+      }
+  }, [content]);
+
+  const extractedTagFunction = (content) => {
+    const extractedTags = content.match(/#\S+/g) || [];
     const uniqueTags = [
       ...new Set(
         extractedTags.map((tag) =>
-          tag.length > 10 ? `${tag.slice(2, 12)}` : tag.slice(2)
+          tag.length > 10 ? `${tag.slice(1, 12)}` : tag.slice(1)
         )
       ),
-    ];
+    ].slice(0, 10); // 태그 개수를 10개로 제한
     setTags(uniqueTags);
-    console.log("해쉬태그", uniqueTags);
-  }, [content]);
-
+  }
   const cleanContent = () => {
-    return content.replace(/# \S+/g, "").trim();
+    return content.replace(/#\S+/g, "").trim();
   };
+  const addTagsToContent = (post) => {
+    // // console.log("addTagsToContent", post.tags)
+    const content = stripHtmlTags(post.contents);
+    const tags = (post.tags.map((tag) => tag.contents))
+    const tagsString = tags.map(tag => `#${tag}`).join(" ");
+    // 기존 content 뒤에 태그 문자열을 추가합니다.
+    return `${content} ${tagsString}`.trim();
+  };
+  
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+      // console.log(`${key}:`, value);
     }
   };
   const createFormData = async () => {
     const cleanedContent = cleanContent();
 
-    console.log("저장할 내용:", cleanedContent);
-    console.log("해쉬태그", tags);
-    console.log("Selected file:", selectedFile);
-
+    // console.log("저장할 내용:", cleanedContent);
+    // console.log("해쉬태그", tags);
+    // console.log("Selected file:", selectedFile);
+    // console.log(tags)
     const formData = new FormData();
     const dto = {
       contents: cleanedContent,
@@ -156,9 +192,17 @@ const WritePostView = () => {
 
     const newBlob = new Blob();
     if (selectedFile) {
+      // // console.log("파일 있음")
       formData.append("file", selectedFile, selectedFile.name);
     } else {
-      formData.append("file", newBlob);
+      // // console.log(filePreview);
+      if(filePreview === null) {
+        // // console.log("파일 없음");
+        formData.append("file", newBlob);
+      } else {
+        // // console.log("이건 업데이트 안할거임!!");
+        formData.append("file", null);
+      }
     }
     const dtoBlob = new Blob([JSON.stringify(dto)], {
       type: "application/json",
@@ -169,12 +213,16 @@ const WritePostView = () => {
     return formData;
   };
   const handleSave = async () => {
+    if (!content.trim()) {  // content가 비어 있거나 공백만 있는 경우
+      alert("내용을 입력해주세요.");  // 사용자에게 경고 메시지 표시
+      return;  // 저장을 시도하지 않음
+    }
     try {
       const formData = await createFormData();
       let newPostId = "";
       if (postId) {
-        console.log("업데이트", postId);
-        logFormData(formData);
+        // // console.log("업데이트", postId);
+        // logFormData(formData);
         await updatePost(postId, formData);
       } else {
         newPostId = await addPost(formData);
@@ -187,7 +235,6 @@ const WritePostView = () => {
   const moveToDetailPage = async (postId) => {
     try {
       if (postId) {
-        console.log(postId);
         navigate(`/post/${postId}`); // 페이지 이동
       }
     } catch (error) {
@@ -209,7 +256,11 @@ const WritePostView = () => {
   const handleAddPhotoClick = () => {
     fileInputRef.current.click();
   };
-
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setFilePreview(null);
+  };
+  
   if (loading || !user) {
     return <Loading />;
   }
@@ -227,7 +278,17 @@ const WritePostView = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          {filePreview && <ImgBox src={filePreview} alt="Preview" />}
+          {/* <div>
+            {content}
+          </div> */}
+          <ImageContainer>
+          {filePreview && <><ImgBox src={filePreview} alt="Preview" >
+          </ImgBox>
+          <DeleteBtn onClick={handleRemoveImage}>
+            <CloseSvg/>
+          </DeleteBtn>
+          </>}
+          </ImageContainer>
           <input
             type="file"
             ref={fileInputRef}
@@ -235,7 +296,7 @@ const WritePostView = () => {
             onChange={handleFileChange}
           />
           <TagsContainer>
-            {tags.map((tag, index) => (
+            {tags && tags.map((tag, index) => (
               <Tag key={index}># {tag}</Tag>
             ))}
           </TagsContainer>

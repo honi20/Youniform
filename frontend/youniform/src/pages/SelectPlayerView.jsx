@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import usePlayerStore from "../stores/playerStore";
 const Div = styled.div`
   width: 100%;
-  height: ${(props) => (props.$step === "3" ? "100%" : "calc(100vh - 120px)")};
+  height: ${(props) => (props.$step ? "calc(100vh - 120px)" : "calc(100vh - 120px)")};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -166,6 +166,7 @@ const Footer = styled.div`
   height: 15%;
   display: flex;
   align-items: start;
+  padding: 10px;
   /* border: 1px solid red; */
 `;
 
@@ -192,7 +193,7 @@ const ConfirmBtn = styled.div`
 
 const SelectPlayerView = ({ teamId = "1000", step }) => {
   const [playerList, setPlayerList] = useState([{ playerId: 0, name: "없음" }]);
-  const { fetchPlayerList } = usePlayerStore();
+  const { fetchPlayerList, fetchSignUpPlayerList } = usePlayerStore();
   const navigate = useNavigate();
   useEffect(() => {
     const fetchPlayerInfo = async (teamId) => {
@@ -200,12 +201,12 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
       try {
         const res = await axios({
           method: "get",
-          url: `${API_URL}/players/list/1000`, // teanId = 최강야구여서 1000번으로 고정
+          url: `${API_URL}/players/list/1000`, // teamId = 최강야구여서 1000번으로 고정
         });
 
         const { body, header } = res.data;
-        console.log(body);
-        console.log(header.message);
+        // console.log(body);
+        // console.log(header.message);
 
         setPlayerList((prevList) => {
           if (prevList.length === 1) {
@@ -216,7 +217,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
           }
         });
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
     fetchPlayerInfo();
@@ -235,7 +236,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
   }, [selectedPlayers, setPlayers]);
 
   const handleClick = (id) => {
-    console.log(players);
+    // console.log(players);
     setSelectedPlayers((prevSelectedPlayers) => {
       if (id == 0) {
         return prevSelectedPlayers.includes(0) ? [] : [0];
@@ -254,7 +255,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
         }
       }
     });
-    console.log(selectedPlayers);
+    // console.log(selectedPlayers);
   };
 
   const handleConfirmClick = () => {
@@ -265,9 +266,9 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
   };
 
   const handleModalButtonClick = (buttonType) => {
-    console.log("Button clicked:", buttonType);
+    // console.log("Button clicked:", buttonType);
     if (buttonType == 2) {
-      console.log("변경 요청 보내기", selectedPlayers);
+      // console.log("변경 요청 보내기", selectedPlayers);
       changePlayer();
     }
     setIsModalOpen(false);
@@ -278,15 +279,15 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
     try {
       const res = await apiClient.patch(`users/favorite`, {
         teamId: 1000,
-        players: selectedPlayers,
+        players: selectedPlayers.length == 1 && selectedPlayers[0] == 0 ? [] : selectedPlayers,
       });
-      console.log(res.data);
+      // console.log(res.data);
       const { body, header } = res.data;
 
-      console.log(body);
-      console.log(header.message);
+      // console.log(body);
+      // console.log(header.message);
       await fetchPlayerList();
-      navigate("/");
+      navigate("/main");
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -312,7 +313,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
             ))}
         </BtnWrapper>
       </Content>
-      {step !== "3" && (
+      {!(step == "3" || step == "4") && (
         <Footer>
           <ConfirmBtnWrapper>
             <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>

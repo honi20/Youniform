@@ -5,6 +5,7 @@ import usePlayerStore from "../../stores/playerStore";
 import useNewsStore from "../../stores/newsStore";
 import parse from "html-react-parser";
 import * as Font from "@/typography";
+import { ElderlyWomanSharp } from "@mui/icons-material";
 const Div = styled.div`
   width: 100%;
   height: calc(100vh - 120px);
@@ -41,14 +42,14 @@ const Tag = styled.div`
 `;
 const Article = styled.div`
   padding: 2%;
-  background-color: white;
+  /* background-color: white; */
   display: flex;
   width: 90%;
   margin: 0 5%;
   justify-content: space-between;
   border-bottom: 1px solid black;
   overflow-y: auto;
-  max-height: ${(props) => (props.expanded ? "1000px" : "150px")};
+  max-height: ${(props) => (props.$expanded ? "1000px" : "150px")};
   cursor: pointer;
   &:first-child {
     border-top: 1px solid black;
@@ -75,10 +76,11 @@ const ToggleButton = styled.button`
   justify-content: center;
   border: none;
   padding: 0.5rem;
-  width: 40px;
+  width: 20px;
   cursor: pointer;
   font-size: 1rem;
-  background-color: white;
+  border: none;
+  background-color: #f8f8f8;
 `;
 const Title = styled.div`
   ${Font.Medium};
@@ -97,46 +99,56 @@ const Footer = styled.div`
 `;
 const NewsView = () => {
   const { playerId } = useParams();
-  const { playerList, fetchPlayerList } = usePlayerStore();
+  const { playerList, fetchPlayerList, team, fetchTeamList } = usePlayerStore();
   const [newsList, setNewsList] = useState([]);
   const [tags, setTags] = useState(["All"]);
   const [selectedTagId, setSelectedTagId] = useState(playerId || 0);
-  const { news, fetchTotalNews, getTotalNews, getPlayerNews } = useNewsStore();
+  const { news, fetchTotalNews, getTotalNews, getPlayerNews, fetchTeamNews } = useNewsStore();
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(null);
+  
   useEffect(() => {
     const loadPlayerList = async () => {
-      if (!playerList || playerList.length == 0) {
+      if ((!playerList || playerList.length == 0) && (!team || team.length == 0)) {
         await fetchPlayerList();
-      }
+        await fetchTeamList();
+      };
+      if (playerList.length != 0){
       await fetchTotalNews(playerList);
-      console.log(news);
+      }
+      if (team.length != 0){
+        // console.log('test', team)
+        await fetchTeamNews(team);
+      }
     };
     loadPlayerList();
-  }, [playerList, fetchPlayerList, fetchTotalNews]);
+  }, [playerList, fetchPlayerList, fetchTotalNews, fetchTeamNews, fetchTeamList, team]);
 
   useEffect(() => {
     if (playerList && playerList.length > 0) {
       setTags([
-        { id: 0, name: "All" },
+        { id: 0, name: team.name },
         ...playerList.map((player) => ({
           id: player.playerId,
           name: player.name,
         })),
       ]);
+    } else {
+      setTags([
+        { id: 0, name: team.name },
+      ]);
     }
-  }, [playerList]);
-
+  }, [playerList, team]);
   useEffect(() => {
     if (selectedTagId === 0) {
-      setNewsList(getTotalNews());
+      setNewsList(getPlayerNews(1000));
     } else {
       setNewsList(getPlayerNews(selectedTagId));
     }
   }, [selectedTagId, getTotalNews, getPlayerNews, news]);
-  console.log(newsList);
+  // // console.log(newsList);
 
   const handleTagClick = (tagId) => {
     setSelectedTagId(tagId);
@@ -151,18 +163,11 @@ const NewsView = () => {
     // HTML을 JSX로 변환
     return parse(formattedText);
   };
-
+  const moveToLink = (link) => {
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
   return (
     <Div ref={containerRef}>
-      {/* <Main>
-        <CustomSlider {...settings}>
-          {images.map((image, index) => (
-            <CardNews key={index}>
-              <Image src={image} alt={`Slide ${index}`} />
-            </CardNews>
-          ))}
-        </CustomSlider>
-      </Main> */}
       <TagSection>
         {tags.map((tag, index) => (
           <Tag
@@ -170,7 +175,7 @@ const NewsView = () => {
             selected={tag.id == selectedTagId}
             onClick={() => handleTagClick(tag.id)}
           >
-            {tag.name}
+            {tag.name} 
           </Tag>
         ))}
       </TagSection>
@@ -179,17 +184,17 @@ const NewsView = () => {
           newsList.map((news, index) => (
             <Article
               key={index}
-              expanded={expandedIndex === index}
+              $expandedexpanded={expandedIndex === index}
               onClick={() => handleArticleClick(index)}
             >
               <ArticleContent>
                 <ArticleHeader>
                   <div>
-                    <Title>{parseText(news.title)}</Title>
-                    <Footer>{news.pubDate}</Footer>
+                    {news.title ? <Title>{parseText(news.title)}</Title> : null}
+                    {news.pubDate ? <Footer>{news.pubDate}</Footer> : null}
                   </div>
                   <ToggleButton
-                    expanded={expanded}
+                    $expanded={expanded}
                     onClick={() => setExpanded((prev) => !prev)}
                   >
                     {expandedIndex === index ? "-" : "+"}
@@ -198,7 +203,10 @@ const NewsView = () => {
 
                 {expandedIndex === index && (
                   <>
-                    <Content>{parseText(news.description)}</Content>
+                    {news.description ? <Content onClick={() => moveToLink(news.link)}>
+                      {parseText(news.description)}
+                    </Content>
+                    : null}
                   </>
                 )}
               </ArticleContent>

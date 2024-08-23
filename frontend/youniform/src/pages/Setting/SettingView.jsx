@@ -32,6 +32,7 @@ import MessageIcon from "@assets/Setting/message.svg?react";
 import InfoIcon from "@assets/Setting/info.svg?react";
 import SearchIcon from "@assets/Setting/search.svg?react";
 import FolderIcon from "@assets/Setting/folder.svg?react";
+import ResignIcon from "@assets/Setting/resign.svg?react";
 import { useNavigate, Outlet } from "react-router-dom";
 
 const settings = [
@@ -43,11 +44,7 @@ const settings = [
   },
   { icon: <StarIcon />, text: "테마 설정", navigate: "theme" },
   { icon: <BellIcon />, text: "푸시 알림", navigate: "notifications" },
-  { icon: <ChieldIcon />, text: "기기 권한", navigate: "permissions" },
-  { icon: <MessageIcon />, text: "문의하기", navigate: "contact" },
-  { icon: <InfoIcon />, text: "이용약관", navigate: "terms" },
-  { icon: <SearchIcon />, text: "개인정보 처리방침", navigate: "privacy" },
-  { icon: <FolderIcon />, text: "버전", navigate: "version" },
+  { icon: <ResignIcon />, text: "탈퇴하기", navigate: "delete-account" },
 ];
 
 const SettingItem = ({ icon, text, navigateTo }) => {

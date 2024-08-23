@@ -4,7 +4,7 @@ import * as Font from "@/typography";
 import ProfileModal from "@components/Modal/ProfileModal";
 import { getApiClient } from "@stores/apiClient";
 import Loading from "@components/Share/Loading";
-
+import parse from "html-react-parser";
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
@@ -87,7 +87,11 @@ const Footer = styled.div`
   border-bottom: 1px solid #9c9c9c;
   /* border: 1px solid black; */
 `;
-
+const TeamImg = styled.img`
+  /* border: 1px solid black; */
+  height: 20px;
+  margin-left: 2px;
+`;
 import Chatsvg from "@assets/Post/chat.svg?react";
 const ChatIcon = styled(Chatsvg)`
   width: 24px;
@@ -173,16 +177,15 @@ const PostDetailView = () => {
   }, [user, fetchUser]);
 
   const handleTagClick = (tag) => {
-    console.log(tag);
     const encodedQuery = encodeURIComponent(tag.contents);
-    navigate(`/search?type=tag&q=${encodedQuery}`);
+    navigate(`/search?tagId=${tag.tagId}&q=${encodedQuery}`);
   };
 
   const handlePostAction = async ({ action, post }) => {
     if (action === "update") {
       navigate(`/post/write/${post.postId}`, { state: { post } });
     } else if (action === "delete") {
-      console.log("test");
+      // console.log("test");
       setIsDeleteModalOpen(true);
     }
   };
@@ -227,14 +230,14 @@ const PostDetailView = () => {
   const handleLike = async () => {
     const newLike = !like;
     setLike(newLike);
-    console.log(newLike);
+    // console.log(newLike);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
         isLiked: true,
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -242,10 +245,10 @@ const PostDetailView = () => {
   const handlePostBtn = async (index) => {
     switch (index) {
       case 1:
-        console.log("Button 1 clicked");
+        // console.log("Button 1 clicked");
         break;
       case 2:
-        console.log("Button 2 clicked");
+        // console.log("Button 2 clicked");
         break;
       case 3:
         await deletePost(post.postId);
@@ -253,9 +256,15 @@ const PostDetailView = () => {
         navigate("/post");
         break;
       default:
-        console.log("Unknown button clicked");
+        // console.log("Unknown button clicked");
         break;
     }
+  };
+  const parseText = (text) => {
+    // 줄바꿈을 <br /> 태그로 변환
+    const formattedText = text.replace(/\n/g, "<br />");
+    // HTML을 JSX로 변환
+    return parse(formattedText);
   };
   return (
     <>
@@ -265,6 +274,7 @@ const PostDetailView = () => {
             <HeaderWrapper onClick={handleProfileClick}>
               <ProfileImg src={post.profileImg} />
               {post.nickname}
+              <TeamImg src={post.teamUrl} />
             </HeaderWrapper>
             <FlexBox>
               {editedPost && editedPost.postId === post.postId ? (
@@ -287,7 +297,7 @@ const PostDetailView = () => {
                 </>
               ) : (
                 <LowerContainer>
-                  {user.nickname === post.nickname && (
+                  {post && user && user.nickname === post.nickname && (
                     <>
                       &nbsp;
                       <Btn
@@ -322,12 +332,7 @@ const PostDetailView = () => {
               {post.imageUrl && (
                 <img src={post.imageUrl} alt={post.postId}></img>
               )}
-              {htmlContent.split("\n").map((line, index) => (
-                <React.Fragment key={index}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))}
+              {parseText(post.contents)}
             </div>
             <TagContainer>
               {post &&
@@ -351,12 +356,14 @@ const PostDetailView = () => {
       ) : (
         <>엥</>
       )}
-      <ProfileModal
-        user={user}
-        friend={friend}
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {isModalOpen && (
+        <ProfileModal
+          friend={friend}
+          user={user}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
       {isDeleteModalOpen && (
         <BasicModal
           state="PostDeleted"

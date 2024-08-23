@@ -19,7 +19,8 @@ const Container = styled.div`
 `;
 const ProfileImg = styled.img`
   width: 50px;
-  aspect-ratio: 1/1;
+  height: 50px;
+  /* aspect-ratio: ? 1/1; */
   border-radius: 50%;
   margin-left: 10px;
   border: 0.5px solid #c4c4c4;
@@ -33,6 +34,10 @@ const ProfileInfo = styled.div`
 const Nickname = styled.h3`
   ${Font.Medium};
   /* border: 1px solid black; */
+`;
+const TeamImg = styled.img`
+  /* border: 1px solid black; */
+  height: 20px;
 `;
 const Introduce = styled.div`
   ${Font.Small};
@@ -61,7 +66,7 @@ const Friend = ({ friend, setSelectedFriend }) => {
   useEffect(() => {
     const loadUserDate = () => {
       if (!user || user.length == 0) {
-        console.log("user data fatch");
+        // console.log("user data fatch");
         fetchUser();
       }
     };
@@ -69,33 +74,41 @@ const Friend = ({ friend, setSelectedFriend }) => {
   }, [fetchUser, user]);
 
   const handleDeleteBtn = () => {
-    console.log("친구삭제");
+    // console.log("친구삭제");
     deleteFriend(friend.userId);
   };
   const handleProfileClick = () => {
-    console.log("프로필 모달");
+    // console.log("프로필 모달");
     setSelectedFriend(friend);
     setModalOpen(true);
   };
   // console.log(friend);
   return (
     <Container>
-      <div style={{ display: "flex", flex: "1" }} onClick={handleProfileClick}>
+      <div
+        style={{ display: "flex", flex: "1", alignItems: "center" }}
+        onClick={handleProfileClick}
+      >
         <ProfileImg src={friend.imgUrl} alt="profile image" />
         <ProfileInfo>
-          <Nickname>{friend.nickname}</Nickname>
+          <div style={{ display: "flex", gap: "2px", alignItems: "center" }}>
+            <Nickname>{friend.nickname}</Nickname>
+            <TeamImg src={friend.teamUrl} />
+          </div>
           <Introduce>{friend.introduce}</Introduce>
         </ProfileInfo>
       </div>
-      {friend.status == "FRIEND" && (
+      {friend.isFriend == "FRIEND" && (
         <DeleteBtn onClick={handleDeleteBtn}>삭제</DeleteBtn>
       )}
-      <ProfileModal
-        user={user}
-        friend={friend}
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {isModalOpen && (
+        <ProfileModal
+          friend={friend}
+          user={user}
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </Container>
   );
 };

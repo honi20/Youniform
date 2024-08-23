@@ -35,8 +35,8 @@ const FriendView = () => {
   const [waitingList, setWaitingList] = useState([]);
 
   const seperateFriendList = () => {
-    setFriendList(friends.filter((friend) => friend.status === "FRIEND"));
-    setWaitingList(friends.filter((friend) => friend.status === "WAITING"));
+    setFriendList(friends.filter((friend) => friend.isFriend === "FRIEND"));
+    setWaitingList(friends.filter((friend) => friend.isFriend === "WAITING"));
   };
   // 유저의 친구 목록 패치
   useEffect(() => {
@@ -74,9 +74,9 @@ const FriendView = () => {
         ))}
       </Friends>
       <Friends>
-        내 칭구
         {friends.length > 0 ? (
           <>
+            <p>내 칭구</p>
             {friendList.map((friend) => (
               <Friend
                 key={friend.userId}

@@ -11,6 +11,7 @@ import DiaryIcon from "@assets/NavBar/diary.svg?react";
 import HomeIcon from "@assets/NavBar/home.svg?react";
 import MyPageIcon from "@assets/NavBar/my_page.svg?react";
 import PhotoCardIcon2 from "@assets/NavBar/photo_card2.svg?react";
+import useDiaryStore from "../../stores/diaryStore";
 
 const Nav = styled.nav`
   background: #ffffff;
@@ -64,17 +65,42 @@ const NavBar = () => {
   const location = useLocation();
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const theme = useTheme();
-  useEffect(() => {
-    setCurrentPath(location.pathname);
-  }, [location.pathname]);
+  const { monthlyDiaries, fetchMonthlyDiaries } = useDiaryStore();
+  const [writed, setWrited] = useState(false);
 
   const formatDate = (day) => format(day, "yyyy-MM-dd");
   const formattedDate = formatDate(new Date());
 
+  // navbar - diary 설정
+  useEffect(() => {
+    setCurrentPath(location.pathname);
+    // if (!monthlyDiaries || monthlyDiaries.length === 0) {
+    //   fetchMonthlyDiaries();
+    // }
+    // setWrited(monthlyDiaries.some((diary) => diary.diaryDate === formattedDate));
+  }, [location.pathname]);
+
+  // 특정 경로에서 NavBar를 숨기기 위한 조건 설정
+  const shouldHideNavBar =
+    currentPath === "/" ||
+    currentPath === "/login" ||
+    currentPath.startsWith("/signup") ||
+    currentPath.startsWith("/find-password") ||
+    currentPath.startsWith("/find-email") ||
+    currentPath.startsWith("/reset-password")
+    currentPath.startsWith("/social/sign-up") ||
+    currentPath.startsWith("/sign-up") ||
+    currentPath.startsWith("/select-player")
+    ;
+
+  if (shouldHideNavBar) {
+    return null; // 특정 경로에서 NavBar를 숨김
+  }
+
   return (
     <Nav>
       <LinkDiv>
-        <StyledLink to="/">
+        <StyledLink to="/main">
           <HomeIcon />
           <p>홈</p>
         </StyledLink>
@@ -86,18 +112,10 @@ const NavBar = () => {
         </StyledLink>
       </LinkDiv>
       <LinkDiv>
-        {currentPath === "/diary" ? (
-          <StyledLink to={`/diary/write/${formattedDate}`}>
-            <CustomBtn theme={theme}>
-              <AddCircleIcon />
-            </CustomBtn>
-          </StyledLink>
-        ) : (
           <StyledLink to="/diary">
             <DiaryIcon />
             <p>다이어리</p>
           </StyledLink>
-        )}
       </LinkDiv>
       <LinkDiv>
         <StyledLink to="/post">

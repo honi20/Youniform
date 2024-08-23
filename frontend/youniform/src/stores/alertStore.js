@@ -31,25 +31,25 @@ const useAlertStore = create((set) => ({
   //           currentAlert: {...newNotification},
   //           loading: false,
   //         }));
-  //         console.log(newNotification);
+  //         // console.log(newNotification);
   //       } else {
   //         // JSON이 아닌 경우, 텍스트로 처리
-  //         console.log("Received text data:", event.data);
+  //         // console.log("Received text data:", event.data);
   //       }
   //     } catch (error) {
   //       console.error("Failed to parse JSON:", error);
-  //       console.log("Received data:", event.data); // 데이터 확인을 위해 로깅
+  //       // console.log("Received data:", event.data); // 데이터 확인을 위해 로깅
   //     }
   //   });
 
   //   eventSource.addEventListener('heartbeat', (event) => {
-  //     console.log("Heartbeat received:", event.data);
+  //     // console.log("Heartbeat received:", event.data);
   //     // 이 메시지는 타임아웃을 방지하기 위한 하트비트입니다.
   //   });
 
   //   // 오류 처리 및 재연결 로직
   //   eventSource.onerror = (error) => {
-  //     console.log("Failed to subscribe to alerts", error);
+  //     // console.log("Failed to subscribe to alerts", error);
   //     set({ error: "Failed to subscribe to alerts", loading: false });
   //     eventSource.close();
   //     // 재연결 로직 추가 가능
@@ -68,10 +68,10 @@ const useAlertStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.delete(`/alerts`);
-      console.log("전체 알림 삭제에 성공했습니다.")
-      console.log(response.data.body)
+      // console.log("전체 알림 삭제에 성공했습니다.")
+      // console.log(response.data.body)
     } catch (error) {
-      console.log("Failed to deleteAllAlerts", error);
+      // console.log("Failed to deleteAllAlerts", error);
     }
   },
   markAllAlertsAsRead: async () => {
@@ -79,10 +79,10 @@ const useAlertStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.patch(`/alerts`);
-      console.log("전체 알림 읽음 처리에 성공했습니다.")
-      console.log(response.data.body)
+      // console.log("전체 알림 읽음 처리에 성공했습니다.")
+      // console.log(response.data.body)
     } catch (error) {
-      console.log("Failed to markAllAlertsAsRead", error);
+      // console.log("Failed to markAllAlertsAsRead", error);
     }
   },
   fetchAlerts: async () => {
@@ -90,11 +90,11 @@ const useAlertStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.get(`/alerts/list`);
-      console.log("전체 알림 조회에 성공했습니다.");
-      console.log(response.data.body);
+      // console.log("전체 알림 조회에 성공했습니다.");
+      // console.log(response.data.body);
       set({ alerts: response.data.body.alertList });
     } catch (error) {
-      console.log("Failed to patchAlerts", error);
+      // console.log("Failed to patchAlerts", error);
     }
   },
   deleteAlert: async (alertId) => {
@@ -102,11 +102,11 @@ const useAlertStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.delete(`/alerts/${alertId}`);
-      console.log("알림 삭제에 성공했습니다.")
-      console.log(response.data.body)
+      // console.log("알림 삭제에 성공했습니다.")
+      // console.log(response.data.body)
       return "$SUCCESS";
     } catch (error) {
-      console.log("Failed to deleteAlert", error);
+      // console.log("Failed to deleteAlert", error);
     }
   },
   markAlertAsRead: async (alertId) => {
@@ -114,10 +114,10 @@ const useAlertStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.patch(`/alerts/${alertId}`);
-      console.log("알림 읽음 처리에 성공했습니다.")
-      console.log(response.data.body)
+      // console.log("알림 읽음 처리에 성공했습니다.")
+      // console.log(response.data.body)
     } catch (error) {
-      console.log("Failed to markAlertAsRead", error);
+      // console.log("Failed to markAlertAsRead", error);
     }
   },
 }));

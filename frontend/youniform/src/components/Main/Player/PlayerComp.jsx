@@ -28,9 +28,8 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
     };
   }, [fetchUser, user]);
 
-  console.log(user);
   const handleFolderClick = (index) => {
-    console.log(index);
+    // console.log(index);
     setSelectedFolder(index);
     onSelectPlayer(index);
   };
@@ -38,17 +37,25 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
   const toggleSwitch = async (playerId) => {
     setIsOn(!isOn);
     const apiClient = getApiClient();
-    console.log(!isOn);
+    // console.log(!isOn);
     try {
       const response = await apiClient.patch(`/users/play/alert`, {
         pushAlert: !isOn,
       });
-      console.log("Server response:", response.data);
+      // console.log("Server response:", response.data);
     } catch (error) {
       console.error("There was an error updating the toggle state:", error);
       setIsOn(isOn);
     }
   };
+  const handleSong = async () => {
+    // team 선택일 경우
+    if (player.foundation){
+      navigate(`/song/team/1000`)
+    } else
+    // player 선택일 경우
+    navigate(`/song/player/${player.playerId}`)
+  }
   // 선정한 플레이어 개수에 따라서 folder 개수 달라져야함
   const folderTop = (count) => {
     return (
@@ -116,7 +123,7 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
       <St.Folder>
         {folderTop(count)}
         <St.Player>
-          <CharacterComp player={player} />
+          <CharacterComp player={player} index={selectedFolder} />
           <InfoComp player={player} />
         </St.Player>
       </St.Folder>
@@ -132,7 +139,7 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
           <St.Title>실시간 방송 알림</St.Title>
           <St.Description>방송이 시작될 때 알려드려요!</St.Description>
         </St.TextContainer>
-        <St.BtnContainer onClick={() => console.log("실시간 방송 알림")}>
+        <St.BtnContainer>
           {/* <St.OffBtn /> */}
           <St.SwitchContainer
             $isOn={isOn}
@@ -142,7 +149,7 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
           </St.SwitchContainer>
         </St.BtnContainer>
       </St.Container>
-      <St.Container onClick={() => navigate(`/song/player/${player.playerId}`)}>
+      <St.Container onClick={handleSong}>
         <St.TextContainer>
           <St.Title>응원가 & 등장곡</St.Title>
           <St.Description>최애의 응원가와 등장곡을 들어봅시다!</St.Description>

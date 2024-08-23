@@ -1,69 +1,42 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import LogoWithTitle from "@components/Setting/Share/LogoWithTitle";
 import styled from "styled-components";
 import { styled as muiStyled } from "@mui/material/styles";
 import { Margin, Visibility, VisibilityOff } from "@mui/icons-material";
-import { TextField, FormControl, InputAdornment, IconButton, Button } from "@mui/material";
+import {
+  TextField,
+  FormControl,
+  InputAdornment,
+  IconButton,
+  Button,
+} from "@mui/material";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 
 import useUserStore from "@stores/userStore";
 import BasicModal from "@components/Modal/BasicModal";
 import StatusMessageForm from "@components/SignUp/StatusMessageForm";
+import SaveChangesButton from "@components/Setting/Share/SaveChangesButton";
 
-const FindPassword = styled.div`
+const ChangePasswordContainer = styled.div`
+  height: calc(100% - 140px);
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: calc(100% - 70px);
-  align-items: center;
-`;
-const LoginLogo = styled.div`
-  display: flex;
-  height: 100px;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-weight: 600;
-  font-size: 22px;
-  letter-spacing: 5px;
-  margin-bottom: 20px;
-`;
-
-const FindPasswordContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  margin: 0 auto;
   width: 80%;
-  justify-content: center;
+  padding: 10% 0;
+  gap: 5%;
   align-items: center;
-  gap: 20px;
 `;
-
-const Title = styled.span`
-  font-size: 25px;
-  font-weight: bold;
-  letter-spacing: -1px;
-  color: #000078;
-`;
-
-const SubTitle = styled.span`
-  font-size: 14px;
-  margin-bottom: 2rem;
-`;
-
-const ColorBtn = muiStyled(Button)(() => ({
-  backgroundColor: "rgb(124, 124, 124)",
-  fontSize: "15px",
-  fontWeight: "600",
-}));
 
 const ChangePasswordView = () => {
+
   const navigate = useNavigate();
-  const { uuid } = useParams();
+  const { changePassword } = useUserStore();
 
-  const { resetPassword } = useUserStore();
-
+  const [exPassword, setExPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -71,13 +44,10 @@ const ChangePasswordView = () => {
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [isPwVerified, setIsPwVerified] = useState(false);
+  const [showExPassword, setShowExPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
-
-  // 모달
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
-
+  
   useEffect(() => {
     const match = isPwVerified && password === confirmPassword;
     setIsPasswordMatch(match);
@@ -118,6 +88,9 @@ const ChangePasswordView = () => {
       case "confirmPw":
         setConfirmPassword(value);
         break;
+      case "exPassword":
+        setExPassword(value);
+        break;
     }
   };
 
@@ -151,6 +124,9 @@ const ChangePasswordView = () => {
       case "showConfirmPw":
         setShowConfirmPw(!showConfirmPw);
         break;
+      case "showExPassword":
+        setShowExPassword(!showExPassword);
+        break;
     }
   };
 
@@ -169,110 +145,111 @@ const ChangePasswordView = () => {
     }
   };
 
+  const handleClickSave = () => {
+    if (isPasswordMatch && isPasswordMatch) {
+      if (exPassword.length === 0) {
+        
+      }
+    }
+  };
+
   return (
     <form>
-      <FindPassword>
-        <LoginLogo>
-          <SportsBaseballIcon />
-          <span>Youniform</span>
-        </LoginLogo>
-        <FindPasswordContainer>
-          <Title>비밀번호 재설정</Title>
-          <SubTitle>새 비밀번호와 인증 번호를 입력해주세요.</SubTitle>
-          <FormControl sx={{ width: "100%" }} variant="outlined">
-            <TextField
-              autoComplete="off"
-              label="새 비밀번호"
-              variant="outlined"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={handlePwChange("password")}
-              error={passwordError.length > 0}
-              helperText={passwordError}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => handleClickShowPassword("showPassword")}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{ paddingRight: "12px" }}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              fullWidth
-            />
-          </FormControl>
-          <FormControl sx={{ width: "100%" }} variant="outlined">
-            <TextField
-              autoComplete="off"
-              label="새 비밀번호 확인"
-              variant="outlined"
-              type={showConfirmPw ? "text" : "password"}
-              value={confirmPassword}
-              onChange={handlePwChange("confirmPw")}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => handleClickShowPassword("showConfirmPw")}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{ paddingRight: "12px" }}
-                    >
-                      {showConfirmPw ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              fullWidth
-            />
-          </FormControl>
-          {password.length > 0 &&
-            confirmPassword.length > 0 &&
-            isPwVerified &&
-            !isPasswordMatch && (
-              <StatusMessageForm
-                style={{ width: "100%", margin: "0 auto" }}
-                statusMsg="비밀번호 정보가 일치하지 않습니다."
-              />
-            )}
-          <TextField
-            sx={{ width: "100%" }}
-            label="인증 번호"
-            value={verifyCode}
-            onChange={handleVerifyCodeChange}
+    <ChangePasswordContainer>
+      <LogoWithTitle state="ChangePassword" />
+      <FormControl sx={{ width: "100%" }} variant="outlined">
+        <TextField
+          autoComplete="off"
+          label="기존 비밀번호"
+          variant="outlined"
+          type={showExPassword ? "text" : "password"}
+          value={exPassword}
+          onChange={handlePwChange("exPassword")}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => handleClickShowPassword("showExPassword")}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                  sx={{ paddingRight: "12px" }}
+                >
+                  {showExPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          fullWidth
+        />
+      </FormControl>
+      <FormControl sx={{ width: "100%" }} variant="outlined">
+        <TextField
+          autoComplete="off"
+          label="새 비밀번호"
+          variant="outlined"
+          type={showPassword ? "text" : "password"}
+          value={password}
+          onChange={handlePwChange("password")}
+          error={passwordError.length > 0}
+          helperText={passwordError}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => handleClickShowPassword("showPassword")}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                  sx={{ paddingRight: "12px" }}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          fullWidth
+        />
+      </FormControl>
+      <FormControl sx={{ width: "100%" }} variant="outlined">
+        <TextField
+          autoComplete="off"
+          label="새 비밀번호 확인"
+          variant="outlined"
+          type={showConfirmPw ? "text" : "password"}
+          value={confirmPassword}
+          onChange={handlePwChange("confirmPw")}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => handleClickShowPassword("showConfirmPw")}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                  sx={{ paddingRight: "12px" }}
+                >
+                  {showConfirmPw ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          fullWidth
+        />
+      </FormControl>
+      {password.length > 0 &&
+        confirmPassword.length > 0 &&
+        isPwVerified &&
+        !isPasswordMatch && (
+          <StatusMessageForm
+            style={{ width: "100%", margin: "0 auto",}}
+            statusMsg="비밀번호 정보가 일치하지 않습니다."
           />
-          <ColorBtn
-            variant="contained"
-            onClick={fetchResetPassword}
-            style={{ width: "100%" }}
-          >
-            완료
-          </ColorBtn>
-        </FindPasswordContainer>
-        {/* 비밀번호 수정 성공 / 변경된 비밀번호로 로그인하세요. */}
-        <BasicModal
-          state={"ResetPassword"}
-          isOpen={isSuccessModalOpen}
-          onClose={closeSuccessModal}
-          onButtonClick={(index) => handleAfterCheck("ResetPassword", index)}
-        />
-        {/* 비밀번호 수정 실패 / 정확한 인증 코드를 입력해주세요. */}
-        <BasicModal
-          state={"ResetPasswordFailure"}
-          isOpen={isFailureModalOpen}
-          onClose={closeFailureModal}
-          onButtonClick={(index) =>
-            handleAfterCheck("ResetPasswordFailure", index)
-          }
-        />
-      </FindPassword>
+        )}
+      <SaveChangesButton 
+      onClick={handleClickSave}
+      type="변경" />
+    </ChangePasswordContainer>
     </form>
   );
 };

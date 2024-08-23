@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useUserStore from "./userStore";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const signUpStore = create((set, get) => ({
@@ -14,25 +15,33 @@ const signUpStore = create((set, get) => ({
     }),
   user: {
     email: "",
+    verifyCode: null,
     password: "",
     confirmPw: "",
     profileUrl: null,
     nickname: "",
     introduce: "",
+    team: null,
     players: [],
     isVerified: false,
     isPwVerified: false,
     isNicknameUnique: false,
     setEmail: (val) =>
       set((state) => ({ user: { ...state.user, email: val } })),
+    setVerifyCode: (val) =>
+      set((state) => ({ user: { ...state.user, verifyCode: val } })),
     setPassword: (val) =>
       set((state) => ({ user: { ...state.user, password: val } })),
     setConfirmPw: (val) =>
       set((state) => ({ user: { ...state.user, confirmPw: val } })),
+    setProfileUrl: (val) =>
+      set((state) => ({ user: { ...state.user, profileUrl: val } })),
     setNickname: (val) =>
       set((state) => ({ user: { ...state.user, nickname: val } })),
     setIntroduce: (val) =>
       set((state) => ({ user: { ...state.user, introduce: val } })),
+    setTeam: (val) =>
+      set((state) => ({ user: { ...state.user, team: val } })),
     setIsVerified: (val) =>
       set((state) => ({ user: { ...state.user, isVerified: val } })),
     setIsPwVerified: (val) =>
@@ -42,6 +51,12 @@ const signUpStore = create((set, get) => ({
     setPlayers: (players) =>
       set((state) => ({ user: { ...state.user, players } })),
   },
+
+  setAccessToken: (token) => {
+    localStorage.setItem("accessToken", token);
+    // console.log("Access Token saved to localStorage:", token);
+  },
+
   sendEmail: async (email) => {
     try {
       const res = await axios({
@@ -50,7 +65,7 @@ const signUpStore = create((set, get) => ({
         data: { email },
       });
       if (res.status === 200) {
-        console.log(res.data);
+        // console.log(res.data);
         return "$OK";
       }
     } catch (error) {
@@ -59,8 +74,8 @@ const signUpStore = create((set, get) => ({
     }
   },
   verifyEmailCode: async (email, authenticCode) => {
-    console.log(email);
-    console.log(authenticCode);
+    // console.log(email);
+    // console.log(authenticCode);
     try {
       const res = await axios({
         method: "get",
@@ -71,12 +86,12 @@ const signUpStore = create((set, get) => ({
         },
       });
       if (res.data.header.httpStatusCode === 200) {
-        console.log("이메일 인증번호 확인 성공");
-        console.log(res.data);
+        // console.log("이메일 인증번호 확인 성공");
+        // console.log(res.data);
         return "$SUCCESS";
       }
     } catch (error) {
-      console.log("Failed to verifyEmailCode", error);
+      // console.log("Failed to verifyEmailCode", error);
       return "$FAIL";
     }
   },
@@ -90,38 +105,82 @@ const signUpStore = create((set, get) => ({
           nickname: user.nickname,
         },
       });
-      console.log(res);
+      // console.log(res);
       return "$OK";
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return "$FAIL";
     }
-},
+  },
   fetchLocalSignUp: async () => {
+    // console.log(1);
     try {
+      // console.log(2);
       const { user } = get();
-
+      // console.log(user);
+      // console.log("typeof team");
+      // console.log(typeof user.team);
+      // console.log("인증번호 확인");
+      // console.log(user.verifyCode);
       const res = await axios({
         method: "post",
         url: `${API_URL}/users/signup/local`,
         data: {
           email: user.email,
           password: user.password,
+          verifyCode: user.verifyCode,
           providerType: "local",
+          profileUrl: null,
+          nickname: user.nickname,
+          introduce: user.introduce,
+          team: user.team,
+          players: user.players,
+        },
+      });
+      // console.log(res);      
+      // console.log("Success to fetch Local SignUp");
+      if (res.data.header.httpStatusCode === 200) {
+        const accessToken = res.data.body.accessToken;
+        const { setAccessToken } = get();
+        setAccessToken(accessToken);
+        
+        // console.log('Access Token:', accessToken);
+        // console.log(res.data.body.accessToken);
+        return "$SUCCESS"
+      }
+    } catch (err) {
+      // console.log("Failed to fetch Local SignUp", err);
+    }
+  },
+  fetchSocialSignUp: async () => {
+    try {
+      const { user } = get();
+      const res = await axios({
+        method: "post",
+        url: `${API_URL}/users/signup/${user.providerType}`,
+        data: {
+          email: user.email,
+          password: user.password,
+          verifyCode: user.verifyCode,
+          providerType: user.providerType,
           profileUrl: user.profileUrl,
           nickname: user.nickname,
           introduce: user.introduce,
-          team: "MONSTERS",
-          players: (user.players.length === 1 && user.players[0] === 0) ? null : user.players,
+          team: user.team,
+          players: user.players,
         },
       });
+      // console.log("Success to fetch Local SignUp");
       if (res.data.header.httpStatusCode === 200) {
-        console.log("Success to fetch Local SignUp");
-        console.log(res.data.body.accessToken);
-        return "$SUCCESS";
+        const accessToken = res.data.body.accessToken;
+        const { setAccessToken } = get();
+        setAccessToken(accessToken);
+        // console.log('Access Token:', accessToken);
+        // console.log(res.data.body.accessToken);
+        return "$SUCCESS"
       }
     } catch (err) {
-      console.log("Failed to fetch Local SignUp", err);
+      // console.log("Failed to fetch Local SignUp", err);
     }
   },
 }));

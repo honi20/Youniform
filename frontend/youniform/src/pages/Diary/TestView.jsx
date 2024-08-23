@@ -39,22 +39,7 @@ const DiaryDetailView = ({ diaries }) => {
   
   return (
     <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Div>
-          <ScrollableDiaryView onScroll={handleScroll}>
-            <Container>
-              {diaries &&
-                diaries.map((diary) => {
-                  return <DiaryComp key={diary.diaryId} diary={diary} />;
-                })}
-            </Container>
-          </ScrollableDiaryView>
-          {diary ? <DiaryComp key={diary.diaryId} diary={diary} /> : <></>}
-          <ShareModal />
-        </Div>
-      )}
+      <ShareModal isOpen="true" />
     </>
   );
 };

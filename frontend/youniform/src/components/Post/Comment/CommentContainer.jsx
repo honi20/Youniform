@@ -22,7 +22,7 @@ const Ellipsis = styled.div`
   justify-content: center;
   align-items: center;
   color: gray;
-  opacity: ${(props) => (props.visible ? 1 : 0)};
+  opacity: ${(props) => (props.$visible ? 1 : 0)};
   transition: opacity 0.1s ease;
 `;
 const FlexBox = styled.div`
@@ -128,26 +128,30 @@ const CommentContainer = ({ postId, user }) => {
   const [content, setContent] = useState("");
   const post = usePostStore((state) => state.post); // 현재 포스트 가져오기
   const comments = usePostStore((state) => state.comments[postId] || []); // 현재 포스트의 댓글 목록 가져오기
-  const { addComment, updateComment, deleteComment } = usePostStore();
+  const { addComment, updateComment, deleteComment, fetchPost } = usePostStore();
   const [showEllipsis, setShowEllipsis] = useState(true);
   const [editedComment, setEditedComment] = useState(null);
   // const { user, fetchUser } = useUserStore();
   const scrollableRef = useRef(null);
   const isInitialRender = useRef(true);
+  useEffect(() => {
+    if (!isInitialRender.current) {
+      fetchPost(postId);
+    } else {
+      isInitialRender.current = false;
+    }
+  }, [postId, updateComment]);
   // 스크롤 시 발동하는 함수
   const handleScroll = (event) => {
     const { scrollTop, scrollHeight, clientHeight } = event.target;
     const isAtTop = scrollTop === 0;
     const isAtBottom = scrollTop + clientHeight >= scrollHeight;
-    console.log(scrollTop, clientHeight, scrollHeight);
+    // // console.log(scrollTop, clientHeight, scrollHeight);
     setShowEllipsis({
       top: !isAtTop,
       bottom: !isAtBottom,
     });
   };
-  useEffect(() => {
-    console.log("showEllipsis updated:", showEllipsis);
-  }, [showEllipsis]);
 
   useEffect(() => {
     if (!isInitialRender.current) {
@@ -173,8 +177,10 @@ const CommentContainer = ({ postId, user }) => {
       await updateComment(commentId, content);
       // setComments
       setEditedComment(null);
+      fetchPost(postId)
     } else if (action === "delete") {
       await deleteComment(commentId);
+      fetchPost(postId)
     }
   };
 
@@ -183,7 +189,7 @@ const CommentContainer = ({ postId, user }) => {
   };
 
   return (
-    <Container onClick={() => console.log("댓글창 클릭됨")}>
+    <Container>
       <ScrollableView ref={scrollableRef} onScroll={handleScroll}>
         {comments &&
           comments.map((comment) => (
@@ -214,6 +220,7 @@ const CommentContainer = ({ postId, user }) => {
                             handleCommentAction({
                               action: "update",
                               commentId: editedComment.commentId,
+                              postId: post.postId,
                               content: editedComment.contents,
                             });
                           }
@@ -226,6 +233,7 @@ const CommentContainer = ({ postId, user }) => {
                           handleCommentAction({
                             action: "update",
                             commentId: editedComment.commentId,
+                            postId: post.postId,
                             content: editedComment.contents,
                           })
                         }
@@ -241,7 +249,7 @@ const CommentContainer = ({ postId, user }) => {
                     <UpperContainer>{comment.contents}</UpperContainer>
                       <LowerContainer>
                         {comment.createdAt}
-                        {user.nickname === comment.nickname && 
+                        {user && comment && user.nickname === comment.nickname && 
                         <>
                           &nbsp;
                           <Btn onClick={() => handleEditClick(comment)}>수정</Btn>
@@ -251,6 +259,7 @@ const CommentContainer = ({ postId, user }) => {
                               handleCommentAction({
                                 action: "delete",
                                 commentId: comment.commentId,
+                                postId: post.postId
                               })
                             }
                           >
@@ -265,7 +274,7 @@ const CommentContainer = ({ postId, user }) => {
             </Comment>
           ))}
       </ScrollableView>
-      {showEllipsis && <Ellipsis visible={showEllipsis.bottom}>...</Ellipsis>}
+      {showEllipsis && <Ellipsis $visible={showEllipsis.bottom}>...</Ellipsis>}
       <CreateComment>
         <ChatIcon />
         <CommentTextarea content={content} setContent={setContent} />

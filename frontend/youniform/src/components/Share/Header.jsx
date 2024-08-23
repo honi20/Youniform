@@ -5,15 +5,16 @@ import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import SettingIcon from "@assets/Header/setting.svg?react";
 import ColorBtn from "../Common/ColorBtn";
 import { clearAccessToken } from "@stores/apiClient";
+import useUserStore from "../../stores/userStore";
+import useAlertStore from "../../stores/alertStore";
+import LogoIcon from "@assets/Header/logo.svg?react";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Head = styled.div`
   background-color: #f8f8f8;
-  /* position: fixed; */
   top: 0;
-  /* width: 100%; */
   height: 50px;
   display: flex;
-  /* border: 1px solid orange; */
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
@@ -51,7 +52,7 @@ const backSvg = (theme) => {
   );
 };
 
-const alarmSvg = (isAlarm, onClick) => {
+const alarmSvg = (hasUnreadAlert, onClick) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +78,7 @@ const alarmSvg = (isAlarm, onClick) => {
         cx="21.25"
         cy="8.75"
         r="2.5"
-        fill={isAlarm ? "#ff1744" : "#848484"}
+        fill={hasUnreadAlert === true ? "#ff1744" : "#848484"}
       />
     </svg>
   );
@@ -92,7 +93,37 @@ const IconContainer = styled.div`
   gap: 5px;
 `;
 
+const LogoutButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  padding: 0.4em 1.0em;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  border-radius: 0.5em;
+  background: #262f66;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    background: #7e7e7e;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    background: #7e7e7e;
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2);
+  }
+`;
+
 const Header = () => {
+  const { clearUser } = useUserStore();
+  const { alerts, fetchAlerts } = useAlertStore();
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -112,9 +143,11 @@ const Header = () => {
     navigate("/login");
   };
 
-  const handleLogoutClick = () => {
-    clearAccessToken();
+  const handleLogoutClick = async () => {
+    localStorage.removeItem('accessToken');
     setIsToken(null);
+    await clearUser();
+    navigate("/");
   };
 
   useEffect(() => {
@@ -122,9 +155,22 @@ const Header = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    setIsToken(accessToken);
-  }, [setIsToken]);
+    const syncTokenWithStorage = () => {
+      const accessToken = localStorage.getItem("accessToken");
+      setIsToken(accessToken);
+    };
+
+    // 알림 받아오기
+    if (isToken) {
+      fetchAlerts();
+    }
+
+    window.addEventListener("storage", syncTokenWithStorage);
+
+    return () => {
+      window.removeEventListener("storage", syncTokenWithStorage);
+    };
+  }, []);
 
   const renderContent = () => {
     switch (true) {
@@ -136,28 +182,41 @@ const Header = () => {
         );
       case currentPath === "/photo-card/binder":
         return <InnerHead></InnerHead>;
-      case ["/", "/photo-card", "/diary", "/post"].includes(currentPath):
+      case ["/main", "/photo-card", "/diary", "/post"].includes(currentPath):
         return (
           <InnerHead>
             <Logo>
-              <SportsBaseballIcon />
-              <strong>Youniform</strong>
+              <LogoIcon style={{ height: "50%" }} />
             </Logo>
-            {isToken ? (
-              <ColorBtn onClick={handleLogoutClick}>LOGOUT</ColorBtn>
-            ) : (
-              <ColorBtn onClick={handleLoginClick}>LOGIN</ColorBtn>
-            )}
+            <LogoutButton onClick={handleLogoutClick}>
+              <LogoutIcon style={{ width: "16px" }} />
+              <span>LOGOUT</span>
+            </LogoutButton>
           </InnerHead>
         );
       case currentPath === "/my-page":
+        let hasUnreadAlert = false;
+        if (isToken) {
+          hasUnreadAlert = alerts.some(alert => !alert.isRead);
+        }
         return (
-          <InnerHead>
-            <IconContainer>
-              {alarmSvg(isAlarm, () => navigate("/alert"))}
-              <SettingIcon onClick={() => navigate("/setting")} />
-            </IconContainer>
-          </InnerHead>
+          <>
+          {isToken ? (
+            <InnerHead>
+              <IconContainer>
+                {alarmSvg(hasUnreadAlert, () => navigate("/alert"))}
+                <SettingIcon onClick={() => navigate("/setting")} />
+              </IconContainer>
+            </InnerHead>
+            ) : (
+            <InnerHead>
+              <IconContainer>
+                {alarmSvg(hasUnreadAlert, () => navigate("/alert"))}
+                <SettingIcon onClick={() => navigate("/setting")} />
+              </IconContainer>
+            </InnerHead>
+          )}
+          </>
         );
       case currentPath === "/setting":
         return (

@@ -4,7 +4,6 @@ import useFriendStore from "@stores/friendStore";
 import useDiaryStore from "@stores/diaryStore";
 import useUserStore from "@stores/userStore";
 
-// Styled Components 정의
 const ListContainer = styled.div`
   background-color: #ededed;
   width: 100%;
@@ -90,15 +89,16 @@ const VerticalBar = styled.div`
 const DiaryFriendsList = ({ onUserClick }) => {
   const [selectedUserIndex, setSelectedUserIndex] = useState(null);
   const [selectedSelf, setSelectedSelf] = useState(false);
+  const [updateTrigger, setUpdateTrigger] = useState(false);
   const { friends, diaryFriends, fetchDiaryFriends } = useFriendStore();
   const { fetchUser, user } = useUserStore();
-  const {
-    selectedUser,
-    setSelectedUser,
-    monthlyDiaries,
-    fetchMonthlyDiaries,
-    fetchFriendsDiaries,
-  } = useDiaryStore();
+  const { selectedUser, setSelectedUser, monthlyDiaries, fetchMonthlyDiaries, fetchFriendsDiaries } = useDiaryStore(state => ({
+    selectedUser: state.selectedUser,
+    setSelectedUser: state.setSelectedUser,
+    monthlyDiaries: state.monthlyDiaries,
+    fetchMonthlyDiaries: state.fetchMonthlyDiaries,
+    fetchFriendsDiaries: state.fetchFriendsDiaries,
+  }));
 
   useEffect(() => {
     fetchUser();
@@ -108,7 +108,22 @@ const DiaryFriendsList = ({ onUserClick }) => {
     fetchDiaryFriends();
   }, [fetchDiaryFriends]);
 
-  const handleUserClick = async (type, index = null) => {
+  useEffect(() => {
+    if (selectedUser !== null) {
+      const index = diaryFriends.findIndex(
+        (friend) => friend.friendId === selectedUser
+      );
+      if (index !== -1) {
+        setSelectedUserIndex(index);
+        setSelectedSelf(false);
+      } else {
+        setSelectedSelf(true);
+        setSelectedUserIndex(null);
+      }
+    }
+  }, [selectedUser, diaryFriends]);
+
+  const handleUserClick = async (type, index) => {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -119,18 +134,20 @@ const DiaryFriendsList = ({ onUserClick }) => {
       setSelectedUserIndex(index);
       setSelectedUser(diaryFriends[index].friendId);
       if (onUserClick) {
-        // onUserClick(diaryFriends[index]);
+        onUserClick(diaryFriends[index]);
       }
       await fetchFriendsDiaries(diaryFriends[index].friendId, formattedDate);
+      await fetchDiaryFriends();
     } else if (type === "self") {
       setSelectedSelf(true);
       setSelectedUserIndex(null);
       setSelectedUser(null);
       if (onUserClick) {
-        // onUserClick();
+        onUserClick(null);
       }
       await fetchMonthlyDiaries(formattedDate);
     }
+    // setUpdateTrigger((prev) => !prev);
   };
 
   return (
@@ -142,12 +159,10 @@ const DiaryFriendsList = ({ onUserClick }) => {
             <UserCard
               $isSelected={selectedSelf}
               $noneSelected={selectedUserIndex === null && !selectedSelf}
-              onClick={() => handleUserClick("self")}
+              onClick={() => handleUserClick("self", null)}
             >
               <UserImage src={user.profileUrl} alt={user.nickname} />
-              {user.diaryUpdated && (
-                <UpdateStatusCircle $updateStatus={user.updateStatus} />
-              )}
+              <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
               <UserName>{user.nickname}</UserName>
             </UserCard>
             <VerticalBar />
@@ -160,9 +175,7 @@ const DiaryFriendsList = ({ onUserClick }) => {
                 onClick={() => handleUserClick("friend", index)}
               >
                 <UserImage src={user.imgUrl} alt={user.nickname} />
-                {user.diaryUpdated && (
-                  <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
-                )}
+                <UpdateStatusCircle $updateStatus={user.diaryUpdated} />
                 <UserName>{user.nickname}</UserName>
               </UserCard>
             ))}
