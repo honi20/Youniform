@@ -86,7 +86,7 @@ const PhotoCardCreator = () => {
   };
 
   const handleImageClick = async (selectedImg) => {
-    console.log(selectedImg);
+    // console.log(selectedImg);
     if (selectCanvas) {
       // 기존의 프레임 객체를 찾아서 제거
       const objects = selectCanvas.getObjects();
@@ -158,7 +158,7 @@ const PhotoCardCreator = () => {
       return fileName.split(".")[0];
     };
     if (selectCanvas) {
-      console.log(selectedFont);
+      // console.log(selectedFont);
       const text = new fabric.Textbox("입력하세요.", {
         left: selectCanvas.getWidth() / 2,
         top: selectCanvas.getHeight() / 2,
@@ -281,7 +281,7 @@ const PhotoCardCreator = () => {
         //     "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjA0Yjc3Mi1hZGMwLZ", // 실제 토큰으로 교체하세요
         // },
       });
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -290,7 +290,7 @@ const PhotoCardCreator = () => {
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
-      console.log("선택 해제");
+      // console.log("선택 해제");
       obj.selectable = false;
     }
     selectCanvas.renderAll();

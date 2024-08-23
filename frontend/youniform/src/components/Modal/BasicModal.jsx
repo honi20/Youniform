@@ -251,6 +251,18 @@ const stateMap = {
     subtitle: "이미 로컬 계정으로 가입된 이메일입니다.",
     btn: [0],
   },
+  DeleteAccountWarning: {
+    icon: <AlarmIcon />,
+    title: "정말로 탈퇴하시겠습니까?",
+    subtitle: "한 번 삭제된 정보는 복구가 불가능합니다.",
+    btn: [1, 0],
+  },
+  DeleteAccount: {
+    icon: <CheckIcon />,
+    title: "탈퇴 완료",
+    subtitle: "탈퇴 처리가 완료되었습니다.",
+    btn: [0],
+  }
 };
 
 const buttonMap = {
@@ -288,7 +300,7 @@ const BasicModal = ({
   };
 
   const renderTitle = (state, nickname) => {
-    console.log(state, stateMap[state]);
+    // // console.log(state, stateMap[state]);
     const title =
       typeof stateMap[state]?.title === "function"
         ? stateMap[state].title(nickname)

@@ -53,9 +53,9 @@ const PlayerPushAlarm = () => {
     // Call API to update the player's push alert status
     try {
       await updatePlayerPushAlert(playerId, newValue);
-      console.log(`Player ${playerId} pushAlert status updated to ${newValue}`);
+      // console.log(`Player ${playerId} pushAlert status updated to ${newValue}`);
     } catch (error) {
-      console.log("Failed to update player pushAlert status", error);
+      // console.log("Failed to update player pushAlert status", error);
       // Revert the state change in case of an error
       setPlayerNotifications({
         ...playerNotifications,

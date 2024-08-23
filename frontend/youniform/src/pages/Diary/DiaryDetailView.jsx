@@ -54,7 +54,7 @@ const DiaryDetailView = ({ diaries }) => {
   if (error) {
     return <Error message={error} />;
   }
-  console.log(diaries)
+  // // console.log(diaries)
   return (
     <>
         <Div>

@@ -46,7 +46,7 @@ const Img = styled.img`
 const ExampleModal = ({ isOn, setIsOn }) => {
     const handleCloseBtn = () => {
         setIsOn(false)
-        console.log('test')
+        // console.log('test')
     }
   return (
     <ModalBackdrop>

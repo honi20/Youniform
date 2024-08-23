@@ -6,7 +6,7 @@ const EntryMessage = styled.div`
 const ExitMessage = styled.div`
 `
 const Message = ({ isUser, msg }) => {
-  
+  // // console.log(msg)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -22,12 +22,20 @@ const Message = ({ isUser, msg }) => {
       return <EntryMessage/>
     case "EXIT":
       return <ExitMessage/>
+    case "HEARTBEAT":
+      return
+    case "USERCOUNT":
+      // // console.log("usercount:", msg.content)
+      return
    default:
     return (
       <>
         {isUser ? (
           <St.ChatWrapper $isUser={isUser}>
-            <St.ChatBody $isUser={isUser}>{msg.content}</St.ChatBody>
+            <St.ChatBody $isUser={isUser}>
+              {msg.imageUrl && <St.ChatImage src={msg.imageUrl}/>}
+              {msg.content}
+            </St.ChatBody>
             <St.ChatInfo $isUser={isUser}>
               <St.ChatDate>{formatDate(msg.messageTime)}</St.ChatDate>
             </St.ChatInfo>
@@ -38,7 +46,11 @@ const Message = ({ isUser, msg }) => {
               <St.ChatName>{msg.nickname}</St.ChatName>
               <St.ChatDate>{formatDate(msg.messageTime)}</St.ChatDate>
             </St.ChatInfo>
-            <St.ChatBody $isUser={isUser}>{msg.content}</St.ChatBody>
+            <St.ChatBody $isUser={isUser}>
+              {msg.imageUrl && <St.ChatImage src={msg.imageUrl}/>}
+              {msg.content}
+            </St.ChatBody>
+            {/* <St.ChatBody $isUser={isUser}>{msg.content}</St.ChatBody> */}
           </St.ChatWrapper>
         )}
       </>

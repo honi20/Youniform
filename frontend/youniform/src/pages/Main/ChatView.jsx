@@ -16,13 +16,11 @@ const ToggleBtn = styled.div`
   align-items: center;
   gap: 0.5rem;
   // typo
-  font-family: "Pretendard";
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 600;
   cursor: default;
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  /* box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.04); */
   /* border: 1px solid red; */
 `;
 
@@ -82,13 +80,14 @@ const ChatView = () => {
     sendMessage,
     setSelectedRoom,
     fetchChatRoom,
-    sendImage,
     fetchChatRoomMessage,
+    submitImage,
     enterChatRoom,
     type,
     setType,
   } = useChatStore();
   const { fetchUser, user } = useUserStore();
+  const [selectedFile, setSelectedFile] = useState(null);
   const messages = useChatStore((state) => state.messages);
   const chatBoxRef = useRef(null);
   const { roomId } = useParams();
@@ -112,21 +111,20 @@ const ChatView = () => {
     };
   }, [fetchUser, connect, disconnect, roomId, enterChatRoom]);
 
-  // useEffect(() => {
-  //   if (roomId) {
-  //     fetchChatRoomMessage();
-  //   }
-  // }, [roomId, fetchChatRoomMessage]);
+  useEffect(() => {
+    if (roomId) {
+      fetchChatRoomMessage();
+    }
+  }, [roomId, fetchChatRoomMessage]);
 
   useEffect(() => {
-    console.log(messages)
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
   }, [messages]);
   
   const handleKeyDown = (event) => {
-    console.log("Key pressed:", event.key); // 키 이벤트를 확인하기 위한 로그
+    // console.log("Key pressed:", event.key); // 키 이벤트를 확인하기 위한 로그
     if (event.key === "Enter") {
       event.preventDefault(); // 기본 Enter 동작 방지 (예: 줄바꿈)
       handleSubmitBtn();
@@ -136,7 +134,7 @@ const ChatView = () => {
   const [isOn, setIsOn] = useState(false); // 초기 상태 off
   const handleToggle = (isOn) => {
     setIsOn((prevIsOn) => !prevIsOn);
-    console.log("토글얌얌", isOn);
+    // console.log("토글얌얌", isOn);
   };
   const [selected, setSelected] = useState(roomId);
 
@@ -153,7 +151,9 @@ const ChatView = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    // console.log('file')
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setFilePreview(reader.result);
@@ -163,14 +163,38 @@ const ChatView = () => {
   };
 
   const handleAddPhotoClick = () => {
-    if (fileInputRef.current) {
+    // console.log(fileInputRef.current, 'juyeon test')
+    if (fileInputRef.current !== null) {
       fileInputRef.current.click();
+      // console.log('test', selectedFile)
     }
   };
 
-  const handleSubmitBtn = () => {
-    sendMessage(user.nickname, fileInputRef.current.files[0]);
-    sendImage();
+  const createFormData = async () => {
+    const formData = new FormData();
+    formData.append("file", selectedFile, selectedFile.name);
+    return formData;
+  };
+
+  const sendImage = async () => {
+    const formData = await createFormData();
+    const imageUrl = await submitImage(formData);
+    return imageUrl
+  }
+
+  const handleSubmitBtn = async () => {
+    if (selectedFile){
+    // console.log("handleSubmitBtn", selectedFile);
+    const imageUrl = await sendImage();
+    sendMessage(user.nickname, imageUrl);
+    setSelectedFile('')
+    fileInputRef.current.value = ''
+  } else {
+    sendMessage(user.nickname);
+  }
+    
+    setFilePreview('')
+    setSelectedFile('')
   };
   return (
     <St.Wrapper>

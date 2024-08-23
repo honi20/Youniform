@@ -49,7 +49,7 @@ const PhotocardCanvas = ({ selectCanvas, setSelectCanvas, decorated }) => {
     if (selectCanvas) {
       const objects = selectCanvas.getObjects();
       for (const obj of objects) {
-        console.log('epzh')
+        // console.log('epzh')
         obj.selectable = decorated;
       }
       selectCanvas.renderAll();

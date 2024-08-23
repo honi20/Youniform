@@ -26,11 +26,11 @@ const DiaryComp = ({ state, diary }) => {
     if(!user){
       fetchUser();
           }     
-           console.log(user)
+           // console.log(user)
   }, [user, fetchUser])
 
   const handleDeleteBtn = async (diaryId) => {
-    console.log("다이어리 삭제", diaryId);
+    // console.log("다이어리 삭제", diaryId);
     await deleteDiary(diaryId);
     fetchMonthlyDiaries();
     navigate("/diary");
@@ -39,19 +39,19 @@ const DiaryComp = ({ state, diary }) => {
   const handleButtonClick = (index) => {
     switch (index) {
       case 1:
-        console.log("Button 1 clicked");
+        // console.log("Button 1 clicked");
         // 추가 작업
         break;
       case 2:
-        console.log("Button 2 clicked");
+        // console.log("Button 2 clicked");
         // 추가 작업
         break;
       case 3:
-        console.log("Button 3 clicked");
+        // console.log("Button 3 clicked");
         handleDeleteBtn(diary.diaryId);
         break;
       default:
-        console.log("Unknown button clicked");
+        // console.log("Unknown button clicked");
         break;
     }
   };
@@ -60,13 +60,25 @@ const DiaryComp = ({ state, diary }) => {
     const [year, month, day] = dateString.split("-");
     return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
   };
-
+  const renderScope = (scope) => {
+    switch(scope){
+      case "ALL":
+        return "전체공개"
+      case "FRIENDS":
+        return "친구공개"
+      case "PRIVATE":
+        return "비공개"
+    }
+  }
   return (
     <St.Diary>
       <St.DiaryHeader>
         <St.Profile src={diary.profileUrl} />
         <St.TextContainer>
-          <St.HeaderText>{diary.nickname}</St.HeaderText>
+          <St.HeaderText>{diary.nickname}
+          <St.HeaderScope>{renderScope(diary.scope)}</St.HeaderScope>
+          </St.HeaderText>
+          
         </St.TextContainer>
         <St.DiaryDate>
           {diary?.diaryDate && formatDate(diary.diaryDate)}

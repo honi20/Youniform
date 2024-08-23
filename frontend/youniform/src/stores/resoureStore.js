@@ -49,8 +49,8 @@ const useResourceStore = create((set, get) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get("/diaries/resources");
-      console.log(res.data.header);
-      console.log(res.data.body);
+      // // console.log(res.data.header);
+      // // console.log(res.data.body);
       const resourceList = res.data.body.resourceList;
       const resources = get().setResources(resourceList);
       set((state) => ({
@@ -69,8 +69,8 @@ const useResourceStore = create((set, get) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries/stamps`);
-      console.log(res.data.header.message);
-      // console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // // console.log(res.data.body);
       set({ stampList: res.data.body.stampList, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -79,13 +79,13 @@ const useResourceStore = create((set, get) => ({
   },
 
   fetchPhotocardResources: async () => {
-    console.log("포토카드 리소스 로딩 중");
+    // console.log("포토카드 리소스 로딩 중");
     set({ loading: true, error: null });
     const apiClient = getApiClient();
     try {
         const res = await apiClient.get(`/photocards/resources`);
-        console.log("포토카드 리소스 조회에 성공했습니다.");
-        console.log(res.data);
+        // console.log("포토카드 리소스 조회에 성공했습니다.");
+        // console.log(res.data);
         const resourceList = res.data.body.resourceList[0].imgUrlList;
         get().setTemplates(resourceList);
         set({ loading: false });

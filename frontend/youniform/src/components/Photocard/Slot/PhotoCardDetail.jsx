@@ -91,10 +91,10 @@ const PhotoCardDetail = () => {
   };
 
   const goToPrevious = () => {
-    console.log(`curIndex = ${currentIndex}`);
+    // console.log(`curIndex = ${currentIndex}`);
     if (currentIndex > 0) {
       const previousId = photoCards[currentIndex - 1].photocardId;
-      console.log(`previousId = ${previousId}`);
+      // console.log(`previousId = ${previousId}`);
       navigate(`/photo-card/detail/${previousId}`);
     }
   };

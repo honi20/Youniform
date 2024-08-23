@@ -29,7 +29,7 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
   }, [fetchUser, user]);
 
   const handleFolderClick = (index) => {
-    console.log(index);
+    // console.log(index);
     setSelectedFolder(index);
     onSelectPlayer(index);
   };
@@ -37,12 +37,12 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
   const toggleSwitch = async (playerId) => {
     setIsOn(!isOn);
     const apiClient = getApiClient();
-    console.log(!isOn);
+    // console.log(!isOn);
     try {
       const response = await apiClient.patch(`/users/play/alert`, {
         pushAlert: !isOn,
       });
-      console.log("Server response:", response.data);
+      // console.log("Server response:", response.data);
     } catch (error) {
       console.error("There was an error updating the toggle state:", error);
       setIsOn(isOn);
@@ -139,7 +139,7 @@ export default function PlayerContainer({ onSelectPlayer, count, player }) {
           <St.Title>실시간 방송 알림</St.Title>
           <St.Description>방송이 시작될 때 알려드려요!</St.Description>
         </St.TextContainer>
-        <St.BtnContainer onClick={() => console.log("실시간 방송 알림")}>
+        <St.BtnContainer>
           {/* <St.OffBtn /> */}
           <St.SwitchContainer
             $isOn={isOn}

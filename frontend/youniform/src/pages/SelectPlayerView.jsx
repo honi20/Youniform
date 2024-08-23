@@ -205,8 +205,8 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
         });
 
         const { body, header } = res.data;
-        console.log(body);
-        console.log(header.message);
+        // console.log(body);
+        // console.log(header.message);
 
         setPlayerList((prevList) => {
           if (prevList.length === 1) {
@@ -217,7 +217,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
           }
         });
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
     fetchPlayerInfo();
@@ -236,7 +236,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
   }, [selectedPlayers, setPlayers]);
 
   const handleClick = (id) => {
-    console.log(players);
+    // console.log(players);
     setSelectedPlayers((prevSelectedPlayers) => {
       if (id == 0) {
         return prevSelectedPlayers.includes(0) ? [] : [0];
@@ -255,7 +255,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
         }
       }
     });
-    console.log(selectedPlayers);
+    // console.log(selectedPlayers);
   };
 
   const handleConfirmClick = () => {
@@ -266,9 +266,9 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
   };
 
   const handleModalButtonClick = (buttonType) => {
-    console.log("Button clicked:", buttonType);
+    // console.log("Button clicked:", buttonType);
     if (buttonType == 2) {
-      console.log("변경 요청 보내기", selectedPlayers);
+      // console.log("변경 요청 보내기", selectedPlayers);
       changePlayer();
     }
     setIsModalOpen(false);
@@ -281,11 +281,11 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
         teamId: 1000,
         players: selectedPlayers.length == 1 && selectedPlayers[0] == 0 ? [] : selectedPlayers,
       });
-      console.log(res.data);
+      // console.log(res.data);
       const { body, header } = res.data;
 
-      console.log(body);
-      console.log(header.message);
+      // console.log(body);
+      // console.log(header.message);
       await fetchPlayerList();
       navigate("/main");
     } catch (err) {
@@ -313,7 +313,7 @@ const SelectPlayerView = ({ teamId = "1000", step }) => {
             ))}
         </BtnWrapper>
       </Content>
-      {step !== "3" && (
+      {!(step == "3" || step == "4") && (
         <Footer>
           <ConfirmBtnWrapper>
             <ConfirmBtn onClick={handleConfirmClick}>선택완료</ConfirmBtn>

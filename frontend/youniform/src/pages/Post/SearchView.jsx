@@ -13,7 +13,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 120px);
-  border: 1px solid black;
+  /* border: 1px solid black; */
   overflow-y: auto;
 `;
 const RecommendContainer = styled.div`
@@ -44,21 +44,21 @@ const SearchView = () => {
   const { recommendFriends, fetchRecommendFriends } = useFriendStore();
   useEffect(() => {
     if (tagId) {
-      console.log("태그가 포함된 게시물 조회를 시작합니다.");
+      // console.log("태그가 포함된 게시물 조회를 시작합니다.");
       const fetchResult = async () => {
         const apiClient = getApiClient();
         try {
-          console.log(`Search Type: ${searchType}`);
-          console.log(`Searching for: ${searchQuery}`);
-          console.log(`Search TagId: ${tagId}`);
+          // console.log(`Search Type: ${searchType}`);
+          // console.log(`Searching for: ${searchQuery}`);
+          // console.log(`Search TagId: ${tagId}`);
           const res = await apiClient.get("/posts/tags", {
             params: {
               tagId: tagId,
               // lastPostId: "1",
             },
           });
-          console.log(res.data.header.message);
-          console.log(res.data.body.postList);
+          // console.log(res.data.header.message);
+          // console.log(res.data.body.postList);
           setResults(res.data.body.postList.content);
         } catch (err) {
           console.error(err.response ? err.response.data : err.message);
@@ -85,7 +85,7 @@ const SearchView = () => {
   );
   const [selectedFriend, setSelectedFriend] = useState();
   const renderContent = () => {
-    console.log(hasSearchParams, searchQuery);
+    // console.log(hasSearchParams, searchQuery);
     if (hasSearchParams) {
       return queryParams.current.q === searchQuery ? (
         <>

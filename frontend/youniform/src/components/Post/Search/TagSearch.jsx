@@ -23,12 +23,12 @@ const TagSearch = ({ query, search, setSearch }) => {
       searchTag(query);
       setSearch(false);
     }
-    console.log(search);
+    // console.log(search);
   }, [search]);
 
   const searchTag = async (query) => {
     if (query) {
-      console.log("태그 검색 시작");
+      // console.log("태그 검색 시작");
       const apiClient = getApiClient();
       try {
         const res = await apiClient.get(`/tags`, {
@@ -36,8 +36,8 @@ const TagSearch = ({ query, search, setSearch }) => {
             name: query,
           },
         });
-        console.log(res.data.header.message);
-        console.log(res.data.body.tags)
+        // console.log(res.data.header.message);
+        // console.log(res.data.body.tags)
         setResults(res.data.body.tags);
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
@@ -45,7 +45,7 @@ const TagSearch = ({ query, search, setSearch }) => {
     }
   };
   const handleClickTag = (result) => {
-    console.log(result);
+    // console.log(result);
     const encodedQuery = encodeURIComponent(result.contents);
     navigate(`/search?tagId=${result.tagId}&q=${encodedQuery}`);
     setResults([]);

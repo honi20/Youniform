@@ -23,7 +23,7 @@ const MyDiaryView = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (nickname) {
-        console.log(nickname);
+        // console.log(nickname);
       } else {
         await fetchMyDiary();
       }
@@ -40,7 +40,7 @@ const MyDiaryView = () => {
   };
 
   if (!diaries || diaries.length === 0) {
-    console.log(diaries);
+    // console.log(diaries);
     return <EmptyState icon={EmptyIcon} state="noDiaries" />;
   }
   return (

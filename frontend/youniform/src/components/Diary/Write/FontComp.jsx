@@ -17,7 +17,8 @@ const GlobalStyle = createGlobalStyle`
 
 const FontContainer = styled.div`
   display: flex;
-  height: calc(100% - 40px);
+  height: 100%;
+  /* border: 1px solid red; */
 `;
 const Wrapper = styled.div`
   padding-left: 3%;
@@ -79,7 +80,7 @@ const FontComp = ({ fonts, onFontClick }) => {
     path: fontPath,
     name: getFontName(fontPath),
   }));
-  console.log(fontData);
+  // console.log(fontData);
   return (
     <>
       <GlobalStyle fonts={fontData} />

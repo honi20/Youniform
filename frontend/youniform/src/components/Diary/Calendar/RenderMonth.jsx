@@ -10,7 +10,7 @@ import ArrowRight from '@assets/Icons/ArrowRight.svg?react';
 const MonthRow = styled.div`
   display: flex;
   width: 90%;
-  height: 8%;
+  height: 40px;
   margin: 0 auto;
   justify-content: space-between;
   align-items: center;

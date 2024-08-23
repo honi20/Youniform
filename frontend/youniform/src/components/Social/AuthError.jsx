@@ -35,7 +35,7 @@ const AuthError = () => {
         const key = new URL(window.location.href).searchParams.get(
           "providerType"
         );
-        console.log(key);
+        // console.log(key);
         switch (key) {
           case "kakao":
             setState("AuthKakaoError");
@@ -62,7 +62,7 @@ const AuthError = () => {
   if (loading) {
     return <Loading />;
   }
-  console.log(state);
+  // console.log(state);
   return (
     <Container>
       {state && (

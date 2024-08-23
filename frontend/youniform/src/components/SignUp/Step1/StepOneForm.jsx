@@ -65,7 +65,7 @@ const StepOneForm = () => {
   const handleNextStep = () => {
     // if (isVerified && isPasswordVerified && isPasswordMatch) {
       // 다음 스텝으로 진행
-      console.log("다음 스텝으로 진행합니다.");
+      // console.log("다음 스텝으로 진행합니다.");
     // }
   };
 

@@ -3,7 +3,8 @@ import styled from "styled-components";
 
 const ThemeContainer = styled.div`
   display: flex;
-  height: calc(100% - 40px);
+  /* height: calc(100% - 40px); */
+  height: 100%;
   /* border: 1px solid red; */
 `;
 const Wrapper = styled.div`

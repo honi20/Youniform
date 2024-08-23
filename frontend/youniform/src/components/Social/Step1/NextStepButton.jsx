@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useSignUpStore from "@stores/signUpStore";
 
 const NextStepBtn = styled.div`
@@ -20,8 +20,12 @@ const NextStepBtn = styled.div`
   z-index: 1;
 `;
 
-const NextStepButton = ({ step, email, providerType, profileImage }) => {
-  const { user, fetchSocialSignUp } = useSignUpStore();
+const NextStepButton = ({ step, selectedTeam, email, providerType, profileImage }) => {
+  const { user, setTeam, fetchSocialSignUp } = useSignUpStore((state) => ({
+    user: state.user,
+    setTeam: state.user.setTeam,
+    fetchSocialSignUp: state.fetchSocialSignUp,
+  }));
   const navigate = useNavigate();
 
   const handleNextStep = async () => {
@@ -36,16 +40,38 @@ const NextStepButton = ({ step, email, providerType, profileImage }) => {
         }
         break;
       case "2":
-        if (user.players.length > 0) {
+        if (selectedTeam === "none")
+
+          return;
+        if (selectedTeam === 1000) { // 몬스터즈
+          setTeam(1000);
+          navigate(`/social/sign-up/step-3`);
+        } else {  // 이 외 구단
+          setTeam(selectedTeam);
           const res = await fetchSocialSignUp();
+          // console.log(res);
           if (res === "$SUCCESS") {
-            navigate(`/social/sign-up/step-3`);
+            navigate(`/sign-up/success`, { state: { isStepFour: true } });
+          }
+        }
+      break;
+        case "3":
+        if (user.players.length > 0) {
+          setTeam(1000);
+          const res = await fetchSocialSignUp();
+          // console.log(res);
+          if (res === "$SUCCESS") {
+            navigate(`/social/sign-up/success`);
           }
         }
         break;
       case "3":
         navigate(`/main`);
-        return;
+      return;
+      case "success":
+        window.dispatchEvent(new Event("storage"));
+        navigate(`/main`);
+      break;
     }
 
     // if (nextStep) {

@@ -17,7 +17,8 @@ const CellsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
-  height: 84%;
+  height: calc(100% - 70px);
+  max-height: 550px;
   margin: 0 auto;
   justify-content: space-between;
 `;
@@ -30,6 +31,9 @@ const Cell = styled.div`
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 
   &.disabled {
     background-color: #f0f0f0;
@@ -43,6 +47,30 @@ const Cell = styled.div`
   &.not-valid {
     color: #ddd;
   }
+
+  p {
+    margin: 0;
+  }
+
+  img {
+    margin-top: 5px;
+    width: 65%;
+    height: auto; /* 높이는 자동으로 설정 */
+    max-height: 50%; /* 기본 최대 높이 설정 */
+    object-fit: contain; /* 이미지가 셀 내부에 적절히 맞춰지도록 설정 */
+    margin-left: auto;
+    margin-right: 2px;
+
+    /* 뷰포트 높이에 따른 미디어 쿼리 */
+    @media (max-height: 568px) { /* iPhone SE와 같은 짧은 화면 */
+      width: 65% /* 높이 비율을 줄임 */
+    }
+
+    @media (min-height: 700px) { /* iPhone 14 Pro Max와 같은 긴 화면 */
+      margin-top: 10px;
+      width: 80% /* 높이 비율을 늘림 */
+    }
+  }
 `;
 
 const RenderCells = ({ user, currentMonth, selectedDate, onDateClick }) => {
@@ -55,9 +83,8 @@ const RenderCells = ({ user, currentMonth, selectedDate, onDateClick }) => {
 
   const now = new Date();
   const year = now.getFullYear();
-  // 월은 0부터 시작, padStart(month 두 자릿수 보장)
   const month = String(now.getMonth() + 1).padStart(2, "0");
-  const formatDate = `${year}-${month}`; // yyyy-MM
+  const formatDate = `${year}-${month}`;
 
   useEffect(() => {
     fetchMonthlyDiaries(formatDate);
@@ -83,12 +110,9 @@ const RenderCells = ({ user, currentMonth, selectedDate, onDateClick }) => {
   const handleDateClick = (day, stampSrc, nickname) => {
     const formatDate = (day) => format(day, "yyyy-MM-dd");
     const formattedDate = formatDate(day);
-    console.log(formattedDate);
-    // 친구 다이어리 클릭했을 때
     if (user) {
       return;
     }
-    // 내 다이어리 클릭했을 때
     if (!stampSrc) {
       navigate(`/diary/write/${formattedDate}`);
     } else {
@@ -138,20 +162,14 @@ const RenderCells = ({ user, currentMonth, selectedDate, onDateClick }) => {
             <img
               src={stampSrc}
               alt="stamp"
-              style={{
-                marginTop: "60%",
-                width: "40px",
-                height: "40px",
-              }}
-              // onClick={() => {loadDiaryDetail(diaryInfo.diaryId)}}
             />
           )}
           {!stampSrc && (
             <div
               style={{
-                marginTop: "60%",
-                width: "40px",
-                height: "40px",
+                marginTop: "10px",
+                width: "100%",
+                height: "20px",
               }}
             ></div>
           )}

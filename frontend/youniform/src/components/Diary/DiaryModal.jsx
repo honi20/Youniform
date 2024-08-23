@@ -134,10 +134,10 @@ const Stamp = styled.img`
   height: ${(props) => (props.selected ? "60px" : "40px")};
   cursor: pointer;
 `;
-const DiaryModal = ({ isOn, setIsOn, setScope, setStampId }) => {
+const DiaryModal = ({ isOn, setIsOn, setScope, setStampId, scope, stampId }) => {
   const { stampList, fetchStampList } = useResourceStore();
-  const [selectedStampId, setSelectedStampId] = useState();
-  const [selectedScope, setSelectedScope] = useState("ALL");
+  const [selectedStampId, setSelectedStampId] = useState(stampId);
+  const [selectedScope, setSelectedScope] = useState(scope);
 
   useEffect(() => {
     const loadStamp = () => {

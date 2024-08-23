@@ -64,9 +64,9 @@ const PushAlarm = () => {
           Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 토큰 추가
         },
       });
-      console.log("게시글 소식 받기 상태가 성공적으로 업데이트되었습니다.");
+      // console.log("게시글 소식 받기 상태가 성공적으로 업데이트되었습니다.");
     } catch (error) {
-      console.log("게시글 소식 받기 상태 업데이트 실패:", error);
+      // console.log("게시글 소식 받기 상태 업데이트 실패:", error);
     }
   };
 
@@ -81,9 +81,9 @@ const PushAlarm = () => {
           Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 토큰 추가
         },
       });
-      console.log("실시간 방송 소식 받기 상태가 성공적으로 업데이트되었습니다.");
+      // console.log("실시간 방송 소식 받기 상태가 성공적으로 업데이트되었습니다.");
     } catch (error) {
-      console.log("실시간 방송 소식 받기 상태 업데이트 실패:", error);
+      // console.log("실시간 방송 소식 받기 상태 업데이트 실패:", error);
     }
   };
 

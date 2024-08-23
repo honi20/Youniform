@@ -5,7 +5,7 @@ const DaysRow = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
-  height: 8%;
+  height: 30px;
   margin: 0 auto;
   justify-content: space-between;
   border-top: 2px solid #787878;

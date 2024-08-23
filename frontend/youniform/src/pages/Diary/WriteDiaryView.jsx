@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as St from "@pages/Diary/WriteDiaryStyle";
 import { fabric } from "fabric";
-import { wallpapers, stickers, fonts } from "@assets";
+import { fonts } from "@assets";
 import styled from "styled-components";
 import DecoIcon from "@assets/Main/DecoIcon.svg?react";
 import ExampleIcon from "@assets/Main/ExIcon.svg?react";
@@ -86,11 +86,12 @@ const WriteDiaryView = () => {
       initializeDiary();
       setUpdate(false);
     }
+    // console.log(diary)
   }, [diaryId, fetchDiary]);
 
   useEffect(() => {
     fetchResources();
-    console.log(themes);
+    // // console.log(themes);
     fetchStampList();
   }, [fetchResources, fetchStampList]);
 
@@ -101,13 +102,13 @@ const WriteDiaryView = () => {
         if (activeObjects.length > 0) {
           const obj = activeObjects[0];
           const test = activeObjects[0].getCenterPoint()
-          // console.log(test)
+          // // console.log(test)
           const imgWidth = obj.getScaledWidth();
           const imgHeight = obj.getScaledHeight();
           if (deleteBtnRef.current) {
             deleteBtnRef.current.style.display = "block";
-            deleteBtnRef.current.style.left = `${test.x - imgWidth/2 + 48}px`;
-            deleteBtnRef.current.style.top = `${test.y - imgHeight/2 + 10}px`;
+            deleteBtnRef.current.style.left = `${test.x + imgWidth/2 + 28}px`;
+            deleteBtnRef.current.style.top = `${test.y - imgHeight/2 + 12}px`;
             deleteBtnRef.current.style.display = 'flex'; 
           }
         }
@@ -137,7 +138,7 @@ const WriteDiaryView = () => {
   };
 
   const handleImageClick = async (background) => {
-    console.log(background);
+    // console.log(background);
     if (selectCanvas) {
       fabric.Image.fromURL(
         background.imgUrl,
@@ -196,9 +197,9 @@ const WriteDiaryView = () => {
       return cleanName;
     };
     await document.fonts.load(`16px ${getFontName(selectedFont)}`);
-    console.log(selectedFont, getFontName(selectedFont));
+    // console.log(selectedFont, getFontName(selectedFont));
     if (selectCanvas) {
-      console.log(selectedFont);
+      // console.log(selectedFont);
       const text = new fabric.Textbox("입력하세요.", {
         left: selectCanvas.getWidth() / 2,
         top: selectCanvas.getHeight() / 2,
@@ -214,7 +215,7 @@ const WriteDiaryView = () => {
     }
   };
   const handleThemeClick = async (background) => {
-    console.log(background);
+    // console.log(background);
     if (selectCanvas) {
       fabric.Image.fromURL(
         background.imgUrl,
@@ -362,15 +363,15 @@ const WriteDiaryView = () => {
       let newId = "";
 
       if (diaryId) {
-        console.log("다이어리 수정");
+        // console.log("다이어리 수정");
         await updateDiary(diaryId, formData);
       } else {
-        console.log("다이어리 생성");
+        // console.log("다이어리 생성");
         newId = await addDiary(formData);
       }
 
       // 다이어리 저장 후 데이터 갱신 및 상세 페이지로 이동
-      await fetchMonthlyDiaries();
+      // await fetchMonthlyDiaries();
       await moveToDetailPage(newId ? newId : diaryId);
     } catch (error) {
       console.error("Error saving diary object:", error);
@@ -379,11 +380,12 @@ const WriteDiaryView = () => {
 
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+      // console.log(`${key}:`, value);
     }
   };
-  const [scope, setScope] = useState("ALL");
-  const [stampId, setStampId] = useState(1);
+  
+  const [scope, setScope] = useState(diaryId ? diary.scope : "ALL");
+  const [stampId, setStampId] = useState(diaryId ? diary.stampId : 1);
   const saveDiaryObject = async () => {
     try {
       if (selectCanvas) {
@@ -392,12 +394,12 @@ const WriteDiaryView = () => {
         const imageBlob = await fetch(diaryImgUrl).then((res) => res.blob());
 
         // 확인용 코드
-        // console.log("diaryDate: ", diaryDate ? diaryDate : date);
-        // console.log("contents: ", json);
-        // console.log("scope: ", scope);
-        // console.log("stamp: ", stampId);
-        // console.log(diaryDate, date)
-        // console.log(diary)
+        // // console.log("diaryDate: ", diaryDate ? diaryDate : date);
+        // // console.log("contents: ", json);
+        // // console.log("scope: ", scope);
+        // // console.log("stamp: ", stampId);
+        // // console.log(diaryDate, date)
+        // // console.log(diary)
         const formData = new FormData();
         const dto = {
           diaryDate: diaryDate ? diaryDate : diary.diaryDate,
@@ -411,7 +413,7 @@ const WriteDiaryView = () => {
         formData.append("file", imageBlob, "canvas.png");
         formData.append("dto", dtoBlob);
 
-        // console.log("FormData contents:");
+        // // console.log("FormData contents:");
         // logFormData(formData);
 
         return formData;
@@ -427,7 +429,7 @@ const WriteDiaryView = () => {
   const moveToDetailPage = async (diaryId) => {
     try {
       if (diaryId) {
-        // console.log(diaryId);
+        // // console.log(diaryId);
         navigate(`/diary/${diaryId}`); // 페이지 이동
       }
     } catch (error) {
@@ -450,16 +452,17 @@ const WriteDiaryView = () => {
   const handleCloseBtn = () => {
     const objects = selectCanvas.getObjects();
     for (const obj of objects) {
-      // console.log("선택 해제");
+      // // console.log("선택 해제");
       obj.selectable = false;
     }
     selectCanvas.renderAll();
     setIsDecorated(!isDecorated);
   };
+
   const removeBtn = async() => {
     if (selectCanvas) {
       const objectsToDelete = await selectCanvas.getActiveObjects();
-      console.log(objectsToDelete);
+      // console.log(objectsToDelete);
   
       if (objectsToDelete.length > 0) {
         objectsToDelete.forEach((obj) => {
@@ -468,17 +471,11 @@ const WriteDiaryView = () => {
   
         selectCanvas.discardActiveObject(); // 선택된 상태를 해제
         selectCanvas.renderAll();
-        console.log('삭제완료');
+        // console.log('삭제완료');
       }
     }
   }
-  const deleteElem = (elem) => {
-    if (selectCanvas){
-      console.log('삭제')
-      selectCanvas.remove(elem)
-      selectCanvas.renderAll();
-    }
-  }
+  
   return (
     <>
       <St.StampContainer onClick={() => handleToggle(isOn)}>
@@ -500,6 +497,8 @@ const WriteDiaryView = () => {
         setIsOn={setIsOn}
         setScope={setScope}
         setStampId={setStampId}
+        scope={scope}
+        stampId={stampId}
       />
       <St.SaveBtn onClick={() => setIsSaveModalOpen(true)}>
         <St.IconContainer>
@@ -520,6 +519,7 @@ const WriteDiaryView = () => {
           decorated={isDecorated}
           diary={diary.contents}
           update={update}
+          fonts={Object.values(fonts).map((mod) => mod.default)}
         />
         <St.DecorationContainer $decorated={isDecorated}>
           <St.BtnContainer $decorated={isDecorated}>

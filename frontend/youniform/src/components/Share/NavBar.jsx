@@ -78,7 +78,7 @@ const NavBar = () => {
     //   fetchMonthlyDiaries();
     // }
     // setWrited(monthlyDiaries.some((diary) => diary.diaryDate === formattedDate));
-  }, [location.pathname, fetchMonthlyDiaries, monthlyDiaries]);
+  }, [location.pathname]);
 
   // 특정 경로에서 NavBar를 숨기기 위한 조건 설정
   const shouldHideNavBar =
@@ -112,18 +112,10 @@ const NavBar = () => {
         </StyledLink>
       </LinkDiv>
       <LinkDiv>
-        {currentPath === "/diary" && !writed ? (
-          <StyledLink to={`/diary/write/${formattedDate}`}>
-            <CustomBtn theme={theme}>
-              <AddCircleIcon />
-            </CustomBtn>
-          </StyledLink>
-        ) : (
           <StyledLink to="/diary">
             <DiaryIcon />
             <p>다이어리</p>
           </StyledLink>
-        )}
       </LinkDiv>
       <LinkDiv>
         <StyledLink to="/post">

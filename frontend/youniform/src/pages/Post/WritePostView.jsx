@@ -128,7 +128,7 @@ const WritePostView = () => {
         if (location.state && location.state.post) {
             const post = location.state.post;
             const contentWithTags = addTagsToContent(post);
-            // console.log(contentWithTags)
+            // // console.log(contentWithTags)
             setContent(contentWithTags);
             setTags(post.tags.map((tag) => tag.contents))
             if (post.imageUrl) {
@@ -164,7 +164,7 @@ const WritePostView = () => {
     return content.replace(/#\S+/g, "").trim();
   };
   const addTagsToContent = (post) => {
-    // console.log("addTagsToContent", post.tags)
+    // // console.log("addTagsToContent", post.tags)
     const content = stripHtmlTags(post.contents);
     const tags = (post.tags.map((tag) => tag.contents))
     const tagsString = tags.map(tag => `#${tag}`).join(" ");
@@ -174,16 +174,16 @@ const WritePostView = () => {
   
   const logFormData = (formData) => {
     for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+      // console.log(`${key}:`, value);
     }
   };
   const createFormData = async () => {
     const cleanedContent = cleanContent();
 
-    console.log("저장할 내용:", cleanedContent);
-    console.log("해쉬태그", tags);
-    console.log("Selected file:", selectedFile);
-    console.log(tags)
+    // console.log("저장할 내용:", cleanedContent);
+    // console.log("해쉬태그", tags);
+    // console.log("Selected file:", selectedFile);
+    // console.log(tags)
     const formData = new FormData();
     const dto = {
       contents: cleanedContent,
@@ -192,15 +192,15 @@ const WritePostView = () => {
 
     const newBlob = new Blob();
     if (selectedFile) {
-      // console.log("파일 있음")
+      // // console.log("파일 있음")
       formData.append("file", selectedFile, selectedFile.name);
     } else {
-      // console.log(filePreview);
+      // // console.log(filePreview);
       if(filePreview === null) {
-        // console.log("파일 없음");
+        // // console.log("파일 없음");
         formData.append("file", newBlob);
       } else {
-        // console.log("이건 업데이트 안할거임!!");
+        // // console.log("이건 업데이트 안할거임!!");
         formData.append("file", null);
       }
     }
@@ -221,7 +221,7 @@ const WritePostView = () => {
       const formData = await createFormData();
       let newPostId = "";
       if (postId) {
-        // console.log("업데이트", postId);
+        // // console.log("업데이트", postId);
         // logFormData(formData);
         await updatePost(postId, formData);
       } else {
