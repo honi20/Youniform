@@ -15,8 +15,8 @@ const useFriendStore = create((set) => ({
       const res = await apiClient.get(`/friends/mypage`);
       const { body, header } = res.data;
 
-      console.log(body);
-      console.log(header.message);
+      // console.log(body);
+      // console.log(header.message);
 
       set({ friends: body.friendMypageList });
     } catch (err) {
@@ -26,15 +26,15 @@ const useFriendStore = create((set) => ({
   addFriend: async (friend) => {
     const apiClient = getApiClient();
     try {
-      console.log(friend.userId);
+      // console.log(friend.userId);
 
       const res = await apiClient.post(`/friends/request`, {
         friendUuid: friend.userId,
       });
 
-      console.log(res.data.message);
+      // console.log(res.data.message);
     } catch (err) {
-      console.log("Failed to Add friend");
+      // console.log("Failed to Add friend");
       handleApiError(err);
       set({ loading: false, error: err.message });
     }
@@ -47,7 +47,7 @@ const useFriendStore = create((set) => ({
           friendUuid: friendId,
         },
       });
-      console.log(res.data.header.message);
+      // console.log(res.data.header.message);
 
       set((state) => ({
         friends: state.friends.filter((friend) => friend.friendId !== friendId),
@@ -65,7 +65,7 @@ const useFriendStore = create((set) => ({
           friendUuid: friendId,
         },
       });
-      console.log(res.data.header.message);
+      // console.log(res.data.header.message);
 
       set((state) => ({
         friends: state.friends.filter((friend) => friend.userId !== friendId),
@@ -79,10 +79,10 @@ const useFriendStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/friends/diary`);
-      console.log(res.data);
+      // console.log(res.data);
       set({ diaryFriends: res.data.body.friendDiaryList });
     } catch (error) {
-      console.log("Failed to fetchDiaryFriends", error);
+      // console.log("Failed to fetchDiaryFriends", error);
     }
   },
   acceptFriendRequest: async (uuid) => {
@@ -91,10 +91,10 @@ const useFriendStore = create((set) => ({
       const res = await apiClient.post(`/friends/accept`, {
         friendUuid: uuid,
       });
-      console.log(res.data);
+      // console.log(res.data);
       return "$SUCCESS";
     } catch (error) {
-      console.log("Failed to fetchDiaryFriends", error);
+      // console.log("Failed to fetchDiaryFriends", error);
     }
   },
   recommendFriends: [],
@@ -102,11 +102,11 @@ const useFriendStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/users/lists`);
-      console.log(res.data.header);
-      console.log(res.data.body.userList.content);
+      // console.log(res.data.header);
+      // console.log(res.data.body.userList.content);
       set({ recommendFriends: res.data.body.userList.content });
     } catch (error) {
-      console.log("Failed to fetchRecommendFriends", error);
+      // console.log("Failed to fetchRecommendFriends", error);
     }
   },
 }));

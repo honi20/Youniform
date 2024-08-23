@@ -25,24 +25,26 @@ const CalendarBox = styled.div`
 
 const Calendar = ({ user, currentMonth, setCurrentMonth }) => {
   const { selectedUser, fetchFriendsDiaries, fetchMonthlyDiaries } = useDiaryStore();
-  // const [curMonth, setCurMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     const formattedDate = `${format(currentMonth, 'yyyy')}-${format(currentMonth, 'MM')}`;
     
     if (selectedUser !== null) {
-      console.log(`selectedUser: ${selectedUser}`);
-      console.log(`formattedDate: ${formattedDate}`);
+      // console.log(`selectedUser: ${selectedUser}`);
+      // console.log(`formattedDate: ${formattedDate}`);
       fetchFriendsDiaries(selectedUser, formattedDate);
     } else if (selectedUser === null) {
-      console.log(`formattedDate: ${formattedDate}`);
+      // console.log(`formattedDate: ${formattedDate}`);
       fetchMonthlyDiaries(formattedDate);
     }
   }, [currentMonth, selectedUser]);
 
+  useEffect(() => {
+  }, []);
+
   const prevMonth = () => {
-    console.log(`before month: ${currentMonth}`);
+    // console.log(`before month: ${currentMonth}`);
     setCurrentMonth(subMonths(currentMonth, 1));
   };
 

@@ -46,12 +46,10 @@ const PhotocardCanvas = ({ selectCanvas, setSelectCanvas, decorated }) => {
   }, []);
 
   useEffect(() => {
-    console.log(decorated);
-    console.log('test')
     if (selectCanvas) {
       const objects = selectCanvas.getObjects();
       for (const obj of objects) {
-        console.log('epzh')
+        // console.log('epzh')
         obj.selectable = decorated;
       }
       selectCanvas.renderAll();

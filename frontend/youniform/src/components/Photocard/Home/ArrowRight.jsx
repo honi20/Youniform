@@ -69,11 +69,13 @@ const Span = styled.span`
   }
 `;
 
-const ArrowRight = () => {
+const ArrowRight = (cover) => {
   const navigate = useNavigate();
   
   const showBinder = () => {
-    navigate(`/photo-card/binder`, { state: { from: 'photo-card' } });
+    // console.log("커버 url 출력");
+    // console.log(cover.cover);
+    navigate(`/photo-card/binder`, { state: { from: 'photo-card', coverSrc: cover.cover } });
   };
 
   return (

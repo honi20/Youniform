@@ -3,14 +3,14 @@ import styled from "styled-components";
 import * as Font from "@/typography";
 import ProfileModal from "../Modal/ProfileModal";
 import { getApiClient } from "@stores/apiClient";
-
+import parse from "html-react-parser";
 const Container = styled.div`
   border: 0.5px solid #dadada;
   border-radius: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: white;
   margin: 0 5%;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   cursor: pointer;
   &:not(:first-child) {
     margin: 4% 5%;
@@ -37,13 +37,7 @@ const DateWrapper = styled(HeaderWrapper)`
   color: #848484;
   font-weight: 400;
 `;
-const ProfileImg = styled.img`
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  margin-right: 5px;
-  border: 0.5px solid #dadada;
-`;
+
 const Content = styled.div`
   ${Font.Medium};
   font-weight: 400;
@@ -83,6 +77,7 @@ const Footer = styled.div`
   padding: 1%;
   border-top: 1px solid #9c9c9c;
 `;
+
 const CommentContainer = styled.div`
   gap: 1%;
   display: flex;
@@ -125,18 +120,43 @@ const HeartIcon = styled(HeartSvg)`
   width: 24px;
   height: 24px;
 `;
+const NicknameContainer = styled.div`
+  max-width: 150px;
+  /* border: 5px solid black; */
+  /* display: flex; */
+  /* flex-direction: column; */
+`;
+const Nickname = styled.p`
+  /* border: 2px solid red; */
+  flex-shrink: 1;
+  display: inline;
+`;
+const ProfileImg = styled.img`
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  margin-right: 5px;
+  border: 0.5px solid #dadada;
+`;
+const TeamImg = styled.img`
+  /* border: 2px solid blue; */
+  height: 20px;
+  display: inline;
+  padding-top: 5px;
+`;
 import useUserStore from "@stores/userStore";
+import usePostStore from "@stores/postStore";
 import { useNavigate } from "react-router-dom";
 const Post = ({ post }) => {
-  // const [selectedTag, setSelectedTag] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
   const { user, fetchUser, friend, loading, error, fetchFriend, clearFriend } =
     useUserStore();
-  const [like, setLike] = useState(false);
+  const { fetchPost, fetchPosts } = usePostStore();
+  const [like, setLike] = useState(post.isLiked);
   const handleTagClick = (tag) => {
-    console.log(tag, "포스트 포함 태그 검색");
+    // console.log(tag, "포스트 포함 태그 검색");
     const encodedQuery = encodeURIComponent(tag.contents);
     navigate(`/search?tagId=${tag.tagId}&q=${encodedQuery}`);
   };
@@ -148,6 +168,9 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     setLike(post.isLiked);
+    if (!post) {
+      fetchPost(post.postId);
+    }
   }, [setLike]);
 
   const handleProfileClick = async () => {
@@ -172,16 +195,24 @@ const Post = ({ post }) => {
   const handleLike = async () => {
     const newLike = !like;
     setLike(newLike);
-    console.log(newLike);
+    // // console.log(newLike);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.post(`/likes/${post.postId}`, {
         isLiked: newLike,
       });
-      console.log(res.data.header.message);
+      // console.log(res.data.header.message);
+      fetchPosts();
+      // fetch
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
+  };
+  const parseText = (text) => {
+    // 줄바꿈을 <br /> 태그로 변환
+    const formattedText = text.replace(/\n/g, "<br />");
+    // HTML을 JSX로 변환
+    return parse(formattedText);
   };
   return (
     <>
@@ -189,7 +220,12 @@ const Post = ({ post }) => {
         <Header>
           <HeaderWrapper onClick={handleProfileClick}>
             <ProfileImg src={post.profileImg} />
-            {post.nickname}
+            <NicknameContainer>
+              <Nickname>
+                {post.nickname}
+                <TeamImg src={post.teamUrl} />
+              </Nickname>
+            </NicknameContainer>
           </HeaderWrapper>
           <DateWrapper>{post.createdAt}</DateWrapper>
         </Header>
@@ -199,12 +235,13 @@ const Post = ({ post }) => {
             src={post.imageUrl}
           />
           <div onClick={() => navigate(`/post/${post.postId}`)}>
-            {htmlContent.split("\n").map((line, index) => (
+            {parseText(post.contents)}
+            {/* {htmlContent.split("\n").map((line, index) => (
               <React.Fragment key={index}>
                 {line}
                 <br />
               </React.Fragment>
-            ))}
+            ))} */}
           </div>
           <TagContainer>
             {post &&

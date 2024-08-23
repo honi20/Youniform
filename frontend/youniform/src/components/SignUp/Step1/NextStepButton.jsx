@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useSignUpStore from "@stores/signUpStore";
-import useUserStore from "../../../stores/userStore";
 
 const NextStepBtn = styled.div`
   width: 100%;
@@ -10,24 +9,28 @@ const NextStepBtn = styled.div`
   border-radius: 20px;
   background-color: #262f66;
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;      /* 수평 중앙 정렬 */
+  line-height: 8vh;        /* 높이와 동일하게 설정하여 수직 중앙 정렬 */
   font-size: 1.3rem;
   font-weight: 600;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 120px;
   z-index: 1;
+  /* border: 1px solid black; */
 `;
 
-const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
-  const { user, isVerified, fetchLocalSignUp } = useSignUpStore();
-  const { setAccessToken } = useUserStore();
-  const navigate = useNavigate();
+const NextStepButton = ({ step, selectedTeam, isPasswordVerified, isPasswordMatch }) => {
+  const { user, setTeam, isVerified, fetchLocalSignUp } = useSignUpStore((state) => ({
+    user: state.user,
+    setTeam: state.user.setTeam,
+    isVerified: state.user.isVerified,
+    fetchLocalSignUp: state.fetchLocalSignUp,
+  }));
 
+  const navigate = useNavigate();
+  
   const handleNextStep = async () => {
-    let nextStep;
     switch (step) {
       case "1":
         if (isVerified && isPasswordVerified, isPasswordMatch) {
@@ -37,33 +40,47 @@ const NextStepButton = ({ step, isPasswordVerified, isPasswordMatch }) => {
         break;
       case "2":
         if (user.isNicknameUnique && [...user.introduce].length <= 20) {
-          navigate(`/sign-up/step-3`);
+          navigate(`/sign-up/step-3`, {state: { step: 3 }} );
         }
         break;
       case "3":
-        if (user.players.length > 0) {
+        // console.log("switch문 접근");
+        if (selectedTeam === "none")
+          return;
+        
+        if (selectedTeam === 1000) { // 몬스터즈
+          setTeam(1000);
+          navigate(`/sign-up/step-4`);
+        } else {  // 이 외 구단
+          setTeam(selectedTeam);
           const res = await fetchLocalSignUp();
-          console.log(res);
+          // console.log(res);
           if (res === "$SUCCESS") {
-            // const token = res.body.accessToken;
-            // await setAccessToken(token);
-            navigate(`/sign-up/step-4`);
+            navigate(`/sign-up/success`, { state: { isStepFour: true } });
           }
         }
         break;
       case "4":
-        navigate(`/`);
-        return;
+        if (user.players.length > 0) {
+          setTeam(1000);
+          const res = await fetchLocalSignUp();
+          if (res === "$SUCCESS") {
+            navigate(`/sign-up/success`);
+          }
+        }
+        break;
+      case "success":
+        window.dispatchEvent(new Event("storage"));
+        navigate(`/main`);
+        break;
     }
-
-    // if (nextStep) {
-    //   navigate(`/sign-up/step-${nextStep}`);
-    // }
   };
 
   return (
     <NextStepBtn onClick={handleNextStep}>
-      {step === "4" ? "확인" : "다음 단계로"}
+      <span>
+        {step === 'success' ? "홈으로" : "다음 단계로"}
+      </span>
     </NextStepBtn>
   );
 };

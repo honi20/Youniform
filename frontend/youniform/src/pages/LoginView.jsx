@@ -129,12 +129,15 @@ const ColorBtn = muiStyled(Button)(() => ({
 }));
 
 const LoginView = () => {
-  const { fetchLogin, accessToken, clearAccessToken } = useUserStore();
-  const { photoCards, setTotalPages, fetchPhotoCardList } = usePhotoCardStore();
+  const { fetchLogin, accessToken, clearAccessToken, fetchUser } = useUserStore();
+  const { photoCards, setTotalPages, fetchPhotoCardList, setCoverUrl } = usePhotoCardStore();
   const [emailInput, setEmailInput] = useState("");
   const [isCustomDomain, setIsCustomDomain] = useState(false);
   const [currency, setCurrency] = useState("");
   // const subscribe = useAlertStore(state => state.subscribe);
+  const kakao = import.meta.env.VITE_KAKAO_URL;
+  const naver = import.meta.env.VITE_NAVER_URL;
+  const google = import.meta.env.VITE_GOOGLE_URL;
 
   const navigate = useNavigate();
 
@@ -202,19 +205,32 @@ const LoginView = () => {
       ? `${emailInput}@${currency}`
       : `${emailInput}@${currency}`;
     const result = await fetchLogin(fullEmail, values.password);
-    if (result == "$FAIL") {
-      alert("로그인에 실패하였습니다.");
-    } else if (result === "$OK") {
+    if (result === "$OK") {
       await fetchPhotoCardList();
       await setTotalPages(photoCards / 4 + 1);
-      // subscribe();
-      console.log(`로그인 성공`);
-      console.log(`sse 연결 성공`)
-      navigate("/");
+      await fetchUser();
+      navigate("/main");
+    } else {
+      alert("로그인에 실패하였습니다.");
     }
   };
 
-  // console.log(accessToken);
+  const LoginKakao = () => {
+    window.location.href = kakao;
+  };
+
+  const LoginNaver = () => {
+    window.location.href = naver;
+  };
+
+  const LoginGoogle = () => {
+    window.location.href = google;
+  };
+
+  const handleSocialLogin = (url) => {
+    // 소셜 로그인 제공자의 인증 URL로 리디렉션
+    window.location.href = url;
+  };
 
   return (
     <LoginViewContainer>
@@ -323,9 +339,9 @@ const LoginView = () => {
             <Bar />
           </SocialLoginText>
           <LoginLinkIcon>
-            <LoginIcon src={KakaoIcon} onClick={handleLoginClick}></LoginIcon>
-            <LoginIcon src={NaverIcon}></LoginIcon>
-            <LoginIcon src={GoogleIcon}></LoginIcon>
+            <LoginIcon src={KakaoIcon} onClick={() => handleSocialLogin(kakao)} alt="Kakao Login"></LoginIcon>
+            <LoginIcon src={NaverIcon} onClick={() => handleSocialLogin(naver)} alt="Naver Login"></LoginIcon>
+            <LoginIcon src={GoogleIcon} onClick={() => handleSocialLogin(google)} alt="Google Login"></LoginIcon>
           </LoginLinkIcon>
         </SocialLogin>
       </LoginContent>

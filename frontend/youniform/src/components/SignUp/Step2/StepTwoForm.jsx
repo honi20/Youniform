@@ -146,7 +146,6 @@ const UserInfoContainer = styled.div`
   flex-direction: column;
   width: 90%;
   margin: 0 auto;
-  margin-top: 2rem;
   gap: 0.5rem;
 `;
 
@@ -158,9 +157,9 @@ const validateNickname = (nickname) => {
 const StepTwoForm = () => {
   const { user, verifyNickname } = useSignUpStore();
   const { nickname, introduce, isNicknameUnique,
-    setNickname, setIntroduce, setIsNicknameUnique, } = user;
+    setNickname, setIntroduce, setIsNicknameUnique,
+    profileUrl, setProfileUrl } = user;
 
-  const [profileImage, setProfileImage] = useState(ProfileImg);
   const [statusMsg, setStatusMsg] = useState(null);
   const [introduceStatusMsg, setIntroduceStatusMsg] = useState(null);
   const [typingTimeout, setTypingTimeout] = useState(null);
@@ -215,17 +214,17 @@ const StepTwoForm = () => {
   };
 
   const handleDeleteIconClick = () => {
-    setProfileImage(ProfileImg);
+    setProfileUrl(null);
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const validExtensions = ['image/jpeg', 'image/png', 'image/gif']; // 허용할 이미지 확장자
+      const validExtensions = ['image/jpeg', 'image/png', 'image/jpg']; // 허용할 이미지 확장자
       if (validExtensions.includes(file.type)) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setProfileImage(reader.result);
+          setProfileUrl(reader.result);
         };
         reader.readAsDataURL(file);
       } else {
@@ -245,9 +244,13 @@ const StepTwoForm = () => {
         ))}
       </StepIndicatorBox>
       <SignUpText>프로필 입력</SignUpText>
-      <ProfileImgContainer>
+      {/* <ProfileImgContainer>
         <ProfileImgWrapper>
-          <ProfileImgStyled src={profileImage} alt="프로필 이미지" />
+          {profileUrl ? (
+            <ProfileImgStyled src={profileUrl} alt="프로필 이미지" />
+          ) : (
+            <ProfileImgStyled src={ProfileImg} alt="프로필 이미지" />
+          )}
         </ProfileImgWrapper>
         <IconWrapper style={{ left: '14%' }} onClick={handleAddIconClick}>
           <AddIconStyled />
@@ -261,7 +264,7 @@ const StepTwoForm = () => {
           accept=".jpeg, .jpg, .png, .gif"  // 허용할 파일 확장자 설정
           onChange={handleFileChange} 
         />
-      </ProfileImgContainer>
+      </ProfileImgContainer> */}
       <UserInfoContainer>
         <TextField
           sx={{ width: "100%" }}

@@ -1,7 +1,9 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Calendar from "@components/Diary/Calendar";
 import styled from "styled-components";
 import DiaryFriendsList from "@components/Diary/DiaryFriendsList";
+import { useLocation, useNavigate } from "react-router-dom";
+import useDiaryStore from "@stores/diaryStore";
 
 const DiaryHome = styled.div`
   position: relative;
@@ -14,14 +16,19 @@ const FriendsContainer = styled.div`
 `;
 
 const CalendarContainer = styled.div`
-  height: 100%;
+  height: calc(100% - 170px);
+  max-height: 620px;
 `;
 
 const DiaryHomeView = () => {
   const [calendarHeight, setCalendarHeight] = useState("auto");
-  const [selectedUser, setSelectedUser] = useState(0);
+  const { selectedUser, setSelectedUser } = useDiaryStore(state => ({
+    selectedUser: state.selectedUser,
+    setSelectedUser: state.setSelectedUser
+  }));
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const diaryHomeRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const updateCalendarHeight = () => {
@@ -40,8 +47,7 @@ const DiaryHomeView = () => {
   }, []);
 
   const handleUserClick = (user) => {
-    setSelectedUser(user);
-    console.log(user);
+    setSelectedUser(user ? user.friendId : null); // 친구가 선택되지 않으면 0으로 설정
     setCurrentMonth(new Date()); // 현재 월로 설정
   };
 
@@ -50,11 +56,11 @@ const DiaryHomeView = () => {
       <FriendsContainer>
         <DiaryFriendsList onUserClick={handleUserClick} />
       </FriendsContainer>
-      <CalendarContainer style={{ height: calendarHeight }}>
+      <CalendarContainer>
         <Calendar
           user={selectedUser}
-          currentMonth={currentMonth} // 현재 월을 Calendar에 전달
-          setCurrentMonth={setCurrentMonth} // Calendar에서 월을 업데이트할 수 있도록
+          currentMonth={currentMonth}
+          setCurrentMonth={setCurrentMonth}
         />
       </CalendarContainer>
     </DiaryHome>

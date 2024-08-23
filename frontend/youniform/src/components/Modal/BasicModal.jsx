@@ -6,15 +6,17 @@ import AlarmIcon from "@assets/Modal/AlarmIcon.svg?react";
 const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;
-  left: 0;
   width: 100%;
+  max-width: 400px;
   height: 100%;
+  left: 50%;
+  transform: translate(-50%, 0);
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 5;
+  z-index: 11;
 `;
 
 const Container = styled.div`
@@ -225,6 +227,42 @@ const stateMap = {
     subtitle: "삭제된 포스트는 다시 볼 수 없습니다.",
     btn: [1, 3],
   },
+  AuthKakaoError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 카카오 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
+  AuthNaverError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 네이버 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
+  AuthGoogleError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 구글 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
+  AuthLocalError: {
+    icon: <AlarmIcon />,
+    title: "로그인 실패",
+    subtitle: "이미 로컬 계정으로 가입된 이메일입니다.",
+    btn: [0],
+  },
+  DeleteAccountWarning: {
+    icon: <AlarmIcon />,
+    title: "정말로 탈퇴하시겠습니까?",
+    subtitle: "한 번 삭제된 정보는 복구가 불가능합니다.",
+    btn: [1, 0],
+  },
+  DeleteAccount: {
+    icon: <CheckIcon />,
+    title: "탈퇴 완료",
+    subtitle: "탈퇴 처리가 완료되었습니다.",
+    btn: [0],
+  }
 };
 
 const buttonMap = {
@@ -262,6 +300,7 @@ const BasicModal = ({
   };
 
   const renderTitle = (state, nickname) => {
+    // // console.log(state, stateMap[state]);
     const title =
       typeof stateMap[state]?.title === "function"
         ? stateMap[state].title(nickname)

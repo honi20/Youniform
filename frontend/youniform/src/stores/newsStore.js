@@ -1,10 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
+import { getApiClient } from "@stores/apiClient";
 
-const NEWS_URL = import.meta.env.VITE_NEWS_URL;
-const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
-const NAVER_CLIENT_SECRET = import.meta.env.VITE_NAVER_CLIENT_SECRET;
-const HOST = import.meta.env.VIT_HOST;
 
 const useNewsStore = create((set, get) => ({
   news: {}, // 선수별 뉴스 저장하는 객체 { [playerId]: [] }
@@ -12,37 +9,36 @@ const useNewsStore = create((set, get) => ({
   hasMore: true, // 뉴스 존재 여부
 
   fetchTotalNews: async (playerList) => {
-    // console.log(playerList);
+    // // console.log(playerList);
     const { page, hasMore } = get();
     if (!hasMore) return;
     
-    console.log("뉴스를 불러옵니다.");
+    // console.log("뉴스를 불러옵니다.");
+    const apiClient = getApiClient()
     try {
       const newsPromises = playerList.map((player) => {
-        return axios
-          .get(`/v1/search/news.json`, {
-            headers: {
-              "X-Naver-Client-Id": NAVER_CLIENT_ID,
-              "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
-            },
+        return apiClient
+          .get(`https://youniform.site/api/news?`, {
             params: {
               query: player.name,
-              display: 10,
-              start: (page - 1) * 10 + 1,
             },
           })
-          .then((response) => ({
+          .then((response) => (
+            {
             playerId: player.playerId,
-            news: response.data.items,
+            news: response.data.items || [],
             total: response.data.total,
           }));
-      });
+      }
+    );
+    
 
       const results = await Promise.all(newsPromises);
       const newsMap = results.reduce((acc, { playerId, news }) => {
         acc[playerId] = (acc[playerId] || []).concat(news);
         return acc;
       }, {});
+
 
       const totalNews = results.reduce(
         (total, { total: playerTotal }) => total + playerTotal,
@@ -63,32 +59,29 @@ const useNewsStore = create((set, get) => ({
   },
 
   // 특정 선수의 뉴스 가져오기
-  fetchNews: async (player, page = 1) => {
+  fetchTeamNews: async (team) => {
+    // console.log("test", team)
+    if (team){
+      // console.log("팀 뉴스 조회")
+      const apiClient = getApiClient();
     try {
-      const response = await axios.get(`/v1/search/news.json`, {
-        headers: {
-          "X-Naver-Client-Id": NAVER_CLIENT_ID,
-          "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
-        },
+      const response = await apiClient(`https://youniform.site/api/news?`, {
         params: {
-          query: player.name,
-          display: 10,
-          start: (page - 1) * 10 + 1,
+          query: "최강몬스터즈",
         },
       });
-      console.log(response.data.items);
+      // console.log(response.data)
       set((state) => ({
         news: {
           ...state.news,
-          [player.playerId]: (state.news[player.playerId] || []).concat(
-            response.data.items
-          ),
+          [1000]: (state.news[1000] || []).concat(response.data.items || []),
         },
       }));
     } catch (error) {
       console.error("Failed to fetch news:", error);
     }
-  },
+  }
+},
 
   // 특정 선수의 뉴스 반환
   getPlayerNews: (playerId) => {
@@ -97,8 +90,7 @@ const useNewsStore = create((set, get) => ({
 
   // 전체 선수의 뉴스를 합친 총 뉴스 반환
   getTotalNews: () => {
-    const allNews = Object.values(get().news).flat();
-    return allNews;
+    return Object.values(get().news).flat();
   },
 }));
 

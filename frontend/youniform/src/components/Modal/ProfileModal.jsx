@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import * as Font from "@/typography";
 import UserItem from "@components/MyPage/UserItem";
@@ -6,15 +6,17 @@ import { getApiClient } from "@stores/apiClient";
 const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
   width: 100%;
   height: 100%;
+  max-width: 400px;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 5;
+  z-index: 11;
   /* border: 1px solid black; */
 `;
 const Container = styled.div`
@@ -129,15 +131,23 @@ import DeleteFriendIcon from "@assets/Post/Sad_alt_light.svg?react";
 import { useNavigate } from "react-router-dom";
 import usePostStore from "@stores/postStore";
 import useDiaryStore from "@stores/diaryStore";
+import useFriendStore from "../../stores/friendStore";
 
 const ProfileModal = ({ user, friend, isOpen, onClose }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { fetchFriendPosts } = usePostStore();
   const { fetchFriendDiary } = useDiaryStore();
+  const { fetchFriends } = useFriendStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [friendStatus, setFriendStatus] = useState(
+    friend ? friend.isFriend : null
+  );
+  useEffect(() => {
+    fetch
+  })
   if (!isOpen) return null;
-  
+
   if (user.nickname === friend.nickname) {
     navigate("/my-page");
     return;
@@ -147,8 +157,8 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
       await fetchFriendPosts(friend.userId);
       navigate(`/post/friend/${friend.nickname}`);
     } catch (error) {
-      console.log("Failed to fetch friend", error);
-      set({ loading: false, error: error.message });
+      // console.log("Failed to fetch friend", error);
+      // set({ loading: false, error: error.message });
     }
   };
   const friendDiary = async (friend) => {
@@ -156,40 +166,43 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
       await fetchFriendDiary(friend.userId);
       navigate(`/diary/friend/${friend.nickname}`);
     } catch (error) {
-      console.log("Failed to fetch friend", error);
-      set({ loading: false, error: error.message });
+      // console.log("Failed to fetch friend", error);
+      // set({ loading: false, error: error.message });
     }
   };
   const addFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      console.log(friend.userId);
+      // // console.log(friend.userId);
       const res = await apiClient.post(`/friends/request`, {
         friendUuid: friend.userId,
       });
-      console.log(res.data.message);
+      // // console.log(res.data.message);
+      setFriendStatus("WAITING");
     } catch (error) {
-      console.log("Failed to Add friend", error);
-      set({ loading: false, error: error.message });
+      // console.log("Failed to Add friend", error);
+      // set({ loading: false, error: error.message });
     }
   };
   const deleteFriend = async (friend) => {
     const apiClient = getApiClient();
     try {
-      console.log(friend.userId);
-      const res = await apiClient.post(`/friends/request`, {
+      // // console.log(friend.userId);
+      const res = await apiClient.delete(`/friends/request`, {
         friendUuid: friend.userId,
       });
-      console.log(res.data.message);
+      // // console.log(res.data.message);
+      setFriendStatus("NOT_FRIEND");
     } catch (error) {
-      console.log("Failed to Add friend", error);
-      set({ loading: false, error: error.message });
+      // console.log("Failed to Add friend", error);
+      // set({ loading: false, error: error.message });
     }
   };
   const FriendComponent = ({ friend, addFriend }) => {
     const { isFriend } = friend;
-    console.log(isFriend);
-    switch (isFriend) {
+    const { statue } = friend;
+    // console.log(friend, isFriend);
+    switch (friendStatus) {
       case "NOT_FRIEND":
         return (
           <UserItem
@@ -203,7 +216,6 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
           <UserItem
             icon={WaitingIcon}
             text="친구 요청 중"
-            onClick={() => console.log("친구 요청 중")}
           />
         );
       case "FRIEND":
@@ -211,11 +223,17 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
           <UserItem
             icon={DeleteFriendIcon}
             text="친구 삭제"
-            onClick={() => console.log("친구 삭제")}
+            onClick={() => deleteFriend(friend)}
           />
         );
       default:
-        return null;
+        return (
+          <UserItem
+            icon={GroupIcon}
+            text="친구 신청"
+            onClick={() => addFriend(friend)}
+          />
+        );
     }
   };
   return (
@@ -227,7 +245,9 @@ const ProfileModal = ({ user, friend, isOpen, onClose }) => {
             <BtnContainer onClick={onClose}>{CloseSvg(theme)}</BtnContainer>
           </Header>
           <Profile>
-            <ProfileImg src={friend.profileUrl} />
+            <ProfileImg
+              src={friend.imgUrl ? friend.imgUrl : friend.profileUrl}
+            />
             <ProfileInfo>
               <Nickname>{friend.nickname}</Nickname>
               <Introduce>{friend.introduce}</Introduce>

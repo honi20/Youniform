@@ -4,7 +4,7 @@ import { getApiClient } from "@stores/apiClient";
 
 const logFormData = (formData) => {
   for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value);
+    // console.log(`${key}:`, value);
   }
 };
 
@@ -12,6 +12,7 @@ const useDiaryStore = create((set) => ({
   selectedUser: null,
   setSelectedUser: (id) => set({ selectedUser: id }),
   loading: false,
+  error: null,
   diaries: [],
   diary: [],
   monthlyDiaries: [],
@@ -26,15 +27,15 @@ const useDiaryStore = create((set) => ({
   addDiary: async (formData) => {
     // logFormData(formData);
     const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
+    // console.log("API Client:", apiClient);
     try {
       const res = await apiClient.post("/diaries", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       return res.data.body.diaryId;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -47,11 +48,12 @@ const useDiaryStore = create((set) => ({
       const res = await apiClient.get(`/diaries/monthly`, {
         params: {
           calendarDate: formattedDate,
-          calendarDate: formattedDate,
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log("데이터 형식 출력");
+      // console.log(formattedDate);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set({ monthlyDiaries: res.data.body.diaryList });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -59,6 +61,7 @@ const useDiaryStore = create((set) => ({
   },
 
   fetchFriendsDiaries: async (id, formattedDate) => {
+    // console.log(id);
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries/monthly/${id}`, {
@@ -66,8 +69,9 @@ const useDiaryStore = create((set) => ({
           calendarDate: formattedDate,
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log("fetchFriendsDiaries");
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set({ monthlyDiaries: res.data.body.diaryList });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -85,8 +89,8 @@ const useDiaryStore = create((set) => ({
           stampId: 1,
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set({ diaries: res.data.body, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -94,46 +98,50 @@ const useDiaryStore = create((set) => ({
   },
   // 다이어리 상세조회
   fetchDiary: async (diaryId) => {
-    console.log(`diaryId: ${diaryId}`);
+    // console.log(`diaryId: ${diaryId}`);
     set({ loading: true });
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries/${diaryId}`);
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // // console.log(res.data.body);
 
       set({ diary: res.data.body, loading: false });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
+      set({ error: err.message, loading: false });
     }
   },
   addDiary: async (formData) => {
     const apiClient = getApiClient();
-    console.log("API Client:", apiClient);
+    // console.log("API Client:", apiClient);
     try {
       const res = await apiClient.post("/diaries", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       return res.data.body.diaryId;
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
   },
-  updateDiary: async (diaryId, updatedDiary) => {
+  updateDiary: async (diaryId, formData) => {
     const apiClient = getApiClient();
+    const test = localStorage.getItem("accessToken")
+    // console.log(test)
     // console.log("updateDiary - API Client:", apiClient);
     try {
-      const res = await apiClient.post(`/diaries/${diaryId}`, updatedDiary, {
+      const res = await apiClient.post(`/diaries/${diaryId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data)
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set((state) => ({
         diaries: state.diaries.map((diary) =>
           diary.id === id ? response.data : diary
@@ -147,8 +155,8 @@ const useDiaryStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const res = await apiClient.delete(`/diaries/${diaryId}`);
-      console.log(res.data.header.message);
-      console.log(res.data.body);
+      // console.log(res.data.header.message);
+      // console.log(res.data.body);
       set((state) => ({
         diaries: state.diaries.filter((diary) => diary.id !== diaryId),
       }));
@@ -159,19 +167,19 @@ const useDiaryStore = create((set) => ({
   initializeDiary: () => {
     set({ diary: [] });
   },
-  mydiary: [],
+  myDiary: [],
   fetchMyDiary: async () => {
     const apiClient = getApiClient();
     try {
       const res = await apiClient.get(`/diaries/list`, {
         params: {
-          lastDiaryDate: "2024-08-09",
+          lastDiaryDate: "2024-08-01",
           sort: "diaryDate",
         },
       });
-      console.log(res.data.header.message);
-      console.log(res.data.body.diaryList.content);
-      set({ mydiary: res.data.body.diaryList.content });
+      // console.log(res.data.header.message);
+      // console.log(res.data.body.diaryList.content);
+      set({ myDiary: res.data.body.diaryList.content });
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
     }
@@ -181,11 +189,11 @@ const useDiaryStore = create((set) => ({
     const apiClient = getApiClient();
     try {
       const response = await apiClient.get(`/diaries/list/${userId}`);
-      console.log(response.data.header.message);
-      console.log(response.data.body.diaryList.content);
+      // console.log(response.data.header.message);
+      // console.log(response.data.body.diaryList.content);
       set({ friendDiary: response.data.body.diaryList.content });
     } catch (error) {
-      console.log("Failed to fetch friend", error);
+      // console.log("Failed to fetch friend", error);
       set({ loading: false, error: error.message });
     }
   },

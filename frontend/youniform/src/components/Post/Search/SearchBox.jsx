@@ -40,15 +40,15 @@ const Content = styled.div`
 `;
 const SearchBox = ({ query, type, setType, search, setSearch }) => {
   const handleTagClick = () => {
-    console.log("tag 검색");
+    // console.log("tag 검색");
     setType("tag");
-    console.log("searchBox -", query);
+    // console.log("searchBox -", query);
   };
 
   const handleUserClick = () => {
-    console.log("user 검색");
+    // console.log("user 검색");
     setType("user");
-    console.log("searchBox -", query);
+    // console.log("searchBox -", query);
     // 검색해야함
   };
 

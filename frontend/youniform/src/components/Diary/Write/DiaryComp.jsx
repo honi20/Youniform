@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useDiaryStore from "@stores/diaryStore";
 import BasicModal from "@components/Modal/BasicModal";
 import ShareModal from "@components/Modal/ShareModal";
+import useUserStore from "../../../stores/userStore";
 
 const ImageContainer = styled.div`
   height: 502px;
@@ -15,33 +16,42 @@ const DiaryComp = ({ state, diary }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const { deleteDiary } = useDiaryStore();
+  const { deleteDiary, fetchMonthlyDiaries } = useDiaryStore();
+  const { user, fetchUser} = useUserStore();
 
   const openShareModal = () => setIsShareModalOpen(true);
   const closeShareModal = () => setIsShareModalOpen(false);
 
+  useEffect(() => {
+    if(!user){
+      fetchUser();
+          }     
+           // console.log(user)
+  }, [user, fetchUser])
+
   const handleDeleteBtn = async (diaryId) => {
-    console.log("다이어리 삭제", diaryId);
+    // console.log("다이어리 삭제", diaryId);
     await deleteDiary(diaryId);
+    fetchMonthlyDiaries();
     navigate("/diary");
   };
 
   const handleButtonClick = (index) => {
     switch (index) {
       case 1:
-        console.log("Button 1 clicked");
+        // console.log("Button 1 clicked");
         // 추가 작업
         break;
       case 2:
-        console.log("Button 2 clicked");
+        // console.log("Button 2 clicked");
         // 추가 작업
         break;
       case 3:
-        console.log("Button 3 clicked");
+        // console.log("Button 3 clicked");
         handleDeleteBtn(diary.diaryId);
         break;
       default:
-        console.log("Unknown button clicked");
+        // console.log("Unknown button clicked");
         break;
     }
   };
@@ -50,13 +60,25 @@ const DiaryComp = ({ state, diary }) => {
     const [year, month, day] = dateString.split("-");
     return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
   };
-
+  const renderScope = (scope) => {
+    switch(scope){
+      case "ALL":
+        return "전체공개"
+      case "FRIENDS":
+        return "친구공개"
+      case "PRIVATE":
+        return "비공개"
+    }
+  }
   return (
     <St.Diary>
       <St.DiaryHeader>
         <St.Profile src={diary.profileUrl} />
         <St.TextContainer>
-          <St.HeaderText>{diary.nickname}</St.HeaderText>
+          <St.HeaderText>{diary.nickname}
+          <St.HeaderScope>{renderScope(diary.scope)}</St.HeaderScope>
+          </St.HeaderText>
+          
         </St.TextContainer>
         <St.DiaryDate>
           {diary?.diaryDate && formatDate(diary.diaryDate)}
@@ -69,11 +91,13 @@ const DiaryComp = ({ state, diary }) => {
       </St.DiaryContent>
       <St.DiaryFooter>
         <St.BtnContainer>
+          {user &&  diary.nickname == user.nickname && 
           <St.BtnGroup>
             <St.Btn onClick={() => navigate("./update")}>수정</St.Btn>
             <St.Btn onClick={() => setIsModalOpen(true)}>삭제</St.Btn>
           </St.BtnGroup>
-          <St.BtnGroup>
+            }
+          <St.BtnGroup style={{marginLeft:"auto"}}>
             <St.Btn onClick={openShareModal} $isShare={true}>
               공유
             </St.Btn>
@@ -90,7 +114,11 @@ const DiaryComp = ({ state, diary }) => {
           }}
         />
       )}
-      <ShareModal diary={diary} isOpen={isShareModalOpen} onClose={closeShareModal} />
+      <ShareModal
+        diary={diary}
+        isOpen={isShareModalOpen}
+        onClose={closeShareModal}
+      />
     </St.Diary>
   );
 };

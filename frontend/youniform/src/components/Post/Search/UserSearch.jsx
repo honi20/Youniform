@@ -34,7 +34,7 @@ const UserSearch = ({ query, search, setSearch }) => {
       searchUser(query)
       setSearch(false);
     }
-    console.log(search);
+    // console.log(search);
   }, [search]);
   const handleProfileClick = async () => {
     setSelectedUser(post.userId);
@@ -56,7 +56,7 @@ const UserSearch = ({ query, search, setSearch }) => {
   }, [user, fetchUser]);
   const searchUser = async (query) => {
     if (query) {
-      console.log("유저 검색 시작");
+      // console.log("유저 검색 시작");
       const apiClient = getApiClient();
       try {
         const res = await apiClient.get(`/users/search`, {
@@ -64,8 +64,8 @@ const UserSearch = ({ query, search, setSearch }) => {
             nickname: query,
           },
         });
-        console.log(res.data.header.message);
-        console.log(res.data.body.userList)
+        // console.log(res.data.header.message);
+        // console.log(res.data.body.userList)
         setResults(res.data.body.userList);
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
@@ -73,7 +73,7 @@ const UserSearch = ({ query, search, setSearch }) => {
     }
   };
   const handleClickUser = async (result) => {
-    console.log(result)
+    // console.log(result)
     setSelectedUser(result.userId);
     await fetchFriend(result.userId);
     setModalOpen(true);
